@@ -9,11 +9,7 @@ import { selectUser, logoutUser } from '../store/userSlice';
 import styles from './accountPage.module.css';
 
 //component
-import {
-  AccountInfo,
-  AccountHistory,
-  Tool,
-} from '../components/AccountPage/index';
+import { AccountInfo, AccountHistory, Tool } from '../components/AccountPage';
 import AccountItem from '../components/AccountPage/AccountItem';
 import MainLayout from '../layouts/MainLayout';
 

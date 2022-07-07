@@ -82,7 +82,7 @@ function MainServices(props) {
       </div>
       <div
         className={styles.itemContainer}
-        onClick={() => navigateTo('/photocopies')}
+        onClick={() => navigateTo('/maintain')}
       >
         <div>
           <img

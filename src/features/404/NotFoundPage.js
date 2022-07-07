@@ -1,10 +1,9 @@
 import React from 'react';
-import TitleBar from '../components/TitleBar';
-import MainLayout from '../layouts/MainLayout';
+import TitleBar from 'components/TitleBar';
 
-const NotFound = () => {
+export function NotFoundPage() {
   return (
-    <div>
+    <>
       <TitleBar title='Lỗi' />
       <div
         style={{
@@ -17,8 +16,6 @@ const NotFound = () => {
       >
         <p>Xin lỗi, không tìm thấy trang này</p>
       </div>
-    </div>
+    </>
   );
-};
-
-export default NotFound;
+}

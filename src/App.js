@@ -7,7 +7,6 @@ import {
   UniformDetailPage,
   UniformPage,
   BicycleDetailPage,
-  BicyclesPage,
   BusSurveyPage,
   GuestHouseUserPage,
   GuestHouseReportPage,
@@ -20,15 +19,22 @@ import {
   HealthPage,
   BusRegistration,
 } from './pages';
+import {
+  LoginPage,
+  ProfilePage,
+  NotFoundPage,
+  DrivingInstructionPage,
+  DrivingRegisterPage,
+  BicyclesPage,
+  BicyclePage,
+} from 'features';
 
-import NotFound from './pages/NotFound';
 import HomePage from './pages/HomePage';
 import AppsPage from './pages/AppsPage';
 import ExplorePage from './pages/ExplorePage';
-import ProfilePage from './pages/ProfilePage';
 import ContactPage from './pages/ContactPage';
 import AccountPage from './pages/AccountPage';
-import LoginPage from './pages/LoginPage';
+// import LoginPage from './pages/LoginPage';
 import BookGuestHousePage from './pages/BookGuestHousePage';
 import GuestHouseBillPage from './pages/GuestHouseBillPage';
 import BookGuestHouseStatusPage from './pages/BookGuestHouseStatusPage';
@@ -40,11 +46,10 @@ import PhotocopyPage from './pages/PhotocopyPage';
 import PhotocopyDetailPage from './pages/PhotocopyDetailPage';
 import JobPage from './pages/JobPage';
 import DrivingTestPage from './pages/DrivingTestPage';
-import DrivingRegisterPage from './pages/DrivingRegisterPage';
+// import DrivingRegisterPage from './pages/DrivingRegisterPage';
 import SupportPage from './pages/SupportPage';
 import CouponPage from './pages/CouponPage';
 import MaintainPage from './pages/MaintainPage';
-import DrivingInstructionPage from './pages/DrivingInstructionPage';
 import drivingAdminPage from './admin/DrivingAdminPage';
 import SwimmingPoolTutorPage from './pages/SwimmingPoolTutorPage';
 import JobDetailPage from './pages/JobDetailPage';
@@ -132,7 +137,7 @@ class App extends React.Component {
           <Route exact path='/coupon-scanned' component={CouponScannedPage} />
 
           <Route exact path='/bicycles' component={BicyclesPage} />
-          <Route exact path='/bicycle' component={BicycleDetailPage} />
+          <Route exact path='/bicycle' component={BicyclePage} />
 
           <Route exact path='/bank' component={BankPage} />
           <Route exact path='/bus-survey' component={BusSurveyPage} />
@@ -156,7 +161,7 @@ class App extends React.Component {
 
           <Route exact path='/support' component={SupportPage} />
           <Route exact path='/maintain' component={MaintainPage} />
-          <Route component={NotFound} />
+          <Route component={NotFoundPage} />
         </Switch>
       </Router>
     );
