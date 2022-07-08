@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectUser, logoutUser, updateUser } from 'store/userSlice';
 
 //components
-import PasswordField from 'components/PasswordField';
+import PasswordField from 'features/profile/PasswordField';
 import styled from 'styled-components';
 export function ProfilePage() {
   const user = useSelector(selectUser).data;

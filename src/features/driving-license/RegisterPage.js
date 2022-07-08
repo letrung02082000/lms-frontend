@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import TitleBar from 'components/TitleBar';
 
 import styles from './drivingRegisterPage.module.css';
-import { SearchBar } from 'components/ExplorePage';
+import { SearchBar } from 'features/coupon/ExplorePage';
 
 export function DrivingRegisterPage() {
   const { search } = useLocation();

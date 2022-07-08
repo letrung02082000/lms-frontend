@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import checkLogin from './utils/checkLogin';
@@ -6,57 +6,53 @@ import checkLogin from './utils/checkLogin';
 import {
   UniformDetailPage,
   UniformPage,
-  BicycleDetailPage,
-  BusSurveyPage,
-  GuestHouseUserPage,
-  GuestHouseReportPage,
   GuestHouseAdminPage,
-  GuidePage,
-  GuideDetailPage,
   AdminGuidePage,
   AdminHealthPage,
-  HealthDetailPage,
-  HealthPage,
-  BusRegistration,
 } from './pages';
 import {
+  NotFoundPage,
   LoginPage,
   ProfilePage,
-  NotFoundPage,
   DrivingInstructionPage,
   DrivingRegisterPage,
   BicyclesPage,
   BicyclePage,
+  BusSurveyPage,
+  BusRegistrationPage,
+  CouponPage,
+  CouponListPage,
+  CouponScannedPage,
+  HealthDetailPage,
+  HealthPage,
+  GuidePage,
+  GuideDetailPage,
+  GuestHouseUserPage,
+  GuestHouseReportPage,
 } from 'features';
 
-import HomePage from './pages/HomePage';
-import AppsPage from './pages/AppsPage';
-import ExplorePage from './pages/ExplorePage';
+import HomePage from './features/home/HomePage';
+import ExplorePage from './features/coupon/ExplorePage';
 import ContactPage from './pages/ContactPage';
-import AccountPage from './pages/AccountPage';
-// import LoginPage from './pages/LoginPage';
-import BookGuestHousePage from './pages/BookGuestHousePage';
-import GuestHouseBillPage from './pages/GuestHouseBillPage';
+import AccountPage from './features/account/AccountPage';
+import BookGuestHousePage from './features/guest-house/BookGuestHousePage';
+import GuestHouseBillPage from './features/guest-house/GuestHouseBillPage';
 import BookGuestHouseStatusPage from './pages/BookGuestHouseStatusPage';
 import SwimmingPoolInfoPage from './pages/SwimmingPoolInfoPage';
 import SwimmingPoolTicketPage from './pages/SwimmingPoolTicketPage';
 import GuestHouseInfoPage from './pages/GuestHouseInfoPage';
-import QrScanPage from './pages/QrScanPage';
+import QrScanPage from './features/qr-scan/QrScanPage';
 import PhotocopyPage from './pages/PhotocopyPage';
-import PhotocopyDetailPage from './pages/PhotocopyDetailPage';
+import PhotocopyDetailPage from './features/photocopy/PhotocopyDetailPage';
 import JobPage from './pages/JobPage';
-import DrivingTestPage from './pages/DrivingTestPage';
-// import DrivingRegisterPage from './pages/DrivingRegisterPage';
-import SupportPage from './pages/SupportPage';
-import CouponPage from './pages/CouponPage';
-import MaintainPage from './pages/MaintainPage';
+import DrivingTestPage from './features/driving-license/DrivingTestPage';
+import SupportPage from './features/support/SupportPage';
+import MaintainPage from './features/maintainance/MaintainPage';
 import drivingAdminPage from './admin/DrivingAdminPage';
 import SwimmingPoolTutorPage from './pages/SwimmingPoolTutorPage';
-import JobDetailPage from './pages/JobDetailPage';
-import CouponScannedPage from './pages/CouponScannedPage';
-import CouponListPage from './pages/CouponListPage';
-import BicycleAdminPage from './admin/BicycleAdminPage';
-import BankPage from './pages/BankPage';
+import JobDetailPage from './features/job/JobDetailPage';
+import BicycleAdminPage from './features/admin/BicycleAdminPage';
+import BankPage from './features/mbbank/BankPage';
 
 class App extends React.Component {
   render() {
@@ -67,7 +63,6 @@ class App extends React.Component {
         <ToastContainer />
         <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route exact path='/apps' component={AppsPage} />
           <Route exact path='/explore' component={ExplorePage} />
           <Route exact path='/profile' component={ProfilePage} />
           <Route exact path='/contact' component={ContactPage} />
@@ -151,7 +146,11 @@ class App extends React.Component {
           <Route exact path='/health' component={HealthDetailPage} />
           <Route exact path='/healths' component={HealthPage} />
 
-          <Route exact path='/bus-registration' component={BusRegistration} />
+          <Route
+            exact
+            path='/bus-registration'
+            component={BusRegistrationPage}
+          />
 
           {/* admin */}
           <Route exact path='/driving-admin' component={drivingAdminPage} />

@@ -3,3 +3,8 @@ export * from './404';
 export * from './profile';
 export * from './driving-license';
 export * from './bicycle';
+export * from './bus';
+export * from './coupon';
+export * from './health';
+export * from './guide';
+export * from './guest-house';
