@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Loading, TitleBar } from '../../pages/_commons';
+import Loading from 'components/common/Loading';
+import TitleBar from 'components/common/TitleBar';
 import styles from './styles.module.css';
 import guideApi from '../../api/guideApi';
 

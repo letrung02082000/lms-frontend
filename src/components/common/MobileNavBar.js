@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 //redux
 import { useSelector } from 'react-redux';
-import { selectShow } from '../../store/navSlice';
+import { selectShow } from 'store/navSlice';
 
 import {
   Navbar,

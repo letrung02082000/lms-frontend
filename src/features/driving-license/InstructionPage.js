@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import TitleBar from 'components/common/TitleBar';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import TitleBar from 'components/TitleBar';
 
 import styles from './drivingInstructionPage.module.css';
 

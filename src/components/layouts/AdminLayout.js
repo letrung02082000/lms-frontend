@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import styles from './container.module.css';
-import { useHistory } from 'react-router-dom';
+import { useState } from 'react';
 import { MdOutlineChevronRight } from 'react-icons/md';
+import { useHistory } from 'react-router-dom';
+import styles from './container.module.css';
 
-function DrivingAdminLayout({ children, title, navigation, root }) {
+function AdminLayout({ children, title, navigation, root }) {
   const [visible, setVisible] = useState(true);
   const history = useHistory();
 
@@ -54,4 +54,4 @@ function DrivingAdminLayout({ children, title, navigation, root }) {
   );
 }
 
-export default DrivingAdminLayout;
+export default AdminLayout;

@@ -1,10 +1,11 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import SearchBar from 'components/common/SearchBar';
+import TitleBar from 'components/common/TitleBar';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import styles from './container.module.css';
-import { TitleBar, SearchBar } from '../_commons';
+import styles from './uniformPage.module.css';
 
-export function UniformPage() {
+export default function UniformPage() {
   const history = useHistory();
   const [uniformList, setUniformList] = useState([]);
   const [page, setPage] = useState(0);

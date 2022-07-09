@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-import { selectUser, logoutUser } from '../../store/userSlice';
+import { selectUser, logoutUser } from 'store/userSlice';
 
 import styles from './accountPage.module.css';
 
 //component
-import { AccountInfo, AccountHistory, Tool } from './AccountPage';
-import AccountItem from './AccountPage/AccountItem';
-import MainLayout from '../../layouts/MainLayout';
+import AccountItem from './AccountItem';
+import AccountInfo from './AccountInfo';
+import Tool from 'components/common/Tool';
 
 function AccountPage() {
   const history = useHistory();
@@ -46,7 +45,7 @@ function AccountPage() {
   };
 
   return (
-    <MainLayout>
+    <>
       <div className={styles.accountPageContainer}>
         {user.isLoggedIn ? (
           <>
@@ -81,7 +80,7 @@ function AccountPage() {
           </div>
         )}
       </div>
-    </MainLayout>
+    </>
   );
 }
 

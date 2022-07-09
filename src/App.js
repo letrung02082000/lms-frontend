@@ -1,58 +1,48 @@
 import React from 'react';
-import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import checkLogin from './utils/checkLogin';
+import checkLogin from 'utils/checkLogin';
 
 import {
-  UniformDetailPage,
-  UniformPage,
-  GuestHouseAdminPage,
+  AccountPage,
+  AdminBicyclePage,
+  AdminDrivingPage,
+  AdminGuestHousePage,
   AdminGuidePage,
   AdminHealthPage,
-} from './pages';
-import {
-  NotFoundPage,
-  LoginPage,
-  ProfilePage,
+  BankPage,
+  BicyclePage,
+  BicyclesPage,
+  BusRegistrationPage,
+  BusSurveyPage,
+  CouponListPage,
+  CouponPage,
+  CouponScannedPage,
   DrivingInstructionPage,
   DrivingRegisterPage,
-  BicyclesPage,
-  BicyclePage,
-  BusSurveyPage,
-  BusRegistrationPage,
-  CouponPage,
-  CouponListPage,
-  CouponScannedPage,
+  DrivingTestPage,
+  ExplorePage,
+  GuestHouseInfoPage,
+  GuestHouseReportPage,
+  GuestHouseUserPage,
+  GuideDetailPage,
+  GuidePage,
   HealthDetailPage,
   HealthPage,
-  GuidePage,
-  GuideDetailPage,
-  GuestHouseUserPage,
-  GuestHouseReportPage,
+  HomePage,
+  JobDetailPage,
+  JobPage,
+  LoginPage,
+  MaintainPage,
+  NotFoundPage,
+  PoolInfoPage,
+  PoolTicketPage,
+  PoolTutorPage,
+  ProfilePage,
+  QrScanPage,
+  UniformDetailPage,
+  UniformPage,
 } from 'features';
-
-import HomePage from './features/home/HomePage';
-import ExplorePage from './features/coupon/ExplorePage';
-import ContactPage from './pages/ContactPage';
-import AccountPage from './features/account/AccountPage';
-import BookGuestHousePage from './features/guest-house/BookGuestHousePage';
-import GuestHouseBillPage from './features/guest-house/GuestHouseBillPage';
-import BookGuestHouseStatusPage from './pages/BookGuestHouseStatusPage';
-import SwimmingPoolInfoPage from './pages/SwimmingPoolInfoPage';
-import SwimmingPoolTicketPage from './pages/SwimmingPoolTicketPage';
-import GuestHouseInfoPage from './pages/GuestHouseInfoPage';
-import QrScanPage from './features/qr-scan/QrScanPage';
-import PhotocopyPage from './pages/PhotocopyPage';
-import PhotocopyDetailPage from './features/photocopy/PhotocopyDetailPage';
-import JobPage from './pages/JobPage';
-import DrivingTestPage from './features/driving-license/DrivingTestPage';
-import SupportPage from './features/support/SupportPage';
-import MaintainPage from './features/maintainance/MaintainPage';
-import drivingAdminPage from './admin/DrivingAdminPage';
-import SwimmingPoolTutorPage from './pages/SwimmingPoolTutorPage';
-import JobDetailPage from './features/job/JobDetailPage';
-import BicycleAdminPage from './features/admin/BicycleAdminPage';
-import BankPage from './features/mbbank/BankPage';
 
 class App extends React.Component {
   render() {
@@ -65,7 +55,7 @@ class App extends React.Component {
           <Route exact path='/' component={HomePage} />
           <Route exact path='/explore' component={ExplorePage} />
           <Route exact path='/profile' component={ProfilePage} />
-          <Route exact path='/contact' component={ContactPage} />
+          <Route exact path='/contact' component={MaintainPage} />
           <Route exact path='/account' component={AccountPage} />
           <Route exact path='/login' component={LoginPage} />
           <Route exact path='/guest-house' component={GuestHouseInfoPage} />
@@ -82,26 +72,11 @@ class App extends React.Component {
           <Route
             exact
             path='/guest-house-admin'
-            component={GuestHouseAdminPage}
+            component={AdminGuestHousePage}
           />
-          <Route
-            exact
-            path='/guest-house-bill'
-            component={GuestHouseBillPage}
-          />
-          <Route
-            exact
-            path='/book-guest-house-room'
-            component={BookGuestHousePage}
-          />
-          <Route
-            exact
-            path='/book-guest-house-status'
-            component={BookGuestHouseStatusPage}
-          />
-          <Route exact path='/pool-info' component={SwimmingPoolInfoPage} />
-          <Route exact path='/pool-ticket' component={SwimmingPoolTicketPage} />
-          <Route exact path='/pool-tutor' component={SwimmingPoolTutorPage} />
+          <Route exact path='/pool-info' component={PoolInfoPage} />
+          <Route exact path='/pool-ticket' component={PoolTicketPage} />
+          <Route exact path='/pool-tutor' component={PoolTutorPage} />
           <Route exact path='/qrscan' component={QrScanPage} />
           <Route
             exact
@@ -109,8 +84,8 @@ class App extends React.Component {
             component={GuestHouseInfoPage}
           />
 
-          <Route exact path='/photocopies' component={PhotocopyPage} />
-          <Route exact path='/photocopy' component={PhotocopyDetailPage} />
+          <Route exact path='/photocopies' component={MaintainPage} />
+          <Route exact path='/photocopy' component={MaintainPage} />
 
           <Route exact path='/driving-test' component={DrivingTestPage} />
           <Route
@@ -153,12 +128,12 @@ class App extends React.Component {
           />
 
           {/* admin */}
-          <Route exact path='/driving-admin' component={drivingAdminPage} />
-          <Route exact path='/bicycle-admin' component={BicycleAdminPage} />
+          <Route exact path='/driving-admin' component={AdminDrivingPage} />
+          <Route exact path='/bicycle-admin' component={AdminBicyclePage} />
           <Route exact path='/guide-admin' component={AdminGuidePage} />
           <Route exact path='/health-admin' component={AdminHealthPage} />
 
-          <Route exact path='/support' component={SupportPage} />
+          <Route exact path='/support' component={MaintainPage} />
           <Route exact path='/maintain' component={MaintainPage} />
           <Route component={NotFoundPage} />
         </Switch>

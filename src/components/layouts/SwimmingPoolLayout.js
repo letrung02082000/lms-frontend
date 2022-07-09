@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import TitleBar from 'components/common/TitleBar';
 import { useHistory } from 'react-router-dom';
-import styles from '../pages/swimmingPoolTicketPage.module.css';
-import TitleBar from '../components/TitleBar';
-import { BiSearchAlt } from 'react-icons/bi';
+import styles from './swimmingPoolLayout.module.css';
 
 function SwimmingPoolTutorPage({ children, route }) {
   const history = useHistory();

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import TitleBar from 'components/TitleBar';
+import SearchBar from 'components/common/SearchBar';
+import TitleBar from 'components/common/TitleBar';
 
 import styles from './drivingRegisterPage.module.css';
-import { SearchBar } from 'features/coupon/ExplorePage';
 
 export function DrivingRegisterPage() {
   const { search } = useLocation();

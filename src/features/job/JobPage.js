@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import TitleBar from '../components/TitleBar';
 import axios from 'axios';
+import Loading from 'components/common/Loading';
+import TitleBar from 'components/common/TitleBar';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import styles from './jobPage.module.css';
-import Loading from '../components/Loading';
 
 function JobPage() {
   const history = useHistory();

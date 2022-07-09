@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import useMediaQuery from '../../hooks/useMediaQuery';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 //bootstrap
 import { Navbar, Container, Nav } from 'react-bootstrap';
 
 import styles from './desktopNavBar.module.css';
-import Tool from '../../features/account/AccountPage/Tool';
+import Tool from './Tool';
 import Logo from './Logo';
 //redux
 import { useSelector, useDispatch } from 'react-redux';

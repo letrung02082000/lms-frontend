@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import SearchBar from 'components/common/SearchBar';
+import TitleBar from 'components/common/TitleBar';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import TitleBar from '../components/TitleBar';
 import styles from './photocopyPage.module.css';
 
 import axios from 'axios';
-import { SearchBar } from '../components/ExplorePage';
+
 function PhotocopyPage() {
   const history = useHistory();
   const [photocopyList, setPhotocopyList] = useState([]);

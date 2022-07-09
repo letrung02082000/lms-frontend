@@ -1,6 +1,6 @@
 import React from 'react';
 import Maintained from '../maintainance/Maintained';
-import TitleBar from '../../components/TitleBar';
+import TitleBar from 'components/common/TitleBar';
 
 function SupportPage() {
   return (

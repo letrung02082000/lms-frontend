@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import MainLayout from '../../layouts/MainLayout';
+import MainLayout from 'components/layouts/MainLayout';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-import { selectUser } from '../../store/userSlice';
-import { updateShow } from '../../store/navSlice';
+import { selectUser } from 'store/userSlice';
+import { updateShow } from 'store/navSlice';
 
 import styles from './homePage.module.css';
 import { BiSearchAlt } from 'react-icons/bi';
 
 //utils
-import useMediaQuery from '../../hooks/useMediaQuery';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 //components
-import HomeSlider from './HomePage/HomeSlider';
+import HomeSlider from './components/HomeSlider';
 // import HomeLeftNavBar from '../components/HomePage/HomeLeftNavBar';
-import CategorySlider from './HomePage/CategorySlider';
-import HotSlider from './HomePage/HotSlider';
-import MainServices from './HomePage/MainServices';
+import CategorySlider from './components/CategorySlider';
+import HotSlider from './components/HotSlider';
+import MainServices from './components/MainServices';
 import Logo from '../../components/common/Logo';
 
 //bootstrap

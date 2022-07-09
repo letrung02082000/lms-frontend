@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Loading, TitleBar } from '../_commons';
+import Loading from 'components/common/Loading';
+import TitleBar from 'components/common/TitleBar';
 import styles from './styles.module.css';
 import guideApi from 'api/guideApi';
 import { useHistory } from 'react-router-dom';

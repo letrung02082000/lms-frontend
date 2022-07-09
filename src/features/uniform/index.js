@@ -1,2 +1,2 @@
-export * from './UniformPage';
-export * from './DetailPage';
+export { default as UniformPage } from './UniformPage';
+export { default as UniformDetailPage } from './DetailPage';

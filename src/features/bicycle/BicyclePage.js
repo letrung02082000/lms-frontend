@@ -1,15 +1,15 @@
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
-import Loading from 'components/Loading';
-import TitleBar from 'components/TitleBar';
+import Loading from 'components/common/Loading';
+import TitleBar from 'components/common/TitleBar';
 import QrReader from 'modern-react-qr-reader';
-import authHeader from 'utils/authHeader';
-import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { selectUser } from 'store/userSlice';
+import authHeader from 'utils/authHeader';
 
+import { BikeUserInfo, UploadCard } from './components';
 import styles from './styles.module.css';
-import { UploadCard, BikeUserInfo } from './components';
 
 export function BicyclePage(props) {
   const history = useHistory();

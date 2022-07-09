@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import MainLayout from '../../layouts/MainLayout';
+import MainLayout from 'components/layouts/MainLayout';
 import { useHistory } from 'react-router-dom';
 
 import styles from './explorePage.module.css';
 
 import { useSelector } from 'react-redux';
-import { selectUser } from '../../store/userSlice';
+import { selectUser } from 'store/userSlice';
 
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Pagination } from 'swiper';
@@ -15,7 +15,7 @@ import {
   SearchBar,
   VoucherList,
   VoucherListVertical,
-} from './ExplorePage';
+} from './components';
 import { IoTicketSharp, IoShirtOutline } from 'react-icons/io5';
 import { MdPool } from 'react-icons/md';
 import { FaHotel } from 'react-icons/fa';

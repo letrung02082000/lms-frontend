@@ -1,5 +1,5 @@
 import React from 'react';
-import TitleBar from '../../components/TitleBar';
+import TitleBar from 'components/common/TitleBar';
 import styles from './drivingTestPage.module.css';
 
 import { useHistory } from 'react-router-dom';

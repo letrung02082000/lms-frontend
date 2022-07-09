@@ -1,13 +1,13 @@
 import axios from 'axios';
+import Compressor from 'compressorjs';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import React, { useState } from 'react';
 import authHeader from 'utils/authHeader';
 import styles from './uploadCard.module.css';
-import Compressor from 'compressorjs';
 
+import Loading from 'components/common/Loading';
 import { useDispatch } from 'react-redux';
 import { updateCard } from 'store/userSlice';
-import Loading from 'components/Loading';
 
 function UploadCard() {
   const dispatch = useDispatch();

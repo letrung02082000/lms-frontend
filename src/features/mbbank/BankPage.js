@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import TitleBar from '../../components/TitleBar';
+import TitleBar from 'components/common/TitleBar';
 import styles from './bankPage.module.css';
 import { MdOutlineContentCopy } from 'react-icons/md';
 
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination } from 'swiper';
-import useMediaQuery from '../../hooks/useMediaQuery';
+// import { Pagination } from 'swiper';
+// import useMediaQuery from 'hooks/useMediaQuery';
 
 function BankPage() {
-  const isLargeScreen = useMediaQuery('min-width: 600px');
+  // const isLargeScreen = useMediaQuery('min-width: 600px');
   const [step, setStep] = useState(0);
   const [copied, setCopied] = useState(0);
 

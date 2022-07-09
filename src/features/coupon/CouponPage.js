@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'axios';
+import QRCode from 'qrcode.react';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'store/userSlice';
-import QRCode from 'qrcode.react';
 
-import styles from './couponPage.module.css';
+import Loading from 'components/common/Loading';
 import { MdArrowBack } from 'react-icons/md';
-import Loading from 'components/Loading';
 import authHeader from 'utils/authHeader';
+import styles from './couponPage.module.css';
 
 export function CouponPage(props) {
   const serviceType = [

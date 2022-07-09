@@ -1,13 +1,13 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import TitleBar from 'components/TitleBar';
+import TitleBar from 'components/common/TitleBar';
+import { useEffect, useState } from 'react';
 
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectUser } from 'store/userSlice';
 import QrReader from 'modern-react-qr-reader';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { selectUser } from 'store/userSlice';
 
-import authHeader from '../../utils/authHeader';
+import authHeader from 'utils/authHeader';
 import { BikeUserInfo, UploadCard } from './components';
 import styles from './styles.module.css';
 

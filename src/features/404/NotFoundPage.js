@@ -1,5 +1,4 @@
-import React from 'react';
-import TitleBar from 'components/TitleBar';
+import TitleBar from 'components/common/TitleBar';
 
 export function NotFoundPage() {
   return (

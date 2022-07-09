@@ -1,6 +1,7 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { TitleBar } from '../../pages/_commons';
+import TitleBar from 'components/common/TitleBar';
+import { useEffect, useState } from 'react';
+
 import styles from './userPage.module.css';
 
 export function GuestHouseUserPage() {

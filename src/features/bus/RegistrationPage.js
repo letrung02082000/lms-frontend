@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import TitleBar from 'components/TitleBar';
-import styles from './styles.module.css';
 import busApi from 'api/busApi';
+import TitleBar from 'components/common/TitleBar';
+import { useState } from 'react';
+import styles from './styles.module.css';
 
 export function BusRegistrationPage(props) {
   const [isLoading, setIsLoading] = useState(false);

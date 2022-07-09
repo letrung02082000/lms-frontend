@@ -1,6 +1,6 @@
 import React from 'react';
-import DesktopNavBar from './NavBar/DesktopNavBar';
-import MobileNavBar from './NavBar/MobileNavBar';
+import DesktopNavBar from './DesktopNavBar';
+import MobileNavBar from './MobileNavBar';
 
 import './header.css';
 

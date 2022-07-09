@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import QRCode from 'qrcode.react';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { selectUser } from '../../store/userSlice';
-import { updateShow } from '../../store/navSlice';
+import { selectUser } from 'store/userSlice';
+import { updateShow } from 'store/navSlice';
 
 import styles from './qrScanPage.module.css';
 
-import TitleBar from '../../components/TitleBar';
+import TitleBar from 'components/common/TitleBar';
 
 function QrScanPage() {
   const user = useSelector(selectUser);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { TitleBar } from '../../pages/_commons';
-import styles from './container.module.css';
+import TitleBar from 'components/common/TitleBar';
+import styles from './detailPage.module.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,7 +11,7 @@ import {
   updateZalo,
 } from '../../store/userSlice';
 
-export function UniformDetailPage(props) {
+export default function DetailPage(props) {
   const query = new URLSearchParams(props.location.search);
   const id = query.get('id');
   const [data, setData] = useState(null);

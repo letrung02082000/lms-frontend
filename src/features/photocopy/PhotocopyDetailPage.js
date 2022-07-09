@@ -1,15 +1,10 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import TitleBar from '../../components/TitleBar';
+import TitleBar from 'components/common/TitleBar';
+import { useEffect, useState } from 'react';
 import styles from './photocopyDetailPage.module.css';
 
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectUser,
-  updateName,
-  updateTel,
-  updateZalo,
-} from '../../store/userSlice';
+import { selectUser, updateName, updateTel, updateZalo } from 'store/userSlice';
 
 function PhotocopyDetail(props) {
   const query = new URLSearchParams(props.location.search);

@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import styles from './guestHouseInfoPage.module.css';
 
-import TitleBar from '../components/TitleBar';
+import TitleBar from 'components/common/TitleBar';
 
 function GuestHouseInfoPage() {
   const history = useHistory();

@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styles from './styles.module.css';
+import TitleBar from 'components/common/TitleBar';
+import { useState } from 'react';
+import Autosuggest from 'react-autosuggest';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectBusSurvey,
-  updateIntime,
-  updateOuttime,
-  updateReason,
   updateAddress,
-  updateSchool,
-  updateIsUsed,
   updateDistrict,
-  updateTown,
+  updateIntime,
+  updateIsUsed,
+  updateOuttime,
   updateProvince,
+  updateReason,
+  updateSchool,
+  updateTown,
 } from 'store/busSurveySlice';
 import {
+  selectUser,
+  updateEmail,
   updateName,
   updateTel,
-  updateEmail,
-  selectUser,
 } from 'store/userSlice';
-import TitleBar from 'components/TitleBar';
-import Autosuggest from 'react-autosuggest';
+import styles from './styles.module.css';
 
 export function BusSurveyPage() {
   const schoolList = [
