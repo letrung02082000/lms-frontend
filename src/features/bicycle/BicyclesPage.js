@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import QrReader from 'modern-react-qr-reader';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { selectUser } from 'store/userSlice';
 
 import authHeader from 'utils/authHeader';
@@ -12,7 +12,7 @@ import { BikeUserInfo, UploadCard } from './components';
 import styles from './styles.module.css';
 
 export function BicyclesPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const [bicycleList, setBicycleList] = useState([]);
   const [bikeUser, setBikeUser] = useState(null);
@@ -87,7 +87,7 @@ export function BicyclesPage() {
       return;
     }
 
-    history.push(`/bicycle?id=${child._id}`);
+    navigate(`/bicycle?id=${child._id}`);
   };
 
   const handleReturnBikeButton = () => {
@@ -99,7 +99,7 @@ export function BicyclesPage() {
     alert(
       'Ứng dụng không có quyền truy cập camera. Vui lòng cấp quyền camera trên trình duyệt của bạn. Hoặc liên hệ: 0797324886 để được hỗ trợ nhanh nhất.'
     );
-    history.go(0);
+    navigate(0);
   };
 
   const onNewScanResult = (data) => {
@@ -113,7 +113,7 @@ export function BicyclesPage() {
           if (res.status === 200) {
             console.log(res.data.data);
             alert('Bạn đã trả xe thành công!');
-            history.go(0);
+            navigate(0);
           }
         })
         .catch((err) => {
@@ -204,7 +204,7 @@ export function BicyclesPage() {
         <div className={styles.loginContainer}>
           <p>Đăng nhập để sử dụng tính năng này</p>
           <button
-            onClick={() => history.push('/login')}
+            onClick={() => navigate('/login')}
             className={styles.loginButton}
           >
             Đăng nhập

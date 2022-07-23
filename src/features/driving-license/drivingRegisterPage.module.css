@@ -49,10 +49,6 @@ input[type='file'] {
   cursor: pointer;
 }
 
-.formFilename {
-  margin: 1rem 0 0;
-}
-
 .formFeedbackInput {
   height: 5rem;
   padding: 0.5rem;

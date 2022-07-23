@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button, FloatingLabel } from 'react-bootstrap';
 import styles from './profilePage.module.css';
@@ -15,7 +15,7 @@ import styled from 'styled-components';
 export function ProfilePage() {
   const user = useSelector(selectUser).data;
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const isMobile = useMediaQuery('(max-width: 768px)', {
     defaultMatches: true,
@@ -67,7 +67,7 @@ export function ProfilePage() {
   const handleLogoutClick = () => {
     dispatch(logoutUser());
 
-    history.push('/login');
+    navigate('/login');
   };
 
   const handleNameChange = (event) => {
@@ -122,7 +122,7 @@ export function ProfilePage() {
               },
             })
           );
-          history.push('/profile');
+          navigate('/profile');
         }
       });
   };

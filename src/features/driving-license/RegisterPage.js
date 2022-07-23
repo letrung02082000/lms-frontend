@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-
 import SearchBar from 'components/common/SearchBar';
 import TitleBar from 'components/common/TitleBar';
-
 import styles from './drivingRegisterPage.module.css';
+import LazyImage from 'components/common/LazyImage';
+import PortraitBanner from 'assets/portraitrules.jpg';
+import styled from 'styled-components';
+import { ToastWrapper } from 'utils';
 
 export function DrivingRegisterPage() {
   const { search } = useLocation();
@@ -35,42 +37,49 @@ export function DrivingRegisterPage() {
     'image/webp',
   ];
 
-  useEffect(async () => {
-    try {
-      const response = await axios.get('/api/driving/date?formVisible=true');
-      let data = response.data.data;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/driving/date?formVisible=true');
+        let data = response.data.data;
 
-      if (data.length > 0) {
-        data = data.map((child) => {
-          return {
-            ...child,
-            date: new Date(child.date),
-          };
-        });
+        if (data.length > 0) {
+          data = data.map((child) => {
+            return {
+              ...child,
+              date: new Date(child.date),
+            };
+          });
 
-        setDateList(data);
-      } else {
-        alert('Chưa có danh sách ngày thi mới');
+          setDateList(data);
+        } else {
+          ToastWrapper('Chưa có danh sách ngày thi mới');
+        }
+      } catch (e) {
+        ToastWrapper('Lỗi khi lấy danh sách ngày thi');
       }
-    } catch (e) {
-      alert('Lỗi: ' + e);
-    }
+    };
+
+    fetchData();
   }, []);
 
   const handleSubmitButton = (e) => {
     setIsLoading(true);
-    console.log(dateList[date].date.toLocaleDateString());
     if (!frontsideFile) {
       setIsLoading(false);
-      return alert('Lỗi: Vui lòng tải lên mặt trước cmnd/cccd');
+
+      return ToastWrapper('Lỗi: Vui lòng tải lên mặt trước cmnd/cccd', 'error');
     }
     if (!backsideFile) {
       setIsLoading(false);
-      return alert('Lỗi: Vui lòng tải lên mặt sau cmnd/cccd');
+      return ToastWrapper('Lỗi: Vui lòng tải lên mặt sau cmnd/cccd', 'error');
     }
     if (!portraitFile) {
       setIsLoading(false);
-      return alert('Lỗi: Vui lòng tải lên ảnh chân dung của bạn');
+      return ToastWrapper(
+        'Lỗi: Vui lòng tải lên ảnh chân dung của bạn',
+        'error'
+      );
     }
 
     const fullname = document.getElementById('formName').value;
@@ -80,8 +89,10 @@ export function DrivingRegisterPage() {
     let paidState = isPaid === 0;
 
     if (!fullname || !tel || !zalo) {
-      return alert(
-        'Vui lòng nhập đầy đủ: họ tên, số điện thoại và số điện thoại zalo'
+      setIsLoading(false);
+      return ToastWrapper(
+        'Vui lòng nhập đầy đủ: họ tên, số điện thoại và  zalo của bạn',
+        'error'
       );
     }
 
@@ -112,18 +123,25 @@ export function DrivingRegisterPage() {
     })
       .then((res) => {
         if (res.status === 200) {
-          alert(
-            'Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: 0886.405.887 (Ms. Trang) để được xử lý.'
+          ToastWrapper(
+            'Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: 0886.405.887 (Ms. Trang) để được xử lý.',
+            'success',
+            {autoClose: 10000}
           );
+
+          document.getElementById('formName').value = '';
+          document.getElementById('formTel').value = '';
+          document.getElementById('formZalo').value = '';
+          document.getElementById('formFeedback').value = '';
+
           setIsLoading(false);
         } else {
-          alert('Lỗi: ' + res.data.message);
+          ToastWrapper(`${res.data.message}`, 'error');
           setIsLoading(false);
         }
       })
       .catch((error) => {
-        console.log(error);
-        alert('Lỗi: ' + error);
+        ToastWrapper(`${error.toString()}`, 'error');
         setIsLoading(false);
       });
   };
@@ -148,7 +166,6 @@ export function DrivingRegisterPage() {
     if (imageExtensions.includes(e.target.files[0].type)) {
       setFrontsideFile(e.target.files[0]);
       setFrontsideName(e.target.files[0].name);
-      console.log(e.target.files[0]);
     } else {
       setFrontsideName('Lỗi: Tệp tải lên không phải là tệp hình ảnh');
     }
@@ -179,7 +196,6 @@ export function DrivingRegisterPage() {
   };
 
   const handleSearchChange = (e) => {
-    console.log(searchValue);
     setSearchValue(e.target.value);
   };
 
@@ -192,20 +208,23 @@ export function DrivingRegisterPage() {
           const data = res.data.data;
 
           if (data.length === 0) {
-            alert('Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue);
+            ToastWrapper(
+              'Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue
+            );
           } else {
             setSearchData(data);
           }
         })
         .catch((e) => {
-          console.log(e);
-          alert('Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue);
+          ToastWrapper(
+            'Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue
+          );
         });
     }
   };
 
   return (
-    <div className={styles.drivingRegisterContainer}>
+    <Styles className={styles.drivingRegisterContainer}>
       <TitleBar title='Đăng ký dự thi' navigation='/driving-test' />
       <SearchBar
         placeholder={'Tra cứu trạng thái hồ sơ'}
@@ -221,15 +240,15 @@ export function DrivingRegisterPage() {
           processDate.setDate(date.getDate() - 14);
           let state = '';
 
-          if (child.processState == 0) {
+          if (child.processState === 0) {
             state = 'Đang chờ xử lý';
-          } else if (child.processState == 1) {
+          } else if (child.processState === 1) {
             state = 'Đang chờ cập nhật';
-          } else if (child.processState == 2) {
+          } else if (child.processState === 2) {
             state = 'Đang chờ thanh toán';
-          } else if (child.processState == 3) {
+          } else if (child.processState === 3) {
             state = 'Đã hoàn tất hồ sơ';
-          } else if (child.processState == 4) {
+          } else if (child.processState === 4) {
             state = 'Đã hủy hồ sơ';
           }
 
@@ -263,6 +282,10 @@ export function DrivingRegisterPage() {
             </div>
           );
         })}
+
+      <div className='portrait-rules'>
+        <LazyImage src={PortraitBanner} />
+      </div>
       <form className={styles.drivingFormContainer}>
         <p style={{ margin: 0 }}>
           Xem hướng dẫn đăng ký dự thi{' '}
@@ -344,9 +367,7 @@ export function DrivingRegisterPage() {
             />
             Tải tệp lên
           </label>
-          {frontsideName ? (
-            <p className={styles.formFilename}>{frontsideName}</p>
-          ) : null}
+          {frontsideName ? <p className='filename'>{frontsideName}</p> : null}
         </div>
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>Mặt sau CMND/CCCD*</label>
@@ -362,9 +383,7 @@ export function DrivingRegisterPage() {
             />
             Tải tệp lên
           </label>
-          {backsideName ? (
-            <p className={styles.formFilename}>{backsideName}</p>
-          ) : null}
+          {backsideName ? <p className='filename'>{backsideName}</p> : null}
         </div>
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>
@@ -390,9 +409,7 @@ export function DrivingRegisterPage() {
             />
             Tải tệp lên
           </label>
-          {portraitName ? (
-            <p className={styles.formFilename}>{portraitName}</p>
-          ) : null}
+          {portraitName ? <p className='filename'>{portraitName}</p> : null}
         </div>
 
         <div className={styles.formGroup}>
@@ -437,11 +454,11 @@ export function DrivingRegisterPage() {
 
         {drivingType === 0 ? (
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Chọn ngày thi*</label>
+            <label className={styles.formLabel}>Chọn ngày thi (có thể thay đổi giữa 2 buổi theo lịch của sở GTVT)*</label>
 
             {dateList.map((child, index) => {
               return (
-                <div className={styles.selectContainer}>
+                <div className={styles.selectContainer} key={child._id}>
                   <input
                     className={styles.formInput}
                     type='radio'
@@ -532,7 +549,7 @@ export function DrivingRegisterPage() {
         {isLoading ? (
           <>
             <p>
-              Hệ thống đang xử lý, vui lòng chờ trong ít nhất 15 giây {'<3'}
+              Hệ thống đang xử lý, vui lòng chờ trong ít nhất 15 giây
             </p>
             <p className={styles.formSubmitButton}>Đang đăng ký...</p>
           </>
@@ -555,9 +572,23 @@ export function DrivingRegisterPage() {
           >
             0797324886
           </a>{' '}
-          để được hỗ trợ nhanh nhất. Xin cảm ơn.
+          để được hỗ trợ nhanh nhất.
         </p>
       </form>
-    </div>
+    </Styles>
   );
 }
+
+const Styles = styled.div`
+  .portrait-rules {
+    margin: 0 auto;
+    width: 95%;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .filename {
+    margin: 1rem 0 0;
+    font-weight: bold;
+  }
+`;

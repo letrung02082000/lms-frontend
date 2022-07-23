@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { MdOutlineChevronRight } from 'react-icons/md';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './container.module.css';
 
 function AdminLayout({ children, title, navigation, root }) {
   const [visible, setVisible] = useState(true);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const navigateTo = (path) => {
-    history.push(`${root}?navigation=${path}`);
+    navigate(`${root}?navigation=${path}`);
   };
 
   return (

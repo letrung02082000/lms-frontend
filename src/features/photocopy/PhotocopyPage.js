@@ -1,13 +1,13 @@
 import SearchBar from 'components/common/SearchBar';
 import TitleBar from 'components/common/TitleBar';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './photocopyPage.module.css';
 
 import axios from 'axios';
 
 function PhotocopyPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [photocopyList, setPhotocopyList] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -28,7 +28,7 @@ function PhotocopyPage() {
   }, [page, limit]);
 
   const navigateTo = (url, data) => {
-    history.push(url, data);
+    navigate(url, { state: data });
   };
 
   const handleSearchChange = (e) => {

@@ -1,33 +1,26 @@
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 import { selectUser, logoutUser } from 'store/userSlice';
-
-import styles from './accountPage.module.css';
-
-//component
-import AccountItem from './AccountItem';
-import AccountInfo from './AccountInfo';
 import Tool from 'components/common/Tool';
+import styled from 'styled-components';
+import MainLayout from 'components/layouts/MainLayout';
 
 function AccountPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
 
   const handleLoginClick = () => {
-    history.push('/login');
+    navigate('/login');
   };
 
   const handleSignUpClick = () => {
-    history.push('/login');
+    navigate('/login');
   };
 
-  // const handleUpdateInfo = () => {
-  //   history.push('/profile');
-  // };
   const handleLogout = () => {
     const refreshToken = localStorage.getItem('user-jwt-rftk');
     axios
@@ -45,43 +38,62 @@ function AccountPage() {
   };
 
   return (
-    <>
-      <div className={styles.accountPageContainer}>
+    <Styles>
+      <MainLayout>
         {user.isLoggedIn ? (
           <>
-            <AccountInfo />
-            {/* <AccountHistory />
-          <Tool handle={handleUpdateInfo} title='Cập nhật thông tin' />
-          <Tool handle={handleUpdateInfo} title='Cài đặt' />
-          <Tool handle={handleUpdateInfo} title='Về chúng tôi' />
-          <Tool handle={handleUpdateInfo} title='Báo cáo lỗi' /> */}
             <Tool handle={handleLogout} title='Đăng xuất' />
           </>
         ) : (
           <div style={{ position: 'relative', height: '100%' }}>
             <div>
-              <div className={styles.welcomeTitle}>
+              <div className='welcome-title'>
                 <p>Chào mừng bạn đến với iSinhVien!</p>
-                <button
-                  onClick={handleLoginClick}
-                  className={styles.buttonOutlined}
-                >
+                <button onClick={handleLoginClick} className='button-outlined'>
                   Đăng nhập
                 </button>
-                <button
-                  onClick={handleSignUpClick}
-                  className={styles.buttonOutlined}
-                >
+                <button onClick={handleSignUpClick} className='button-outlined'>
                   Đăng ký ngay
                 </button>
               </div>
-              <AccountItem route='/support'>Hỗ trợ</AccountItem>
             </div>
           </div>
         )}
-      </div>
-    </>
+      </MainLayout>
+    </Styles>
   );
 }
 
 export default AccountPage;
+
+const Styles = styled.div`
+  .account-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+  }
+  .account-info img {
+    border-radius: 50%;
+  }
+  .simple-button {
+    background-color: rgb(245, 245, 250);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0.25rem 1rem;
+  }
+
+  .general {
+    padding: 0.5rem;
+    border-bottom: 3px solid #ccc;
+  }
+  .tool {
+    width: 100%;
+    cursor: pointer;
+  }
+  .tool:hover {
+    background-color: #ccc;
+  }
+`;

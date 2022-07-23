@@ -1,18 +1,18 @@
 import React from 'react';
 import styles from './loginForm.module.css';
 
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 //icons
 import { IoMdClose } from 'react-icons/io';
 import { BiUser, BiLockAlt } from 'react-icons/bi';
 
 const DrivingLogin = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const goBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const handleEmailChange = (event) => {

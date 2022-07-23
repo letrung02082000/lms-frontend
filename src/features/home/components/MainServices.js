@@ -1,24 +1,10 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { IoShirtOutline } from 'react-icons/io5';
-import { IoMdPrint } from 'react-icons/io';
-import { AiOutlineArrowRight } from 'react-icons/ai';
-import {
-  FaBusAlt,
-  FaMotorcycle,
-  FaPrint,
-  FaSwimmingPool,
-  FaHome,
-} from 'react-icons/fa';
-
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { selectUser } from '../../../store/userSlice';
 import styles from './mainservices.module.css';
 
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../../store/userSlice';
-
 function MainServices(props) {
-  const history = useHistory();
-  // const isMobile = useMediaQuery('(max-width: 767px)');
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
 
   const handleBuyTicketButton = () => {
@@ -30,7 +16,7 @@ function MainServices(props) {
   };
 
   const navigateTo = (url, state) => {
-    history.push(url, state);
+    navigate(url, state);
   };
 
   return (
@@ -40,7 +26,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/pool-ticket')}
       >
         <div>
-          {/* <FaSwimmingPool size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/pool.png'
             alt='pool'
@@ -58,7 +43,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/driving-test')}
       >
         <div>
-          {/* <FaMotorcycle size={40} className={styles.mainIcon} /> */}
           <img
             src='/main-icon/motorbike.png'
             alt='pool'
@@ -69,7 +53,6 @@ function MainServices(props) {
       </div>
       <div className={styles.itemContainer} onClick={() => navigateTo('/jobs')}>
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/job.png'
             alt='pool'
@@ -98,7 +81,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/bicycles')}
       >
         <div>
-          {/* <FaHome size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/bicycle.png'
             alt='bicycle'
@@ -116,7 +98,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/uniforms')}
       >
         <div>
-          {/* <IoShirtOutline size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/uniform.png'
             alt='pool'
@@ -131,7 +112,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/guides')}
       >
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/instruction.png'
             alt='pool'
@@ -148,7 +128,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/healths')}
       >
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/health.png'
             alt='pool'
@@ -165,7 +144,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/maintain')}
       >
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/course.png'
             alt='pool'
@@ -175,12 +153,13 @@ function MainServices(props) {
         <p>Khóa học</p>
       </div>
 
-      <div
+      <a
         className={styles.itemContainer}
-        onClick={() => navigateTo('/maintain')}
+        href='https://thiennguyen.app/donate-target/1546845406237835264'
+        target={'_blank'}
+        rel='noopener noreferrer'
       >
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/volunteer.png'
             alt='pool'
@@ -188,7 +167,7 @@ function MainServices(props) {
           />
         </div>
         <p>Thiện nguyện</p>
-      </div>
+      </a>
     </div>
   );
 }

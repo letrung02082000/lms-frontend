@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BsCalendar2Check } from 'react-icons/bs';
 import { BiQrScan } from 'react-icons/bi';
 
@@ -16,16 +16,16 @@ import { useSelector } from 'react-redux';
 import { selectUser } from '../../../store/userSlice';
 
 function HotSlider(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const isMobile = useMediaQuery('(max-width: 767px)');
 
   const handleGuestHouseItemClick = () => {
-    history.push('/guest-house');
+    navigate('/guest-house');
 
     // if (!user.isLoggedIn) {
     //   // navigateTo('/login', { message: 'Vui lòng đăng nhập để tiếp tục!' });
-    //   history.push('/maintain');
+    //   navigate('/maintain');
     // } else {
     // }
   };
@@ -34,12 +34,12 @@ function HotSlider(props) {
     if (!user.isLoggedIn) {
       navigateTo('/login', { message: 'Vui lòng đăng nhập để tiếp tục!' });
     } else {
-      history.push('/qrscan');
+      navigate('/qrscan');
     }
   };
 
   const navigateTo = (url, state) => {
-    history.push(url, state);
+    navigate(url, state);
   };
 
   return (

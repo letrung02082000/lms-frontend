@@ -2,11 +2,11 @@ import axiosClient from './axiosClient';
 
 class HealthApi {
   getHealthById = async (id) => {
-    return axiosClient.get(`/api/health/${id}`);
+    return axiosClient.get(`/health/${id}`);
   };
 
   getAllHealths = async (page, limit) => {
-    return axiosClient.get('/api/health', { params: { page, limit } });
+    return axiosClient.get('/health', { params: { page, limit } });
   };
 }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 //swiper
 import { FreeMode } from 'swiper';
@@ -8,9 +8,8 @@ import 'swiper/swiper-bundle.min.css';
 
 //styles
 import styles from './categorySlider.module.css';
-import { HiOutlineLocationMarker } from 'react-icons/hi';
-import { MdOutlinePool, MdBusiness, MdHouseSiding } from 'react-icons/md';
-import { FaBusAlt, FaMotorcycle } from 'react-icons/fa';
+import { MdOutlinePool } from 'react-icons/md';
+import { FaMotorcycle } from 'react-icons/fa';
 import { RiPrinterCloudLine } from 'react-icons/ri';
 import { IoIosBicycle } from 'react-icons/io';
 
@@ -18,11 +17,11 @@ import { IoIosBicycle } from 'react-icons/io';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 
 function CategorySlider() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 767px)');
 
   const navigateTo = (url) => {
-    history.push(url);
+    navigate(url);
   };
 
   return (

@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import useMediaQuery from 'hooks/useMediaQuery';
-
-//bootstrap
-import { Navbar, Container, Nav } from 'react-bootstrap';
-
+import React, { useState } from 'react';
+import { Container, Nav, Navbar } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logoutUser, selectUser } from '../../store/userSlice';
 import styles from './desktopNavBar.module.css';
-import Tool from './Tool';
 import Logo from './Logo';
-//redux
-import { useSelector, useDispatch } from 'react-redux';
-import { selectUser, logoutUser } from '../../store/userSlice';
+import Tool from './Tool';
 
 function DesktopNavBar(props) {
   const user = useSelector(selectUser);
@@ -23,32 +19,27 @@ function DesktopNavBar(props) {
     console.log(selectedKey);
   };
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleHomeClick = () => {
     setActiveKey('/');
-    history.push('/');
+    navigate('/');
   };
-
-  const handleAppsClick = () => {
-    setActiveKey('/apps');
-    history.push('/apps');
-  };
-
+  
   const handleSignUpClick = () => {
     setActiveKey(null);
-    history.push('/login');
+    navigate('/login');
   };
 
   const handleLoginClick = () => {
     setActiveKey(null);
-    history.push('/login');
+    navigate('/login');
   };
 
   const handleProfileClick = () => {
     setActiveKey(null);
-    history.push('/account');
+    navigate('/account');
   };
 
   const handleLogoutClick = () => {
@@ -72,30 +63,13 @@ function DesktopNavBar(props) {
               <Nav.Link
                 eventKey='/'
                 className={`${styles.navItem} ${
-                  activeKey == '/' ? styles.selectedNav : null
+                  activeKey === '/' ? styles.selectedNav : null
                 }`}
                 onClick={handleHomeClick}
               >
                 Trang chủ
               </Nav.Link>
-              {/* <Nav.Link
-              eventKey='/apps'
-              className={`${styles.navItem} ${
-                activeKey == '/apps' ? styles.selectedNav : null
-              }`}
-              onClick={handleAppsClick}
-            >
-              Ứng dụng
-            </Nav.Link> */}
             </Nav>
-            {/* <Form className={`d-none d-lg-flex ${styles.searchContainer}`}>
-            <FormControl
-              type='search'
-              placeholder='Tìm kiếm'
-              className='mx-5'
-              aria-label='Search'
-            />
-          </Form> */}
             <div className={`d-flex flex-row ${styles.dropDownMenu}`}>
               {user.isLoggedIn ? (
                 <>

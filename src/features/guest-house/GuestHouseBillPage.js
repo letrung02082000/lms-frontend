@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import styles from './guestHouseBillPage.module.css';
 import { MdArrowBack } from 'react-icons/md';
@@ -9,7 +9,7 @@ import authHeader from '../../utils/authHeader';
 
 function GuestHouseBillPage() {
   const { state } = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [roomInfo, setRoomInfo] = useState({
     name: '',
     state: 0,
@@ -36,7 +36,7 @@ function GuestHouseBillPage() {
   }, []);
 
   const goBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const bookGuestHouse = () => {
@@ -50,20 +50,20 @@ function GuestHouseBillPage() {
       .post('/api/guest-house/book', info, authHeader())
       .then((response) => {
         if (response.status === 200) {
-          history.push('/book-guest-house-status', {
+          navigate('/book-guest-house-status', {
             statusText: 'Thành công',
           });
         }
       })
       .catch((error) => {
         if (error.response.status === 401) {
-          return history.push('/login');
+          return navigate('/login');
         }
 
         const result = error.response.data;
         console.log(result);
         if (result) {
-          history.push('/book-guest-house-status', {
+          navigate('/book-guest-house-status', {
             statusText: result.message,
           });
         }
@@ -112,7 +112,6 @@ function GuestHouseBillPage() {
           Thành tiền: <span>{totalPrice} vnđ</span>
         </p>
         <button onClick={bookGuestHouse}>Đặt ngay</button>
-        {/* <p>Bạn có thể huỷ bất cứ lúc nào</p> */}
       </div>
     </div>
   );

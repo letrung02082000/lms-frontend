@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import guideApi from 'api/healthApi';
 import Loading from 'components/common/Loading';
 import TitleBar from 'components/common/TitleBar';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './styles.module.css';
-import guideApi from 'api/healthApi';
-import { useHistory } from 'react-router-dom';
 
 export function HealthPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const filterList = ['Dành cho bạn', 'Ngẫu nhiên', 'Mới nhất'];
   const [selected, setSelected] = useState(0);
   const [page, setPage] = useState(0);
@@ -16,7 +16,7 @@ export function HealthPage() {
 
   useEffect(() => {
     guideApi
-      .getAllGuides(page, limit)
+      .getAllHealths(page, limit)
       .then((res) => {
         if (res.data) {
           setGuideList(res.data);
@@ -29,12 +29,8 @@ export function HealthPage() {
       });
   }, [page]);
 
-  const handleFilterButton = (index) => {
-    setSelected(index);
-  };
-
   const handleReadMoreButton = (id) => {
-    history.push(`/health?id=${id}`);
+    navigate(`/health?id=${id}`);
   };
 
   if (loading) {
@@ -45,23 +41,6 @@ export function HealthPage() {
     <>
       <TitleBar title='Sức khỏe sinh viên' />
       <div className={styles.guideContainer}>
-        {/* <div className={styles.filterContainer}>
-          {filterList.map((child, index) => {
-            return (
-              <button
-                className={styles.filterButton}
-                style={
-                  selected === index
-                    ? { background: 'var(--primary)', color: 'white' }
-                    : null
-                }
-                onClick={() => handleFilterButton(index)}
-              >
-                {child}
-              </button>
-            );
-          })}
-        </div> */}
         {guideList.length === 0 ? (
           <p style={{ textAlign: 'center' }}>
             Rất tiếc. Hiện chưa có bài viết mới.

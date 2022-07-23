@@ -2,12 +2,12 @@ import axios from 'axios';
 import Loading from 'components/common/Loading';
 import TitleBar from 'components/common/TitleBar';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './jobPage.module.css';
 
 function JobPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -62,7 +62,7 @@ function JobPage() {
               <div className={styles.buttonContainer}>
                 <button
                   className={styles.contactButton}
-                  onClick={() => history.push(`/job?id=${child._id}`)}
+                  onClick={() => navigate(`/job?id=${child._id}`)}
                 >
                   Xem thông tin liên hệ
                 </button>

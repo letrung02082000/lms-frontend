@@ -12,7 +12,7 @@ import {
 } from '../../store/userSlice';
 
 export default function DetailPage(props) {
-  const query = new URLSearchParams(props.location.search);
+  const query = new URLSearchParams(window.location.search);
   const id = query.get('id');
   const [data, setData] = useState(null);
   const [documentFile, setDocument] = useState(null);

@@ -2,13 +2,13 @@ import React from 'react';
 import TitleBar from 'components/common/TitleBar';
 import styles from './drivingTestPage.module.css';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function DrivingTestPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const navigateTo = (url) => {
-    history.push(url);
+    navigate(url);
   };
 
   return (
@@ -17,7 +17,7 @@ function DrivingTestPage() {
       <div className={styles.header}>
         <img
           src='/drivingbanner.jpg'
-          rel='driving banner'
+          alt='driving banner'
           className={styles.drivingBanner}
         />
         <div className={styles.introContainerTop}>

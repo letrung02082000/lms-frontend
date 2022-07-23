@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 import QRCode from 'qrcode.react';
@@ -19,7 +19,7 @@ export function CouponPage(props) {
     'In ấn',
     'Đồng phục',
   ];
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const query = new URLSearchParams(props.location.search);
   const couponId = query.get('id');
@@ -64,7 +64,7 @@ export function CouponPage(props) {
       : 'Hết hạn';
 
   const handleBackClick = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const handleSaveClick = () => {
@@ -97,7 +97,7 @@ export function CouponPage(props) {
 
         {!user.isLoggedIn ? (
           <button
-            onClick={() => history.push('/login')}
+            onClick={() => navigate('/login')}
             className={styles.loginButton}
           >
             Đăng nhập để nhận QR

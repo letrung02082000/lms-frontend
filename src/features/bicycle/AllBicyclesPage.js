@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import TitleBar from '../../components/TitleBar';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectUser, updateCard } from '../../store/userSlice';
 import QrReader from 'modern-react-qr-reader';
@@ -13,7 +13,7 @@ import UploadCard from './BicyclePage/UploadCard';
 import styles from './allBicyclesPage.module.css';
 
 function AllBicyclesPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const [bicycleList, setBicycleList] = useState([]);
   const [bikeUser, setBikeUser] = useState(null);
@@ -87,7 +87,7 @@ function AllBicyclesPage() {
       return;
     }
 
-    history.push(`/bicycle?id=${child._id}`);
+    navigate(`/bicycle?id=${child._id}`);
   };
 
   const handleReturnBikeButton = () => {
@@ -99,7 +99,7 @@ function AllBicyclesPage() {
     alert(
       'Ứng dụng không có quyền truy cập camera. Vui lòng cấp quyền camera trên trình duyệt của bạn. Hoặc liên hệ: 0797324886 để được hỗ trợ nhanh nhất.'
     );
-    history.go(0);
+    navigate(0);
   };
 
   const onNewScanResult = (data) => {
@@ -113,7 +113,7 @@ function AllBicyclesPage() {
           if (res.status === 200) {
             console.log(res.data.data);
             alert('Bạn đã trả xe thành công!');
-            history.go(0);
+            navigate(0);
           }
         })
         .catch((err) => {
@@ -138,7 +138,7 @@ function AllBicyclesPage() {
         <div className={styles.loginContainer}>
           <p>Đăng nhập để sử dụng tính năng này</p>
           <button
-            onClick={() => history.push('/login')}
+            onClick={() => navigate('/login')}
             className={styles.loginButton}
           >
             Đăng nhập

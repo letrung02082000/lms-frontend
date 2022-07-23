@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Compressor from 'compressorjs';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import authHeader from 'utils/authHeader';
 import styles from './uploadCard.module.css';
 
@@ -11,7 +11,7 @@ import { updateCard } from 'store/userSlice';
 
 function UploadCard() {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const imageExtensions = ['image/jpeg', 'image/png'];
   const [frontsideName, setFrontsideName] = useState(null);
@@ -35,7 +35,7 @@ function UploadCard() {
                 setUploading(false);
                 dispatch(updateCard(res.data.data.card));
                 alert('Cập nhật thông tin thành công!');
-                history.go(0);
+                navigate(0);
               }
             })
             .catch((err) => {

@@ -1,17 +1,17 @@
 import TitleBar from 'components/common/TitleBar';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './swimmingPoolLayout.module.css';
 
 function SwimmingPoolTutorPage({ children, route }) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onNavigate = (route) => {
-    history.push(route);
+    navigate(route);
   };
 
   return (
     <div className={styles.container}>
-      <TitleBar title='Mua vé hồ bơi' />
+      <TitleBar title='Mua vé hồ bơi' path="/"/>
       <div className={styles.ticketContainer}>
         <div className={styles.headerContainer}>
           <img src='/poolbanner.jpg' alt='banner' />
@@ -19,7 +19,7 @@ function SwimmingPoolTutorPage({ children, route }) {
             <button
               className={styles.seeMoreButton}
               onClick={() => {
-                history.push('/pool-info');
+                navigate('/pool-info');
               }}
             >
               Thông tin hồ bơi
@@ -27,24 +27,13 @@ function SwimmingPoolTutorPage({ children, route }) {
             <a
               className={styles.seeMoreButton}
               target='_blank'
-              rel='noopener noreferer'
+              rel='noopenner noreferrer'
               href='https://zalo.me/g/fpjnye186'
             >
               Tham gia nhóm
             </a>
           </div>
         </div>
-        {/* 
-        <div className={styles.searchContainer}>
-          <input
-            className={styles.searchTel}
-            type='text'
-            placeholder='Tra cứu bằng số điện thoại'
-          />
-          <button className={styles.searchButton}>
-            <BiSearchAlt size='25' />
-          </button>
-        </div> */}
 
         <div className={styles.ticketFormContainer}>
           <div className={styles.navigationContainer}>

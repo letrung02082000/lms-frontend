@@ -3,38 +3,33 @@ import Loading from 'components/common/Loading';
 import TitleBar from 'components/common/TitleBar';
 import styles from './styles.module.css';
 import guideApi from 'api/guideApi';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export function GuidePage() {
-  const history = useHistory();
-  const filterList = ['Dành cho bạn', 'Ngẫu nhiên', 'Mới nhất'];
-  const [selected, setSelected] = useState(0);
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const navigate = useNavigate();
+  const PAGE = 0;
+  const LIMIT = 10;
   const [loading, setLoading] = useState(true);
   const [guideList, setGuideList] = useState([]);
 
   useEffect(() => {
-    guideApi
-      .getAllGuides(page, limit)
-      .then((res) => {
-        if (res.data) {
-          setGuideList(res.data);
-          setLoading(false);
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-        setLoading(false);
-      });
-  }, [page]);
+    const fetchData = async () => {
+      try {
+        const data = await guideApi.getAllGuides(PAGE, LIMIT);
 
-  const handleFilterButton = (index) => {
-    setSelected(index);
-  };
+        setGuideList(data?.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleReadMoreButton = (id) => {
-    history.push(`/guide?id=${id}`);
+    navigate(`/guide?id=${id}`);
   };
 
   if (loading) {
@@ -52,23 +47,6 @@ export function GuidePage() {
             Vui lòng quay lại sau!
           </p>
         ) : null}
-        {/* <div className={styles.filterContainer}>
-          {filterList.map((child, index) => {
-            return (
-              <button
-                className={styles.filterButton}
-                style={
-                  selected === index
-                    ? { background: 'var(--primary)', color: 'white' }
-                    : null
-                }
-                onClick={() => handleFilterButton(index)}
-              >
-                {child}
-              </button>
-            );
-          })}
-        </div> */}
         <div className={styles.guideListContainer}>
           {guideList.map((child) => {
             return (

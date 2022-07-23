@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './voucherCard.module.css';
 function VoucherCardVertical(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const coupon = props.coupon;
   let d = new Date(coupon.expiryTime);
   const handleClick = () => {
-    history.push(`/coupon?id=${coupon._id}`);
+    navigate(`/coupon?id=${coupon._id}`);
   };
 
   return (

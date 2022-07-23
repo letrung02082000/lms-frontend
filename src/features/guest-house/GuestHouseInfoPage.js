@@ -1,15 +1,15 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './guestHouseInfoPage.module.css';
 
 import TitleBar from 'components/common/TitleBar';
 
 function GuestHouseInfoPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleSignupButton = () => {
-    history.push('/guest-house-user');
+    navigate('/guest-house-user');
   };
 
   return (

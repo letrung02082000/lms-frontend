@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import GoogleLogin from 'react-google-login';
 
@@ -12,8 +12,8 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUser, selectUser } from 'store/userSlice';
 
-export function LoginPage(props) {
-  const history = useHistory();
+export default function LoginPage(props) {
+  const navigate = useNavigate();
   const location = useLocation();
   const user = useSelector(selectUser);
 
@@ -56,9 +56,8 @@ export function LoginPage(props) {
               data: userInfo,
             })
           );
-          history.goBack();
+          navigate(-1);
         } else {
-          // console.log(response.message);
           setErrorMsg('Đăng nhập không thành công');
         }
       })
@@ -73,7 +72,7 @@ export function LoginPage(props) {
   };
 
   const goBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const handleEmailChange = (event) => {
@@ -129,7 +128,7 @@ export function LoginPage(props) {
             data: userInfo,
           })
         );
-        history.goBack();
+        navigate(-1);
       }
     } catch (error) {
       console.log(error);
@@ -184,7 +183,7 @@ export function LoginPage(props) {
           );
 
           setTimeout(() => {
-            history.goBack();
+            navigate(-1);
           }, 1000);
         }
       }
@@ -206,95 +205,88 @@ export function LoginPage(props) {
 
   return (
     <Styles>
-      {isLoggedIn ? (
-        <h3>Đăng nhập thành công</h3>
-      ) : (
-        <>
-          <div className='header'>
-            <p>{location.state ? location.state.message : 'Xin chào!'}</p>
-            <IoMdClose
-              size={25}
-              color='white'
-              onClick={goBack}
-              style={{ cursor: 'pointer' }}
+      <div className='header'>
+        <p>{location.state ? location.state.message : 'Xin chào!'}</p>
+        <IoMdClose
+          size={25}
+          color='white'
+          onClick={goBack}
+          style={{ cursor: 'pointer' }}
+        />
+      </div>
+      <form className='form-container'>
+        <div>
+          <label className='label' for='formBasicEmail'>
+            Email của bạn
+          </label>
+          <div className='input-container'>
+            <BiUser style={{ padding: '0.3rem' }} size={30} />
+            <input
+              id='formBasicEmail'
+              type='email'
+              placeholder='Nhập địa chỉ email'
+              className='input'
+              onChange={handleEmailChange}
             />
           </div>
-          <form className='form-container'>
-            <div>
-              <label className='label' for='formBasicEmail'>
-                Email của bạn
-              </label>
-              <div className='input-container'>
-                <BiUser style={{ padding: '0.3rem' }} size={30} />
-                <input
-                  id='formBasicEmail'
-                  type='email'
-                  placeholder='Nhập địa chỉ email'
-                  className='input'
-                  onChange={handleEmailChange}
-                />
-              </div>
-            </div>
-            <div>
-              <label className='label' for='formBasicPassword'>
-                Mật khẩu
-              </label>
-              <div className='input-container'>
-                <BiLockAlt style={{ padding: '0.3rem' }} size={30} />
-                <input
-                  id='formBasicPassword'
-                  type='password'
-                  placeholder='Nhập mật khẩu'
-                  className='input'
-                  onChange={handlePasswordChange}
-                />
-              </div>
-            </div>
-            <p className='error'>{errorMsg}</p>
-            {!isLogging ? (
-              <>
-                <button
-                  className='login-btn'
-                  type='button'
-                  onClick={handleLoginClick}
-                >
-                  Đăng nhập
-                </button>
-                <button
-                  className='signup-btn'
-                  type='button'
-                  onClick={handleSignUpClick}
-                >
-                  Đăng ký tài khoản
-                </button>
-              </>
-            ) : (
-              <button className='login-btn' type='button'>
-                Đang đăng nhập...
-              </button>
-            )}
-            <div className='horizon-container'>
-              <hr />
-              <span>hoặc</span>
-              <hr />
-            </div>
-            <div className='google-login-btn d-flex flex-column justify-content-center align-items-center'>
-              <p style={{ textAlign: 'center' }}>
-                Vui lòng mở trình duyệt (Chrome, Firefox, Safari) và truy cập
-                website isinhvien.vn để sử dụng tính năng này.
-              </p>
-              <GoogleLogin
-                clientId={clientId}
-                buttonText='Đăng nhập bằng Google'
-                onSuccess={responseSuccessGoogle}
-                onFailure={responseFailureGoogle}
-                cookiePolicy={'single_host_origin'}
-              />
-              <p></p>
-            </div>
-          </form>
-        </>
-      )}
+        </div>
+        <div>
+          <label className='label' for='formBasicPassword'>
+            Mật khẩu
+          </label>
+          <div className='input-container'>
+            <BiLockAlt style={{ padding: '0.3rem' }} size={30} />
+            <input
+              id='formBasicPassword'
+              type='password'
+              placeholder='Nhập mật khẩu'
+              className='input'
+              onChange={handlePasswordChange}
+            />
+          </div>
+        </div>
+        <p className='error'>{errorMsg}</p>
+        {!isLogging ? (
+          <>
+            <button
+              className='login-btn'
+              type='button'
+              onClick={handleLoginClick}
+            >
+              Đăng nhập
+            </button>
+            <button
+              className='signup-btn'
+              type='button'
+              onClick={handleSignUpClick}
+            >
+              Đăng ký tài khoản
+            </button>
+          </>
+        ) : (
+          <button className='login-btn' type='button'>
+            Đang đăng nhập...
+          </button>
+        )}
+        <div className='horizon-container'>
+          <hr />
+          <span>hoặc</span>
+          <hr />
+        </div>
+        <div className='google-login-btn d-flex flex-column justify-content-center align-items-center'>
+          <p style={{ textAlign: 'center' }}>
+            Vui lòng mở trình duyệt (Chrome, Firefox, Safari) và truy cập
+            website isinhvien.vn để sử dụng tính năng này.
+          </p>
+          <GoogleLogin
+            clientId={clientId}
+            buttonText='Đăng nhập bằng Google'
+            onSuccess={responseSuccessGoogle}
+            onFailure={responseFailureGoogle}
+            cookiePolicy={'single_host_origin'}
+          />
+        </div>
+      </form>
     </Styles>
   );
 }

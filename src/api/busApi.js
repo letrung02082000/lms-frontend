@@ -2,7 +2,7 @@ import axiosClient from './axiosClient';
 
 class BusApi {
   createBusUser = async (data) => {
-    return axiosClient.post('/api/bus-user', data);
+    return axiosClient.post('/bus-user', data);
   };
 }
 

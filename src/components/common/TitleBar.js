@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-
 import { MdArrowBack } from 'react-icons/md';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './titleBar.module.css';
 
 function TitleBar(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
-  const [bcolor, setBcolor] = useState(props.backgroundColor || '#019f91');
+  const bcolor = props.backgroundColor || '#019f91';
 
   const goBack = () => {
-    if (!location.key) {
-      return history.push('/');
+    if(props.path) {
+      return navigate(props.path);
     }
 
-    history.goBack();
+    if (!location.key) {
+      return navigate('/');
+    }
+
+    navigate(-1);
   };
 
   return (

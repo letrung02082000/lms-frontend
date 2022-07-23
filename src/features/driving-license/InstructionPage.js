@@ -1,14 +1,14 @@
 import axios from 'axios';
 import TitleBar from 'components/common/TitleBar';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './drivingInstructionPage.module.css';
 
 export function DrivingInstructionPage(props) {
   const search = new URLSearchParams(props.location.search);
   const source = search.get('s');
-  const history = useHistory();
+  const navigate = useNavigate();
   const [dateList, setDateList] = useState([]);
 
   useEffect(() => {
@@ -51,9 +51,9 @@ export function DrivingInstructionPage(props) {
             className={styles.contactButtonTop}
             onClick={() => {
               if (source == 2) {
-                history.push('/driving-registration?s=2');
+                navigate('/driving-registration?s=2');
               } else {
-                history.push('/driving-registration');
+                navigate('/driving-registration');
               }
             }}
           >
@@ -186,10 +186,13 @@ export function DrivingInstructionPage(props) {
                 (Ms.Trang) nếu đóng sau khi đăng ký.
               </li>
               <li>
-                Đóng trực tiếp: Tại nhà khách ĐHQG. Vui lòng 0383.270.434
-                (Ms.Thư) để hẹn thời gian trước khi đến đóng lệ phí.
+                Đóng trực tiếp: Tại nhà khách ĐHQG. Vui lòng{' '}
+                <a href='tel:+84384936540' alt='tel' rel='nopenner noreferrer'>
+                  0384.936.540
+                </a>{' '}
+                (Ms.Hằng) để hẹn thời gian trước khi đến đóng lệ phí.
               </li>
-              <li>Hoàn thành lệ phí thi trước ngày dự thi 14 ngày.</li>
+              <li>Hoàn thành lệ phí thi trước ngày dự thi 16 ngày.</li>
             </ul>
             <p style={{ color: 'var(--primary)' }}>
               <strong>Cảnh báo:</strong> Thí sinh cảnh giác trước các hình thức
@@ -199,8 +202,8 @@ export function DrivingInstructionPage(props) {
             <p>3. Chờ duyệt hồ sơ:</p>
             <ul>
               <li>
-                Sau khi đăng ký, trung tâm sẽ xác nhận lại trong vòng 1 ngày,
-                mọi thủ tục cần hoàn tất trước ngày thi 14 ngày.
+                Sau khi đăng ký, trung tâm sẽ xác nhận lại trong vòng 1 ngày làm việc,
+                mọi thủ tục cần hoàn tất trước ngày thi 16 ngày.
               </li>
               <li>
                 Nếu không nhận được thông báo, vui lòng liên hệ di động/Zalo:{' '}
@@ -241,8 +244,11 @@ export function DrivingInstructionPage(props) {
           <div id='offline'>
             <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký trực tiếp</h3>
             <p>
-              Địa điểm: Tại nhà khách ĐHQG. Vui lòng gọi 0383.270.434 (Ms.Thư)
-              để hẹn thời gian trước khi đến đăng ký (giờ hành chính).
+              Địa điểm: Tại nhà khách ĐHQG. Vui lòng gọi{' '}
+              <a href='tel:+84384936540' alt='tel' rel='nopenner noreferrer'>
+                0384.936.540
+              </a>{' '}
+              (Ms.Hằng) để hẹn thời gian trước khi đến đăng ký (giờ hành chính).
             </p>
           </div>
           <div id='mocktest'>

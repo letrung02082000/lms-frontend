@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Pagination } from 'swiper';
@@ -8,14 +8,14 @@ import VoucherCard from './VoucherCard';
 
 import styles from './voucherList.module.css';
 function VoucherList(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const type = props.type;
 
   return (
     <div className={styles.voucherList}>
       <div className={styles.voucherListTitle}>
         <h5>{props.title}</h5>
-        <span onClick={() => history.push(`/coupon-list?type=${type}`)}>
+        <span onClick={() => navigate(`/coupon-list?type=${type}`)}>
           Xem tất cả ({props.couponList.length})
         </span>
       </div>

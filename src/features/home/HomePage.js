@@ -1,13 +1,6 @@
-import React, { useState } from 'react';
 import MainLayout from 'components/layouts/MainLayout';
-
-//redux
-import { useSelector, useDispatch } from 'react-redux';
-import { selectUser } from 'store/userSlice';
-import { updateShow } from 'store/navSlice';
-
-import styles from './homePage.module.css';
 import { BiSearchAlt } from 'react-icons/bi';
+import styles from './homePage.module.css';
 
 //utils
 import useMediaQuery from 'hooks/useMediaQuery';
@@ -15,42 +8,19 @@ import useMediaQuery from 'hooks/useMediaQuery';
 //components
 import HomeSlider from './components/HomeSlider';
 // import HomeLeftNavBar from '../components/HomePage/HomeLeftNavBar';
+import Logo from '../../components/common/Logo';
 import CategorySlider from './components/CategorySlider';
 import HotSlider from './components/HotSlider';
 import MainServices from './components/MainServices';
-import Logo from '../../components/common/Logo';
 
 //bootstrap
-import { Row, Col } from 'react-bootstrap';
 import Footer from '../../components/common/Footer';
 
 const HomePage = () => {
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const user = useSelector(selectUser);
-  const dispatch = useDispatch();
-  dispatch(updateShow(true));
-
   const isTablet = useMediaQuery('(max-width: 991px)');
-  // const isMobile = useMediaQuery('(max-width: 767px)');
-  // const isDesktop = useMediaQuery('(min-width: 768px)');
-
-  const closeLoginModal = () => {
-    setShowLoginModal(false);
-  };
-
-  const openLoginModal = () => {
-    setShowLoginModal(true);
-  };
 
   return (
     <MainLayout className={styles.homeContainer}>
-      {/* {isDesktop ? (
-        <p style={{ textAlign: 'center', padding: '1rem 0 0 0' }}>
-          Ứng dụng hiện chưa có giao diện desktop. Vui lòng sử dụng điện thoại
-          để có trải nghiệm tốt nhât
-        </p>
-      ) : null} */}
       {isTablet ? (
         <div className={styles.logoContainer}>
           <Logo />
@@ -85,14 +55,6 @@ const HomePage = () => {
         <HotSlider />
       </div>
       <div className={styles.categorySliderContainer}>
-        {/* <p
-          style={{
-            fontSize: '1.2rem',
-            fontWeight: 'bold',
-          }}
-        >
-          Dịch vụ nổi bật
-        </p> */}
         <MainServices />
       </div>
       <Footer />
