@@ -1,6 +1,9 @@
 import busApi from 'api/busApi';
 import TitleBar from 'components/common/TitleBar';
 import { useState } from 'react';
+import { Image } from 'react-bootstrap';
+import styled from 'styled-components';
+import Content from './components/Content';
 import styles from './styles.module.css';
 
 export function BusRegistrationPage(props) {
@@ -45,9 +48,11 @@ export function BusRegistrationPage(props) {
   };
 
   return (
-    <div>
-      <TitleBar title='Đặt xe đưa rước' navigation='/uniforms' />
-
+    <Styles>
+      <TitleBar title='Đặt xe đưa rước' />
+      <Image src="/bus/topbanner.jpg" fluid />
+      <div className='body'>
+      <Content/>
       <form className={styles.formContainer}>
         <div className={styles.infoContainer}>
           <p style={{ margin: 0, color: ' #ff0000 ' }}>* bắt buộc</p>
@@ -126,6 +131,14 @@ export function BusRegistrationPage(props) {
           )}
         </div>
       </form>
-    </div>
+      </div>
+    </Styles>
   );
 }
+
+const Styles = styled.div`
+  .body {
+    width: 95%;
+    margin: 0 auto
+  }
+`;

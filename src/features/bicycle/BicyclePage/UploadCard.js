@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import authHeader from '../../../utils/authHeader';
 import styles from './uploadCard.module.css';
@@ -11,7 +11,7 @@ import Loading from '../../../components/Loading';
 
 function UploadCard() {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const imageExtensions = ['image/jpeg', 'image/png'];
   const [frontsideName, setFrontsideName] = useState(null);
@@ -36,7 +36,7 @@ function UploadCard() {
                 setUploading(false);
                 dispatch(updateCard(res.data.data.card));
                 alert('Cập nhật thông tin thành công!');
-                history.go(0);
+                navigate(0);
               }
             })
             .catch((err) => {

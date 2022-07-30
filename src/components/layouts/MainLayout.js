@@ -24,7 +24,6 @@ const MainLayout = ({ children }) => {
             }}
           />
         </a>
-        {/* <button className={styles.closeButton}>x</button> */}
       </div>
       <Header />
       {children}

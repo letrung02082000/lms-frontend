@@ -1,10 +1,12 @@
 import AdminLayout from 'components/layouts/AdminLayout';
+import { useLocation } from 'react-router-dom';
 import AllGuides from './components/AllGuides';
 import Creation from './components/Creation';
 import Update from './components/Update';
 
 function AdminGuidePage(props) {
-  const search = new URLSearchParams(props.location.search);
+  const location = useLocation()
+  const search = new URLSearchParams(location.search);
   const navigation = search.get('navigation');
   const id = search.get('id');
 

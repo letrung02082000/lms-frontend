@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { IoMdClose } from 'react-icons/io';
 import { BiUser, BiLockAlt } from 'react-icons/bi';
 
-const DrivingLogin = (props) => {
+const LoginForm = ({setEmail, setPassword, setErrorMsg, errorMsg, isLogging, onLogin}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,10 +19,10 @@ const DrivingLogin = (props) => {
     const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 
     if (emailRegex.test(event.target.value)) {
-      props.setEmail(event.target.value);
-      props.setErrorMsg(null);
+      setEmail(event.target.value);
+      setErrorMsg(null);
     } else {
-      props.setErrorMsg('Email không hợp lệ');
+      setErrorMsg('Email không hợp lệ');
     }
   };
 
@@ -30,10 +30,10 @@ const DrivingLogin = (props) => {
     const passwordRegex = /^.*(?=.{8,30})(?=.*\d)(?=.*[a-zA-Z]).*$/;
 
     if (passwordRegex.test(event.target.value)) {
-      props.setPassword(event.target.value);
-      props.setErrorMsg(null);
+      setPassword(event.target.value);
+      setErrorMsg(null);
     } else {
-      props.setErrorMsg(
+      setErrorMsg(
         'Mật khẩu phải bao gồm chữ cái và số, độ dài: 8-30 ký tự'
       );
     }
@@ -81,12 +81,12 @@ const DrivingLogin = (props) => {
             />
           </div>
         </div>
-        <p className={styles.error}>{props.errorMsg}</p>
-        {!props.isLogging ? (
+        <p className={styles.error}>{errorMsg}</p>
+        {!isLogging ? (
           <button
             className={styles.loginBtn}
             type='button'
-            onClick={props.onLogin}
+            onClick={onLogin}
           >
             Đăng nhập
           </button>
@@ -100,4 +100,4 @@ const DrivingLogin = (props) => {
   );
 };
 
-export default DrivingLogin;
+export default LoginForm;

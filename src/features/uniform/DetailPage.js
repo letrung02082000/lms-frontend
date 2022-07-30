@@ -10,9 +10,11 @@ import {
   updateTel,
   updateZalo,
 } from '../../store/userSlice';
+import { useLocation } from 'react-router-dom';
 
 export default function DetailPage(props) {
-  const query = new URLSearchParams(window.location.search);
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
   const id = query.get('id');
   const [data, setData] = useState(null);
   const [documentFile, setDocument] = useState(null);

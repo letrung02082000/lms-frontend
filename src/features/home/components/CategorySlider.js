@@ -64,13 +64,15 @@ function CategorySlider() {
         </SwiperSlide>
 
         <SwiperSlide>
-          <div
+          <a
             className={styles.itemContainer}
-            onClick={() => navigateTo('/photocopies')}
+            href='https://inan.isinhvien.vn'
+            target={'_blank'}
+            rel='noopener noreferrer'
           >
             <RiPrinterCloudLine />
             <p>In ấn</p>
-          </div>
+          </a>
         </SwiperSlide>
 
         <SwiperSlide>

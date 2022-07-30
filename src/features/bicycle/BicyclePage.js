@@ -4,7 +4,7 @@ import TitleBar from 'components/common/TitleBar';
 import QrReader from 'modern-react-qr-reader';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { selectUser } from 'store/userSlice';
 import authHeader from 'utils/authHeader';
 
@@ -13,7 +13,8 @@ import styles from './styles.module.css';
 
 export function BicyclePage(props) {
   const navigate = useNavigate();
-  const query = new URLSearchParams(window.location.search);
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
   const id = query.get('id');
   const [data, setData] = useState(null);
   const [scanner, setScanner] = useState(null);

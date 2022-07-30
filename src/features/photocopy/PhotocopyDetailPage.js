@@ -5,9 +5,11 @@ import styles from './photocopyDetailPage.module.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, updateName, updateTel, updateZalo } from 'store/userSlice';
+import { useLocation } from 'react-router-dom';
 
 function PhotocopyDetail(props) {
-  const query = new URLSearchParams(props.location.search);
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
   const id = query.get('id');
   const [data, setData] = useState(null);
   const [documentFile, setDocument] = useState(null);

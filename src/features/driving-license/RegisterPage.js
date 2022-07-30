@@ -5,7 +5,7 @@ import SearchBar from 'components/common/SearchBar';
 import TitleBar from 'components/common/TitleBar';
 import styles from './drivingRegisterPage.module.css';
 import LazyImage from 'components/common/LazyImage';
-import PortraitBanner from 'assets/portraitrules.jpg';
+import PortraitBanner from 'assets/images/portrait.jpg';
 import styled from 'styled-components';
 import { ToastWrapper } from 'utils';
 
@@ -389,7 +389,7 @@ export function DrivingRegisterPage() {
           <label className={styles.formLabel}>
             Ảnh chụp chân dung* (không chụp ảnh thẻ, xem ảnh mẫu trong hướng dẫn{' '}
             <a
-              href='/driving-instruction'
+              href='/driving-instruction#online'
               target='_blank'
               rel='noopener noreferrer'
             >

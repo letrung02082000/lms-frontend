@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 import QRCode from 'qrcode.react';
@@ -20,8 +20,9 @@ export function CouponPage(props) {
     'Đồng phục',
   ];
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useSelector(selectUser);
-  const query = new URLSearchParams(props.location.search);
+  const query = new URLSearchParams(location.search);
   const couponId = query.get('id');
   const [coupon, setCoupon] = useState(null);
   const [save, setSave] = useState(false);

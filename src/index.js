@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
 import { store } from './store/index';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-datetime/css/react-datetime.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'assets/styles/global.css'
+import 'assets/styles/custom.scss'
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 ReactDOM.render(
   <Provider store={store}>

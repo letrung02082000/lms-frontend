@@ -8,7 +8,7 @@ function AdminLayout({ children, title, navigation, root }) {
   const navigate = useNavigate();
 
   const navigateTo = (path) => {
-    navigate(`${root}?navigation=${path}`);
+    navigate(`/${root}?navigation=${path}`);
   };
 
   return (

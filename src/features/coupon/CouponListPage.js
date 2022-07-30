@@ -9,10 +9,12 @@ import TitleBar from 'components/common/TitleBar';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'store/userSlice';
 import VoucherCard from './components/VoucherCard';
+import { useLocation } from 'react-router-dom';
 
 export function CouponListPage(props) {
   const user = useSelector(selectUser);
-  const query = new URLSearchParams(props.location.search);
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
   const type = parseInt(query.get('type'));
   const limit = 25;
   const [data, setData] = useState([]);

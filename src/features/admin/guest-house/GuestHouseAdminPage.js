@@ -1,4 +1,5 @@
 import AdminLayout from 'components/layouts/AdminLayout';
+import { useLocation } from 'react-router-dom';
 import {
   AllRooms,
   Category,
@@ -8,7 +9,8 @@ import {
 } from './components';
 
 function Container(props) {
-  const query = new URLSearchParams(props.location.search);
+  const location = useLocation()
+  const query = new URLSearchParams(location.search);
   const navigation = query.get('navigation');
 
   return (

@@ -215,9 +215,9 @@ export function GuestHouseReportPage() {
             Trong quá trình đăng ký, nếu xảy ra lỗi hệ thống, vui lòng chụp màn
             hình lỗi gửi về Zalo:{' '}
             <a
-              href="href='https://zalo.me/0797324886"
+              href="https://zalo.me/0797324886"
               target='_blank'
-              rel='noopener noreferrer'
+              rel='noopenner noreferrer'
             >
               0797324886
             </a>{' '}

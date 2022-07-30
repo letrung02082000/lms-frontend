@@ -15,6 +15,8 @@ import {
   AdminGuestHousePage,
   AdminGuidePage,
   AdminHealthPage,
+  AdminLoginPage,
+  AdminSignupPage,
   BankPage,
   BicyclePage,
   BicyclesPage,
@@ -47,6 +49,7 @@ import {
   QrScanPage,
   UniformDetailPage,
   UniformPage,
+  SupportPage
 } from 'features';
 
 class App extends React.Component {
@@ -88,9 +91,6 @@ class App extends React.Component {
             path='/guest-house-info'
             element={<GuestHouseInfoPage />}
           />
-
-          <Route exact path='/photocopies' element={<MaintainPage />} />
-          <Route exact path='/photocopy' element={<MaintainPage />} />
 
           <Route exact path='/driving-test' element={<DrivingTestPage />} />
           <Route
@@ -138,8 +138,12 @@ class App extends React.Component {
           <Route exact path='/guide-admin' element={<AdminGuidePage />} />
           <Route exact path='/health-admin' element={<AdminHealthPage />} />
 
-          <Route exact path='/support' element={<MaintainPage />} />
+          <Route exact path='/support' element={<SupportPage />} />
           <Route exact path='/maintain' element={<MaintainPage />} />
+          <Route path='admin'>
+            <Route path='login' element={<AdminLoginPage />} />
+            <Route path='signup' element={<AdminSignupPage />} />
+          </Route>
           <Route element={<NotFoundPage />} />
         </Routes>
       </Router>

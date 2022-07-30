@@ -1,12 +1,13 @@
 import axios from 'axios';
 import TitleBar from 'components/common/TitleBar';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import styles from './drivingInstructionPage.module.css';
 
 export function DrivingInstructionPage(props) {
-  const search = new URLSearchParams(props.location.search);
+  const location = useLocation();
+  const search = new URLSearchParams(location.search);
   const source = search.get('s');
   const navigate = useNavigate();
   const [dateList, setDateList] = useState([]);
@@ -186,7 +187,7 @@ export function DrivingInstructionPage(props) {
                 (Ms.Trang) nếu đóng sau khi đăng ký.
               </li>
               <li>
-                Đóng trực tiếp: Tại nhà khách ĐHQG. Vui lòng{' '}
+                Đóng trực tiếp: Tại nhà khách ĐHQG. Vui lòng liên hệ di động/Zalo{' '}
                 <a href='tel:+84384936540' alt='tel' rel='nopenner noreferrer'>
                   0384.936.540
                 </a>{' '}

@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export function CouponScannedPage(props) {
-  const query = new URLSearchParams(props.location.search);
+  const location = useLocation()
+  const query = new URLSearchParams(location.search);
   const user = query.get('user');
   const coupon = query.get('coupon');
   const [msg, setMsg] = useState('');

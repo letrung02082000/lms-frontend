@@ -63,9 +63,11 @@ function MainServices(props) {
           Việc làm <br /> sinh viên
         </p>
       </div>
-      <div
+      <a
         className={styles.itemContainer}
-        onClick={() => navigateTo('/maintain')}
+        href='https://inan.isinhvien.vn'
+        target={'_blank'}
+        rel='noopener noreferrer'
       >
         <div>
           <img
@@ -75,7 +77,7 @@ function MainServices(props) {
           />
         </div>
         <p>Gửi in ấn</p>
-      </div>
+      </a>
       <div
         className={styles.itemContainer}
         onClick={() => navigateTo('/bicycles')}
@@ -168,6 +170,20 @@ function MainServices(props) {
         </div>
         <p>Thiện nguyện</p>
       </a>
+
+      <div
+        className={styles.itemContainer}
+        onClick={() => navigateTo('/bus-registration')}
+      >
+        <div>
+          <img
+            src='/main-icon/bus-service.png'
+            alt='pool'
+            className={styles.mainIcon}
+          />
+        </div>
+        <p>Xe dịch vụ</p>
+      </div>
     </div>
   );
 }
