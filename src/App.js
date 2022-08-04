@@ -1,57 +1,56 @@
-import React, { useEffect } from 'react';
-import { Switch, BrowserRouter as Router, Route } from 'react-router-dom';
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import checkLogin from './utils/checkLogin';
+import checkLogin from 'utils/checkLogin';
 
 import {
-  UniformDetailPage,
-  UniformPage,
-  BicycleDetailPage,
-  BicyclesPage,
-  BusSurveyPage,
-  GuestHouseUserPage,
-  GuestHouseReportPage,
-  GuestHouseAdminPage,
-  GuidePage,
-  GuideDetailPage,
+  AccountPage,
+  AdminBicyclePage,
+  AdminDrivingPage,
+  AdminGuestHousePage,
   AdminGuidePage,
   AdminHealthPage,
+  AdminLoginPage,
+  AdminSignupPage,
+  BankPage,
+  BicyclePage,
+  BicyclesPage,
+  BusRegistrationPage,
+  BusSurveyPage,
+  CouponListPage,
+  CouponPage,
+  CouponScannedPage,
+  DrivingInstructionPage,
+  DrivingRegisterPage,
+  DrivingTestPage,
+  ExplorePage,
+  GuestHouseInfoPage,
+  GuestHouseReportPage,
+  GuestHouseUserPage,
+  GuideDetailPage,
+  GuidePage,
   HealthDetailPage,
   HealthPage,
-  BusRegistration,
-} from './pages';
-
-import NotFound from './pages/NotFound';
-import HomePage from './pages/HomePage';
-import AppsPage from './pages/AppsPage';
-import ExplorePage from './pages/ExplorePage';
-import ProfilePage from './pages/ProfilePage';
-import ContactPage from './pages/ContactPage';
-import AccountPage from './pages/AccountPage';
-import LoginPage from './pages/LoginPage';
-import BookGuestHousePage from './pages/BookGuestHousePage';
-import GuestHouseBillPage from './pages/GuestHouseBillPage';
-import BookGuestHouseStatusPage from './pages/BookGuestHouseStatusPage';
-import SwimmingPoolInfoPage from './pages/SwimmingPoolInfoPage';
-import SwimmingPoolTicketPage from './pages/SwimmingPoolTicketPage';
-import GuestHouseInfoPage from './pages/GuestHouseInfoPage';
-import QrScanPage from './pages/QrScanPage';
-import PhotocopyPage from './pages/PhotocopyPage';
-import PhotocopyDetailPage from './pages/PhotocopyDetailPage';
-import JobPage from './pages/JobPage';
-import DrivingTestPage from './pages/DrivingTestPage';
-import DrivingRegisterPage from './pages/DrivingRegisterPage';
-import SupportPage from './pages/SupportPage';
-import CouponPage from './pages/CouponPage';
-import MaintainPage from './pages/MaintainPage';
-import DrivingInstructionPage from './pages/DrivingInstructionPage';
-import drivingAdminPage from './admin/DrivingAdminPage';
-import SwimmingPoolTutorPage from './pages/SwimmingPoolTutorPage';
-import JobDetailPage from './pages/JobDetailPage';
-import CouponScannedPage from './pages/CouponScannedPage';
-import CouponListPage from './pages/CouponListPage';
-import BicycleAdminPage from './admin/BicycleAdminPage';
-import BankPage from './pages/BankPage';
+  HomePage,
+  JobDetailPage,
+  JobPage,
+  LoginPage,
+  MaintainPage,
+  NotFoundPage,
+  PoolInfoPage,
+  PoolTicketPage,
+  PoolTutorPage,
+  ProfilePage,
+  QrScanPage,
+  UniformDetailPage,
+  UniformPage,
+  SupportPage
+} from 'features';
 
 class App extends React.Component {
   render() {
@@ -60,107 +59,106 @@ class App extends React.Component {
     return (
       <Router>
         <ToastContainer />
-        <Switch>
-          <Route exact path='/' component={HomePage} />
-          <Route exact path='/apps' component={AppsPage} />
-          <Route exact path='/explore' component={ExplorePage} />
-          <Route exact path='/profile' component={ProfilePage} />
-          <Route exact path='/contact' component={ContactPage} />
-          <Route exact path='/account' component={AccountPage} />
-          <Route exact path='/login' component={LoginPage} />
-          <Route exact path='/guest-house' component={GuestHouseInfoPage} />
+        <Routes>
+          <Route exact path='/' element={<HomePage />} />
+          <Route exact path='/explore' element={<ExplorePage />} />
+          <Route exact path='/profile' element={<ProfilePage />} />
+          <Route exact path='/contact' element={<MaintainPage />} />
+          <Route exact path='/account' element={<AccountPage />} />
+          <Route exact path='/login' element={<LoginPage />} />
+          <Route exact path='/guest-house' element={<GuestHouseInfoPage />} />
           <Route
             exact
             path='/guest-house-user'
-            component={GuestHouseUserPage}
+            element={<GuestHouseUserPage />}
           />
           <Route
             exact
             path='/guest-house-report'
-            component={GuestHouseReportPage}
+            element={<GuestHouseReportPage />}
           />
           <Route
             exact
             path='/guest-house-admin'
-            component={GuestHouseAdminPage}
+            element={<AdminGuestHousePage />}
           />
-          <Route
-            exact
-            path='/guest-house-bill'
-            component={GuestHouseBillPage}
-          />
-          <Route
-            exact
-            path='/book-guest-house-room'
-            component={BookGuestHousePage}
-          />
-          <Route
-            exact
-            path='/book-guest-house-status'
-            component={BookGuestHouseStatusPage}
-          />
-          <Route exact path='/pool-info' component={SwimmingPoolInfoPage} />
-          <Route exact path='/pool-ticket' component={SwimmingPoolTicketPage} />
-          <Route exact path='/pool-tutor' component={SwimmingPoolTutorPage} />
-          <Route exact path='/qrscan' component={QrScanPage} />
+          <Route exact path='/pool-info' element={<PoolInfoPage />} />
+          <Route exact path='/pool-ticket' element={<PoolTicketPage />} />
+          <Route exact path='/pool-tutor' element={<PoolTutorPage />} />
+          <Route exact path='/qrscan' element={<QrScanPage />} />
           <Route
             exact
             path='/guest-house-info'
-            component={GuestHouseInfoPage}
+            element={<GuestHouseInfoPage />}
           />
 
-          <Route exact path='/photocopies' component={PhotocopyPage} />
-          <Route exact path='/photocopy' component={PhotocopyDetailPage} />
-
-          <Route exact path='/driving-test' component={DrivingTestPage} />
+          <Route exact path='/driving-test' element={<DrivingTestPage />} />
           <Route
             exact
             path='/driving-registration'
-            component={DrivingRegisterPage}
+            element={<DrivingRegisterPage />}
           />
           <Route
             exact
             path='/driving-instruction'
-            component={DrivingInstructionPage}
+            element={<DrivingInstructionPage />}
           />
 
-          <Route exact path='/jobs' component={JobPage} />
-          <Route path='/job' component={JobDetailPage} />
+          <Route exact path='/jobs' element={<JobPage />} />
+          <Route path='/job' element={<JobDetailPage />} />
 
-          <Route exact path='/coupon-list' component={CouponListPage} />
-          <Route exact path='/coupon' component={CouponPage} />
-          <Route exact path='/coupon-scanned' component={CouponScannedPage} />
+          <Route exact path='/coupon-list' element={<CouponListPage />} />
+          <Route exact path='/coupon' element={<CouponPage />} />
+          <Route exact path='/coupon-scanned' element={<CouponScannedPage />} />
 
-          <Route exact path='/bicycles' component={BicyclesPage} />
-          <Route exact path='/bicycle' component={BicycleDetailPage} />
+          <Route exact path='/bicycles' element={<BicyclesPage />} />
+          <Route exact path='/bicycle' element={<BicyclePage />} />
 
-          <Route exact path='/bank' component={BankPage} />
-          <Route exact path='/bus-survey' component={BusSurveyPage} />
+          <Route exact path='/bank' element={<BankPage />} />
+          <Route exact path='/bus-survey' element={<BusSurveyPage />} />
 
-          <Route exact path='/uniforms' component={UniformPage} />
-          <Route exact path='/uniform' component={UniformDetailPage} />
+          <Route exact path='/uniforms' element={<UniformPage />} />
+          <Route exact path='/uniform' element={<UniformDetailPage />} />
 
-          <Route exact path='/guides' component={GuidePage} />
-          <Route exact path='/guide' component={GuideDetailPage} />
+          <Route exact path='/guides' element={<GuidePage />} />
+          <Route exact path='/guide' element={<GuideDetailPage />} />
 
-          <Route exact path='/health' component={HealthDetailPage} />
-          <Route exact path='/healths' component={HealthPage} />
+          <Route exact path='/health' element={<HealthDetailPage />} />
+          <Route exact path='/healths' element={<HealthPage />} />
 
-          <Route exact path='/bus-registration' component={BusRegistration} />
+          <Route
+            exact
+            path='/bus-registration'
+            element={<BusRegistrationPage />}
+          />
 
           {/* admin */}
-          <Route exact path='/driving-admin' component={drivingAdminPage} />
-          <Route exact path='/bicycle-admin' component={BicycleAdminPage} />
-          <Route exact path='/guide-admin' component={AdminGuidePage} />
-          <Route exact path='/health-admin' component={AdminHealthPage} />
+          <Route exact path='/driving-admin' element={<AdminDrivingPage />} />
+          <Route exact path='/bicycle-admin' element={<AdminBicyclePage />} />
+          <Route exact path='/guide-admin' element={<AdminGuidePage />} />
+          <Route exact path='/health-admin' element={<AdminHealthPage />} />
 
-          <Route exact path='/support' component={SupportPage} />
-          <Route exact path='/maintain' component={MaintainPage} />
-          <Route component={NotFound} />
-        </Switch>
+          <Route exact path='/support' element={<SupportPage />} />
+          <Route exact path='/maintain' element={<MaintainPage />} />
+          <Route path='admin'>
+            <Route path='login' element={<AdminLoginPage />} />
+            <Route path='signup' element={<AdminSignupPage />} />
+          </Route>
+          <Route element={<NotFoundPage />} />
+        </Routes>
       </Router>
     );
   }
 }
 
 export default App;
+
+const RequireAuth = ({ children }) => {
+  const token = localStorage.getItem('user-jwt-tk');
+  const refreshToken = localStorage.getItem('user-jwt-rftk');
+
+  if (!token || !refreshToken) {
+    return <Navigate to='/login' />;
+  }
+  return children;
+};

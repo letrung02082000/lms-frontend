@@ -1,0 +1,9 @@
+.itemContainer p {
+  font-size: 0.9rem;
+}
+
+.itemContainer {
+  cursor: pointer;
+  text-decoration: none;
+  color: black;
+}
