@@ -15,6 +15,8 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
     csvData = csvData.map((child, index) => {
       let NgayThi = new Date(child.date);
       NgayThi = NgayThi.toLocaleDateString();
+      let Timestamp = new Date(child.createdAt);
+      Timestamp = `${Timestamp.toLocaleDateString('en-GB')} ${Timestamp.toLocaleTimeString('en-GB')}`;
 
       const PhuongThucThanhToan =
         child.paymentMethod === 0 ? 'Trực tiếp' : 'Chuyển khoản';
@@ -34,6 +36,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
 
       return {
         STT: index + 1,
+        Timestamp,
         HoTen: child.name,
         NgayThi,
         SoDienThoai: child.tel,

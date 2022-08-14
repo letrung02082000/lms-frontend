@@ -2,9 +2,9 @@ import axios from 'axios';
 import TitleBar from 'components/common/TitleBar';
 import { useEffect, useState } from 'react';
 
-import styles from './userPage.module.css';
+import styles from './reportPage.module.css';
 
-export function GuestHouseUserPage() {
+export default function GuestHouseReportPage() {
   const [data, setData] = useState([]);
   const [roomSelected, setRoomSelected] = useState(null);
   const [loading, setLoading] = useState(false);

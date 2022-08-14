@@ -178,7 +178,7 @@ function Driving(props) {
                   </>
                 ) : null}
               </select>
-              <button onClick={updateDate}>Cập nhật</button>
+              <button onClick={updateDate} className='btn btn-primary mt-2'>Cập nhật</button>
             </div>
           ) : null}
           <p className={styles.date}>{createdAt.toLocaleDateString('en-GB')}</p>
@@ -235,7 +235,7 @@ function Driving(props) {
             </p>
           ) : null}
           <button
-            className={styles.messageSent}
+            className='btn btn-outline-primary ms-3'
             style={sent ? { background: '#F7B205', color: 'white' } : null}
             onClick={handleMessageSent}
           >
@@ -248,7 +248,7 @@ function Driving(props) {
             Ghi chú:{' '}
             <>
               <input value={feedback} onChange={handleFeedbackChange} />
-              <button onClick={updateFeedback}>Lưu lại</button>
+              <button onClick={updateFeedback} className='btn btn-primary ms-2'>Lưu lại</button>
             </>
           </p>
         </div>

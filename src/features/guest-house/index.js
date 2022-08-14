@@ -1,3 +1,9 @@
-export * from './ReportPage';
-export * from './UserPage';
-export { default as GuestHouseInfoPage } from './GuestHouseInfoPage';
+import GuestHouseInfoPage from './pages/InfoPage'
+import GuestHouseReportPage from './pages/ReportPage'
+import GuestHouseUserPage from './pages/UserPage'
+
+export {
+    GuestHouseInfoPage,
+    GuestHouseReportPage,
+    GuestHouseUserPage
+}

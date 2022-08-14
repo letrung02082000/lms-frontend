@@ -97,7 +97,7 @@ function MainServices(props) {
       </div>
       <div
         className={styles.itemContainer}
-        onClick={() => navigateTo('/uniforms')}
+        onClick={() => navigateTo('/maintain')}
       >
         <div>
           <img
@@ -127,7 +127,7 @@ function MainServices(props) {
 
       <div
         className={styles.itemContainer}
-        onClick={() => navigateTo('/healths')}
+        onClick={() => navigateTo('/maintain')}
       >
         <div>
           <img

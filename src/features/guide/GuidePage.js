@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 import guideApi from 'api/guideApi';
 import { useNavigate } from 'react-router-dom';
 
-export function GuidePage() {
+export default function GuidePage() {
   const navigate = useNavigate();
   const PAGE = 0;
   const LIMIT = 10;
@@ -15,7 +15,7 @@ export function GuidePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await guideApi.getAllGuides(PAGE, LIMIT);
+        const data = await guideApi.getVisibleGuides(PAGE, LIMIT);
 
         setGuideList(data?.data);
       } catch (error) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import styles from './guestHouseInfoPage.module.css';
+import styles from './infoPage.module.css';
 
 import TitleBar from 'components/common/TitleBar';
 

@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 import guideApi from '../../api/guideApi';
 import { useLocation } from 'react-router-dom';
 
-export function GuideDetailPage(props) {
+export default function GuideDetailPage(props) {
   const location = useLocation()
   const search = new URLSearchParams(location.search);
   const guideId = search.get('id');
@@ -44,5 +44,3 @@ export function GuideDetailPage(props) {
     </>
   );
 }
-
-export default GuideDetailPage;
