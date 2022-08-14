@@ -8,8 +8,8 @@ import { store } from './store/index';
 
 import 'react-datetime/css/react-datetime.css';
 import 'react-toastify/dist/ReactToastify.css';
-import 'assets/styles/global.css'
-import 'assets/styles/custom.scss'
+import 'assets/stylesheets/global.css'
+import 'assets/stylesheets/custom.scss'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 ReactDOM.render(

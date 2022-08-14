@@ -13,7 +13,7 @@ function AllHealths() {
 
   useEffect(() => {
     healthApi
-      .getAllHealthPostss(page, limit)
+      .getAllHealths(page, limit)
       .then((res) => {
         if (res.data) {
           setHealthList(res.data);
@@ -31,10 +31,10 @@ function AllHealths() {
 
   const toggleVisibleButton = (id, isVisible) => {
     healthApi
-      .updateHealthPosts(id, { isVisible })
+      .updateHealth(id, { isVisible })
       .then((res) => {
         healthApi
-          .getAllHealthPostss(page, limit)
+          .getAllHealths(page, limit)
           .then((res) => {
             setHealthList(res.data);
             setLoading(false);

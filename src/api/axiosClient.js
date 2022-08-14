@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL || 'http://localhost:5000/api',
+  baseURL:
+    process.env.NODE_ENV === 'production'
+      ? 'https://isinhvien.vn/api'
+      : 'http://localhost:5000/api',
   // timeout: 5000,
   headers: {},
 });

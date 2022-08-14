@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './driving.module.css';
 
 import axios from 'axios';
@@ -31,7 +31,6 @@ function Driving(props) {
 
   const showImage = props.showImage;
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(null);
   const [copied, setCopied] = useState(false);
   const [sent, setSent] = useState(messageSent);
   const [feedback, setFeedback] = useState(props.info.feedback || '');
@@ -51,7 +50,7 @@ function Driving(props) {
   } else if (source === 2) {
     sourceText = 'UEL';
   } else if (source === 3) {
-    sourceText = 'Câu lạc bộ';
+    sourceText = 'Anh Long';
   } else {
     sourceText = 'Không có';
   }
@@ -178,7 +177,7 @@ function Driving(props) {
                   </>
                 ) : null}
               </select>
-              <button onClick={updateDate} className='btn btn-primary mt-2'>Cập nhật</button>
+              <button className='btn btn-outline-primary mt-2' onClick={updateDate}>Cập nhật</button>
             </div>
           ) : null}
           <p className={styles.date}>{createdAt.toLocaleDateString('en-GB')}</p>
@@ -248,7 +247,7 @@ function Driving(props) {
             Ghi chú:{' '}
             <>
               <input value={feedback} onChange={handleFeedbackChange} />
-              <button onClick={updateFeedback} className='btn btn-primary ms-2'>Lưu lại</button>
+              <button className='btn btn-outline-primary ms-2' onClick={updateFeedback}>Lưu lại</button>
             </>
           </p>
         </div>
@@ -286,7 +285,7 @@ function Driving(props) {
               rel='noopener noreferrer'
               href={`https://drive.google.com/file/d/${frontsideId}/view`}
             >
-              <img src='/driveicon.png' className={styles.driveIcon} />
+              <img src='/driveicon.png' className={styles.driveIcon} alt="drive-cion"/>
             </a>
           </div>
           <div className={styles.buttonContainer}>
@@ -302,7 +301,7 @@ function Driving(props) {
               rel='noopener noreferrer'
               href={`https://drive.google.com/file/d/${backsideId}/view`}
             >
-              <img src='/driveicon.png' className={styles.driveIcon} />
+              <img src='/driveicon.png' className={styles.driveIcon} alt="drive-icon"/>
             </a>
           </div>
 
@@ -320,7 +319,7 @@ function Driving(props) {
                 rel='noopener noreferrer'
                 href={`https://drive.google.com/file/d/${receiptId}/view`}
               >
-                <img src='/driveicon.png' className={styles.driveIcon} />
+                <img src='/driveicon.png' className={styles.driveIcon} alt="drive-icon"/>
               </a>
             </div>
           ) : (
@@ -350,7 +349,7 @@ function Driving(props) {
           onClick={() => updateProcessState(0)}
           className={styles.button}
           style={
-            processState == 0
+            processState === 0
               ? { backgroundColor: 'var(--primary)', color: 'white' }
               : null
           }
@@ -361,7 +360,7 @@ function Driving(props) {
           onClick={() => updateProcessState(1)}
           className={styles.button}
           style={
-            processState == 1
+            processState === 1
               ? { backgroundColor: 'var(--primary)', color: 'white' }
               : null
           }
@@ -372,7 +371,7 @@ function Driving(props) {
           onClick={() => updateProcessState(2)}
           className={styles.button}
           style={
-            processState == 2
+            processState === 2
               ? { backgroundColor: 'var(--primary)', color: 'white' }
               : null
           }
@@ -383,7 +382,7 @@ function Driving(props) {
           onClick={() => updateProcessState(3)}
           className={styles.button}
           style={
-            processState == 3
+            processState === 3
               ? {
                   backgroundColor: '#28a745',
                   color: 'white',

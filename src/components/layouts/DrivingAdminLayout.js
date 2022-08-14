@@ -14,6 +14,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   const exportToCSV = (csvData, fileName) => {
     csvData = csvData.map((child, index) => {
       let NgayThi = new Date(child.date);
+      let TimeStamp = new Date(child.createdAt);
       NgayThi = NgayThi.toLocaleDateString();
       let Timestamp = new Date(child.createdAt);
       Timestamp = `${Timestamp.toLocaleDateString('en-GB')} ${Timestamp.toLocaleTimeString('en-GB')}`;

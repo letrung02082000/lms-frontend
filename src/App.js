@@ -27,7 +27,7 @@ import {
   CouponScannedPage,
   DrivingInstructionPage,
   DrivingRegisterPage,
-  DrivingTestPage,
+  DrivingInfoPage,
   ExplorePage,
   GuestHouseInfoPage,
   GuestHouseReportPage,
@@ -49,7 +49,8 @@ import {
   QrScanPage,
   UniformDetailPage,
   UniformPage,
-  SupportPage
+  SupportPage,
+  B2InfoPage
 } from 'features';
 
 class App extends React.Component {
@@ -92,7 +93,7 @@ class App extends React.Component {
             element={<GuestHouseInfoPage />}
           />
 
-          <Route exact path='/driving-test' element={<DrivingTestPage />} />
+          <Route exact path='/driving-test' element={<DrivingInfoPage />} />
           <Route
             exact
             path='/driving-registration'
@@ -103,6 +104,12 @@ class App extends React.Component {
             path='/driving-instruction'
             element={<DrivingInstructionPage />}
           />
+          <Route path='/driving-license' element={<B2InfoPage />}>
+            <Route
+              path='b2'
+              element={<B2InfoPage />}
+            />
+          </Route>
 
           <Route exact path='/jobs' element={<JobPage />} />
           <Route path='/job' element={<JobDetailPage />} />
@@ -144,7 +151,7 @@ class App extends React.Component {
             <Route path='login' element={<AdminLoginPage />} />
             <Route path='signup' element={<AdminSignupPage />} />
           </Route>
-          <Route element={<NotFoundPage />} />
+          <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </Router>
     );

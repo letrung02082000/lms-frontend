@@ -1,4 +1,4 @@
-import guideApi from 'api/guideApi';
+import healthApi from 'api/healthApi';
 import { convertToRaw, EditorState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { useState } from 'react';
@@ -33,8 +33,8 @@ function Creation() {
       return alert('Độ ưu tiên phải là số lớn hơn 0!');
     }
 
-    guideApi
-      .createHealthPost({ priority, title, content })
+    healthApi
+      .createHealth({ priority, title, content })
       .then((res) => {
         if (res.data) {
           return ToastWrapper('Tạo bài viết thành công!');

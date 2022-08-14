@@ -1,4 +1,4 @@
-import guideApi from 'api/healthApi';
+import healthApi from 'api/healthApi';
 import Loading from 'components/common/Loading';
 import TitleBar from 'components/common/TitleBar';
 import { useEffect, useState } from 'react';
@@ -15,8 +15,8 @@ export function HealthPage() {
   const [guideList, setGuideList] = useState([]);
 
   useEffect(() => {
-    guideApi
-      .getAllHealths(page, limit)
+    healthApi
+      .getVisibleHealths(page, limit)
       .then((res) => {
         if (res.data) {
           setGuideList(res.data);
