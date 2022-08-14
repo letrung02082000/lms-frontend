@@ -38,9 +38,6 @@ function HomeSlider() {
         <SwiperSlide>
           <img src='/home-banner/02.jpg' alt='banner' />
         </SwiperSlide>
-        <SwiperSlide>
-          <img src='/home-banner/03.jpg' alt='banner' />
-        </SwiperSlide>
       </Swiper>
     </>
   );
