@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 import styles from './detailPage.module.css';
 
 import { useDispatch, useSelector } from 'react-redux';

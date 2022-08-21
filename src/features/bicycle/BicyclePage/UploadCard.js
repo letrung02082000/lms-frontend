@@ -7,7 +7,7 @@ import Compressor from 'compressorjs';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { selectUser, updateCard } from '../../../store/userSlice';
-import Loading from '../../../components/Loading';
+import Loading from '../../../shared/Loading';
 
 function UploadCard() {
   const dispatch = useDispatch();

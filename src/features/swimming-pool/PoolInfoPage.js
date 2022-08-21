@@ -5,7 +5,7 @@ import { updateShow } from 'store/navSlice';
 import styles from './swimmingPoolInfoPage.module.css';
 
 //swiper
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 import { Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import 'swiper/swiper-bundle.min.css';

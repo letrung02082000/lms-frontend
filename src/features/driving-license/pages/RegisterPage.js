@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import SearchBar from 'components/common/SearchBar';
-import TitleBar from 'components/common/TitleBar';
+import SearchBar from 'shared/components/SearchBar';
+import TitleBar from 'shared/components/TitleBar';
 import styles from './registerPage.module.css';
-import LazyImage from 'components/common/LazyImage';
+import LazyImage from 'shared/components/LazyImage';
 import PortraitBanner from 'assets/images/portrait.jpg';
 import styled from 'styled-components';
 import { ToastWrapper } from 'utils';

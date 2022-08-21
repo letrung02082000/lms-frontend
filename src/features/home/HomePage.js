@@ -1,20 +1,13 @@
-import MainLayout from 'components/layouts/MainLayout';
+import MainLayout from 'shared/layouts/MainLayout';
 import { BiSearchAlt } from 'react-icons/bi';
 import styles from './homePage.module.css';
-
-//utils
 import useMediaQuery from 'hooks/useMediaQuery';
-
-//components
 import HomeSlider from './components/HomeSlider';
-// import HomeLeftNavBar from '../components/HomePage/HomeLeftNavBar';
-import Logo from '../../components/common/Logo';
+import Logo from '../../shared/components/Logo';
 import CategorySlider from './components/CategorySlider';
 import HotSlider from './components/HotSlider';
 import MainServices from './components/MainServices';
-
-//bootstrap
-import Footer from '../../components/common/Footer';
+import Footer from '../../shared/components/Footer';
 
 const HomePage = () => {
   const isTablet = useMediaQuery('(max-width: 991px)');

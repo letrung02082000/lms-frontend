@@ -1,5 +1,5 @@
 import React from 'react';
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 import styles from './infoPage.module.css';
 
 import { useNavigate } from 'react-router-dom';

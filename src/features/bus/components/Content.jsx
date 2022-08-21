@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React from 'react';
-import ZaloLink from 'components/common/link/ZaloLink';
+import ZaloLink from 'shared/components/link/ZaloLink';
 
 function Content() {
   return (

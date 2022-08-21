@@ -1,5 +1,5 @@
 import healthApi from 'api/healthApi';
-import Loading from 'components/common/Loading';
+import Loading from 'shared/components/Loading';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './allHealths.module.css';

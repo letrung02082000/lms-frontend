@@ -1,6 +1,6 @@
 import React from 'react';
 import TicketForm from './components/TicketForm';
-import SwimmingPoolLayout from 'components/layouts/SwimmingPoolLayout';
+import SwimmingPoolLayout from 'shared/layouts/SwimmingPoolLayout';
 
 function SwimmingPoolTicketPage() {
   return (

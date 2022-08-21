@@ -1,4 +1,4 @@
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 
 export function NotFoundPage() {
   return (

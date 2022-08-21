@@ -6,7 +6,7 @@ import QRCode from 'qrcode.react';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'store/userSlice';
 
-import Loading from 'components/common/Loading';
+import Loading from 'shared/components/Loading';
 import { MdArrowBack } from 'react-icons/md';
 import authHeader from 'utils/authHeader';
 import styles from './couponPage.module.css';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Loading from 'components/common/Loading';
-import TitleBar from 'components/common/TitleBar';
+import Loading from 'shared/components/Loading';
+import TitleBar from 'shared/components/TitleBar';
 import styles from './styles.module.css';
 import guideApi from 'api/guideApi';
 import { useNavigate } from 'react-router-dom';

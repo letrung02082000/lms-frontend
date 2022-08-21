@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Loading from 'components/common/Loading';
+import Loading from 'shared/components/Loading';
 import { useEffect, useState } from 'react';
 import { authHeader } from 'utils';
 import './bikeUserInfo.css';

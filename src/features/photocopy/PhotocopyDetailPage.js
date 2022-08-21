@@ -1,5 +1,5 @@
 import axios from 'axios';
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 import { useEffect, useState } from 'react';
 import styles from './photocopyDetailPage.module.css';
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import MainLayout from 'components/layouts/MainLayout';
+import MainLayout from 'shared/layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 
 import styles from './explorePage.module.css';

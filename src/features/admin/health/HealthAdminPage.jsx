@@ -1,4 +1,4 @@
-import AdminLayout from 'components/layouts/AdminLayout';
+import AdminLayout from 'shared/layouts/AdminLayout';
 import { useLocation } from 'react-router-dom';
 import AllHealths from './components/AllHealths';
 import Creation from './components/Creation';

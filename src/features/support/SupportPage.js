@@ -1,6 +1,6 @@
 import React from 'react';
-import TitleBar from 'components/common/TitleBar';
-import ZaloLink from 'components/common/link/ZaloLink';
+import TitleBar from 'shared/components/TitleBar';
+import ZaloLink from 'shared/components/link/ZaloLink';
 import styled from 'styled-components';
 
 function SupportPage() {

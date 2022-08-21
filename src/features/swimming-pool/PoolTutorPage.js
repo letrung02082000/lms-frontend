@@ -1,4 +1,4 @@
-import SwimmingPoolLayout from 'components/layouts/SwimmingPoolLayout';
+import SwimmingPoolLayout from 'shared/layouts/SwimmingPoolLayout';
 import TutorForm from './components/TutorForm';
 
 function SwimmingPoolTutorPage() {

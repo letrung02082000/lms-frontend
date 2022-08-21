@@ -1,6 +1,6 @@
 import healthApi from 'api/healthApi';
-import Loading from 'components/common/Loading';
-import TitleBar from 'components/common/TitleBar';
+import Loading from 'shared/components/Loading';
+import TitleBar from 'shared/components/TitleBar';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './styles.module.css';

@@ -1,6 +1,6 @@
 import React from 'react';
-// import Footer from 'components/common/Footer';
-import Header from 'components/common/Header';
+// import Footer from 'shared/components/Footer';
+import Header from 'shared/components/Header';
 
 import styles from './mainLayout.module.css';
 

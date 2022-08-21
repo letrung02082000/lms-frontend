@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import authHeader from 'utils/authHeader';
 import styles from './couponListPage.module.css';
 
-import Loading from 'components/common/Loading';
-import TitleBar from 'components/common/TitleBar';
+import Loading from 'shared/components/Loading';
+import TitleBar from 'shared/components/TitleBar';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'store/userSlice';
 import VoucherCard from './components/VoucherCard';

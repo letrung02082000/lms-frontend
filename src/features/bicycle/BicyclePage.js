@@ -1,6 +1,6 @@
 import axios from 'axios';
-import Loading from 'components/common/Loading';
-import TitleBar from 'components/common/TitleBar';
+import Loading from 'shared/components/Loading';
+import TitleBar from 'shared/components/TitleBar';
 import QrReader from 'modern-react-qr-reader';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';

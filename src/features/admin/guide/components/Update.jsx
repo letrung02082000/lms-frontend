@@ -1,5 +1,5 @@
 import guideApi from 'api/guideApi';
-import Loading from 'components/common/Loading';
+import Loading from 'shared/components/Loading';
 import {
   ContentState,
   convertFromHTML,

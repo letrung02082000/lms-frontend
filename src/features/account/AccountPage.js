@@ -4,9 +4,9 @@ import axios from 'axios';
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 import { selectUser, logoutUser } from 'store/userSlice';
-import Tool from 'components/common/Tool';
+import Tool from 'shared/components/Tool';
 import styled from 'styled-components';
-import MainLayout from 'components/layouts/MainLayout';
+import MainLayout from 'shared/layouts/MainLayout';
 import Item from './components/Item';
 import ProfileImage from './components/ProfileImage';
 import { useState } from 'react';

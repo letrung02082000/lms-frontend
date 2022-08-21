@@ -1,5 +1,5 @@
 import busApi from 'api/busApi';
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 import { useState } from 'react';
 import { Image } from 'react-bootstrap';
 import styled from 'styled-components';
