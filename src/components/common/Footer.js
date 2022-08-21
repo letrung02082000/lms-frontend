@@ -11,7 +11,7 @@ function Footer() {
           alt='ipsc'
           className={styles.sponsorIcon}
         />
-        <p>Trung tâm dịch vụ và xúc tiến đầu tư ĐHQG-HCM</p>
+        {/* <p>Trung tâm dịch vụ và xúc tiến đầu tư ĐHQG-HCM</p> */}
       </div>
 
       <div className={styles.sponsorsContainer}>
@@ -22,11 +22,11 @@ function Footer() {
               alt='apsc'
               className={styles.sponsorIcon}
             />
-            <p>
+            {/* <p>
               Trung tâm in ấn
               <br />
               Thời Đại
-            </p>
+            </p> */}
           </div>
           <div className={styles.sponsorContainer}>
             <img
@@ -34,11 +34,11 @@ function Footer() {
               alt='apsc'
               className={styles.sponsorIcon}
             />
-            <p>
+            {/* <p>
               Công ty TNHH
               <br />
               Saigon Public Transport
-            </p>
+            </p> */}
           </div>
           <div className={styles.sponsorContainer}>
             <img
@@ -46,7 +46,7 @@ function Footer() {
               alt='igen'
               className={styles.sponsorIcon}
             />
-            <p>iGen Group</p>
+            {/* <p>iGen Group</p> */}
           </div>
           <div className={styles.sponsorContainer}>
             <img
@@ -54,7 +54,7 @@ function Footer() {
               alt='apsc'
               className={styles.sponsorIcon}
             />
-            <p>UEL Space</p>
+            {/* <p>UEL Space</p> */}
           </div>
 
           <div className={styles.sponsorContainer}>
@@ -63,7 +63,7 @@ function Footer() {
               alt='apsc'
               className={styles.sponsorIcon}
             />
-            <p>Cẩm nang làng đại học</p>
+            {/* <p>Cẩm nang làng đại học</p> */}
           </div>
           <div className={styles.sponsorContainer}>
             <img
@@ -71,7 +71,7 @@ function Footer() {
               alt='apsc'
               className={styles.sponsorIcon}
             />
-            <p>Thiện nguyện sinh viên</p>
+            {/* <p>Thiện nguyện sinh viên</p> */}
           </div>
           <div className={styles.sponsorContainer}>
             <img
@@ -79,36 +79,24 @@ function Footer() {
               alt='apsc'
               className={styles.sponsorIcon}
             />
-            <p>Hội quán sinh viên</p>
+            {/* <p>Hội quán sinh viên</p> */}
           </div>
-          {/* <div className={styles.sponsorContainer}>
+          <div className={styles.sponsorContainer}>
             <img
-              src='/sponsor/taman.jpg'
-              alt='apsc'
+              src='/sponsor/dhanninh.jpeg'
+              alt='dhanninh'
               className={styles.sponsorIcon}
             />
-            <p>
-              Thực phẩm chay
-              <br />
-              Tâm An
-            </p>
-          </div> */}
+            {/* <p>Trung tâm đào tạo và sát hạch lái xe Đại Học An Ninh Nhân Dân</p> */}
+          </div>
           <div className={styles.sponsorContainer}>
             <img
               src='/sponsor/hafu.jpg'
               alt='apsc'
               className={styles.sponsorIcon}
             />
-            <p>Đồng phục HaFu</p>
+            {/* <p>Đồng phục HaFu</p> */}
           </div>
-          {/* <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/woori.png'
-              alt='apsc'
-              className={styles.sponsorIcon}
-            />
-            <p>Woori Coffee</p>
-          </div> */}
         </div>
       </div>
     </div>

@@ -184,6 +184,22 @@ function MainServices(props) {
         </div>
         <p>Xe dịch vụ</p>
       </div>
+
+      <div
+        className={styles.itemContainer}
+        onClick={() => navigateTo('/maintain')}
+      >
+        <div>
+          <img
+            src='/main-icon/application.png'
+            alt='other'
+            className={styles.mainIcon}
+          />
+        </div>
+        <p>
+          Dịch vụ khác
+        </p>
+      </div>
     </div>
   );
 }
