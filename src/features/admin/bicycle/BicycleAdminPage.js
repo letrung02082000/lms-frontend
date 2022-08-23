@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode.react';
-import LoginForm from '../_commons/LoginForm';
+import LoginForm from '../common/LoginForm';
 import { updateUser, selectUser } from 'store/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from 'shared/components/Loading';

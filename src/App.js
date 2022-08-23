@@ -7,16 +7,14 @@ import {
 } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import checkLogin from 'utils/checkLogin';
+import AdminRoutes from "features/admin/AdminRoutes";
 
 import {
   AccountPage,
   AdminBicyclePage,
   AdminDrivingPage,
   AdminGuestHousePage,
-  AdminGuidePage,
   AdminHealthPage,
-  AdminLoginPage,
-  AdminSignupPage,
   BankPage,
   BicyclePage,
   BicyclesPage,
@@ -81,7 +79,11 @@ class App extends React.Component {
           <Route
             exact
             path='/guest-house-admin'
-            element={<AdminGuestHousePage />}
+            element={
+              <RequireAdminAuth>
+                <AdminGuestHousePage />
+              </RequireAdminAuth>
+            }
           />
           <Route exact path='/pool-info' element={<PoolInfoPage />} />
           <Route exact path='/pool-ticket' element={<PoolTicketPage />} />
@@ -105,10 +107,7 @@ class App extends React.Component {
             element={<DrivingInstructionPage />}
           />
           <Route path='/driving-license' element={<B2InfoPage />}>
-            <Route
-              path='b2'
-              element={<B2InfoPage />}
-            />
+            <Route path='b2' element={<B2InfoPage />} />
           </Route>
 
           <Route exact path='/jobs' element={<JobPage />} />
@@ -139,18 +138,28 @@ class App extends React.Component {
             element={<BusRegistrationPage />}
           />
 
-          {/* admin */}
           <Route exact path='/driving-admin' element={<AdminDrivingPage />} />
-          <Route exact path='/bicycle-admin' element={<AdminBicyclePage />} />
-          <Route exact path='/guide-admin' element={<AdminGuidePage />} />
-          <Route exact path='/health-admin' element={<AdminHealthPage />} />
+          <Route
+            exact
+            path='/bicycle-admin'
+            element={
+              <RequireAdminAuth>
+                <AdminBicyclePage />
+              </RequireAdminAuth>
+            }
+          />
+          <Route
+            exact
+            path='admin/*'
+            element={
+              <RequireAdminAuth>
+                <AdminRoutes />
+              </RequireAdminAuth>
+            }
+          />
 
           <Route exact path='/support' element={<SupportPage />} />
           <Route exact path='/maintain' element={<MaintainPage />} />
-          <Route path='admin'>
-            <Route path='login' element={<AdminLoginPage />} />
-            <Route path='signup' element={<AdminSignupPage />} />
-          </Route>
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </Router>
@@ -165,6 +174,17 @@ const RequireAuth = ({ children }) => {
   const refreshToken = localStorage.getItem('user-jwt-rftk');
 
   if (!token || !refreshToken) {
+    return <Navigate to='/login' />;
+  }
+  return children;
+};
+
+const RequireAdminAuth = ({ children }) => {
+  const token = localStorage.getItem('user-jwt-tk');
+  const refreshToken = localStorage.getItem('user-jwt-rftk');
+  const role = localStorage.getItem('user-role');
+
+  if (!token || !refreshToken || Number(role) === 0 || !role) {
     return <Navigate to='/login' />;
   }
   return children;

@@ -24,7 +24,7 @@
     text-align: center;
     background-color: white;
     margin: 0.5rem 0;
-    padding: 0.5rem;
+    padding: 1.5rem;
     border-radius: 5px;
 }
 
@@ -58,19 +58,18 @@
     text-align: center;
     justify-content: center;
     flex-wrap: wrap;
-    width: 47%;
+    width: 30%;
     /* max-width: 10rem; */
     background-color: white;
     border-radius: 15px;
     margin: 0.5rem 0;
-    padding: 0.2rem;
 }
 
 .sponsorContainer img {
     width: 30%;
     max-width: 10rem;
     border-radius: 5px;
-    margin-top: 1rem;
+    margin: 1rem 0;
 
 }
 

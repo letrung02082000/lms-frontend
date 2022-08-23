@@ -24,7 +24,7 @@ function AllGuides() {
   }, [page]);
 
   const handleUpdateButton = (id) => {
-    navigate(`/guide-admin?navigation=update&id=${id}`);
+    navigate(id);
   };
 
   const toggleVisibleButton = (id, isVisible) => {

@@ -25,7 +25,7 @@ export default function LoginPage(props) {
   const [password, setPassword] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLogging, setIsLogging] = useState(user.isLoggedIn);
+  const [isLogging, setIsLogging] = useState(false);
 
   const responseSuccessGoogle = (response) => {
     console.log(response);
@@ -49,6 +49,7 @@ export default function LoginPage(props) {
           localStorage.setItem('user-info', JSON.stringify(userInfo));
           localStorage.setItem('user-jwt-tk', result.data.accessToken);
           localStorage.setItem('user-jwt-rftk', result.data.refreshToken);
+          localStorage.setItem('user-role', result.data.role);
 
           dispatch(
             updateUser({
@@ -121,6 +122,7 @@ export default function LoginPage(props) {
         delete userInfo.accessToken;
         delete userInfo.refreshToken;
         localStorage.setItem('user-info', JSON.stringify(userInfo));
+        localStorage.setItem('user-role', Number(result.data.role) || 0);
 
         dispatch(
           updateUser({

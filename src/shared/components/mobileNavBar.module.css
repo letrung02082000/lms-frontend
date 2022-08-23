@@ -1,5 +1,7 @@
 .navIcon {
   width: 100%;
+  color: var(--primary)
+
 }
 
 .navText {

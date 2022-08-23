@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 import styles from './userPage.module.css';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../../store/userSlice';

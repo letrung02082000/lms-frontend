@@ -11,10 +11,11 @@ import { useEffect, useState } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { ToastWrapper } from 'utils';
+import { useParams } from "react-router-dom";
 import styles from './update.module.css';
 
 function Update(props) {
-  const { id } = props;
+  const id = useParams().guideId;
   const [guide, setGuide] = useState(null);
   const [updating, setUpdating] = useState(false);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
