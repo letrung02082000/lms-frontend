@@ -5,6 +5,7 @@ import { ToastWrapper } from 'utils';
 import { BsCloudUpload } from 'react-icons/bs'
 import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
+import axiosClient from 'api/axiosClient';
 
 function FileUploader(props) {
   const FILE_MAX_SIZE = 50 * 1024 * 1024;
@@ -14,9 +15,9 @@ function FileUploader(props) {
   const onDropAccepted = useCallback((files) => {
     props?.setUploading(true);
     let formData = new FormData();
-    formData.append('document', files[0]);
-    axios
-      .post('http://localhost:5001/api/orders/upload', formData, {
+    formData.append(props?.name, files[0]);
+    axiosClient
+      .post(props?.url, formData, {
         onUploadProgress: (progressEvent) => {
           const percent = parseInt(
             (progressEvent.loaded / progressEvent.total) * 100
@@ -31,14 +32,14 @@ function FileUploader(props) {
         },
       })
       .then((res) => {
-        props?.setFileIds((prev) => [res.data.data.documentId]);
+        props?.setFileIds((prev) => [res?.data?.documentId]);
         setFileNames([files?.[0]?.name]);
         setUploadPercent(100);
         props?.setUploading(false);
       })
       .catch((err) => {
         props?.setUploading(false);
-        ToastWrapper(err.response.data.message, 'error');
+        ToastWrapper(err?.response?.data?.message, 'error');
       });
   }, []);
 

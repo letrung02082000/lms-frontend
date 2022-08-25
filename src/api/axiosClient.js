@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+console.log(process.env.NODE_ENV)
 const axiosClient = axios.create({
   baseURL:
     process.env.NODE_ENV === 'production'

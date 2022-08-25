@@ -51,6 +51,10 @@ function CreationForm() {
   };
 
   const onSubmit = (data) => {
+    if(fileUploading || receiptUploading) {
+      return ToastWrapper('Vui lòng chờ tải tệp lên hoàn tất!')
+    }
+
     if (data?.category) {
       data.category = data.category.value;
     }
@@ -71,7 +75,6 @@ function CreationForm() {
       ...(receiptId.length > 0 ? { receipt: driveUrl + receiptId[0] } : {}),
       isDelivered: isDelivered === '1',
     };
-    console.log(order);
 
     if (!order?.document) {
       return ToastWrapper(
@@ -130,6 +133,8 @@ function CreationForm() {
           fileIds={fileIds}
           uploading={fileUploading}
           setUploading={setFileUploading}
+          url={'/photocopy/upload/file'}
+          name='document'
         />
         {fileIds.length === 0 && (
           <InputField
@@ -185,6 +190,8 @@ function CreationForm() {
           label={'Tải lên hóa đơn đặt cọc (nếu có)'}
           uploading={receiptUploading}
           setUploading={setReceiptUploading}
+          url={'/photocopy/upload/receipt'}
+          name='receipt'
         />
         <InputField
           label={'Ghi chú/Góp ý'}
