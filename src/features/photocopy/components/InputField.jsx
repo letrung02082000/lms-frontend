@@ -1,7 +1,7 @@
-import React from 'react';
-import { Form } from 'react-bootstrap';
-import { useController } from 'react-hook-form';
-import styled from 'styled-components';
+import React from 'react'
+import { Form } from 'react-bootstrap'
+import { useController } from 'react-hook-form'
+import styled from 'styled-components'
 
 function InputField({
   label,
@@ -14,13 +14,13 @@ function InputField({
 }) {
   const {
     field: { ref, ...controlProps },
-    fieldState: { invalid, isTouched, isDirty },
+    fieldState: { invalid, isTouched, isDirty, error },
   } = useController({
     name,
     control,
-    rules,
+    rules: rules || { required: 'Vui lòng nhập trường này' },
     defaultValue,
-  });
+  })
 
   return (
     <Styles>
@@ -35,14 +35,15 @@ function InputField({
           {...controlProps}
           onChange={(e) => controlProps?.onChange(e)}
         />
+        {error && <Form.Text style={{color: 'red'}}>{error?.message}</Form.Text>}
       </Form.Group>
     </Styles>
-  );
+  )
 }
 
-export default InputField;
+export default InputField
 
 const Styles = styled.div`
   label {
   }
-`;
+`

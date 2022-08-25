@@ -7,19 +7,35 @@ import styled from 'styled-components';
 function SelectField({ name, control, rules, defaultValue, ...props }) {
   const {
     field: { ref, ...controlProps },
-    fieldState: { invalid, isTouched, isDirty },
+    fieldState: { invalid, isTouched, isDirty, error },
   } = useController({
     name,
     control,
-    rules,
+    rules: rules  || { required: 'Vui lòng nhập trường này' },
     defaultValue,
   });
+
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      borderColor: state.isFocused ?
+        '#ddd' : !invalid ?
+        '#ddd' : 'red',
+      // overwrittes hover style
+      '&:hover': {
+        borderColor: state.isFocused ?
+          '#ddd' : !invalid ?
+          '#ddd' : 'red'
+      }
+    })
+  }
 
   return (
     <Styles>
       <Form.Group className='mb-3'>
         <Form.Label>{props?.label || props?.children || ''}</Form.Label>
         <Select
+          styles={customStyles}
           options={props?.options || []}
           control={control}
           ref={ref}
@@ -27,9 +43,10 @@ function SelectField({ name, control, rules, defaultValue, ...props }) {
           {...controlProps}
           onChange={(e) => controlProps?.onChange(e)}
         />
+        {error && <Form.Text style={{color: 'red'}}>{error?.message}</Form.Text>}
       </Form.Group>
     </Styles>
-  );
+  )
 }
 
 export default SelectField;

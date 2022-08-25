@@ -10,6 +10,11 @@ class PhotocopyApi {
     const url = '/photocopy/offices';
     return axiosClient.get(url);
   };
+
+  addOrder = async (data) => {
+    const url = '/photocopy/orders'
+    return axiosClient.post(url, data);
+  }
 }
 
 export default new PhotocopyApi();

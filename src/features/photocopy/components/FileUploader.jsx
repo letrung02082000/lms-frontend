@@ -3,10 +3,12 @@ import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ToastWrapper } from 'utils';
+import { BsCloudUpload } from 'react-icons/bs'
+import styled from 'styled-components';
+import { Form } from 'react-bootstrap';
 
-function FileUploader() {
+function FileUploader(props) {
   const FILE_MAX_SIZE = 50 * 1024 * 1024;
-  const [fileIds, setFileIds] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadPercent, setUploadPercent] = useState(false);
 
@@ -30,7 +32,7 @@ function FileUploader() {
         },
       })
       .then((res) => {
-        setFileIds((prev) => [...prev, res.data.documentId]);
+        props?.setFileIds((prev) => [res.data.data.documentId]);
         setUploadPercent(100);
         setUploading(false);
       })
@@ -63,15 +65,35 @@ function FileUploader() {
     validator: fileSizeValidator,
   });
   return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      <p>Tải tệp lên</p>
-      {fileRejections?.[0]?.errors?.map((error) => {
-        return <p key={error?.code}>{error?.message}</p>;
-      })}
-      {acceptedFiles?.[0]?.name}
-    </div>
-  );
+    <Styles>
+      <Form.Label className='mb-3'>{props?.label || props?.children || ''}</Form.Label>
+      <div {...getRootProps()}>
+        <input {...getInputProps()} />
+        <div className={`upload-button d-flex align-items-center justify-content-center px-3 py-2 btn btn-success`}>
+          <BsCloudUpload size={25}/>
+          <p className='ms-2'>Tải tệp lên</p>
+        </div>
+        {uploading && <p className='form-text my-2 text-center'>Đang tải {uploadPercent}%</p>}
+        {fileRejections?.[0]?.errors?.map((error) => {
+          return <p key={error?.code} className='my-2 text-center'>{error?.message}</p>
+        })}
+        <p className='my-2 text-center'>{acceptedFiles?.[0]?.name}</p>
+      </div>
+    </Styles>
+  )
 }
 
 export default FileUploader;
+
+const Styles = styled.div`
+  margin: 1rem 0 3rem;
+
+  .upload-button {
+    width: fit-content;
+    margin: 0 auto;
+
+    p {
+      margin: 0;
+    }
+  }
+`
