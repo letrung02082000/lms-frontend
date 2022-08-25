@@ -10,9 +10,9 @@ import { useForm } from 'react-hook-form'
 import styled from 'styled-components'
 
 function CreationForm() {
+  const photocopyInfo = JSON.parse(localStorage.getItem('photocopy-info') || "{}");
   const [fileIds, setFileIds] = useState([]);
   const [receiptId, setReceiptId] = useState([]);
-  console.log(receiptId)
   const [categories, setCategories] = useState([])
   const [offices, setOffices] = useState([])
   const deliveryOptions = [
@@ -24,10 +24,15 @@ function CreationForm() {
     { label: 'Kí túc xá Khu B', value: 'KTX Khu B' },
   ]
   const [isDelivered, setIsDelivered] = useState('0')
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, setValue } = useForm({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
-    defaultValues: {},
+    defaultValues: {
+      name: photocopyInfo?.name,
+      tel: photocopyInfo?.tel,
+      zalo: photocopyInfo?.zalo,
+      instruction: photocopyInfo?.instruction
+    },
     resolver: undefined,
     context: undefined,
     criteriaMode: 'firstError',
@@ -54,21 +59,30 @@ function CreationForm() {
       data.address = data.address.value
     }
     
+    localStorage.setItem('photocopy-info', JSON.stringify(data));
     const order = {
       ...data,
       ...(fileIds.length > 0 ? {document: fileIds[0]} : {}),
       ...(receiptId.length > 0 ? {receipt: receiptId[0]} : {}),
+      isDelivered: isDelivered === '1'
     }
-
     console.log(order)
+
+    if(!order?.document) {
+      return ToastWrapper('Vui lòng tải lên tệp hoặc nhập liên kết đến tài liệu!', 'error')
+    }
 
     photocopyApi
       .addOrder(order)
       .then((res) => {
         console.log(res)
+        setFileIds([]);
+        setReceiptId([]);
+        setValue('document', '', {shouldValidate: true})
+        ToastWrapper(res?.data?.message || 'Tạo đơn hàng thành công!', 'success')
       })
       .catch((error) => {
-        console.log(error)
+        ToastWrapper(error?.response?.data?.message || 'Tạo đơn hàng thất bại!', 'error')
       })
   }
 
@@ -87,7 +101,6 @@ function CreationForm() {
     photocopyApi
       .getOffices()
       .then((data) => {
-        console.log(data)
         setOffices(data?.data.map((c) => ({ label: c?.name, value: c?._id })))
       })
       .catch((error) => {
@@ -98,12 +111,15 @@ function CreationForm() {
   return (
     <Styles>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <FileUploader setFileIds={setFileIds}/>
-        <InputField
-          label={'Hoặc nhập liên kết đến tài liệu'}
-          control={control}
-          name='document'
-        />
+        <FileUploader setFileIds={setFileIds} />
+        {fileIds.length === 0 && (
+          <InputField
+            label={'Hoặc nhập liên kết đến tài liệu'}
+            control={control}
+            name='document'
+            rules={{ required: false }}
+          />
+        )}
         <InputField
           label={'Hướng dẫn in'}
           // placeholder='Nhập hướng dẫn in cho nhân viên'
@@ -144,7 +160,10 @@ function CreationForm() {
             name='address'
           />
         )}
-        <FileUploader setFileIds={setReceiptId} label={'Tải lên hóa đơn đặt cọc (nếu có)'}/>
+        <FileUploader
+          setFileIds={setReceiptId}
+          label={'Tải lên hóa đơn đặt cọc (nếu có)'}
+        />
         <InputField
           label={'Ghi chú/Góp ý'}
           placeholder='Nhập ghi chú cho đơn hàng'

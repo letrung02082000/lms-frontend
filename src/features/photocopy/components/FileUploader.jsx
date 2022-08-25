@@ -75,7 +75,7 @@ function FileUploader(props) {
         </div>
         {uploading && <p className='form-text my-2 text-center'>Đang tải {uploadPercent}%</p>}
         {fileRejections?.[0]?.errors?.map((error) => {
-          return <p key={error?.code} className='my-2 text-center'>{error?.message}</p>
+          return <p key={error?.code} className='my-2 text-center text-danger'>{error?.message}</p>
         })}
         <p className='my-2 text-center'>{acceptedFiles?.[0]?.name}</p>
       </div>
