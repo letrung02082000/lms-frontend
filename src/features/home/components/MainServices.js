@@ -2,18 +2,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { selectUser } from '../../../store/userSlice';
 import styles from './mainservices.module.css';
+import ServiceItem from './ServiceItem';
 
 function MainServices(props) {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
-
-  const handleBuyTicketButton = () => {
-    if (!user.isLoggedIn) {
-      navigateTo('/login', { message: 'Vui lòng đăng nhập để tiếp tục!' });
-    } else {
-      navigateTo('/pool-ticket');
-    }
-  };
 
   const navigateTo = (url, state) => {
     navigate(url, state);
@@ -63,21 +56,13 @@ function MainServices(props) {
           Việc làm <br /> sinh viên
         </p>
       </div>
-      <a
-        className={styles.itemContainer}
-        href='https://inan.isinhvien.vn'
-        target={'_blank'}
-        rel='noopener noreferrer'
+      <ServiceItem
+        path='photocopies'
+        iconSrc='/main-icon/photocopy.png'
+        alt='photo'
       >
-        <div>
-          <img
-            src='/main-icon/photocopy.png'
-            alt='pool'
-            className={styles.mainIcon}
-          />
-        </div>
-        <p>Gửi in ấn</p>
-      </a>
+        Gửi in ấn
+      </ServiceItem>
       <div
         className={styles.itemContainer}
         onClick={() => navigateTo('/bicycles')}
@@ -196,9 +181,7 @@ function MainServices(props) {
             className={styles.mainIcon}
           />
         </div>
-        <p>
-          Dịch vụ khác
-        </p>
+        <p>Dịch vụ khác</p>
       </div>
     </div>
   );

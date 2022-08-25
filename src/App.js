@@ -50,6 +50,7 @@ import {
   SupportPage,
   B2InfoPage
 } from 'features';
+import PhotocopyRoutes from 'features/photocopy/Routes';
 
 class App extends React.Component {
   render() {
@@ -131,6 +132,7 @@ class App extends React.Component {
 
           <Route exact path='/health' element={<HealthDetailPage />} />
           <Route exact path='/healths' element={<HealthPage />} />
+          <Route exact path='/photocopies/*' element={<PhotocopyRoutes />} />
 
           <Route
             exact

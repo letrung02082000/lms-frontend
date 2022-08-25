@@ -4,15 +4,14 @@ import styles from './titleBar.module.css';
 
 function TitleBar(props) {
   const navigate = useNavigate();
-  const location = useLocation();
-  const bcolor = props.backgroundColor || '#019f91';
+  const bcolor = props?.backgroundColor || '#019f91';
 
   const goBack = () => {
-    if(props.path) {
-      return navigate(props.path);
+    if(props?.path) {
+      return navigate(props?.path);
     }
 
-    if (!location.key) {
+    if (!window.location.key) {
       return navigate('/');
     }
 
@@ -24,7 +23,7 @@ function TitleBar(props) {
       <button onClick={goBack} className={styles.goBackButton}>
         <MdArrowBack size={25} color='#fff' />
       </button>
-      <p className={styles.pageTitle}>{props.title}</p>
+      <p className={styles.pageTitle}>{props?.title || props?.children || ''}</p>
     </div>
   );
 }
