@@ -1,4 +1,3 @@
-import axiosClient from 'api/axiosClient';
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -9,11 +8,11 @@ import { Form } from 'react-bootstrap';
 
 function FileUploader(props) {
   const FILE_MAX_SIZE = 50 * 1024 * 1024;
-  const [uploading, setUploading] = useState(false);
   const [uploadPercent, setUploadPercent] = useState(false);
+  const [fileNames, setFileNames] = useState([]);
 
   const onDropAccepted = useCallback((files) => {
-    setUploading(true);
+    props?.setUploading(true);
     let formData = new FormData();
     formData.append('document', files[0]);
     axios
@@ -33,11 +32,12 @@ function FileUploader(props) {
       })
       .then((res) => {
         props?.setFileIds((prev) => [res.data.data.documentId]);
+        setFileNames([files?.[0]?.name]);
         setUploadPercent(100);
-        setUploading(false);
+        props?.setUploading(false);
       })
       .catch((err) => {
-        setUploading(false);
+        props?.setUploading(false);
         ToastWrapper(err.response.data.message, 'error');
       });
   }, []);
@@ -58,7 +58,7 @@ function FileUploader(props) {
     return null;
   };
 
-  const { getRootProps, getInputProps, acceptedFiles, fileRejections } = useDropzone({
+  const { getRootProps, getInputProps, fileRejections } = useDropzone({
     onDropAccepted,
     onDropRejected,
     multiple: false,
@@ -73,11 +73,11 @@ function FileUploader(props) {
           <BsCloudUpload size={25}/>
           <p className='ms-2'>Tải tệp lên</p>
         </div>
-        {uploading && <p className='form-text my-2 text-center'>Đang tải {uploadPercent}%</p>}
+        {props?.uploading && <p className='form-text my-2 text-center'>Đang tải {uploadPercent}%</p>}
         {fileRejections?.[0]?.errors?.map((error) => {
           return <p key={error?.code} className='my-2 text-center text-danger'>{error?.message}</p>
         })}
-        <p className='my-2 text-center'>{acceptedFiles?.[0]?.name}</p>
+        <p className='my-2 text-center'>{props?.fileIds?.length > 0 && fileNames?.[0]}</p>
       </div>
     </Styles>
   )
