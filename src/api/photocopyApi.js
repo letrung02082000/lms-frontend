@@ -11,6 +11,11 @@ class PhotocopyApi {
     return axiosClient.get(url);
   };
 
+  searchOrder = async (term) => {
+    const url = '/photocopy/orders/search';
+    return axiosClient.get(url, { params: { term } });
+  };
+
   addOrder = async (data) => {
     const url = '/photocopy/orders'
     return axiosClient.post(url, data);

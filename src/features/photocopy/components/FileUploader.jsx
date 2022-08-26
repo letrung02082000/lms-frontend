@@ -32,7 +32,8 @@ function FileUploader(props) {
         },
       })
       .then((res) => {
-        props?.setFileIds((prev) => [res?.data?.documentId]);
+        console.log(res)
+        props?.setFileIds((prev) => [res?.data?.fileId]);
         setFileNames([files?.[0]?.name]);
         setUploadPercent(100);
         props?.setUploading(false);

@@ -1,10 +1,10 @@
 import React from 'react'
 import LazyLoad from 'react-lazyload';
 
-function LazyImage({src, alt, height}) {
+function LazyImage({src, alt, ...props}) {
   return (
-    <LazyLoad height={height || 200}>
-        <img src={src} alt={alt || "no-alt"} width="100%"/>
+    <LazyLoad>
+        <img src={src} alt={alt || "no-alt"} width="100%" {...props}/>
     </LazyLoad>
   )
 }
