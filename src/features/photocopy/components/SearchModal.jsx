@@ -7,6 +7,9 @@ import styled from 'styled-components';
 import SearchOrder from './SearchOrder';
 
 function SearchModal(props) {
+  const photocopyInfo = JSON.parse(
+    localStorage.getItem('photocopy-info') || '{}'
+  );
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(false);
 
@@ -49,6 +52,7 @@ function SearchModal(props) {
               name='term'
               placeholder='Nhập số điện thoại đơn hàng'
               autoFocus
+              defaultValue={photocopyInfo?.tel}
             />
             <Button
               className='mt-3 mb-5'

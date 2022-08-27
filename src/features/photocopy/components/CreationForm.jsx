@@ -8,15 +8,20 @@ import { ToastWrapper } from 'utils';
 import RadioField from './RadioField';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import { AiOutlineDelete } from 'react-icons/ai';
+import OrderInfo from './OrderInfo';
 
 function CreationForm() {
+  const [orderInfo, setOrderInfo] = useState(false);
   const photocopyInfo = JSON.parse(
     localStorage.getItem('photocopy-info') || '{}'
   );
   const [fileIds, setFileIds] = useState([]);
+  const [fileNames, setFileNames] = useState([]);
   const [fileUploading, setFileUploading] = useState(false);
   const [receiptUploading, setReceiptUploading] = useState(false);
   const [receiptId, setReceiptId] = useState([]);
+  const [receiptName, setReceiptName] = useState([]);
   const [categories, setCategories] = useState([]);
   const [offices, setOffices] = useState([]);
   const deliveryOptions = [
@@ -51,8 +56,8 @@ function CreationForm() {
   };
 
   const onSubmit = (data) => {
-    if(fileUploading || receiptUploading) {
-      return ToastWrapper('Vui lòng chờ tải tệp lên hoàn tất!')
+    if (fileUploading || receiptUploading) {
+      return ToastWrapper('Vui lòng chờ tải tệp lên hoàn tất!');
     }
 
     if (data?.category) {
@@ -68,11 +73,10 @@ function CreationForm() {
     }
 
     localStorage.setItem('photocopy-info', JSON.stringify(data));
-    const driveUrl = 'https://drive.google.com/file/d/';
     const order = {
       ...data,
-      ...(fileIds.length > 0 ? { document: driveUrl + fileIds[0] } : {}),
-      ...(receiptId.length > 0 ? { receipt: driveUrl + receiptId[0] } : {}),
+      ...(fileIds.length > 0 ? { document: fileIds } : {}),
+      ...(receiptId.length > 0 ? { receipt: receiptId } : {}),
       isDelivered: isDelivered === '1',
     };
 
@@ -89,11 +93,16 @@ function CreationForm() {
         console.log(res);
         setFileIds([]);
         setReceiptId([]);
+        setFileNames([]);
+        setReceiptName('');
         setValue('document', '', { shouldValidate: true });
         ToastWrapper(
-          res?.data?.message || 'Tạo đơn hàng thành công!',
+          res?.message || 'Tạo đơn hàng thành công!',
           'success'
         );
+        setTimeout(()=>{
+          setOrderInfo(res?.data)
+        }, 1000)
       })
       .catch((error) => {
         ToastWrapper(
@@ -125,16 +134,52 @@ function CreationForm() {
       });
   }, []);
 
+  const handleFileUpload = (value) => {
+    if (fileIds.length > 10)
+      return ToastWrapper('Chỉ có thể tải lên tối đa 10 tệp');
+    setFileIds((prev) => [...prev, `https://drive.google.com/file/d/${value}`]);
+  };
+  const handleFileNames = (value) => setFileNames((prev) => [...prev, value]);
+  const handleDeleteFile = (index) => {
+    setFileIds((prev) => {
+      const temp = [...prev];
+      temp.splice(index, 1);
+      return temp;
+    });
+    setFileNames((prev) => {
+      const temp = [...prev];
+      temp.splice(index, 1);
+      return temp;
+    });
+  };
+
+  if(orderInfo) {
+    return <OrderInfo {...orderInfo}/>
+  }
+
   return (
     <Styles>
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <div className='files-stack d-flex flex-column justify-content-center align-items-center'>
+          {fileNames?.map((name, index) => {
+            return (
+              <div key={`${name}_${index}`} className='d-flex align-items-center'>
+                <span>{name}</span>
+                <button className='btn ms-2' onClick={()=>handleDeleteFile(index)}>
+                  <AiOutlineDelete color='red' />
+                </button>
+              </div>
+            );
+          })}
+        </div>
         <FileUploader
-          setFileIds={setFileIds}
-          fileIds={fileIds}
+          setFileId={handleFileUpload}
+          setFileName={handleFileNames}
           uploading={fileUploading}
           setUploading={setFileUploading}
           url={'/photocopy/upload/file'}
           name='document'
+          text={fileIds.length > 0 ? 'Thêm tài liệu khác' : 'Thêm tài liệu'}
         />
         {fileIds.length === 0 && (
           <InputField
@@ -185,14 +230,17 @@ function CreationForm() {
           />
         )}
         <FileUploader
-          setFileIds={setReceiptId}
-          fileIds={receiptId}
+          setFileId={(value) =>
+            setReceiptId((prev) => `https://drive.google.com/file/d/${value}`)
+          }
           label={'Tải lên hóa đơn đặt cọc (nếu có)'}
           uploading={receiptUploading}
           setUploading={setReceiptUploading}
+          setFileName={setReceiptName}
           url={'/photocopy/upload/receipt'}
           name='receipt'
         />
+        <p className='w-100 text-center form-text'>{receiptName}</p>
         <InputField
           label={'Ghi chú/Góp ý'}
           placeholder='Nhập ghi chú cho đơn hàng'
@@ -218,5 +266,8 @@ const Styles = styled.div`
     border-color: var(--primary);
     width: 100%;
     margin: 1rem 0 5rem;
+  }
+
+  .files-stack {
   }
 `;

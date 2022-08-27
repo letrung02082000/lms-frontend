@@ -10,7 +10,6 @@ import axiosClient from 'api/axiosClient';
 function FileUploader(props) {
   const FILE_MAX_SIZE = 50 * 1024 * 1024;
   const [uploadPercent, setUploadPercent] = useState(false);
-  const [fileNames, setFileNames] = useState([]);
 
   const onDropAccepted = useCallback((files) => {
     props?.setUploading(true);
@@ -33,8 +32,8 @@ function FileUploader(props) {
       })
       .then((res) => {
         console.log(res)
-        props?.setFileIds((prev) => [res?.data?.fileId]);
-        setFileNames([files?.[0]?.name]);
+        props?.setFileId(res?.data?.fileId);
+        props?.setFileName(files?.[0]?.name);
         setUploadPercent(100);
         props?.setUploading(false);
       })
@@ -69,18 +68,17 @@ function FileUploader(props) {
   return (
     <Styles>
       <Form.Label className='mb-3'>{props?.label || props?.children || ''}</Form.Label>
-      <div {...getRootProps()}>
+      <button type='button' {...getRootProps()} className='btn d-flex flex-column align-items-center' disabled={props?.uploading}>
         <input {...getInputProps()} />
         <div className={`upload-button d-flex align-items-center justify-content-center px-3 py-2 btn btn-success`}>
           <BsCloudUpload size={25}/>
-          <p className='ms-2'>Tải tệp lên</p>
+          <p className='ms-2'>{props?.text || 'Thêm tệp'}</p>
         </div>
         {props?.uploading && <p className='form-text my-2 text-center'>Đang tải {uploadPercent}%</p>}
         {fileRejections?.[0]?.errors?.map((error) => {
           return <p key={error?.code} className='my-2 text-center text-danger'>{error?.message}</p>
         })}
-        <p className='my-2 text-center'>{props?.fileIds?.length > 0 && fileNames?.[0]}</p>
-      </div>
+      </button>
     </Styles>
   )
 }
@@ -88,7 +86,11 @@ function FileUploader(props) {
 export default FileUploader;
 
 const Styles = styled.div`
-  margin: 1rem 0 3rem;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   .upload-button {
     width: fit-content;
