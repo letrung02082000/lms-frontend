@@ -1,14 +1,14 @@
-import photocopyApi from 'api/photocopyApi';
-import React from 'react';
-import { useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
-import LazyImage from 'shared/components/LazyImage';
-import styled from 'styled-components';
-import SearchOrder from './SearchOrder';
+import photocopyApi from "api/photocopyApi";
+import React from "react";
+import { useState } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
+import LazyImage from "shared/components/LazyImage";
+import styled from "styled-components";
+import SearchOrder from "./SearchOrder";
 
 function SearchModal(props) {
   const photocopyInfo = JSON.parse(
-    localStorage.getItem('photocopy-info') || '{}'
+    localStorage.getItem("photocopy-info") || "{}"
   );
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(false);
@@ -32,10 +32,10 @@ function SearchModal(props) {
   const generateOrder = (data) => {
     if (data.length === 0) return <p>Không tìm thấy đơn hàng!</p>;
     return data?.map((order) => {
-      return <SearchOrder key={order?.orderCode} {...order}/>;
+      return <SearchOrder key={order?.orderCode} {...order} />;
     });
-  }
-  console.log(data)
+  };
+  console.log(data);
   return (
     <Modal show={props?.show} onHide={props?.handleClose}>
       <Modal.Header closeButton>
@@ -45,19 +45,19 @@ function SearchModal(props) {
         <Styles>
           <Form
             onSubmit={handleSubmit}
-            className='placeholder-image my-2 d-flex justify-content-center flex-column align-items-center'
+            className="placeholder-image my-2 d-flex justify-content-center flex-column align-items-center"
           >
             <Form.Control
-              type='text'
-              name='term'
-              placeholder='Nhập số điện thoại đơn hàng'
+              type="text"
+              name="term"
+              placeholder="Nhập số điện thoại đơn hàng"
               autoFocus
               defaultValue={photocopyInfo?.tel}
             />
             <Button
-              className='mt-3 mb-5'
-              type='submit'
-              variant='primary'
+              className="mt-3 mb-5"
+              type="submit"
+              variant="primary"
               disabled={loading}
             >
               Tìm kiếm
@@ -65,9 +65,9 @@ function SearchModal(props) {
             <div>
               {data === false && (
                 <LazyImage
-                  src='/document-search.jpg'
+                  src="/document-search.jpg"
                   height={200}
-                  width='auto'
+                  width="auto"
                 />
               )}
               {data !== false &&

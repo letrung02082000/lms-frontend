@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Form } from 'react-bootstrap';
-import FileUploader from './FileUploader';
-import InputField from './InputField';
-import SelectField from './SelectField';
-import photocopyApi from 'api/photocopyApi';
-import { ToastWrapper } from 'utils';
-import RadioField from './RadioField';
-import { useForm } from 'react-hook-form';
-import styled from 'styled-components';
-import { AiOutlineDelete } from 'react-icons/ai';
-import OrderInfo from './OrderInfo';
+import React, { useState, useEffect } from "react";
+import { Button, Form } from "react-bootstrap";
+import FileUploader from "../../../shared/components/input-field-form/FileUploader";
+import InputField from "../../../shared/components/input-field-form/InputField";
+import SelectField from "../../../shared/components/input-field-form/SelectField";
+import photocopyApi from "api/photocopyApi";
+import { ToastWrapper } from "utils";
+import RadioField from "../../../shared/components/input-field-form/RadioField";
+import { useForm } from "react-hook-form";
+import styled from "styled-components";
+import { AiOutlineDelete } from "react-icons/ai";
+import OrderInfo from "../../../shared/components/input-field-form/OrderInfo";
 
 function CreationForm() {
   const [orderInfo, setOrderInfo] = useState(false);
   const photocopyInfo = JSON.parse(
-    localStorage.getItem('photocopy-info') || '{}'
+    localStorage.getItem("photocopy-info") || "{}"
   );
   const [fileIds, setFileIds] = useState([]);
   const [fileNames, setFileNames] = useState([]);
@@ -25,17 +25,17 @@ function CreationForm() {
   const [categories, setCategories] = useState([]);
   const [offices, setOffices] = useState([]);
   const deliveryOptions = [
-    { label: 'Nhận tại cửa hàng', value: '0' },
-    { label: 'Giao hàng tận nơi', value: '1' },
+    { label: "Nhận tại cửa hàng", value: "0" },
+    { label: "Giao hàng tận nơi", value: "1" },
   ];
   const addressOptions = [
-    { label: 'Kí túc xá Khu A', value: 'KTX Khu A' },
-    { label: 'Kí túc xá Khu B', value: 'KTX Khu B' },
+    { label: "Kí túc xá Khu A", value: "KTX Khu A" },
+    { label: "Kí túc xá Khu B", value: "KTX Khu B" },
   ];
-  const [isDelivered, setIsDelivered] = useState('0');
+  const [isDelivered, setIsDelivered] = useState("0");
   const { handleSubmit, control, setValue } = useForm({
-    mode: 'onSubmit',
-    reValidateMode: 'onChange',
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     defaultValues: {
       name: photocopyInfo?.name,
       tel: photocopyInfo?.tel,
@@ -44,7 +44,7 @@ function CreationForm() {
     },
     resolver: undefined,
     context: undefined,
-    criteriaMode: 'firstError',
+    criteriaMode: "firstError",
     shouldFocusError: true,
     shouldUnregister: true,
     shouldUseNativeValidation: false,
@@ -57,7 +57,7 @@ function CreationForm() {
 
   const onSubmit = (data) => {
     if (fileUploading || receiptUploading) {
-      return ToastWrapper('Vui lòng chờ tải tệp lên hoàn tất!');
+      return ToastWrapper("Vui lòng chờ tải tệp lên hoàn tất!");
     }
 
     if (data?.category) {
@@ -72,18 +72,18 @@ function CreationForm() {
       data.address = data.address.value;
     }
 
-    localStorage.setItem('photocopy-info', JSON.stringify(data));
+    localStorage.setItem("photocopy-info", JSON.stringify(data));
     const order = {
       ...data,
       ...(fileIds.length > 0 ? { document: fileIds } : {}),
       ...(receiptId.length > 0 ? { receipt: receiptId } : {}),
-      isDelivered: isDelivered === '1',
+      isDelivered: isDelivered === "1",
     };
 
     if (!order?.document) {
       return ToastWrapper(
-        'Vui lòng tải lên tệp hoặc nhập liên kết đến tài liệu!',
-        'error'
+        "Vui lòng tải lên tệp hoặc nhập liên kết đến tài liệu!",
+        "error"
       );
     }
 
@@ -94,20 +94,17 @@ function CreationForm() {
         setFileIds([]);
         setReceiptId([]);
         setFileNames([]);
-        setReceiptName('');
-        setValue('document', '', { shouldValidate: true });
-        ToastWrapper(
-          res?.message || 'Tạo đơn hàng thành công!',
-          'success'
-        );
-        setTimeout(()=>{
-          setOrderInfo(res?.data)
-        }, 1000)
+        setReceiptName("");
+        setValue("document", "", { shouldValidate: true });
+        ToastWrapper(res?.message || "Tạo đơn hàng thành công!", "success");
+        setTimeout(() => {
+          setOrderInfo(res?.data);
+        }, 1000);
       })
       .catch((error) => {
         ToastWrapper(
-          error?.response?.data?.message || 'Tạo đơn hàng thất bại!',
-          'error'
+          error?.response?.data?.message || "Tạo đơn hàng thất bại!",
+          "error"
         );
       });
   };
@@ -136,7 +133,7 @@ function CreationForm() {
 
   const handleFileUpload = (value) => {
     if (fileIds.length > 10)
-      return ToastWrapper('Chỉ có thể tải lên tối đa 10 tệp');
+      return ToastWrapper("Chỉ có thể tải lên tối đa 10 tệp");
     setFileIds((prev) => [...prev, `https://drive.google.com/file/d/${value}`]);
   };
   const handleFileNames = (value) => setFileNames((prev) => [...prev, value]);
@@ -153,20 +150,26 @@ function CreationForm() {
     });
   };
 
-  if(orderInfo) {
-    return <OrderInfo {...orderInfo}/>
+  if (orderInfo) {
+    return <OrderInfo {...orderInfo} />;
   }
 
   return (
     <Styles>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <div className='files-stack d-flex flex-column justify-content-center align-items-center'>
+        <div className="files-stack d-flex flex-column justify-content-center align-items-center">
           {fileNames?.map((name, index) => {
             return (
-              <div key={`${name}_${index}`} className='d-flex align-items-center'>
+              <div
+                key={`${name}_${index}`}
+                className="d-flex align-items-center"
+              >
                 <span>{name}</span>
-                <button className='btn ms-2' onClick={()=>handleDeleteFile(index)}>
-                  <AiOutlineDelete color='red' />
+                <button
+                  className="btn ms-2"
+                  onClick={() => handleDeleteFile(index)}
+                >
+                  <AiOutlineDelete color="red" />
                 </button>
               </div>
             );
@@ -177,80 +180,80 @@ function CreationForm() {
           setFileName={handleFileNames}
           uploading={fileUploading}
           setUploading={setFileUploading}
-          url={'/photocopy/upload/file'}
-          name='document'
-          text={fileIds.length > 0 ? 'Thêm tài liệu khác' : 'Thêm tài liệu'}
+          url={"/photocopy/upload/file"}
+          name="document"
+          text={fileIds.length > 0 ? "Thêm tài liệu khác" : "Thêm tài liệu"}
         />
         {fileIds.length === 0 && (
           <InputField
-            label={'Hoặc nhập liên kết đến tài liệu'}
+            label={"Hoặc nhập liên kết đến tài liệu"}
             control={control}
-            name='document'
+            name="document"
             rules={{ required: false }}
           />
         )}
         <InputField
-          label={'Hướng dẫn in'}
+          label={"Hướng dẫn in"}
           // placeholder='Nhập hướng dẫn in cho nhân viên'
-          as='textarea'
+          as="textarea"
           rows={3}
           control={control}
-          name='instruction'
+          name="instruction"
         />
         <SelectField
           options={categories}
-          label='Thể loại'
+          label="Thể loại"
           control={control}
-          name='category'
+          name="category"
         />
-        <InputField label={'Tên của bạn'} control={control} name='name' />
-        <InputField label={'Điện thoại liên hệ'} control={control} name='tel' />
-        <InputField label={'Zalo'} control={control} name='zalo' />
+        <InputField label={"Tên của bạn"} control={control} name="name" />
+        <InputField label={"Điện thoại liên hệ"} control={control} name="tel" />
+        <InputField label={"Zalo"} control={control} name="zalo" />
         <RadioField
-          label='Hình thức giao hàng'
+          label="Hình thức giao hàng"
           options={deliveryOptions}
-          name='deliveryType'
+          name="deliveryType"
           onChange={handleDeliveryChange}
           checkValue={isDelivered}
         />
-        {isDelivered === '0' && (
+        {isDelivered === "0" && (
           <SelectField
             options={offices}
-            label='Chọn chi nhánh'
+            label="Chọn chi nhánh"
             control={control}
-            name='office'
+            name="office"
           />
         )}
-        {isDelivered === '1' && (
+        {isDelivered === "1" && (
           <SelectField
             options={addressOptions}
-            label='Chọn khu vực'
+            label="Chọn khu vực"
             control={control}
-            name='address'
+            name="address"
           />
         )}
         <FileUploader
           setFileId={(value) =>
             setReceiptId((prev) => `https://drive.google.com/file/d/${value}`)
           }
-          label={'Tải lên hóa đơn đặt cọc (nếu có)'}
+          label={"Tải lên hóa đơn đặt cọc (nếu có)"}
           uploading={receiptUploading}
           setUploading={setReceiptUploading}
           setFileName={setReceiptName}
-          url={'/photocopy/upload/receipt'}
-          name='receipt'
+          url={"/photocopy/upload/receipt"}
+          name="receipt"
         />
-        <p className='w-100 text-center form-text'>{receiptName}</p>
+        <p className="w-100 text-center form-text">{receiptName}</p>
         <InputField
-          label={'Ghi chú/Góp ý'}
-          placeholder='Nhập ghi chú cho đơn hàng'
-          as='textarea'
+          label={"Ghi chú/Góp ý"}
+          placeholder="Nhập ghi chú cho đơn hàng"
+          as="textarea"
           rows={3}
           control={control}
-          name='note'
+          name="note"
           rules={{ required: false }}
         />
-        <Button variant='primary' className='submit-btn' type='submit'>
+        <Button variant="primary" className="submit-btn" type="submit">
           Gửi tài liệu ngay
         </Button>
       </Form>
