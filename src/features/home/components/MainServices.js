@@ -1,36 +1,15 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { IoShirtOutline } from 'react-icons/io5';
-import { IoMdPrint } from 'react-icons/io';
-import { AiOutlineArrowRight } from 'react-icons/ai';
-import {
-  FaBusAlt,
-  FaMotorcycle,
-  FaPrint,
-  FaSwimmingPool,
-  FaHome,
-} from 'react-icons/fa';
-
-import styles from './mainservices.module.css';
-
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { selectUser } from '../../../store/userSlice';
+import styles from './mainservices.module.css';
+import ServiceItem from './ServiceItem';
 
 function MainServices(props) {
-  const history = useHistory();
-  // const isMobile = useMediaQuery('(max-width: 767px)');
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
 
-  const handleBuyTicketButton = () => {
-    if (!user.isLoggedIn) {
-      navigateTo('/login', { message: 'Vui lòng đăng nhập để tiếp tục!' });
-    } else {
-      navigateTo('/pool-ticket');
-    }
-  };
-
   const navigateTo = (url, state) => {
-    history.push(url, state);
+    navigate(url, state);
   };
 
   return (
@@ -40,7 +19,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/pool-ticket')}
       >
         <div>
-          {/* <FaSwimmingPool size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/pool.png'
             alt='pool'
@@ -58,7 +36,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/driving-test')}
       >
         <div>
-          {/* <FaMotorcycle size={40} className={styles.mainIcon} /> */}
           <img
             src='/main-icon/motorbike.png'
             alt='pool'
@@ -69,7 +46,6 @@ function MainServices(props) {
       </div>
       <div className={styles.itemContainer} onClick={() => navigateTo('/jobs')}>
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/job.png'
             alt='pool'
@@ -80,25 +56,18 @@ function MainServices(props) {
           Việc làm <br /> sinh viên
         </p>
       </div>
-      <div
-        className={styles.itemContainer}
-        onClick={() => navigateTo('/maintain')}
+      <ServiceItem
+        path='photocopies'
+        iconSrc='/main-icon/photocopy.png'
+        alt='photo'
       >
-        <div>
-          <img
-            src='/main-icon/photocopy.png'
-            alt='pool'
-            className={styles.mainIcon}
-          />
-        </div>
-        <p>Gửi in ấn</p>
-      </div>
+        Gửi in ấn
+      </ServiceItem>
       <div
         className={styles.itemContainer}
         onClick={() => navigateTo('/bicycles')}
       >
         <div>
-          {/* <FaHome size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/bicycle.png'
             alt='bicycle'
@@ -113,10 +82,9 @@ function MainServices(props) {
       </div>
       <div
         className={styles.itemContainer}
-        onClick={() => navigateTo('/uniforms')}
+        onClick={() => navigateTo('/maintain')}
       >
         <div>
-          {/* <IoShirtOutline size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/uniform.png'
             alt='pool'
@@ -131,7 +99,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/guides')}
       >
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/instruction.png'
             alt='pool'
@@ -145,10 +112,9 @@ function MainServices(props) {
 
       <div
         className={styles.itemContainer}
-        onClick={() => navigateTo('/healths')}
+        onClick={() => navigateTo('/maintain')}
       >
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/health.png'
             alt='pool'
@@ -165,7 +131,6 @@ function MainServices(props) {
         onClick={() => navigateTo('/maintain')}
       >
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/course.png'
             alt='pool'
@@ -175,12 +140,13 @@ function MainServices(props) {
         <p>Khóa học</p>
       </div>
 
-      <div
+      <a
         className={styles.itemContainer}
-        onClick={() => navigateTo('/maintain')}
+        href='https://thiennguyen.app/donate-target/1546845406237835264'
+        target={'_blank'}
+        rel='noopener noreferrer'
       >
         <div>
-          {/* <AiOutlineArrowRight size={40} style={{ color: 'white' }} /> */}
           <img
             src='/main-icon/volunteer.png'
             alt='pool'
@@ -188,6 +154,34 @@ function MainServices(props) {
           />
         </div>
         <p>Thiện nguyện</p>
+      </a>
+
+      <div
+        className={styles.itemContainer}
+        onClick={() => navigateTo('/bus-registration')}
+      >
+        <div>
+          <img
+            src='/main-icon/bus-service.png'
+            alt='pool'
+            className={styles.mainIcon}
+          />
+        </div>
+        <p>Xe dịch vụ</p>
+      </div>
+
+      <div
+        className={styles.itemContainer}
+        onClick={() => navigateTo('/maintain')}
+      >
+        <div>
+          <img
+            src='/main-icon/application.png'
+            alt='other'
+            className={styles.mainIcon}
+          />
+        </div>
+        <p>Dịch vụ khác</p>
       </div>
     </div>
   );

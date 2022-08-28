@@ -3,15 +3,12 @@ import QRCode from 'qrcode.react';
 import { useState } from 'react';
 import { MdOutlineContentCopy } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { selectUser, updateName, updateTel, updateZalo } from 'store/userSlice';
 import styles from '../swimmingPoolTicketPage.module.css';
 
 export default function TicketForm(props) {
   const dispatch = useDispatch();
   let userInfo = useSelector(selectUser);
-
-  const history = useHistory();
 
   const [receiptName, setReceiptName] = useState(null);
   const [receiptFile, setReceiptFile] = useState(null);

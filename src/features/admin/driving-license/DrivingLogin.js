@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './drivingLogin.module.css';
 
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import GoogleLogin from 'react-google-login';
 
@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 import { updateUser } from '../../../store/userSlice';
 
 const DrivingLogin = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const DrivingLogin = (props) => {
   const [isLogging, setIsLogging] = useState(false);
 
   const goBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const handleEmailChange = (event) => {
@@ -86,7 +86,7 @@ const DrivingLogin = (props) => {
           })
         );
 
-        history.push('/driving-admin');
+        navigate('/driving-admin');
       }
     } catch (error) {
       if (

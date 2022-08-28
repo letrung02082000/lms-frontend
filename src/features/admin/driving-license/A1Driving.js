@@ -214,7 +214,7 @@ function AllDriving() {
           );
         })}
 
-        <button
+        {/* <button
           onClick={() => handleAllDatesButton()}
           className={styles.dateButton}
           style={
@@ -222,7 +222,7 @@ function AllDriving() {
           }
         >
           Tất cả
-        </button>
+        </button> */}
         <span>Tổng: {data.length} hồ sơ</span>
       </div>
       <div className={styles.stateButtonContainer}>

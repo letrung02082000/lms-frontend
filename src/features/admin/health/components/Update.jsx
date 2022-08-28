@@ -1,5 +1,5 @@
-import guideApi from 'api/guideApi';
-import Loading from 'components/common/Loading';
+import healthApi from 'api/healthApi';
+import Loading from 'shared/components/Loading';
 import {
   ContentState,
   convertFromHTML,
@@ -25,8 +25,8 @@ function Update(props) {
 
   useEffect(() => {
     if (id) {
-      guideApi
-        .getHealthPostById(id)
+      healthApi
+        .getHealthById(id)
         .then((res) => {
           if (res.data.content) {
             const blocksFromHTML = convertFromHTML(res.data.content);
@@ -68,8 +68,8 @@ function Update(props) {
       return alert('Độ ưu tiên phải là số lớn hơn 0!');
     }
 
-    guideApi
-      .updateHealthPosts(id, {
+    healthApi
+      .updateHealth(id, {
         priority,
         title,
         content,

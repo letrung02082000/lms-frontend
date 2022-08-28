@@ -1,10 +1,10 @@
 import axios from 'axios';
-import Loading from 'components/common/Loading';
-import TitleBar from 'components/common/TitleBar';
+import Loading from 'shared/components/Loading';
+import TitleBar from 'shared/components/TitleBar';
 import QrReader from 'modern-react-qr-reader';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { selectUser } from 'store/userSlice';
 import authHeader from 'utils/authHeader';
 
@@ -12,9 +12,9 @@ import { BikeUserInfo, UploadCard } from './components';
 import styles from './styles.module.css';
 
 export function BicyclePage(props) {
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const query = new URLSearchParams(props.location.search);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
   const id = query.get('id');
   const [data, setData] = useState(null);
   const [scanner, setScanner] = useState(null);
@@ -45,7 +45,7 @@ export function BicyclePage(props) {
     alert(
       'Ứng dụng không có quyền truy cập camera. Vui lòng cấp quyền camera trên trình duyệt của bạn. Hoặc liên hệ: 0797324886 để được hỗ trợ nhanh nhất.'
     );
-    history.go(0);
+    window.location.reload();
   };
 
   const onNewScanResult = (data) => {
@@ -59,7 +59,7 @@ export function BicyclePage(props) {
           if (res.status === 200) {
             console.log(res.data.data);
             alert('Đăng ký thuê xe thành công!');
-            history.push('/bicycles');
+            navigate.push('/bicycles');
           }
         })
         .catch((err) => {
@@ -89,7 +89,7 @@ export function BicyclePage(props) {
           <div className={styles.loginContainer}>
             <p>Đăng nhập để sử dụng tính năng này</p>
             <button
-              onClick={() => history.push('/login')}
+              onClick={() => navigate.push('/login')}
               className={styles.scanButton}
             >
               Đăng nhập

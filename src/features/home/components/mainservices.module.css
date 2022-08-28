@@ -16,6 +16,7 @@
   margin: 1rem 0;
   width: auto;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .itemContainer div {

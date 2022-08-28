@@ -1,12 +1,12 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './explore.module.css';
 export default function Category(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    history.push(`/coupon-list?type=${props.type}`);
+    navigate(`/coupon-list?type=${props.type}`);
   };
 
   return (

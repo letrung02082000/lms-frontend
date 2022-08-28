@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import Loading from 'components/common/Loading';
-import TitleBar from 'components/common/TitleBar';
+import Loading from 'shared/components/Loading';
+import TitleBar from 'shared/components/TitleBar';
 import styles from './styles.module.css';
 import healthApi from 'api/healthApi';
+import { useLocation } from 'react-router-dom';
 
 export function HealthDetailPage(props) {
-  const search = new URLSearchParams(props.location.search);
-  const guideId = search.get('id');
-  const [guide, setGuide] = useState(null);
+  const location = useLocation();
+  const search = new URLSearchParams(location.search);
+  const healthId = search.get('id');
+  const [health, setHealth] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     healthApi
-      .getGuideById(guideId)
+      .getHealthById(healthId)
       .then((res) => {
         if (res.data) {
-          setGuide(res.data);
+          setHealth(res.data);
           setLoading(false);
         }
       })
@@ -33,11 +35,11 @@ export function HealthDetailPage(props) {
     <>
       <TitleBar title='Bài viết' />
       <div className={styles.guideContainer}>
-        <h3>{guide?.title}</h3>
+        <h3>{health?.title}</h3>
         <span className={styles.date}>
-          Đăng ngày: {new Date(guide?.createdAt).toLocaleDateString('en-GB')}
+          Đăng ngày: {new Date(health?.createdAt).toLocaleDateString('en-GB')}
         </span>
-        <div dangerouslySetInnerHTML={{ __html: guide?.content }}></div>
+        <div dangerouslySetInnerHTML={{ __html: health?.content }}></div>
       </div>
     </>
   );

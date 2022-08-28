@@ -1,11 +1,11 @@
 import guideApi from 'api/guideApi';
-import Loading from 'components/common/Loading';
+import Loading from 'shared/components/Loading';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './allGuides.module.css';
 
 function AllGuides() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ function AllGuides() {
   }, [page]);
 
   const handleUpdateButton = (id) => {
-    history.push(`/guide-admin?navigation=update&id=${id}`);
+    navigate(id);
   };
 
   const toggleVisibleButton = (id, isVisible) => {

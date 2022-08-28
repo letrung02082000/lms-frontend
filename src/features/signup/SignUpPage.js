@@ -5,13 +5,13 @@ import MainLayout from '../../layouts/MainLayout';
 import styles from './signUpPage.module.css';
 
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import { updateUser, selectUser } from '../../store/userSlice';
 
 const SignUpPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -56,7 +56,7 @@ const SignUpPage = () => {
               data: userInfo,
             })
           );
-          history.push('/profile');
+          navigate('/profile');
         }
       }
     } catch (error) {

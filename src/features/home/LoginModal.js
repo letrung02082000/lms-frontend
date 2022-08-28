@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './loginModal.module.css';
 import { MdOutlineClose } from 'react-icons/md';
 
 const LoginModal = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleLoginClick = () => {
-    history.push('/login');
+    navigate('/login');
   };
 
   const handleSignUpClick = () => {
-    history.push('/signup');
+    navigate('/signup');
   };
 
   return (

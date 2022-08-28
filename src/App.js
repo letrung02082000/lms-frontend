@@ -1,14 +1,19 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import checkLogin from 'utils/checkLogin';
+import AdminRoutes from "features/admin/AdminRoutes";
 
 import {
   AccountPage,
   AdminBicyclePage,
   AdminDrivingPage,
   AdminGuestHousePage,
-  AdminGuidePage,
   AdminHealthPage,
   BankPage,
   BicyclePage,
@@ -20,7 +25,7 @@ import {
   CouponScannedPage,
   DrivingInstructionPage,
   DrivingRegisterPage,
-  DrivingTestPage,
+  DrivingInfoPage,
   ExplorePage,
   GuestHouseInfoPage,
   GuestHouseReportPage,
@@ -42,7 +47,10 @@ import {
   QrScanPage,
   UniformDetailPage,
   UniformPage,
+  SupportPage,
+  B2InfoPage
 } from 'features';
+import PhotocopyRoutes from 'features/photocopy/Routes';
 
 class App extends React.Component {
   render() {
@@ -51,95 +59,135 @@ class App extends React.Component {
     return (
       <Router>
         <ToastContainer />
-        <Switch>
-          <Route exact path='/' component={HomePage} />
-          <Route exact path='/explore' component={ExplorePage} />
-          <Route exact path='/profile' component={ProfilePage} />
-          <Route exact path='/contact' component={MaintainPage} />
-          <Route exact path='/account' component={AccountPage} />
-          <Route exact path='/login' component={LoginPage} />
-          <Route exact path='/guest-house' component={GuestHouseInfoPage} />
+        <Routes>
+          <Route exact path='/' element={<HomePage />} />
+          <Route exact path='/explore' element={<ExplorePage />} />
+          <Route exact path='/profile' element={<ProfilePage />} />
+          <Route exact path='/contact' element={<MaintainPage />} />
+          <Route exact path='/account' element={<AccountPage />} />
+          <Route exact path='/login' element={<LoginPage />} />
+          <Route exact path='/guest-house' element={<GuestHouseInfoPage />} />
           <Route
             exact
             path='/guest-house-user'
-            component={GuestHouseUserPage}
+            element={<GuestHouseUserPage />}
           />
           <Route
             exact
             path='/guest-house-report'
-            component={GuestHouseReportPage}
+            element={<GuestHouseReportPage />}
           />
           <Route
             exact
             path='/guest-house-admin'
-            component={AdminGuestHousePage}
+            element={
+              <RequireAdminAuth>
+                <AdminGuestHousePage />
+              </RequireAdminAuth>
+            }
           />
-          <Route exact path='/pool-info' component={PoolInfoPage} />
-          <Route exact path='/pool-ticket' component={PoolTicketPage} />
-          <Route exact path='/pool-tutor' component={PoolTutorPage} />
-          <Route exact path='/qrscan' component={QrScanPage} />
+          <Route exact path='/pool-info' element={<PoolInfoPage />} />
+          <Route exact path='/pool-ticket' element={<PoolTicketPage />} />
+          <Route exact path='/pool-tutor' element={<PoolTutorPage />} />
+          <Route exact path='/qrscan' element={<QrScanPage />} />
           <Route
             exact
             path='/guest-house-info'
-            component={GuestHouseInfoPage}
+            element={<GuestHouseInfoPage />}
           />
 
-          <Route exact path='/photocopies' component={MaintainPage} />
-          <Route exact path='/photocopy' component={MaintainPage} />
-
-          <Route exact path='/driving-test' component={DrivingTestPage} />
+          <Route exact path='/driving-test' element={<DrivingInfoPage />} />
           <Route
             exact
             path='/driving-registration'
-            component={DrivingRegisterPage}
+            element={<DrivingRegisterPage />}
           />
           <Route
             exact
             path='/driving-instruction'
-            component={DrivingInstructionPage}
+            element={<DrivingInstructionPage />}
           />
+          <Route path='/driving-license' element={<B2InfoPage />}>
+            <Route path='b2' element={<B2InfoPage />} />
+          </Route>
 
-          <Route exact path='/jobs' component={JobPage} />
-          <Route path='/job' component={JobDetailPage} />
+          <Route exact path='/jobs' element={<JobPage />} />
+          <Route path='/job' element={<JobDetailPage />} />
 
-          <Route exact path='/coupon-list' component={CouponListPage} />
-          <Route exact path='/coupon' component={CouponPage} />
-          <Route exact path='/coupon-scanned' component={CouponScannedPage} />
+          <Route exact path='/coupon-list' element={<CouponListPage />} />
+          <Route exact path='/coupon' element={<CouponPage />} />
+          <Route exact path='/coupon-scanned' element={<CouponScannedPage />} />
 
-          <Route exact path='/bicycles' component={BicyclesPage} />
-          <Route exact path='/bicycle' component={BicyclePage} />
+          <Route exact path='/bicycles' element={<BicyclesPage />} />
+          <Route exact path='/bicycle' element={<BicyclePage />} />
 
-          <Route exact path='/bank' component={BankPage} />
-          <Route exact path='/bus-survey' component={BusSurveyPage} />
+          <Route exact path='/bank' element={<BankPage />} />
+          <Route exact path='/bus-survey' element={<BusSurveyPage />} />
 
-          <Route exact path='/uniforms' component={UniformPage} />
-          <Route exact path='/uniform' component={UniformDetailPage} />
+          <Route exact path='/uniforms' element={<UniformPage />} />
+          <Route exact path='/uniform' element={<UniformDetailPage />} />
 
-          <Route exact path='/guides' component={GuidePage} />
-          <Route exact path='/guide' component={GuideDetailPage} />
+          <Route exact path='/guides' element={<GuidePage />} />
+          <Route exact path='/guide' element={<GuideDetailPage />} />
 
-          <Route exact path='/health' component={HealthDetailPage} />
-          <Route exact path='/healths' component={HealthPage} />
+          <Route exact path='/health' element={<HealthDetailPage />} />
+          <Route exact path='/healths' element={<HealthPage />} />
+          <Route exact path='/photocopies/*' element={<PhotocopyRoutes />} />
 
           <Route
             exact
             path='/bus-registration'
-            component={BusRegistrationPage}
+            element={<BusRegistrationPage />}
           />
 
-          {/* admin */}
-          <Route exact path='/driving-admin' component={AdminDrivingPage} />
-          <Route exact path='/bicycle-admin' component={AdminBicyclePage} />
-          <Route exact path='/guide-admin' component={AdminGuidePage} />
-          <Route exact path='/health-admin' component={AdminHealthPage} />
+          <Route exact path='/driving-admin' element={<AdminDrivingPage />} />
+          <Route
+            exact
+            path='/bicycle-admin'
+            element={
+              <RequireAdminAuth>
+                <AdminBicyclePage />
+              </RequireAdminAuth>
+            }
+          />
+          <Route
+            exact
+            path='admin/*'
+            element={
+              <RequireAdminAuth>
+                <AdminRoutes />
+              </RequireAdminAuth>
+            }
+          />
 
-          <Route exact path='/support' component={MaintainPage} />
-          <Route exact path='/maintain' component={MaintainPage} />
-          <Route component={NotFoundPage} />
-        </Switch>
+          <Route exact path='/support' element={<SupportPage />} />
+          <Route exact path='/maintain' element={<MaintainPage />} />
+          <Route path='*' element={<NotFoundPage />} />
+        </Routes>
       </Router>
     );
   }
 }
 
 export default App;
+
+const RequireAuth = ({ children }) => {
+  const token = localStorage.getItem('user-jwt-tk');
+  const refreshToken = localStorage.getItem('user-jwt-rftk');
+
+  if (!token || !refreshToken) {
+    return <Navigate to='/login' />;
+  }
+  return children;
+};
+
+const RequireAdminAuth = ({ children }) => {
+  const token = localStorage.getItem('user-jwt-tk');
+  const refreshToken = localStorage.getItem('user-jwt-rftk');
+  const role = localStorage.getItem('user-role');
+
+  if (!token || !refreshToken || Number(role) === 0 || !role) {
+    return <Navigate to='/login' />;
+  }
+  return children;
+};

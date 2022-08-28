@@ -1,0 +1,20 @@
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:focus {
+    background-color: var(--primary);
+    border-color: var(--primary);   
+}
+
+.btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+
+    &:focus {
+        border-color: var(--primary);
+        color: var(--primary);
+        background-color: white;
+    }
+}

@@ -1,11 +1,11 @@
 import healthApi from 'api/healthApi';
-import Loading from 'components/common/Loading';
+import Loading from 'shared/components/Loading';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './allHealths.module.css';
 
 function AllHealths() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ function AllHealths() {
 
   useEffect(() => {
     healthApi
-      .getAllHealthPostss(page, limit)
+      .getAllHealths(page, limit)
       .then((res) => {
         if (res.data) {
           setHealthList(res.data);
@@ -26,15 +26,15 @@ function AllHealths() {
   }, [page]);
 
   const handleUpdateButton = (id) => {
-    history.push(`/health-admin?navigation=update&id=${id}`);
+    navigate(`/health-admin?navigation=update&id=${id}`);
   };
 
   const toggleVisibleButton = (id, isVisible) => {
     healthApi
-      .updateHealthPosts(id, { isVisible })
+      .updateHealth(id, { isVisible })
       .then((res) => {
         healthApi
-          .getAllHealthPostss(page, limit)
+          .getAllHealths(page, limit)
           .then((res) => {
             setHealthList(res.data);
             setLoading(false);

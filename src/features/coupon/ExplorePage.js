@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import MainLayout from 'components/layouts/MainLayout';
-import { useHistory } from 'react-router-dom';
+import MainLayout from 'shared/layouts/MainLayout';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './explorePage.module.css';
 
@@ -22,7 +22,7 @@ import { FaHotel } from 'react-icons/fa';
 import { AiOutlinePrinter } from 'react-icons/ai';
 import authHeader from '../../utils/authHeader';
 function ExplorePage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [couponList, setCouponList] = useState([]);
   const [whiteList, setWhiteList] = useState([]);
   const [myCouponList, setMyCouponList] = useState([]);
@@ -71,7 +71,7 @@ function ExplorePage() {
   };
 
   const navigateTo = (path) => {
-    history.push(path);
+    navigate(path);
   };
 
   return (

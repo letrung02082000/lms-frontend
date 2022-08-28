@@ -1,2 +1,7 @@
-export * from './GuidePage';
-export * from './DetailPage';
+import GuideDetailPage from './DetailPage'
+import GuidePage from './GuidePage'
+
+export {
+    GuideDetailPage,
+    GuidePage
+}

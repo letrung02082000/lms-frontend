@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 import styles from './detailPage.module.css';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,9 +10,11 @@ import {
   updateTel,
   updateZalo,
 } from '../../store/userSlice';
+import { useLocation } from 'react-router-dom';
 
 export default function DetailPage(props) {
-  const query = new URLSearchParams(props.location.search);
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
   const id = query.get('id');
   const [data, setData] = useState(null);
   const [documentFile, setDocument] = useState(null);

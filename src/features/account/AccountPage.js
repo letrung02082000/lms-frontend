@@ -1,33 +1,38 @@
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 import { selectUser, logoutUser } from 'store/userSlice';
-
-import styles from './accountPage.module.css';
-
-//component
-import AccountItem from './AccountItem';
-import AccountInfo from './AccountInfo';
-import Tool from 'components/common/Tool';
+import Tool from 'shared/components/Tool';
+import styled from 'styled-components';
+import MainLayout from 'shared/layouts/MainLayout';
+import Item from './components/Item';
+import ProfileImage from './components/ProfileImage';
+import { useState } from 'react';
 
 function AccountPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const [randomImageUrl, setRandomImageUrl] = useState();
 
   const handleLoginClick = () => {
-    history.push('/login');
+    navigate('/login');
   };
 
   const handleSignUpClick = () => {
-    history.push('/login');
+    navigate('/login');
   };
 
-  // const handleUpdateInfo = () => {
-  //   history.push('/profile');
-  // };
+  const getRandomImage = () => {
+    fetch('https://cataas.com/c?wi=200')
+      .then((response) => response.blob())
+      .then((imageBlob) => {
+        setRandomImageUrl(URL.createObjectURL(imageBlob));
+      });
+  }
+
   const handleLogout = () => {
     const refreshToken = localStorage.getItem('user-jwt-rftk');
     axios
@@ -45,43 +50,56 @@ function AccountPage() {
   };
 
   return (
-    <>
-      <div className={styles.accountPageContainer}>
+    <Styles>
+      <MainLayout>
         {user.isLoggedIn ? (
           <>
-            <AccountInfo />
-            {/* <AccountHistory />
-          <Tool handle={handleUpdateInfo} title='Cập nhật thông tin' />
-          <Tool handle={handleUpdateInfo} title='Cài đặt' />
-          <Tool handle={handleUpdateInfo} title='Về chúng tôi' />
-          <Tool handle={handleUpdateInfo} title='Báo cáo lỗi' /> */}
-            <Tool handle={handleLogout} title='Đăng xuất' />
+            <ProfileImage src={randomImageUrl}/>
+            <button className='btn w-100' onClick={getRandomImage}>Xin chào {user?.data?.name}!</button>
+
+            <Item path='/support'>Hỗ trợ</Item>
+            <Item onClick={handleLogout}>Đăng xuất</Item>
           </>
         ) : (
-          <div style={{ position: 'relative', height: '100%' }}>
-            <div>
-              <div className={styles.welcomeTitle}>
-                <p>Chào mừng bạn đến với iSinhVien!</p>
-                <button
-                  onClick={handleLoginClick}
-                  className={styles.buttonOutlined}
-                >
-                  Đăng nhập
-                </button>
-                <button
-                  onClick={handleSignUpClick}
-                  className={styles.buttonOutlined}
-                >
-                  Đăng ký ngay
-                </button>
-              </div>
-              <AccountItem route='/support'>Hỗ trợ</AccountItem>
+          <>
+            <div className='welcome'>
+              <p className='welcome-title'>Chào mừng bạn đến với iSinhVien!</p>
+              <button onClick={handleLoginClick} className='btn fw-bold'>
+                Đăng nhập
+              </button>
+              <button onClick={handleSignUpClick} className='btn fw-bold ms-3'>
+                Đăng ký ngay
+              </button>
             </div>
-          </div>
+            <div className='content'>
+              <Item path='/support'>Hỗ trợ</Item>
+            </div>
+          </>
         )}
-      </div>
-    </>
+      </MainLayout>
+    </Styles>
   );
 }
 
 export default AccountPage;
+
+const Styles = styled.div`
+  .welcome {
+    padding: 1rem;
+    background-color: var(--primary);
+
+    p {
+      color: var(--white);
+      font-weight: bold;
+    }
+
+    button {
+      color: white;
+      border: 1px solid white;
+    }
+  }
+
+  .content {
+    margin-top: 1rem;
+  }
+`;

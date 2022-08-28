@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 import QRCode from 'qrcode.react';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'store/userSlice';
 
-import Loading from 'components/common/Loading';
+import Loading from 'shared/components/Loading';
 import { MdArrowBack } from 'react-icons/md';
 import authHeader from 'utils/authHeader';
 import styles from './couponPage.module.css';
@@ -19,9 +19,10 @@ export function CouponPage(props) {
     'In ấn',
     'Đồng phục',
   ];
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const user = useSelector(selectUser);
-  const query = new URLSearchParams(props.location.search);
+  const query = new URLSearchParams(location.search);
   const couponId = query.get('id');
   const [coupon, setCoupon] = useState(null);
   const [save, setSave] = useState(false);
@@ -64,7 +65,7 @@ export function CouponPage(props) {
       : 'Hết hạn';
 
   const handleBackClick = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const handleSaveClick = () => {
@@ -97,7 +98,7 @@ export function CouponPage(props) {
 
         {!user.isLoggedIn ? (
           <button
-            onClick={() => history.push('/login')}
+            onClick={() => navigate('/login')}
             className={styles.loginButton}
           >
             Đăng nhập để nhận QR

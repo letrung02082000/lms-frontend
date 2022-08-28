@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 // import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 
 import { MdOutlineContentCopy } from 'react-icons/md';
 import styles from './jobDetailPage.module.css';
+import { useLocation } from 'react-router-dom';
 
 function JobDetailPage(props) {
-  const id = new URLSearchParams(props.location.search).get('id');
+  const location = useLocation();
+  const id = new URLSearchParams(location.search).get('id');
   const [data, setData] = useState(null);
   const [telCopied, setTelCopied] = useState(false);
   const [zaloCopied, setZaloCopied] = useState(false);

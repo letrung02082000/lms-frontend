@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './voucherCard.module.css';
 import authHeader from '../../../utils/authHeader';
 function VoucherCard(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [expiryTime, setExpiryTime] = useState(null);
@@ -33,12 +33,12 @@ function VoucherCard(props) {
         setRefresh(!refresh);
       })
       .catch((err) => {
-        history.push(`/coupon?id=${coupon._id}`);
+        navigate(`/coupon?id=${coupon._id}`);
       });
   };
 
   const handleClick = () => {
-    history.push(`/coupon?id=${coupon._id}&saved=${isSaved ? 1 : 0}`);
+    navigate(`/coupon?id=${coupon._id}&saved=${isSaved ? 1 : 0}`);
   };
 
   return (

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Loading from 'components/common/Loading';
-import TitleBar from 'components/common/TitleBar';
+import Loading from 'shared/components/Loading';
+import TitleBar from 'shared/components/TitleBar';
 import styles from './styles.module.css';
 import guideApi from '../../api/guideApi';
+import { useLocation } from 'react-router-dom';
 
-export function GuideDetailPage(props) {
-  const search = new URLSearchParams(props.location.search);
+export default function GuideDetailPage(props) {
+  const location = useLocation()
+  const search = new URLSearchParams(location.search);
   const guideId = search.get('id');
   const [guide, setGuide] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,5 +44,3 @@ export function GuideDetailPage(props) {
     </>
   );
 }
-
-export default GuideDetailPage;

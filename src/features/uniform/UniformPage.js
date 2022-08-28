@@ -1,12 +1,12 @@
 import axios from 'axios';
-import SearchBar from 'components/common/SearchBar';
-import TitleBar from 'components/common/TitleBar';
+import SearchBar from 'shared/components/SearchBar';
+import TitleBar from 'shared/components/TitleBar';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './uniformPage.module.css';
 
 export default function UniformPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [uniformList, setUniformList] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -27,7 +27,7 @@ export default function UniformPage() {
   }, [page, limit]);
 
   const navigateTo = (url, data) => {
-    history.push(url, data);
+    navigate(url, { state: data });
   };
 
   const handleSearchChange = (e) => {
@@ -62,9 +62,6 @@ export default function UniformPage() {
   return (
     <div className={styles.container}>
       <TitleBar title='Đặt đồng phục' />
-      {/* <div className={styles.imgContainer}>
-        <img src='https://i.imgur.com/Wkn6m6d.png' alt='photocopy banner' />
-      </div> */}
       <SearchBar
         placeholder='Tra cứu đơn hàng của bạn'
         focusText='Nhập số điện thoại của bạn và nhấn Enter'
@@ -91,7 +88,7 @@ export default function UniformPage() {
                 href={child.documentLink}
                 alt='document link'
                 target='_blank'
-                rel='noreferer noopener'
+                rel='noreferrer noopenner'
               >
                 Link tài liệu (admin)
                 <br />
@@ -100,7 +97,7 @@ export default function UniformPage() {
                 href={`https://drive.google.com/file/d/${child.receiptId}`}
                 alt='receipt link'
                 target='_blank'
-                rel='noreferer noopener'
+                rel='noreferrer noopenner'
               >
                 Link hóa đơn (admin)
               </a>

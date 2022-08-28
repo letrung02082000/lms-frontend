@@ -18,3 +18,4 @@ export * from './profile';
 export * from './qr-scan';
 export * from './swimming-pool';
 export * from './uniform';
+export * from './support';

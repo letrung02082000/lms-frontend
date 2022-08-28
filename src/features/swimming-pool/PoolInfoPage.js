@@ -1,18 +1,18 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { updateShow } from 'store/navSlice';
 import styles from './swimmingPoolInfoPage.module.css';
 
 //swiper
-import TitleBar from 'components/common/TitleBar';
+import TitleBar from 'shared/components/TitleBar';
 import { Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import 'swiper/swiper-bundle.min.css';
 import 'swiper/swiper.min.css';
 
 function SwimmingPoolInfoPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -48,13 +48,13 @@ function SwimmingPoolInfoPage() {
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <button
           className={styles.signupButton}
-          onClick={() => history.push('/pool-ticket')}
+          onClick={() => navigate('/pool-ticket')}
         >
           Mua vé tháng
         </button>
         <button
           className={styles.signupButton}
-          onClick={() => history.push('/pool-tutor')}
+          onClick={() => navigate('/pool-tutor')}
         >
           Đăng ký học bơi
         </button>
