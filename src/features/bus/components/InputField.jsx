@@ -8,7 +8,7 @@ const InputField = ({
   placeholder,
   type = "text",
   className,
-  require = "",
+  require = false,
   errors,
 }) => {
   return (
