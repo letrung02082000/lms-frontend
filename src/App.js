@@ -45,7 +45,7 @@ import {
   PoolTutorPage,
   ProfilePage,
   QrScanPage,
-  UniformDetailPage,
+  UniformRegistrationPage,
   UniformPage,
   SupportPage,
   B2InfoPage
@@ -124,15 +124,14 @@ class App extends React.Component {
           <Route exact path='/bank' element={<BankPage />} />
           <Route exact path='/bus-survey' element={<BusSurveyPage />} />
 
-          <Route exact path='/uniforms' element={<UniformPage />} />
-          <Route exact path='/uniform' element={<UniformDetailPage />} />
+          <Route exact path='/uniform' element={<UniformRegistrationPage />} />
 
           <Route exact path='/guides' element={<GuidePage />} />
           <Route exact path='/guide' element={<GuideDetailPage />} />
 
           <Route exact path='/health' element={<HealthDetailPage />} />
           <Route exact path='/healths' element={<HealthPage />} />
-          <Route exact path='/photocopies/*' element={<PhotocopyRoutes />} />
+          <Route exact path='/photocopy/*' element={<PhotocopyRoutes />} />
 
           <Route
             exact

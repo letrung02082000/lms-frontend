@@ -68,7 +68,7 @@ export function BusRegistrationPage(props) {
         <InputField
           register={register}
           name={"zalo"}
-          label="TSố điện thoại Zalo (Không bắt buộc)"
+          label="Số điện thoại Zalo (Không bắt buộc)"
           placeholder="Nhập số điện thoại zalo của bạn"
           errors={errors}
         ></InputField>
@@ -91,13 +91,13 @@ export function BusRegistrationPage(props) {
         {isLoading ? (
           <Form.Group className="align-self-center">
             <Button variant="primary" type="submit" className="px-3" disabled>
-              ... Đang đăng kí
+              Đang đăng ký...
             </Button>
           </Form.Group>
         ) : (
           <Form.Group className="align-self-center">
             <Button variant="primary" type="submit" className="px-3">
-              Đăng kí
+              Đăng ký
             </Button>
           </Form.Group>
         )}

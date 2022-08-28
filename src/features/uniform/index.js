@@ -1,2 +1,9 @@
-export { default as UniformPage } from './UniformPage';
-export { default as UniformDetailPage } from './DetailPage';
+import UniformDetailPage from './DetailPage'
+import UniformPage from './UniformPage'
+import UniformRegistrationPage from './pages/RegistrationPage';
+
+export {
+    UniformDetailPage,
+    UniformPage,
+    UniformRegistrationPage
+}

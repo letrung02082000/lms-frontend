@@ -4,7 +4,7 @@ import { SearchPlaceHolder } from "shared/components/search-bar";
 import TitleBar from "shared/components/TitleBar";
 import styled from "styled-components";
 import CreationForm from "../components/CreationForm";
-import SearchModal from "../../../shared/components/input-field-form/SearchModal";
+import SearchModal from "../../../shared/components/form/SearchModal";
 
 function PhotocopyPage() {
   const [show, setShow] = useState(false);

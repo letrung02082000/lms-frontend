@@ -57,7 +57,7 @@ function MainServices(props) {
         </p>
       </div>
       <ServiceItem
-        path='photocopies'
+        path='photocopy'
         iconSrc='/main-icon/photocopy.png'
         alt='photo'
       >
@@ -82,7 +82,7 @@ function MainServices(props) {
       </div>
       <div
         className={styles.itemContainer}
-        onClick={() => navigateTo('/maintain')}
+        onClick={() => navigateTo('/uniform')}
       >
         <div>
           <img
