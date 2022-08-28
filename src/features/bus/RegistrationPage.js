@@ -5,6 +5,7 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import InputField from "./components/InputField";
+import Content from "./components/Content";
 
 export function BusRegistrationPage(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,10 +44,12 @@ export function BusRegistrationPage(props) {
   return (
     <Styles>
       <TitleBar title="Đặt xe đưa rước" navigation="/uniforms" />
+
       <Form
         onSubmit={handleSubmit(handleSubmitButton)}
         className="drivingFormContainer"
       >
+        <Content />
         <InputField
           register={register}
           name={"name"}
