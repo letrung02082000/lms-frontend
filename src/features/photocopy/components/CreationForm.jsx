@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
-import FileUploader from "../../../shared/components/input-field-form/FileUploader";
-import InputField from "../../../shared/components/input-field-form/InputField";
-import SelectField from "../../../shared/components/input-field-form/SelectField";
+import FileUploader from "../../../shared/components/form/FileUploader";
+import InputField from "../../../shared/components/form/InputField";
+import SelectField from "../../../shared/components/form/SelectField";
 import photocopyApi from "api/photocopyApi";
 import { ToastWrapper } from "utils";
-import RadioField from "../../../shared/components/input-field-form/RadioField";
+import RadioField from "../../../shared/components/form/RadioField";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { AiOutlineDelete } from "react-icons/ai";
-import OrderInfo from "../../../shared/components/input-field-form/OrderInfo";
+import OrderInfo from "../../../shared/components/form/OrderInfo";
 
 function CreationForm() {
   const [orderInfo, setOrderInfo] = useState(false);
