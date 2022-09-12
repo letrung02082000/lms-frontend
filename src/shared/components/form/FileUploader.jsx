@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
 import axiosClient from 'api/axiosClient';
 
-function FileUploader(props) {
+function FileUploader({className, ...props}) {
   const FILE_MAX_SIZE = 50 * 1024 * 1024;
   const [uploadPercent, setUploadPercent] = useState(false);
 
@@ -66,7 +66,7 @@ function FileUploader(props) {
     validator: fileSizeValidator,
   });
   return (
-    <Styles>
+    <Styles className={className}>
       <Form.Label className='mb-3'>{props?.label || props?.children || ''}</Form.Label>
       <button type='button' {...getRootProps()} className='btn d-flex flex-column align-items-center' disabled={props?.uploading}>
         <input {...getInputProps()} />

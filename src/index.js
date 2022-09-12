@@ -8,12 +8,14 @@ import { store } from './store/index';
 
 import 'react-datetime/css/react-datetime.css';
 import 'react-toastify/dist/ReactToastify.css';
-import 'assets/styles/global.css'
-import 'assets/styles/custom.scss'
+import 'assets/styles/global.scss'
+import { ModalProvider } from 'react-modal-hook';
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ModalProvider>
+      <App />
+    </ModalProvider>
   </Provider>,
   document.getElementById('root')
 );

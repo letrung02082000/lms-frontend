@@ -47,6 +47,8 @@ function RegistrationForm() {
           name: '',
           tel: '',
           zalo: '',
+          note: '',
+          quantity: '',
         });
         ToastWrapper(
           'Đăng ký thành công. Chúng mình sẽ liên hệ với bạn trong thời gian sớm nhất!',
@@ -56,7 +58,7 @@ function RegistrationForm() {
       })
       .catch((error) => {
         ToastWrapper(
-          'Đăng ký thất bại. Vui lòng liên hệ di động/zalo 0877876877 để được hỗ trơ!',
+          'Đăng ký thất bại. Vui lòng liên hệ di động/zalo 0877876877 để được hỗ trợ!',
           'error'
         );
         setLoading(false);

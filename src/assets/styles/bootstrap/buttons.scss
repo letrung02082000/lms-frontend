@@ -1,6 +1,18 @@
 .btn-primary {
     background-color: var(--primary);
     border-color: var(--primary);
+
+    &:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background-color: white;
+    }
+
+    &:focus {
+        border-color: var(--primary);
+        color: var(--primary);
+        background-color: white;
+    }
 }
 
 .btn-primary:focus {

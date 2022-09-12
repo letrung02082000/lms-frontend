@@ -24,8 +24,8 @@ function InputField({
 
   return (
     <Styles>
-      <Form.Group className='mb-3'>
-        <Form.Label className='mb-3'>{label || children || ''}</Form.Label>
+      <Form.Group>
+        <Form.Label className='my-3'>{label || children || ''}</Form.Label>
         <Form.Control
           {...props}
           control={control}

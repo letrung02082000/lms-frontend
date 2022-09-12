@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
-import FileUploader from "../../../shared/components/form/FileUploader";
-import InputField from "../../../shared/components/form/InputField";
-import SelectField from "../../../shared/components/form/SelectField";
+import FileUploader from "shared/components/form/FileUploader";
+import InputField from "shared/components/form/InputField";
+import SelectField from "shared/components/form/SelectField";
 import photocopyApi from "api/photocopyApi";
 import { ToastWrapper } from "utils";
-import RadioField from "../../../shared/components/form/RadioField";
+import RadioField from "shared/components/form/RadioField";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { AiOutlineDelete } from "react-icons/ai";
-import OrderInfo from "../../../shared/components/form/OrderInfo";
+import OrderInfo from "./OrderInfo";
+import { useModal } from "react-modal-hook";
+import ConfirmModal from "shared/components/modal/ConfirmModal";
 
 function CreationForm() {
+  const [deleteIndex, setDeleteIndex] = useState();
+  const [appliedCoupon, setAppliedCoupon] = useState();
+  const [showModal, hideModal] = useModal(() => {
+    const data = {
+      title: 'Xóa tệp',
+      body: 'Bạn có chắc chắn muốn xóa tệp này?',
+    };
+    return <ConfirmModal hideModal={hideModal} data={data} onConfirm={onDeleteConfirm}/>;
+  });
+  
   const [orderInfo, setOrderInfo] = useState(false);
   const photocopyInfo = JSON.parse(
     localStorage.getItem("photocopy-info") || "{}"
@@ -33,9 +45,14 @@ function CreationForm() {
     { label: "Kí túc xá Khu B", value: "KTX Khu B" },
   ];
   const [isDelivered, setIsDelivered] = useState("0");
-  const { handleSubmit, control, setValue } = useForm({
-    mode: "onSubmit",
-    reValidateMode: "onChange",
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    watch
+  } = useForm({
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     defaultValues: {
       name: photocopyInfo?.name,
       tel: photocopyInfo?.tel,
@@ -44,7 +61,7 @@ function CreationForm() {
     },
     resolver: undefined,
     context: undefined,
-    criteriaMode: "firstError",
+    criteriaMode: 'firstError',
     shouldFocusError: true,
     shouldUnregister: true,
     shouldUseNativeValidation: false,
@@ -53,6 +70,19 @@ function CreationForm() {
 
   const handleDeliveryChange = (value) => {
     setIsDelivered(value);
+  };
+
+  const { coupon } = watch();
+  const applyCoupon = () => {
+    photocopyApi
+      .applyCoupon(coupon?.toUpperCase())
+      .then((res) => {
+        ToastWrapper('Áp dụng mã giảm giá thành công', 'success')
+        setAppliedCoupon(res?.data);
+      })
+      .catch((e) => {
+        ToastWrapper(e?.response?.data?.data?.message || 'Mã giảm giá không hợp lệ', 'error')
+      });
   };
 
   const onSubmit = (data) => {
@@ -71,6 +101,13 @@ function CreationForm() {
     if (data?.address) {
       data.address = data.address.value;
     }
+
+    if(appliedCoupon) {
+      data.coupon = appliedCoupon?._id;
+    } else {
+      delete data.coupon;
+    }
+    console.log(appliedCoupon)
 
     localStorage.setItem("photocopy-info", JSON.stringify(data));
     const order = {
@@ -103,8 +140,10 @@ function CreationForm() {
       })
       .catch((error) => {
         ToastWrapper(
-          error?.response?.data?.message || "Tạo đơn hàng thất bại!",
-          "error"
+          error?.response?.data?.data?.message ||
+            error?.response?.data?.message ||
+            'Tạo đơn hàng thất bại!',
+          'error'
         );
       });
   };
@@ -137,18 +176,23 @@ function CreationForm() {
     setFileIds((prev) => [...prev, `https://drive.google.com/file/d/${value}`]);
   };
   const handleFileNames = (value) => setFileNames((prev) => [...prev, value]);
-  const handleDeleteFile = (index) => {
-    setFileIds((prev) => {
-      const temp = [...prev];
-      temp.splice(index, 1);
-      return temp;
-    });
-    setFileNames((prev) => {
-      const temp = [...prev];
-      temp.splice(index, 1);
-      return temp;
-    });
-  };
+
+  const onDeleteConfirm = () => {
+    if(typeof deleteIndex === 'number') {
+      setFileIds((prev) => {
+        const temp = [...prev];
+        temp.splice(deleteIndex, 1);
+        return temp;
+      });
+      setFileNames((prev) => {
+        const temp = [...prev];
+        temp.splice(deleteIndex, 1);
+        return temp;
+      });
+    }
+
+    hideModal();
+  }
 
   if (orderInfo) {
     return <OrderInfo {...orderInfo} />;
@@ -157,19 +201,25 @@ function CreationForm() {
   return (
     <Styles>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <div className="files-stack d-flex flex-column justify-content-center align-items-center">
+        <div className="files-stack d-flex flex-column justify-content-center align-items-start">
           {fileNames?.map((name, index) => {
             return (
               <div
                 key={`${name}_${index}`}
-                className="d-flex align-items-center"
+                className='d-flex align-items-center justify-content-between w-100'
               >
-                <span>{name}</span>
+                <span>
+                  {index + 1}. {name}
+                </span>
                 <button
-                  className="btn ms-2"
-                  onClick={() => handleDeleteFile(index)}
+                  type='button'
+                  className='btn ms-2'
+                  onClick={() => {
+                    setDeleteIndex(index);
+                    showModal();
+                  }}
                 >
-                  <AiOutlineDelete color="red" />
+                  <AiOutlineDelete color='red' />
                 </button>
               </div>
             );
@@ -244,6 +294,11 @@ function CreationForm() {
           name="receipt"
         />
         <p className="w-100 text-center form-text">{receiptName}</p>
+        <Form.Group className='d-flex align-items-end'>
+          <InputField label={"Mã giảm giá (nếu có)"} control={control} name="coupon" rules={{ required: false }} disabled={!!appliedCoupon}/>
+          <Button className="coupon-btn ms-3 btn btn-primary" onClick={applyCoupon} disabled={!!appliedCoupon}>{appliedCoupon?'Đã áp dụng':'Áp dụng'}</Button>
+        </Form.Group>
+        <Form.Text>{appliedCoupon?.title}</Form.Text>
         <InputField
           label={"Ghi chú/Góp ý"}
           placeholder="Nhập ghi chú cho đơn hàng"
@@ -253,7 +308,7 @@ function CreationForm() {
           name="note"
           rules={{ required: false }}
         />
-        <Button variant="primary" className="submit-btn" type="submit">
+        <Button className="custom-btn-primary submit-btn" type="submit">
           Gửi tài liệu ngay
         </Button>
       </Form>
@@ -265,12 +320,11 @@ export default CreationForm;
 
 const Styles = styled.div`
   .submit-btn {
-    background-color: var(--primary);
-    border-color: var(--primary);
     width: 100%;
     margin: 1rem 0 5rem;
   }
 
-  .files-stack {
+  .coupon-btn {
+    min-width: fit-content;
   }
 `;

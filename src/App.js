@@ -8,13 +8,12 @@ import {
 import { ToastContainer } from 'react-toastify';
 import checkLogin from 'utils/checkLogin';
 import AdminRoutes from "features/admin/AdminRoutes";
-
+import PhotocopyRoutes from 'features/photocopy/Routes';
 import {
   AccountPage,
   AdminBicyclePage,
   AdminDrivingPage,
   AdminGuestHousePage,
-  AdminHealthPage,
   BankPage,
   BicyclePage,
   BicyclesPage,
@@ -46,11 +45,9 @@ import {
   ProfilePage,
   QrScanPage,
   UniformRegistrationPage,
-  UniformPage,
   SupportPage,
   B2InfoPage
 } from 'features';
-import PhotocopyRoutes from 'features/photocopy/Routes';
 
 class App extends React.Component {
   render() {
@@ -60,25 +57,25 @@ class App extends React.Component {
       <Router>
         <ToastContainer />
         <Routes>
-          <Route exact path='/' element={<HomePage />} />
-          <Route exact path='/explore' element={<ExplorePage />} />
-          <Route exact path='/profile' element={<ProfilePage />} />
-          <Route exact path='/contact' element={<MaintainPage />} />
-          <Route exact path='/account' element={<AccountPage />} />
-          <Route exact path='/login' element={<LoginPage />} />
-          <Route exact path='/guest-house' element={<GuestHouseInfoPage />} />
+          <Route path='/' element={<HomePage />} />
+          <Route path='/explore' element={<ExplorePage />} />
+          <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/contact' element={<MaintainPage />} />
+          <Route path='/account' element={<AccountPage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/guest-house' element={<GuestHouseInfoPage />} />
           <Route
-            exact
+
             path='/guest-house-user'
             element={<GuestHouseUserPage />}
           />
           <Route
-            exact
+
             path='/guest-house-report'
             element={<GuestHouseReportPage />}
           />
           <Route
-            exact
+
             path='/guest-house-admin'
             element={
               <RequireAdminAuth>
@@ -86,24 +83,24 @@ class App extends React.Component {
               </RequireAdminAuth>
             }
           />
-          <Route exact path='/pool-info' element={<PoolInfoPage />} />
-          <Route exact path='/pool-ticket' element={<PoolTicketPage />} />
-          <Route exact path='/pool-tutor' element={<PoolTutorPage />} />
-          <Route exact path='/qrscan' element={<QrScanPage />} />
+          <Route path='/pool-info' element={<PoolInfoPage />} />
+          <Route path='/pool-ticket' element={<PoolTicketPage />} />
+          <Route path='/pool-tutor' element={<PoolTutorPage />} />
+          <Route path='/qrscan' element={<QrScanPage />} />
           <Route
-            exact
+
             path='/guest-house-info'
             element={<GuestHouseInfoPage />}
           />
 
-          <Route exact path='/driving-test' element={<DrivingInfoPage />} />
+          <Route path='/driving-test' element={<DrivingInfoPage />} />
           <Route
-            exact
+
             path='/driving-registration'
             element={<DrivingRegisterPage />}
           />
           <Route
-            exact
+
             path='/driving-instruction'
             element={<DrivingInstructionPage />}
           />
@@ -111,37 +108,34 @@ class App extends React.Component {
             <Route path='b2' element={<B2InfoPage />} />
           </Route>
 
-          <Route exact path='/jobs' element={<JobPage />} />
+          <Route path='/jobs' element={<JobPage />} />
           <Route path='/job' element={<JobDetailPage />} />
 
-          <Route exact path='/coupon-list' element={<CouponListPage />} />
-          <Route exact path='/coupon' element={<CouponPage />} />
-          <Route exact path='/coupon-scanned' element={<CouponScannedPage />} />
+          <Route path='/coupon-list' element={<CouponListPage />} />
+          <Route path='/coupon' element={<CouponPage />} />
+          <Route path='/coupon-scanned' element={<CouponScannedPage />} />
 
-          <Route exact path='/bicycles' element={<BicyclesPage />} />
-          <Route exact path='/bicycle' element={<BicyclePage />} />
+          <Route path='/bicycles' element={<BicyclesPage />} />
+          <Route path='/bicycle' element={<BicyclePage />} />
 
-          <Route exact path='/bank' element={<BankPage />} />
-          <Route exact path='/bus-survey' element={<BusSurveyPage />} />
+          <Route path='/bank' element={<BankPage />} />
+          <Route path='/bus-survey' element={<BusSurveyPage />} />
+          <Route index path='uniform' element={<UniformRegistrationPage />} />
+          <Route path='/guides' element={<GuidePage />} />
+          <Route path='/guide' element={<GuideDetailPage />} />
 
-          <Route exact path='/uniform' element={<UniformRegistrationPage />} />
-
-          <Route exact path='/guides' element={<GuidePage />} />
-          <Route exact path='/guide' element={<GuideDetailPage />} />
-
-          <Route exact path='/health' element={<HealthDetailPage />} />
-          <Route exact path='/healths' element={<HealthPage />} />
-          <Route exact path='/photocopy/*' element={<PhotocopyRoutes />} />
+          <Route path='/health' element={<HealthDetailPage />} />
+          <Route path='/healths' element={<HealthPage />} />
+          <Route path='/photocopy/*' element={<PhotocopyRoutes />} />
 
           <Route
-            exact
+
             path='/bus-registration'
             element={<BusRegistrationPage />}
           />
 
-          <Route exact path='/driving-admin' element={<AdminDrivingPage />} />
+          <Route path='/driving-admin' element={<AdminDrivingPage />} />
           <Route
-            exact
             path='/bicycle-admin'
             element={
               <RequireAdminAuth>
@@ -150,7 +144,7 @@ class App extends React.Component {
             }
           />
           <Route
-            exact
+
             path='admin/*'
             element={
               <RequireAdminAuth>
@@ -159,8 +153,8 @@ class App extends React.Component {
             }
           />
 
-          <Route exact path='/support' element={<SupportPage />} />
-          <Route exact path='/maintain' element={<MaintainPage />} />
+          <Route path='/support' element={<SupportPage />} />
+          <Route path='/maintain' element={<MaintainPage />} />
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </Router>

@@ -8,7 +8,7 @@ function PhotocopyPage() {
   return (
     <Styles>
       <TitleBar>Đặt đồng phục</TitleBar>
-      <LazyImage src={'/uniform/size.jpg'}/>
+      <LazyImage src={'/images/uniform/size.jpg'}/>
       <div className="form-body">
         <RegistrationForm />
       </div>
