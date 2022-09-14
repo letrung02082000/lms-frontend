@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
 import styled from 'styled-components';
+import Timeline from './Timeline';
+function SearchOrder(data) {
+  const {
+    name,
+    orderCode,
+    category,
+    document,
+    receipt,
+    state,
+    isPrinted,
+    instruction,
+    isDelivered,
+  } = data;
+  const [copied, setCopied] = useState(false);
+  console.log(data);
+  const handleCopyButton = () => {
+    navigator.clipboard.writeText(`${orderCode} ${name}`);
+    setCopied(true);
+  };
 
-function SearchOrder({
-  name,
-  orderCode,
-  category,
-  document,
-  receipt,
-  state,
-  isPrinted,
-  instruction,
-  isDelivered,
-}) {
   return (
     <Styles>
       <p>Mã đơn hàng: {orderCode}</p>
@@ -35,52 +44,34 @@ function SearchOrder({
           </div>
         )}
       </p>
-      <p>
-        Hóa đơn (admin):{' '}
-        {receipt === undefined ? (
-          'Không có'
-        ) : (
-          <a href={receipt} rel='noopenner noreferrer' target='_blank'>
-            Xem hóa đơn
-          </a>
-        )}
-      </p>
       <p>Hướng dẫn in: {instruction}</p>
-      <div>
-        {state === 6 && (
-          <p>
-            &#9193; Đang xử lý &#9193; <b>Đã hủy</b>
-          </p>
-        )}
-        {state === 0 && <p>&#9193; Chờ xác nhận</p>}
-        {state === 2 && (
-          <p>
-            &#9193; Chờ xác nhận | &#9193; <b>Đang xử lý và báo giá</b>
-          </p>
-        )}
-        {state === 3 && (
-          <p>
-            &#9193; Chờ xác nhận | &#9193; Đang xử lý và báo giá | &#9193; Đang
-            in {isPrinted && <span>| &#9193; Đã in</span>}{' '}
-            {isDelivered && <span>| &#9193; Đang giao hàng</span>}
-          </p>
-        )}
-        {state === 4 && (
-          <p>
-            &#9193; Chờ xác nhận | &#9193; Đang xử lý và báo giá | &#9193; Đang
-            in {isPrinted && <span>| &#9193; Đã in</span>} | &#9193;{' '}
-            <b>Đã giao hàng</b>
-          </p>
-        )}
-        {state === 5 && (
-          <p>
-            &#9193; Chờ xác nhận | &#9193; Đang xử lý và báo giá | &#9193; Đang
-            in {isPrinted && <span>| &#9193; Đã in</span>}{' '}
-            {isDelivered && <span>| &#9193; Đang giao hàng</span>} | &#9193; Đã
-            giao hàng | &#9193; <b>Đã hoàn tất</b>
-          </p>
-        )}
-      </div>
+      <p>Trạng thái: {isPrinted ? 'Đã in' : 'Chưa in'}</p>
+      <p>
+        Nội dung chuyển khoản (không dấu):
+        <br />
+        <b>
+          {orderCode} {name}
+        </b>
+      </p>
+      {copied ? (
+        <Button
+          type='button'
+          variant='outline-primary'
+          onClick={handleCopyButton}
+        >
+          Đã chép
+        </Button>
+      ) : (
+        <Button
+          type='button'
+          variant='outline-primary'
+          onClick={handleCopyButton}
+        >
+          Sao chép
+        </Button>
+      )}
+      <Timeline data={data?.timeline} current={state} />
+
       <hr />
     </Styles>
   );

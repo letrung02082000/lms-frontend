@@ -26,9 +26,9 @@ function PhotocopyPage() {
           onClick={() => setShow(true)}
         />
         <div className='action-btn-group d-flex justify-content-center'>
-          <Button className='instruction-btn' onClick={openInstruction}>
-            <u>Bấm để xem hướng dẫn tạo đơn hàng để được xử lý nhanh chỉ trong 2
-            giờ</u>
+          <Button className='btn-outline-primary instruction-btn' onClick={openInstruction}>
+            <b>Bấm để xem hướng dẫn tạo đơn hàng để được xử lý nhanh chỉ trong 2
+            giờ</b>
           </Button>
         </div>
         <div className='form-body'>

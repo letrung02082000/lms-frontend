@@ -13,18 +13,32 @@
         color: var(--primary);
         background-color: white;
     }
-}
 
-.btn-primary:focus {
-    background-color: var(--primary);
-    border-color: var(--primary);   
+    &:click {
+        border-color: var(--primary);
+        color: var(--primary);
+        background-color: white;
+    }
 }
 
 .btn-outline-primary {
     border-color: var(--primary);
     color: var(--primary);
+    background-color: white;
+
+    &:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background-color: white;
+    }
 
     &:focus {
+        border-color: var(--primary);
+        color: var(--primary);
+        background-color: white;
+    }
+
+    &:click {
         border-color: var(--primary);
         color: var(--primary);
         background-color: white;

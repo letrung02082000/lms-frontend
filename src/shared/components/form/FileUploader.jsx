@@ -70,7 +70,7 @@ function FileUploader({className, ...props}) {
       <Form.Label className='mb-3'>{props?.label || props?.children || ''}</Form.Label>
       <button type='button' {...getRootProps()} className='btn d-flex flex-column align-items-center' disabled={props?.uploading}>
         <input {...getInputProps()} />
-        <div className={`upload-button d-flex align-items-center justify-content-center px-3 py-2 btn btn-success`}>
+        <div className={`upload-button d-flex align-items-center justify-content-center px-3 py-2 btn btn-primary`}>
           <BsCloudUpload size={25}/>
           <p className='ms-2'>{props?.text || 'Thêm tệp'}</p>
         </div>

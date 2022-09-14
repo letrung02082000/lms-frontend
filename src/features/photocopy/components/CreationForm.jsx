@@ -107,7 +107,6 @@ function CreationForm() {
     } else {
       delete data.coupon;
     }
-    console.log(appliedCoupon)
 
     localStorage.setItem("photocopy-info", JSON.stringify(data));
     const order = {
@@ -127,7 +126,6 @@ function CreationForm() {
     photocopyApi
       .addOrder(order)
       .then((res) => {
-        console.log(res);
         setFileIds([]);
         setReceiptId([]);
         setFileNames([]);
@@ -178,7 +176,7 @@ function CreationForm() {
   const handleFileNames = (value) => setFileNames((prev) => [...prev, value]);
 
   const onDeleteConfirm = () => {
-    if(typeof deleteIndex === 'number') {
+    if (typeof deleteIndex === 'number') {
       setFileIds((prev) => {
         const temp = [...prev];
         temp.splice(deleteIndex, 1);
@@ -189,10 +187,9 @@ function CreationForm() {
         temp.splice(deleteIndex, 1);
         return temp;
       });
+      setDeleteIndex(null);
     }
-
-    hideModal();
-  }
+  };
 
   if (orderInfo) {
     return <OrderInfo {...orderInfo} />;
@@ -208,19 +205,27 @@ function CreationForm() {
                 key={`${name}_${index}`}
                 className='d-flex align-items-center justify-content-between w-100'
               >
-                <span>
+                <span style={{ overflowWrap: 'anywhere' }}>
                   {index + 1}. {name}
                 </span>
-                <button
-                  type='button'
-                  className='btn ms-2'
-                  onClick={() => {
-                    setDeleteIndex(index);
-                    showModal();
-                  }}
-                >
-                  <AiOutlineDelete color='red' />
-                </button>
+                {index !== deleteIndex && <button
+                    type='button'
+                    className='btn ms-2'
+                    onClick={() => {
+                      setDeleteIndex(index);
+                    }}
+                  >
+                    <AiOutlineDelete color='red' />
+                  </button>}
+                {typeof deleteIndex === 'number' && deleteIndex === index && (
+                  <button
+                    type='button'
+                    className='btn btn-outline-danger text-danger'
+                    onClick={onDeleteConfirm}
+                  >
+                    Nhấn để xóa
+                  </button>
+                )}
               </div>
             );
           })}
@@ -282,7 +287,7 @@ function CreationForm() {
             name="address"
           />
         )}
-        <FileUploader
+        {/* <FileUploader
           setFileId={(value) =>
             setReceiptId((prev) => `https://drive.google.com/file/d/${value}`)
           }
@@ -292,7 +297,7 @@ function CreationForm() {
           setFileName={setReceiptName}
           url={"/photocopy/upload/receipt"}
           name="receipt"
-        />
+        /> */}
         <p className="w-100 text-center form-text">{receiptName}</p>
         <Form.Group className='d-flex align-items-end'>
           <InputField label={"Mã giảm giá (nếu có)"} control={control} name="coupon" rules={{ required: false }} disabled={!!appliedCoupon}/>
