@@ -49,7 +49,22 @@ import {
   B2InfoPage
 } from 'features';
 
-class App extends React.Component {
+import useMediaQuery from 'hooks/useMediaQuery';
+import styled from 'styled-components';
+import TitleBar from 'shared/components/TitleBar';
+
+// Create a function to return a title bar that take PoolInfoPage with navigation
+function SubPage() {
+  return(
+    <TitleBar
+        title='Hồ bơi'
+        navigation='/pool-ticket'
+        backgroundColor='rgb(0, 140, 255)'
+      />
+  );
+}
+
+class App extends React.Component {  
   render() {
     checkLogin();
 
@@ -184,3 +199,9 @@ const RequireAdminAuth = ({ children }) => {
   }
   return children;
 };
+
+const LayoutStyled = styled.div`
+  margin: ${props => props.isTablet === true ? "0 0%" : "0 15%" };
+  ${'' /* width: 60%;
+  margin: 0 auto; */}
+`;

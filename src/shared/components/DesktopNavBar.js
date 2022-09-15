@@ -47,7 +47,6 @@ function DesktopNavBar(props) {
   };
   const NavBarComponent = () => {
     return (
-      <div>
         <Navbar bg='light'>
           <Container fluid>
             <Navbar.Brand>
@@ -111,13 +110,6 @@ function DesktopNavBar(props) {
             </div>
           </Container>
         </Navbar>
-        {isDesktop ? (
-          <p style={{ textAlign: 'center', padding: '1rem 0 0 0' }}>
-            Ứng dụng hiện chưa có giao diện desktop. Vui lòng sử dụng điện thoại
-            để có trải nghiệm tốt nhất
-          </p>
-        ) : null}
-      </div>
     );
   };
 

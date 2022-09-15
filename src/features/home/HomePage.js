@@ -9,8 +9,10 @@ import HotSlider from './components/HotSlider';
 import MainServices from './components/MainServices';
 import Footer from '../../shared/components/Footer';
 
+import styled from 'styled-components';
+
 const HomePage = () => {
-  const isTablet = useMediaQuery('(max-width: 991px)');
+  const isTablet = useMediaQuery('(max-width: 768px)');
 
   return (
     <MainLayout className={styles.homeContainer}>
@@ -29,30 +31,40 @@ const HomePage = () => {
           </div>
         </div>
       ) : null}
-      <div className={styles.homeSliderContainer}>
-        <HomeSlider />
-      </div>
+      
+      <MainLayoutStyled isTablet = {isTablet}>
+        <div className={styles.homeSliderContainer}>
+          <HomeSlider />
+        </div>
 
-      <div className={styles.categorySliderContainer}>
-        <p
-          style={{
-            fontSize: '1.2rem',
-            fontWeight: 'bold',
-          }}
-        >
-          Loại hình
-        </p>
-        <CategorySlider />
-      </div>
-      <div className={styles.hotSliderContainer}>
-        <HotSlider />
-      </div>
-      <div className={styles.categorySliderContainer}>
-        <MainServices />
-      </div>
-      <Footer />
+        <div className={styles.categorySliderContainer}>
+          <p style={{
+                fontSize: '1.2rem',
+                fontWeight: 'bold', 
+              }}> 
+              Loại hình
+          </p>
+          <CategorySlider />
+        </div>
+        
+        <div className={styles.hotSliderContainer}>
+          <HotSlider />
+        </div>
+
+        <div className={styles.categorySliderContainer}>
+          <MainServices />
+        </div>
+
+        <Footer />
+      </MainLayoutStyled>
     </MainLayout>
   );
 };
+
+const MainLayoutStyled = styled.div`
+  margin: ${props => props.isTablet === true ? "0 0%" : "0 15%" };
+  ${'' /* width: 60%;
+  margin: 0 auto; */}
+`;
 
 export default HomePage;
