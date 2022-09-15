@@ -21,11 +21,6 @@ function SwimmingPoolInfoPage() {
 
   return (
     <div className={styles.container}>
-      <TitleBar
-        title='Hồ bơi'
-        navigation='/pool-ticket'
-        backgroundColor='rgb(0, 140, 255)'
-      />
       <Swiper
         modules={[Pagination]}
         pagination={{

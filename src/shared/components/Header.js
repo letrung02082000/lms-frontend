@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import DesktopNavBar from './DesktopNavBar';
 import MobileNavBar from './MobileNavBar';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import './header.css';
 import useMediaQuery from 'hooks/useMediaQuery';
@@ -27,7 +27,7 @@ function useScrollDirection() {
     }
   }, [scrollDirection]);
 
-  console.log(scrollDirection);
+  console.log(scrollDirection + " scrollDirection");
   return scrollDirection;
 };
 
@@ -50,9 +50,9 @@ function Header() {
 const DesktopNavStyled = styled.div`
   position: sticky;
   z-index: 2000;
-  top: ${props => props.status === "down" ? "-5" : "0" };
-  ${'' /* transition: all;
-  transition-duration: 0.5s; */}
+  top: ${props => props.status === "down" ? "-150px" : "0px" };
+  transition: all;
+  transition-duration: 0.25s;
 `;
 
 export default Header;

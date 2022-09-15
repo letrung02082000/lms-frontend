@@ -11,7 +11,6 @@ function SwimmingPoolTutorPage({ children, route }) {
 
   return (
     <div className={styles.container}>
-      <TitleBar title='Mua vé hồ bơi' path="/"/>
       <div className={styles.ticketContainer}>
         <div className={styles.headerContainer}>
           <img src='/poolbanner.jpg' alt='banner' />
