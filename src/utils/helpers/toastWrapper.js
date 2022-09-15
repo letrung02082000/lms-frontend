@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-export const toastWrapper = (msg) =>
+const toastWrapper = (msg) =>
   toast(msg, {
     position: 'top-right',
     autoClose: 5000,
@@ -10,3 +10,5 @@ export const toastWrapper = (msg) =>
     draggable: true,
     progress: undefined,
   });
+
+export default toastWrapper;

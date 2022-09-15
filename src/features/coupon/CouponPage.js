@@ -8,7 +8,7 @@ import { selectUser } from 'store/userSlice';
 
 import Loading from 'shared/components/Loading';
 import { MdArrowBack } from 'react-icons/md';
-import authHeader from 'utils/authHeader';
+import { authHeader } from 'utils';
 import styles from './couponPage.module.css';
 
 export function CouponPage(props) {

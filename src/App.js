@@ -6,7 +6,7 @@ import {
   Routes,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import checkLogin from "utils/checkLogin";
+import { checkLogin, useScrollDirection } from "utils";
 import AdminRoutes from "features/admin/AdminRoutes";
 import PhotocopyRoutes from "features/photocopy/Routes";
 import {
@@ -53,21 +53,19 @@ import useMediaQuery from "hooks/useMediaQuery";
 import styled from "styled-components";
 import TitleBar from "shared/components/TitleBar";
 
-function SubPage({
-  pageTitle,
-  navigationTo,
-  navbarColor,
-  renderComponent
-}) {
+function SubPage({ pageTitle, navigationTo, navbarColor, renderComponent }) {
   const isTablet = useMediaQuery("(max-width: 768px)");
+  const scrollDirection = useScrollDirection();
 
   return (
     <div>
-      <TitleBar
-        title={pageTitle}
-        navigation={navigationTo}
-        backgroundColor={navbarColor}
-      />
+      <NavStyled status={scrollDirection}>
+        <TitleBar
+          title={pageTitle}
+          navigation={navigationTo}
+          backgroundColor={navbarColor}
+        />
+      </NavStyled>
       <LayoutStyled isTablet={isTablet}>{renderComponent}</LayoutStyled>
     </div>
   );
@@ -75,9 +73,9 @@ function SubPage({
 
 class App extends React.Component {
   render() {
-  checkLogin();
+    checkLogin();
 
-  return (
+    return (
       <Router>
         <ToastContainer />
         <Routes>
@@ -223,4 +221,12 @@ const RequireAdminAuth = ({ children }) => {
 
 const LayoutStyled = styled.div`
   margin: ${(props) => (props.isTablet === true ? "0 0%" : "0 15%")};
+`;
+
+const NavStyled = styled.div`
+  position: sticky;
+  z-index: 2000;
+  top: ${(props) => (props.status === "down" ? "-150px" : "0px")};
+  transition: all;
+  transition-duration: 0.25s;
 `;

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Driving from './Driving';
 import styles from './allDriving.module.css';
-import authHeader from '../../../utils/authHeader';
 import ImagePad from './ImagePad';
 import { updateDrivingData } from '../../../store/drivingAdminSlice';
 import { useDispatch } from 'react-redux';
+import { authHeader } from 'utils';
 
 function AllDriving() {
   const dispatch = useDispatch();

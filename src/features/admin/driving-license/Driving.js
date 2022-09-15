@@ -3,7 +3,7 @@ import styles from './driving.module.css';
 
 import axios from 'axios';
 import mime from 'mime-types';
-import authHeader from 'utils/authHeader';
+import { authHeader } from 'utils';
 
 function Driving(props) {
   let {

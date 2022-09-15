@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { ToastWrapper } from 'utils';
+import { toastWrapper } from 'utils';
 import { BsCloudUpload } from 'react-icons/bs'
 import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
@@ -39,7 +39,7 @@ function FileUploader({className, ...props}) {
       })
       .catch((err) => {
         props?.setUploading(false);
-        ToastWrapper(err?.response?.data?.message, 'error');
+        toastWrapper(err?.response?.data?.message, 'error');
       });
   }, []);
 

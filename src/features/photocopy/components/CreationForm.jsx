@@ -4,7 +4,7 @@ import FileUploader from "shared/components/form/FileUploader";
 import InputField from "shared/components/form/InputField";
 import SelectField from "shared/components/form/SelectField";
 import photocopyApi from "api/photocopyApi";
-import { ToastWrapper } from "utils";
+import { toastWrapper } from "utils";
 import RadioField from "shared/components/form/RadioField";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
@@ -77,17 +77,17 @@ function CreationForm() {
     photocopyApi
       .applyCoupon(coupon?.toUpperCase())
       .then((res) => {
-        ToastWrapper('Áp dụng mã giảm giá thành công', 'success')
+        toastWrapper('Áp dụng mã giảm giá thành công', 'success')
         setAppliedCoupon(res?.data);
       })
       .catch((e) => {
-        ToastWrapper(e?.response?.data?.data?.message || 'Mã giảm giá không hợp lệ', 'error')
+        toastWrapper(e?.response?.data?.data?.message || 'Mã giảm giá không hợp lệ', 'error')
       });
   };
 
   const onSubmit = (data) => {
     if (fileUploading || receiptUploading) {
-      return ToastWrapper("Vui lòng chờ tải tệp lên hoàn tất!");
+      return toastWrapper("Vui lòng chờ tải tệp lên hoàn tất!");
     }
 
     if (data?.category) {
@@ -118,7 +118,7 @@ function CreationForm() {
     };
 
     if (!order?.document) {
-      return ToastWrapper(
+      return toastWrapper(
         "Vui lòng tải lên tệp hoặc nhập liên kết đến tài liệu!",
         "error"
       );
@@ -133,13 +133,13 @@ function CreationForm() {
         setFileNames([]);
         setReceiptName("");
         setValue("document", "", { shouldValidate: true });
-        ToastWrapper(res?.message || "Tạo đơn hàng thành công!", "success");
+        toastWrapper(res?.message || "Tạo đơn hàng thành công!", "success");
         setTimeout(() => {
           setOrderInfo(res?.data);
         }, 1000);
       })
       .catch((error) => {
-        ToastWrapper(
+        toastWrapper(
           error?.response?.data?.data?.message ||
             error?.response?.data?.message ||
             'Tạo đơn hàng thất bại!',
@@ -157,7 +157,7 @@ function CreationForm() {
         );
       })
       .catch((error) => {
-        ToastWrapper(error?.response?.data?.message);
+        toastWrapper(error?.response?.data?.message);
       });
 
     photocopyApi
@@ -166,13 +166,13 @@ function CreationForm() {
         setOffices(data?.data.map((c) => ({ label: c?.name, value: c?._id })));
       })
       .catch((error) => {
-        ToastWrapper(error?.response?.data?.message);
+        toastWrapper(error?.response?.data?.message);
       });
   }, []);
 
   const handleFileUpload = (value) => {
     if (fileIds.length > 10)
-      return ToastWrapper("Chỉ có thể tải lên tối đa 10 tệp");
+      return toastWrapper("Chỉ có thể tải lên tối đa 10 tệp");
     setFileIds((prev) => [...prev, `https://drive.google.com/file/d/${value}`]);
   };
   const handleFileNames = (value) => setFileNames((prev) => [...prev, value]);

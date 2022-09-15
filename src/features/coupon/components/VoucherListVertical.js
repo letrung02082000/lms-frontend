@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import authHeader from '../../../utils/authHeader';
+import { authHeader } from 'utils';
 
 import VoucherCardVertical from './VoucherCardVertical';
 

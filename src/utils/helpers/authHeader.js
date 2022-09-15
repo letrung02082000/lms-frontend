@@ -8,4 +8,4 @@ function authHeader() {
   };
 }
 
-module.exports = authHeader;
+export default authHeader;

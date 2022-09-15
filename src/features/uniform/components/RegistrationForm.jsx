@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import InputField from '../../../shared/components/form/InputField';
 import uniformApi from 'api/uniformApi';
-import { ToastWrapper } from 'utils';
+import { toastWrapper } from 'utils';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
@@ -50,14 +50,14 @@ function RegistrationForm() {
           note: '',
           quantity: '',
         });
-        ToastWrapper(
+        toastWrapper(
           'Đăng ký thành công. Chúng mình sẽ liên hệ với bạn trong thời gian sớm nhất!',
           'success'
         );
         setLoading(false);
       })
       .catch((error) => {
-        ToastWrapper(
+        toastWrapper(
           'Đăng ký thất bại. Vui lòng liên hệ di động/zalo 0877876877 để được hỗ trợ!',
           'error'
         );

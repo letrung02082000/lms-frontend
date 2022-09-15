@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { store } from '../store';
-import { updateUser, logoutUser } from '../store/userSlice';
+import { store } from '../../store';
+import { updateUser, logoutUser } from '../../store/userSlice';
 
 function checkLogin() {
   const userInfo = localStorage.getItem('user-info');

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-import authHeader from 'utils/authHeader';
+import { authHeader } from 'utils';
 import styles from './couponListPage.module.css';
 
 import Loading from 'shared/components/Loading';

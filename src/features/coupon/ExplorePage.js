@@ -16,11 +16,13 @@ import {
   VoucherList,
   VoucherListVertical,
 } from './components';
+
 import { IoTicketSharp, IoShirtOutline } from 'react-icons/io5';
 import { MdPool } from 'react-icons/md';
 import { FaHotel } from 'react-icons/fa';
 import { AiOutlinePrinter } from 'react-icons/ai';
-import authHeader from '../../utils/authHeader';
+import { authHeader } from 'utils';
+
 function ExplorePage() {
   const navigate = useNavigate();
   const [couponList, setCouponList] = useState([]);

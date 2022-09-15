@@ -7,7 +7,7 @@ import styles from './registerPage.module.css';
 import LazyImage from 'shared/components/LazyImage';
 import PortraitBanner from 'assets/images/portrait.jpg';
 import styled from 'styled-components';
-import { ToastWrapper } from 'utils';
+import { toastWrapper } from 'utils';
 
 export default function DrivingRegisterPage() {
   const { search } = useLocation();
@@ -53,10 +53,10 @@ export default function DrivingRegisterPage() {
 
           setDateList(data);
         } else {
-          ToastWrapper('Chưa có danh sách ngày thi mới');
+          toastWrapper('Chưa có danh sách ngày thi mới');
         }
       } catch (e) {
-        ToastWrapper('Lỗi khi lấy danh sách ngày thi');
+        toastWrapper('Lỗi khi lấy danh sách ngày thi');
       }
     };
 
@@ -68,15 +68,15 @@ export default function DrivingRegisterPage() {
     if (!frontsideFile) {
       setIsLoading(false);
 
-      return ToastWrapper('Lỗi: Vui lòng tải lên mặt trước cmnd/cccd', 'error');
+      return toastWrapper('Lỗi: Vui lòng tải lên mặt trước cmnd/cccd', 'error');
     }
     if (!backsideFile) {
       setIsLoading(false);
-      return ToastWrapper('Lỗi: Vui lòng tải lên mặt sau cmnd/cccd', 'error');
+      return toastWrapper('Lỗi: Vui lòng tải lên mặt sau cmnd/cccd', 'error');
     }
     if (!portraitFile) {
       setIsLoading(false);
-      return ToastWrapper(
+      return toastWrapper(
         'Lỗi: Vui lòng tải lên ảnh chân dung của bạn',
         'error'
       );
@@ -90,7 +90,7 @@ export default function DrivingRegisterPage() {
 
     if (!fullname || !tel || !zalo) {
       setIsLoading(false);
-      return ToastWrapper(
+      return toastWrapper(
         'Vui lòng nhập đầy đủ: họ tên, số điện thoại và  zalo của bạn',
         'error'
       );
@@ -123,7 +123,7 @@ export default function DrivingRegisterPage() {
     })
       .then((res) => {
         if (res.status === 200) {
-          ToastWrapper(
+          toastWrapper(
             'Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: 0886.405.887 (Ms. Trang) để được xử lý.',
             'success',
             {autoClose: 10000}
@@ -136,12 +136,12 @@ export default function DrivingRegisterPage() {
 
           setIsLoading(false);
         } else {
-          ToastWrapper(`${res.data.message}`, 'error');
+          toastWrapper(`${res.data.message}`, 'error');
           setIsLoading(false);
         }
       })
       .catch((error) => {
-        ToastWrapper(`${error.toString()}`, 'error');
+        toastWrapper(`${error.toString()}`, 'error');
         setIsLoading(false);
       });
   };
@@ -208,7 +208,7 @@ export default function DrivingRegisterPage() {
           const data = res.data.data;
 
           if (data.length === 0) {
-            ToastWrapper(
+            toastWrapper(
               'Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue
             );
           } else {
@@ -216,7 +216,7 @@ export default function DrivingRegisterPage() {
           }
         })
         .catch((e) => {
-          ToastWrapper(
+          toastWrapper(
             'Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue
           );
         });

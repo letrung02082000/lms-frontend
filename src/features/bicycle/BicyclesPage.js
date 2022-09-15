@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { selectUser } from 'store/userSlice';
 
-import authHeader from 'utils/authHeader';
+import { authHeader } from 'utils';
 import { BikeUserInfo, UploadCard } from './components';
 import styles from './styles.module.css';
 

@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import styles from './voucherCard.module.css';
-import authHeader from '../../../utils/authHeader';
+import { authHeader } from 'utils';
+
 function VoucherCard(props) {
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);

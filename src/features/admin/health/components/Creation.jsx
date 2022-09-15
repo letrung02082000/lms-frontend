@@ -4,7 +4,7 @@ import draftToHtml from 'draftjs-to-html';
 import { useState } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { ToastWrapper } from 'utils';
+import { toastWrapper } from 'utils';
 import styles from './creation.module.css';
 
 function Creation() {
@@ -37,7 +37,7 @@ function Creation() {
       .createHealth({ priority, title, content })
       .then((res) => {
         if (res.data) {
-          return ToastWrapper('Tạo bài viết thành công!');
+          return toastWrapper('Tạo bài viết thành công!');
         }
       })
       .catch((err) => console.log(err));

@@ -10,7 +10,7 @@ import draftToHtml from 'draftjs-to-html';
 import { useEffect, useState } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { ToastWrapper } from 'utils';
+import { toastWrapper } from 'utils';
 import { useParams } from "react-router-dom";
 import styles from './update.module.css';
 
@@ -75,7 +75,7 @@ function Update(props) {
         setUpdating(false);
 
         if (res.data) {
-          return ToastWrapper('Cập nhật bài viết thành công!');
+          return toastWrapper('Cập nhật bài viết thành công!');
         }
       })
       .catch((err) => {

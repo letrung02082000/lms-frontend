@@ -2,7 +2,7 @@ import axios from 'axios';
 import Compressor from 'compressorjs';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authHeader from 'utils/authHeader';
+import { authHeader } from 'utils';
 import styles from './uploadCard.module.css';
 
 import Loading from 'shared/components/Loading';
