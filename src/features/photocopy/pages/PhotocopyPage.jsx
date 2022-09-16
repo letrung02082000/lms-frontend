@@ -1,45 +1,44 @@
-import React from 'react';
-import { useState } from 'react';
-import { Button } from 'react-bootstrap';
-import { ModalProvider, useModal } from 'react-modal-hook';
-import { SearchPlaceHolder } from 'shared/components/search-bar';
-import TitleBar from 'shared/components/TitleBar';
-import styled from 'styled-components';
-import CreationForm from '../components/CreationForm';
-import InstructionModal from '../components/InstructionModal';
-import SearchModal from '../components/SearchModal';
+import React from 'react'
+import { useState } from 'react'
+import { Button } from 'react-bootstrap'
+import { ModalProvider, useModal } from 'react-modal-hook'
+import { SearchPlaceHolder } from 'shared/components/search-bar'
+import TitleBar from 'shared/components/TitleBar'
+import styled from 'styled-components'
+import CreationForm from '../components/CreationForm'
+import InstructionModal from '../components/InstructionModal'
+import SearchModal from '../components/SearchModal'
 
 function PhotocopyPage() {
-  const [show, setShow] = useState(false);
-  const [showModal, hideModal] = useModal(() => <InstructionModal hideModal={hideModal}/>);
+  const [show, setShow] = useState(false)
+  const [showModal, hideModal] = useModal(() => <InstructionModal hideModal={hideModal} />)
 
   const openInstruction = () => {
-    showModal();
+    showModal()
   }
 
   return (
-      <Styles>
-        <TitleBar>Gửi in ấn</TitleBar>
-        <SearchPlaceHolder
-          className='search-placeholder'
-          text='Tra cứu tình trạng đơn hàng'
-          onClick={() => setShow(true)}
-        />
-        <div className='action-btn-group d-flex justify-content-center'>
-          <Button className='instruction-btn' onClick={openInstruction}>
-            <u>Bấm để xem hướng dẫn tạo đơn hàng để được xử lý nhanh chỉ trong 2
-            giờ</u>
-          </Button>
-        </div>
-        <div className='form-body'>
-          <CreationForm />
-        </div>
-        <SearchModal show={show} handleClose={() => setShow(false)} />
-      </Styles>
-  );
+    <Styles>
+      <TitleBar>Gửi in ấn</TitleBar>
+      <SearchPlaceHolder
+        className="search-placeholder"
+        text="Tra cứu tình trạng đơn hàng"
+        onClick={() => setShow(true)}
+      />
+      <div className="action-btn-group d-flex justify-content-center">
+        <Button className="instruction-btn" onClick={openInstruction}>
+          <u>Bấm để xem hướng dẫn tạo đơn hàng để được xử lý nhanh chỉ trong 2 giờ</u>
+        </Button>
+      </div>
+      <div className="form-body">
+        <CreationForm />
+      </div>
+      <SearchModal show={show} handleClose={() => setShow(false)} />
+    </Styles>
+  )
 }
 
-export default PhotocopyPage;
+export default PhotocopyPage
 
 const Styles = styled.div`
   .form-body {
@@ -61,4 +60,4 @@ const Styles = styled.div`
     width: 95%;
     margin: 0 auto;
   }
-`;
+`

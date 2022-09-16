@@ -1,39 +1,30 @@
-import React from 'react';
-import TitleBar from 'shared/components/TitleBar';
-import styles from './infoPage.module.css';
+import React from 'react'
+import TitleBar from 'shared/components/TitleBar'
+import styles from './infoPage.module.css'
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 
 function DrivingTestPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const navigateTo = (url) => {
-    navigate(url);
-  };
+  const navigateTo = url => {
+    navigate(url)
+  }
 
   return (
     <div className={styles.drivingContainer}>
-      <TitleBar title='Đăng ký thi sát hạch lái xe' />
+      <TitleBar title="Đăng ký thi sát hạch lái xe" />
       <div className={styles.header}>
-        <img
-          src='/drivingbanner.jpg'
-          alt='driving banner'
-          className={styles.drivingBanner}
-        />
+        <img src="/drivingbanner.jpg" alt="driving banner" className={styles.drivingBanner} />
         <div className={styles.introContainerTop}>
-          <a
-            className={styles.contactButtonTop}
-            href='tel:+84886405887'
-            target='_blank'
-            rel='noreferer noreferrer'
-          >
+          <a className={styles.contactButtonTop} href="tel:+84886405887" target="_blank" rel="noreferer noreferrer">
             Gọi ngay
           </a>
           <a
             className={styles.contactButtonTop}
-            href='https://zalo.me/0886405887'
-            target='_blank'
-            rel='noreferer noreferrer'
+            href="https://zalo.me/0886405887"
+            target="_blank"
+            rel="noreferer noreferrer"
           >
             Zalo
           </a>
@@ -43,69 +34,57 @@ function DrivingTestPage() {
       <div className={styles.bodyContainer}>
         <h3>Đăng ký đơn giản</h3>
         <div>
-          <img className={styles.numberIcon} src='/one.png' alt='img' />
+          <img className={styles.numberIcon} src="/one.png" alt="img" />
         </div>
         <h5>Điền đơn đăng ký dự thi</h5>
         <div style={{ display: 'flex' }}>
-          <button
-            className={styles.signupButton}
-            onClick={() => navigateTo('/driving-instruction')}
-          >
+          <button className={styles.signupButton} onClick={() => navigateTo('/driving-instruction')}>
             Hướng dẫn
           </button>
-          <button
-            className={styles.signupButton}
-            onClick={() => navigateTo('/driving-registration')}
-          >
+          <button className={styles.signupButton} onClick={() => navigateTo('/driving-registration')}>
             Điền đơn
           </button>
         </div>
         <div>
           <div className="d-flex flex-column align-items-center p-3 text-center">
             <p>Đăng ký dự thi B2 nhận ưu đãi dành cho sinh viên</p>
-            <button className='btn btn-outline-primary fw-bold' onClick={()=>navigate('/driving-license/b2')}>Xem tại đây</button>
+            <button className="btn btn-outline-primary fw-bold" onClick={() => navigate('/driving-license/b2')}>
+              Xem tại đây
+            </button>
           </div>
         </div>
         <div>
-          <img className={styles.numberIcon} src='/two.png' alt='img' />
+          <img className={styles.numberIcon} src="/two.png" alt="img" />
         </div>
         <h5>Đóng phí dự thi</h5>
         <ul className={styles.mobileMoneyContainer}>
           <li>
             <p className={styles.payText}>Momo</p>
-            <img className={styles.payIcon} src='/momo.png' alt='pay-icon' />
+            <img className={styles.payIcon} src="/momo.png" alt="pay-icon" />
           </li>
           <li>
             <p className={styles.payText}>Zalo Pay</p>
-            <img className={styles.payIcon} src='/zalopay.png' alt='pay-icon' />
+            <img className={styles.payIcon} src="/zalopay.png" alt="pay-icon" />
           </li>
           <li>
             <p className={styles.payText}>Viettel Money</p>
-            <img
-              className={styles.payIcon}
-              src='/viettelmoney.svg'
-              alt='pay-icon'
-            />
+            <img className={styles.payIcon} src="/viettelmoney.svg" alt="pay-icon" />
           </li>
           <li>
             <p className={styles.payText}>Chuyển khoản ngân hàng</p>
-            <img className={styles.payIcon} src='/napas.jpg' alt='pay-icon' />
+            <img className={styles.payIcon} src="/napas.jpg" alt="pay-icon" />
           </li>
           <li>
             <p className={styles.payText}>Đóng trực tiếp</p>
-            <img
-              className={styles.payIcon}
-              src='/directmoney.png'
-              alt='pay-icon'
-            />
+            <img className={styles.payIcon} src="/directmoney.png" alt="pay-icon" />
           </li>
         </ul>
         <div>
-          <img className={styles.numberIcon} src='/three.png' alt='img' />
+          <img className={styles.numberIcon} src="/three.png" alt="img" />
         </div>
         <h5>Chờ duyệt và xác nhận ngày thi</h5>
         <div>
-          <img className={styles.numberIcon} src='/four.png' alt='img' />
+          <img className={styles.numberIcon} src="/four.png" alt="img" />
         </div>
         <h5>Đi thi</h5>
         <div className={styles.signupContainer}>
@@ -121,26 +100,21 @@ function DrivingTestPage() {
         </div>
         <p className={styles.helpText}>Liên hệ hỗ trợ</p>
         <div className={styles.introContainer}>
-          <a
-            className={styles.contactButton}
-            href='tel:+84886405887'
-            target='_blank'
-            rel='noreferer noreferrer'
-          >
+          <a className={styles.contactButton} href="tel:+84886405887" target="_blank" rel="noreferer noreferrer">
             Gọi ngay
           </a>
           <a
             className={styles.contactButton}
-            href='https://zalo.me/0886405887'
-            target='_blank'
-            rel='noreferer noreferrer'
+            href="https://zalo.me/0886405887"
+            target="_blank"
+            rel="noreferer noreferrer"
           >
             Zalo
           </a>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default DrivingTestPage;
+export default DrivingTestPage

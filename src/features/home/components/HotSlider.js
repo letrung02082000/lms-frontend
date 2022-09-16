@@ -1,46 +1,46 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BsCalendar2Check } from 'react-icons/bs';
-import { BiQrScan } from 'react-icons/bi';
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { BsCalendar2Check } from 'react-icons/bs'
+import { BiQrScan } from 'react-icons/bi'
 
 //styles
-import './hotSlider.css';
-import styles from './hotSlider.module.css';
+import './hotSlider.css'
+import styles from './hotSlider.module.css'
 
 //utils
-import useMediaQuery from '../../../hooks/useMediaQuery';
-import classNames from 'classnames';
+import useMediaQuery from '../../../hooks/useMediaQuery'
+import classNames from 'classnames'
 
 //redux
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../../store/userSlice';
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../../store/userSlice'
 
 function HotSlider(props) {
-  const navigate = useNavigate();
-  const user = useSelector(selectUser);
-  const isMobile = useMediaQuery('(max-width: 767px)');
+  const navigate = useNavigate()
+  const user = useSelector(selectUser)
+  const isMobile = useMediaQuery('(max-width: 767px)')
 
   const handleGuestHouseItemClick = () => {
-    navigate('/guest-house');
+    navigate('/guest-house')
 
     // if (!user.isLoggedIn) {
     //   // navigateTo('/login', { message: 'Vui lòng đăng nhập để tiếp tục!' });
     //   navigate('/maintain');
     // } else {
     // }
-  };
+  }
 
   const handleQrCodeItemClick = () => {
     if (!user.isLoggedIn) {
-      navigateTo('/login', { message: 'Vui lòng đăng nhập để tiếp tục!' });
+      navigateTo('/login', { message: 'Vui lòng đăng nhập để tiếp tục!' })
     } else {
-      navigate('/qrscan');
+      navigate('/qrscan')
     }
-  };
+  }
 
   const navigateTo = (url, state) => {
-    navigate(url, state);
-  };
+    navigate(url, state)
+  }
 
   return (
     <div className={styles.hotSliderContainer}>
@@ -55,18 +55,15 @@ function HotSlider(props) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default HotSlider;
+export default HotSlider
 
 const GuestHouseItem = () => (
   <div className={classNames(styles.guestHouse, styles.hotItem)}>
     <div className={styles.blurHotItem}>
-      <div
-        className={styles.hotItemIcon}
-        style={{ backgroundColor: 'rgb(27, 183, 173)' }}
-      >
+      <div className={styles.hotItemIcon} style={{ backgroundColor: 'rgb(27, 183, 173)' }}>
         <BsCalendar2Check size={32} />
       </div>
       <div className={styles.hotItemTextContainer}>
@@ -75,7 +72,7 @@ const GuestHouseItem = () => (
       </div>
     </div>
   </div>
-);
+)
 
 const SwimmingPoolItem = () => (
   <div className={classNames(styles.swimmingPool, styles.hotItem)}>
@@ -89,4 +86,4 @@ const SwimmingPoolItem = () => (
       </div>
     </div>
   </div>
-);
+)

@@ -1,8 +1,8 @@
-import React from 'react';
-import { useMemo } from 'react';
-import { FaList } from 'react-icons/fa';
-import { IoIosCreate } from 'react-icons/io';
-import AdminLayout from '../AdminLayoutV2';
+import React from 'react'
+import { useMemo } from 'react'
+import { FaList } from 'react-icons/fa'
+import { IoIosCreate } from 'react-icons/io'
+import AdminLayout from '../AdminLayoutV2'
 
 function GuideLayout() {
   const MENU = useMemo(() => {
@@ -10,17 +10,17 @@ function GuideLayout() {
       {
         label: 'Danh sách bài viết',
         path: '',
-        icon: <FaList/>
+        icon: <FaList />
       },
       {
         label: 'Tạo bài viết',
         path: 'create',
-        icon: <IoIosCreate/>
-      },
-    ];
-  }, []);
+        icon: <IoIosCreate />
+      }
+    ]
+  }, [])
 
-  return <AdminLayout menu={MENU} title='Cẩm nang'/>;
+  return <AdminLayout menu={MENU} title="Cẩm nang" />
 }
 
-export default GuideLayout;
+export default GuideLayout

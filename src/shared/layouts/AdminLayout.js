@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { MdOutlineChevronRight } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
-import styles from './container.module.css';
+import { useState } from 'react'
+import { MdOutlineChevronRight } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
+import styles from './container.module.css'
 
 function AdminLayout({ children, title, navigation, root }) {
-  const [visible, setVisible] = useState(true);
-  const navigate = useNavigate();
+  const [visible, setVisible] = useState(true)
+  const navigate = useNavigate()
 
-  const navigateTo = (path) => {
-    navigate(`/${root}?navigation=${path}`);
-  };
+  const navigateTo = path => {
+    navigate(`/${root}?navigation=${path}`)
+  }
 
   return (
     <div className={styles.container}>
@@ -20,14 +20,10 @@ function AdminLayout({ children, title, navigation, root }) {
             <div>
               {navigation?.map((child, index) => {
                 return (
-                  <div
-                    className={styles.navItem}
-                    key={index}
-                    onClick={() => navigateTo(child.path)}
-                  >
+                  <div className={styles.navItem} key={index} onClick={() => navigateTo(child.path)}>
                     <p>{child.name}</p>
                   </div>
-                );
+                )
               })}
               <div className={styles.navItem} onClick={() => setVisible(false)}>
                 <p>Ẩn</p>
@@ -42,16 +38,16 @@ function AdminLayout({ children, title, navigation, root }) {
       ) : (
         <button
           onClick={() => {
-            setVisible(true);
+            setVisible(true)
           }}
           className={styles.showButton}
         >
-          <MdOutlineChevronRight size='25' />
+          <MdOutlineChevronRight size="25" />
         </button>
       )}
       <div className={styles.mainBoard}>{children}</div>
     </div>
-  );
+  )
 }
 
-export default AdminLayout;
+export default AdminLayout

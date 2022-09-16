@@ -1,22 +1,22 @@
-import busApi from "api/busApi";
-import TitleBar from "shared/components/TitleBar";
-import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import styled from "styled-components";
-import InputField from "./components/InputField";
-import Content from "./components/Content";
+import busApi from 'api/busApi'
+import TitleBar from 'shared/components/TitleBar'
+import { useState } from 'react'
+import { Button, Form } from 'react-bootstrap'
+import { useForm } from 'react-hook-form'
+import styled from 'styled-components'
+import InputField from './components/InputField'
+import Content from './components/Content'
 
 export function BusRegistrationPage(props) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm();
+    formState: { errors }
+  } = useForm()
 
-  const handleSubmitButton = (e) => {
-    setIsLoading(true);
+  const handleSubmitButton = e => {
+    setIsLoading(true)
 
     busApi
       .createBusUser({
@@ -24,35 +24,32 @@ export function BusRegistrationPage(props) {
         tel: e.tel,
         zalo: e.zalo,
         note: e.note,
-        address: e.address,
+        address: e.address
       })
-      .then((res) => {
-        console.log(res);
+      .then(res => {
+        console.log(res)
         if (res.data) {
-          setIsLoading(false);
+          setIsLoading(false)
           return alert(
-            "Đăng ký thành công! Chúng mình sẽ liên hệ với bạn trong thời gian sớm nhất. Mọi thắc mắc liên hệ 0877.876.877 để được giải đáp. Xin cảm ơn!"
-          );
+            'Đăng ký thành công! Chúng mình sẽ liên hệ với bạn trong thời gian sớm nhất. Mọi thắc mắc liên hệ 0877.876.877 để được giải đáp. Xin cảm ơn!'
+          )
         }
       })
-      .catch((e) => {
-        console.log(e);
-        setIsLoading(false);
-      });
-  };
+      .catch(e => {
+        console.log(e)
+        setIsLoading(false)
+      })
+  }
 
   return (
     <Styles>
       <TitleBar title="Đặt xe đưa rước" navigation="/uniforms" />
 
-      <Form
-        onSubmit={handleSubmit(handleSubmitButton)}
-        className="drivingFormContainer"
-      >
+      <Form onSubmit={handleSubmit(handleSubmitButton)} className="drivingFormContainer">
         <Content />
         <InputField
           register={register}
-          name={"name"}
+          name={'name'}
           label="Tên của bạn*"
           placeholder="Nhập đầy đủ họ tên, có dấu"
           errors={errors}
@@ -60,33 +57,28 @@ export function BusRegistrationPage(props) {
         ></InputField>
         <InputField
           register={register}
-          name={"tel"}
+          name={'tel'}
           label=" Điện thoại liên hệ*"
           placeholder="Nhập số điện thoại liên hệ của bạn"
           require={true}
         ></InputField>
         <InputField
           register={register}
-          name={"zalo"}
+          name={'zalo'}
           label="Số điện thoại Zalo (Không bắt buộc)"
           placeholder="Nhập số điện thoại zalo của bạn"
           errors={errors}
         ></InputField>
         <InputField
           register={register}
-          name={"address"}
+          name={'address'}
           label="Địa chỉ đón bạn (Không bắt buộc)"
           placeholder="Bỏ trống nếu cần xác nhận lại sau"
           errors={errors}
         ></InputField>
         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
           <Form.Label>Yêu cầu khác/Ghi chú (nếu có)</Form.Label>
-          <Form.Control
-            {...register("note")}
-            as="textarea"
-            rows={3}
-            placeholder="Nhập yêu cầu của bạn nếu có"
-          />
+          <Form.Control {...register('note')} as="textarea" rows={3} placeholder="Nhập yêu cầu của bạn nếu có" />
         </Form.Group>
         {isLoading ? (
           <Form.Group className="align-self-center">
@@ -103,7 +95,7 @@ export function BusRegistrationPage(props) {
         )}
       </Form>
     </Styles>
-  );
+  )
 }
 const Styles = styled.div`
   .drivingFormContainer {
@@ -115,4 +107,4 @@ const Styles = styled.div`
     display: flex;
     flex-direction: column;
   }
-`;
+`

@@ -1,14 +1,9 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import { checkLogin, useScrollDirection } from "utils";
-import AdminRoutes from "features/admin/AdminRoutes";
-import PhotocopyRoutes from "features/photocopy/Routes";
+import React from 'react'
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import { checkLogin, useScrollDirection } from 'utils'
+import AdminRoutes from 'features/admin/AdminRoutes'
+import PhotocopyRoutes from 'features/photocopy/Routes'
 import {
   AccountPage,
   AdminBicyclePage,
@@ -46,34 +41,30 @@ import {
   QrScanPage,
   UniformRegistrationPage,
   SupportPage,
-  B2InfoPage,
-} from "features";
+  B2InfoPage
+} from 'features'
 
-import useMediaQuery from "hooks/useMediaQuery";
-import styled from "styled-components";
-import TitleBar from "shared/components/TitleBar";
+import useMediaQuery from 'hooks/useMediaQuery'
+import styled from 'styled-components'
+import TitleBar from 'shared/components/TitleBar'
 
 function SubPage({ pageTitle, navigationTo, navbarColor, renderComponent }) {
-  const isTablet = useMediaQuery("(max-width: 768px)");
-  const scrollDirection = useScrollDirection();
+  const isTablet = useMediaQuery('(max-width: 768px)')
+  const scrollDirection = useScrollDirection()
 
   return (
     <div>
       <NavStyled status={scrollDirection}>
-        <TitleBar
-          title={pageTitle}
-          navigation={navigationTo}
-          backgroundColor={navbarColor}
-        />
+        <TitleBar title={pageTitle} navigation={navigationTo} backgroundColor={navbarColor} />
       </NavStyled>
       <LayoutStyled isTablet={isTablet}>{renderComponent}</LayoutStyled>
     </div>
-  );
+  )
 }
 
 class App extends React.Component {
   render() {
-    checkLogin();
+    checkLogin()
 
     return (
       <Router>
@@ -87,10 +78,7 @@ class App extends React.Component {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/guest-house" element={<GuestHouseInfoPage />} />
           <Route path="/guest-house-user" element={<GuestHouseUserPage />} />
-          <Route
-            path="/guest-house-report"
-            element={<GuestHouseReportPage />}
-          />
+          <Route path="/guest-house-report" element={<GuestHouseReportPage />} />
           <Route
             path="/guest-house-admin"
             element={
@@ -102,32 +90,18 @@ class App extends React.Component {
 
           <Route
             path="/pool-info"
-            element={
-              <SubPage
-                pageTitle="Hồ bơi"
-                navigationTo="/pool-info"
-                renderComponent=<PoolInfoPage />
-              />
-            }
+            element={<SubPage pageTitle="Hồ bơi" navigationTo="/pool-info" renderComponent=<PoolInfoPage /> />}
           />
           <Route
             path="/pool-ticket"
             element={
-              <SubPage
-                pageTitle="Mua vé tháng"
-                navigationTo="/pool-ticket"
-                renderComponent=<PoolTicketPage />
-              />
+              <SubPage pageTitle="Mua vé tháng" navigationTo="/pool-ticket" renderComponent=<PoolTicketPage /> />
             }
           />
           <Route
             path="/pool-tutor"
             element={
-              <SubPage
-                pageTitle="Đăng ký học bơi"
-                navigationTo="/pool-tutor"
-                renderComponent=<PoolTutorPage />
-              />
+              <SubPage pageTitle="Đăng ký học bơi" navigationTo="/pool-tutor" renderComponent=<PoolTutorPage /> />
             }
           />
 
@@ -135,14 +109,8 @@ class App extends React.Component {
           <Route path="/guest-house-info" element={<GuestHouseInfoPage />} />
 
           <Route path="/driving-test" element={<DrivingInfoPage />} />
-          <Route
-            path="/driving-registration"
-            element={<DrivingRegisterPage />}
-          />
-          <Route
-            path="/driving-instruction"
-            element={<DrivingInstructionPage />}
-          />
+          <Route path="/driving-registration" element={<DrivingRegisterPage />} />
+          <Route path="/driving-instruction" element={<DrivingInstructionPage />} />
           <Route path="/driving-license" element={<B2InfoPage />}>
             <Route path="b2" element={<B2InfoPage />} />
           </Route>
@@ -192,41 +160,41 @@ class App extends React.Component {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
-    );
+    )
   }
 }
 
-export default App;
+export default App
 
 const RequireAuth = ({ children }) => {
-  const token = localStorage.getItem("user-jwt-tk");
-  const refreshToken = localStorage.getItem("user-jwt-rftk");
+  const token = localStorage.getItem('user-jwt-tk')
+  const refreshToken = localStorage.getItem('user-jwt-rftk')
 
   if (!token || !refreshToken) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" />
   }
-  return children;
-};
+  return children
+}
 
 const RequireAdminAuth = ({ children }) => {
-  const token = localStorage.getItem("user-jwt-tk");
-  const refreshToken = localStorage.getItem("user-jwt-rftk");
-  const role = localStorage.getItem("user-role");
+  const token = localStorage.getItem('user-jwt-tk')
+  const refreshToken = localStorage.getItem('user-jwt-rftk')
+  const role = localStorage.getItem('user-role')
 
   if (!token || !refreshToken || Number(role) === 0 || !role) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" />
   }
-  return children;
-};
+  return children
+}
 
 const LayoutStyled = styled.div`
-  margin: ${(props) => (props.isTablet === true ? "0 0%" : "0 15%")};
-`;
+  margin: ${props => (props.isTablet === true ? '0 0%' : '0 15%')};
+`
 
 const NavStyled = styled.div`
   position: sticky;
   z-index: 2000;
-  top: ${(props) => (props.status === "down" ? "-150px" : "0px")};
+  top: ${props => (props.status === 'down' ? '-150px' : '0px')};
   transition: all;
   transition-duration: 0.25s;
-`;
+`

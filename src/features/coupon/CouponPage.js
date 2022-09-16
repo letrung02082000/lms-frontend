@@ -1,93 +1,85 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
-import axios from 'axios';
-import QRCode from 'qrcode.react';
-import { useSelector } from 'react-redux';
-import { selectUser } from 'store/userSlice';
+import axios from 'axios'
+import QRCode from 'qrcode.react'
+import { useSelector } from 'react-redux'
+import { selectUser } from 'store/userSlice'
 
-import Loading from 'shared/components/Loading';
-import { MdArrowBack } from 'react-icons/md';
-import { authHeader } from 'utils';
-import styles from './couponPage.module.css';
+import Loading from 'shared/components/Loading'
+import { MdArrowBack } from 'react-icons/md'
+import { authHeader } from 'utils'
+import styles from './couponPage.module.css'
 
 export function CouponPage(props) {
-  const serviceType = [
-    'Tất cả dịch vụ',
-    'Ăn uống',
-    'Khóa học',
-    'In ấn',
-    'Đồng phục',
-  ];
-  const navigate = useNavigate();
-  const location = useLocation();
-  const user = useSelector(selectUser);
-  const query = new URLSearchParams(location.search);
-  const couponId = query.get('id');
-  const [coupon, setCoupon] = useState(null);
-  const [save, setSave] = useState(false);
+  const serviceType = ['Tất cả dịch vụ', 'Ăn uống', 'Khóa học', 'In ấn', 'Đồng phục']
+  const navigate = useNavigate()
+  const location = useLocation()
+  const user = useSelector(selectUser)
+  const query = new URLSearchParams(location.search)
+  const couponId = query.get('id')
+  const [coupon, setCoupon] = useState(null)
+  const [save, setSave] = useState(false)
 
   useEffect(() => {
     axios
       .get(`/api/coupon/${couponId}`)
-      .then((res) => {
-        console.log(res.data.data);
-        setCoupon(res.data.data);
+      .then(res => {
+        console.log(res.data.data)
+        setCoupon(res.data.data)
       })
-      .catch((err) => {
-        alert('Không tìm thấy mã giảm giá');
-      });
-  }, [couponId, setCoupon]);
+      .catch(err => {
+        alert('Không tìm thấy mã giảm giá')
+      })
+  }, [couponId, setCoupon])
 
   useEffect(() => {
     if (user.isLoggedIn) {
       axios
         .get(`/api/coupon-user/check?couponId=${couponId}`, authHeader())
-        .then((res) => {
-          setSave(res.data.data);
+        .then(res => {
+          setSave(res.data.data)
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch(err => {
+          console.log(err)
+        })
     }
-  }, [user.isLoggedIn, couponId, setSave]);
+  }, [user.isLoggedIn, couponId, setSave])
 
   if (!coupon) {
-    return <Loading />;
+    return <Loading />
   }
 
-  const today = new Date();
+  const today = new Date()
   const notStarted =
     today >= new Date(coupon.startTime) && today < new Date(coupon.expiryTime)
       ? false
       : today < new Date(coupon.startTime)
       ? 'Chưa mở'
-      : 'Hết hạn';
+      : 'Hết hạn'
 
   const handleBackClick = () => {
-    navigate(-1);
-  };
+    navigate(-1)
+  }
 
   const handleSaveClick = () => {
     axios
       .post('/api/coupon-user/save', { coupon: coupon._id }, authHeader())
-      .then((res) => {
-        setSave(true);
+      .then(res => {
+        setSave(true)
       })
-      .catch((err) => {
-        console.log(err);
-        alert(
-          'Lưu mã không thành công. Bạn không thuộc đối tượng nhận ưu đãi hoặc mã đã được sử dụng. Xin cảm ơn!'
-        );
-      });
-  };
+      .catch(err => {
+        console.log(err)
+        alert('Lưu mã không thành công. Bạn không thuộc đối tượng nhận ưu đãi hoặc mã đã được sử dụng. Xin cảm ơn!')
+      })
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.backButton} onClick={handleBackClick}>
         <MdArrowBack size={28} />
       </div>
-      <img src={'/logo2.png'} alt='img' />
+      <img src={'/logo2.png'} alt="img" />
       <div className={styles.bodyContainer}>
         <h3 className={styles.couponTitle}>{coupon && coupon.name}</h3>
         <span>
@@ -97,27 +89,22 @@ export function CouponPage(props) {
         <p>Áp dụng: {coupon && serviceType[coupon.serviceType]}</p>
 
         {!user.isLoggedIn ? (
-          <button
-            onClick={() => navigate('/login')}
-            className={styles.loginButton}
-          >
+          <button onClick={() => navigate('/login')} className={styles.loginButton}>
             Đăng nhập để nhận QR
           </button>
         ) : save && !save.isUsed ? (
           <>
-            <p style={{ padding: '0 0.5rem', textAlign: 'center' }}>
-              Đưa mã này cho nhân viên để nhận được ưu đãi
-            </p>
+            <p style={{ padding: '0 0.5rem', textAlign: 'center' }}>Đưa mã này cho nhân viên để nhận được ưu đãi</p>
 
             <QRCode
-              id='qrcode'
+              id="qrcode"
               value={`https://isinhvien.vn/coupon-scanned?user=${user.data.id}&coupon=${couponId}`}
               size={290}
               level={'H'}
               includeMargin={true}
               style={{
                 borderRadius: '5px',
-                border: '1px solid rgb(27, 183, 110)',
+                border: '1px solid rgb(27, 183, 110)'
               }}
             />
           </>
@@ -143,15 +130,11 @@ export function CouponPage(props) {
 
         <div className={styles.couponDescription}>
           <h3>Chi tiết ưu đãi</h3>
-          <p>
-            {coupon && coupon.description
-              ? coupon.description
-              : 'Chưa cập nhật'}
-          </p>
+          <p>{coupon && coupon.description ? coupon.description : 'Chưa cập nhật'}</p>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default CouponPage;
+export default CouponPage

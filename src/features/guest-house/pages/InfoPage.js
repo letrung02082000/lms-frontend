@@ -1,33 +1,26 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import styles from './infoPage.module.css';
+import styles from './infoPage.module.css'
 
-import TitleBar from 'shared/components/TitleBar';
+import TitleBar from 'shared/components/TitleBar'
 
 function GuestHouseInfoPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleSignupButton = () => {
-    navigate('/guest-house-user');
-  };
+    navigate('/guest-house-user')
+  }
 
   return (
     <div className={styles.container}>
-      <TitleBar title='Thông tin nhà khách' backgroundColor='#01787A' />
-      <img
-        className={styles.banner}
-        src='/guesthouse.jpg'
-        alt='guest-house'
-        style={{ width: '100%' }}
-      />
+      <TitleBar title="Thông tin nhà khách" backgroundColor="#01787A" />
+      <img className={styles.banner} src="/guesthouse.jpg" alt="guest-house" style={{ width: '100%' }} />
 
       <div className={styles.body}>
         <h2 className={styles.title}>Thông tin chung</h2>
         <p style={{ textAlign: 'center' }}>Nhà Khách Đại Học Quốc Gia TP.HCM</p>
-        <p style={{ textAlign: 'center' }}>
-          Địa chỉ: Khu phố Tân Lập - P. Đông Hòa - TP. Dĩ An - T. Bình Dương
-        </p>
+        <p style={{ textAlign: 'center' }}>Địa chỉ: Khu phố Tân Lập - P. Đông Hòa - TP. Dĩ An - T. Bình Dương</p>
         <p style={{ textAlign: 'center' }}>
           Thông tin liên hệ
           <br /> 02837.244.222 / 0977.742.191 ( Ms.Hà)
@@ -52,10 +45,7 @@ function GuestHouseInfoPage() {
           </li>
           <li>
             <h5>2 giường đôi</h5>
-            <p>
-              &#128142; Đơn giá: 300 000 đồng (1-2 người), 350 000 đồng (3
-              người), 400 000 đồng (4 người)
-            </p>
+            <p>&#128142; Đơn giá: 300 000 đồng (1-2 người), 350 000 đồng (3 người), 400 000 đồng (4 người)</p>
             <p>&#128073; Số lượng: 1-4 người</p>
           </li>
           <li>
@@ -89,7 +79,7 @@ function GuestHouseInfoPage() {
         </ul>
       </div>
     </div>
-  );
+  )
 }
 
-export default GuestHouseInfoPage;
+export default GuestHouseInfoPage

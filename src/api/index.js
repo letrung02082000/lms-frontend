@@ -1,1 +1,1 @@
-export { default as axiosWrapper } from './axiosClient';
+export { default as axiosWrapper } from './axiosClient'

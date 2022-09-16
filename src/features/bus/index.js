@@ -1,2 +1,2 @@
-export * from './RegistrationPage';
-export * from './SurveyPage';
+export * from './RegistrationPage'
+export * from './SurveyPage'

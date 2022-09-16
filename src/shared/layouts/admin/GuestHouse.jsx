@@ -1,10 +1,10 @@
-import React from 'react';
-import { useMemo } from 'react';
-import { FaList } from 'react-icons/fa';
-import { IoIosCreate, IoIosAdd } from 'react-icons/io';
-import { GoReport } from 'react-icons/go';
-import { BiCategory } from 'react-icons/bi';
-import AdminLayout from '../AdminLayoutV2';
+import React from 'react'
+import { useMemo } from 'react'
+import { FaList } from 'react-icons/fa'
+import { IoIosCreate, IoIosAdd } from 'react-icons/io'
+import { GoReport } from 'react-icons/go'
+import { BiCategory } from 'react-icons/bi'
+import AdminLayout from '../AdminLayoutV2'
 
 function GuestHouseLayout() {
   const MENU = useMemo(() => {
@@ -12,32 +12,32 @@ function GuestHouseLayout() {
       {
         label: 'Quản lý phòng',
         path: '',
-        icon: <FaList/>
+        icon: <FaList />
       },
       {
         label: 'Tạo phòng',
         path: 'creation',
-        icon: <IoIosAdd/>
+        icon: <IoIosAdd />
       },
       {
         label: 'Quản lý đăng ký',
         path: 'registrations',
-        icon: <IoIosCreate/>
+        icon: <IoIosCreate />
       },
       {
         label: 'Báo hỏng',
         path: 'reports',
-        icon: <GoReport/>
+        icon: <GoReport />
       },
       {
         label: 'Quản lý loại phòng',
         path: 'categories',
-        icon: <BiCategory/>
-      },
-    ];
-  }, []);
+        icon: <BiCategory />
+      }
+    ]
+  }, [])
 
-  return <AdminLayout menu={MENU} title='Nhà khách'/>;
+  return <AdminLayout menu={MENU} title="Nhà khách" />
 }
 
-export default GuestHouseLayout;
+export default GuestHouseLayout

@@ -1,1 +1,1 @@
-export { default as BankPage } from './BankPage';
+export { default as BankPage } from './BankPage'

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 function Maintained() {
   return (
@@ -8,7 +8,7 @@ function Maintained() {
         minHeight: '70vh',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
       }}
     >
       <p>
@@ -17,7 +17,7 @@ function Maintained() {
         Vui lòng quay lại sau.
       </p>
     </div>
-  );
+  )
 }
 
-export default Maintained;
+export default Maintained

@@ -1,41 +1,39 @@
-import photocopyApi from "api/photocopyApi";
-import React from "react";
-import { useState } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
-import LazyImage from "shared/components/LazyImage";
-import styled from "styled-components";
-import SearchOrder from "./SearchOrder";
+import photocopyApi from 'api/photocopyApi'
+import React from 'react'
+import { useState } from 'react'
+import { Button, Form, Modal } from 'react-bootstrap'
+import LazyImage from 'shared/components/LazyImage'
+import styled from 'styled-components'
+import SearchOrder from './SearchOrder'
 
 function SearchModal(props) {
-  const photocopyInfo = JSON.parse(
-    localStorage.getItem("photocopy-info") || "{}"
-  );
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(false);
+  const photocopyInfo = JSON.parse(localStorage.getItem('photocopy-info') || '{}')
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState(false)
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = e => {
+    e.preventDefault()
+    setLoading(true)
 
     photocopyApi
       .searchOrder(e?.target?.term?.value)
-      .then((res) => {
-        setData(res?.data);
-        setLoading(false);
+      .then(res => {
+        setData(res?.data)
+        setLoading(false)
       })
-      .catch((e) => {
-        console.log(e);
-        setLoading(false);
-      });
-  };
+      .catch(e => {
+        console.log(e)
+        setLoading(false)
+      })
+  }
 
-  const generateOrder = (data) => {
-    if (data.length === 0) return <p>Không tìm thấy đơn hàng!</p>;
-    return data?.map((order) => {
-      return <SearchOrder key={order?.orderCode} {...order} />;
-    });
-  };
-  console.log(data);
+  const generateOrder = data => {
+    if (data.length === 0) return <p>Không tìm thấy đơn hàng!</p>
+    return data?.map(order => {
+      return <SearchOrder key={order?.orderCode} {...order} />
+    })
+  }
+  console.log(data)
   return (
     <Modal show={props?.show} onHide={props?.handleClose}>
       <Modal.Header closeButton>
@@ -54,37 +52,21 @@ function SearchModal(props) {
               autoFocus
               defaultValue={photocopyInfo?.tel}
             />
-            <Button
-              className="mt-3 mb-5"
-              type="submit"
-              variant="primary"
-              disabled={loading}
-            >
+            <Button className="mt-3 mb-5" type="submit" variant="primary" disabled={loading}>
               Tìm kiếm
             </Button>
             <div>
-              {data === false && (
-                <LazyImage
-                  src="/document-search.jpg"
-                  height={200}
-                  width="auto"
-                />
-              )}
-              {data !== false &&
-                (loading ? (
-                  <span>Đang tải dữ liệu...</span>
-                ) : (
-                  <div>{generateOrder(data)}</div>
-                ))}
+              {data === false && <LazyImage src="/document-search.jpg" height={200} width="auto" />}
+              {data !== false && (loading ? <span>Đang tải dữ liệu...</span> : <div>{generateOrder(data)}</div>)}
             </div>
           </Form>
         </Styles>
       </Modal.Body>
     </Modal>
-  );
+  )
 }
 
-export default SearchModal;
+export default SearchModal
 
 const Styles = styled.div`
   .placeholder-image {
@@ -92,4 +74,4 @@ const Styles = styled.div`
       border-radius: 15px;
     }
   }
-`;
+`

@@ -1,98 +1,84 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import MainLayout from 'shared/layouts/MainLayout';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import MainLayout from 'shared/layouts/MainLayout'
+import { useNavigate } from 'react-router-dom'
 
-import styles from './explorePage.module.css';
+import styles from './explorePage.module.css'
 
-import { useSelector } from 'react-redux';
-import { selectUser } from 'store/userSlice';
+import { useSelector } from 'react-redux'
+import { selectUser } from 'store/userSlice'
 
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination } from 'swiper';
-import {
-  Category,
-  SearchBar,
-  VoucherList,
-  VoucherListVertical,
-} from './components';
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
+import { Pagination } from 'swiper'
+import { Category, SearchBar, VoucherList, VoucherListVertical } from './components'
 
-import { IoTicketSharp, IoShirtOutline } from 'react-icons/io5';
-import { MdPool } from 'react-icons/md';
-import { FaHotel } from 'react-icons/fa';
-import { AiOutlinePrinter } from 'react-icons/ai';
-import { authHeader } from 'utils';
+import { IoTicketSharp, IoShirtOutline } from 'react-icons/io5'
+import { MdPool } from 'react-icons/md'
+import { FaHotel } from 'react-icons/fa'
+import { AiOutlinePrinter } from 'react-icons/ai'
+import { authHeader } from 'utils'
 
 function ExplorePage() {
-  const navigate = useNavigate();
-  const [couponList, setCouponList] = useState([]);
-  const [whiteList, setWhiteList] = useState([]);
-  const [myCouponList, setMyCouponList] = useState([]);
-  const [isMyCoupon, setIsMyCoupon] = useState(false);
-  const user = useSelector(selectUser);
+  const navigate = useNavigate()
+  const [couponList, setCouponList] = useState([])
+  const [whiteList, setWhiteList] = useState([])
+  const [myCouponList, setMyCouponList] = useState([])
+  const [isMyCoupon, setIsMyCoupon] = useState(false)
+  const user = useSelector(selectUser)
 
   useEffect(() => {
     axios
       .get('/api/coupon/available?limit=10')
-      .then((res) => {
-        setCouponList(res.data.data);
+      .then(res => {
+        setCouponList(res.data.data)
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch(error => {
+        console.log(error)
+      })
 
     axios
       .get('/api/coupon/whitelist')
-      .then((res) => {
-        setWhiteList(res.data.data);
+      .then(res => {
+        setWhiteList(res.data.data)
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+      .catch(error => {
+        console.log(error)
+      })
+  }, [])
   useEffect(() => {
     if (user.isLoggedIn) {
       axios
         .get('/api/coupon-user/my-coupon', authHeader())
-        .then((res) => {
+        .then(res => {
           if (res.data.data) {
-            setMyCouponList(res.data.data);
+            setMyCouponList(res.data.data)
           }
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch(error => {
+          console.log(error)
+        })
     }
-  }, [user.isLoggedIn]);
+  }, [user.isLoggedIn])
 
-  const handleSwitchClick = (event) => {
-    setIsMyCoupon(false);
-  };
-  const handleSwitchMyClick = (event) => {
-    setIsMyCoupon(true);
-  };
+  const handleSwitchClick = event => {
+    setIsMyCoupon(false)
+  }
+  const handleSwitchMyClick = event => {
+    setIsMyCoupon(true)
+  }
 
-  const navigateTo = (path) => {
-    navigate(path);
-  };
+  const navigateTo = path => {
+    navigate(path)
+  }
 
   return (
     <MainLayout>
-      <SearchBar
-        placeholder={'Tìm kiếm ưu đãi'}
-        focusText={'Tính năng đang được phát triển'}
-      />
+      <SearchBar placeholder={'Tìm kiếm ưu đãi'} focusText={'Tính năng đang được phát triển'} />
       <div className={`${styles.switchButton}`}>
-        <button
-          className={isMyCoupon ? '' : styles.active}
-          onClick={handleSwitchClick}
-        >
+        <button className={isMyCoupon ? '' : styles.active} onClick={handleSwitchClick}>
           Ưu đãi
         </button>
-        <button
-          className={isMyCoupon ? styles.active : ''}
-          onClick={handleSwitchMyClick}
-        >
+        <button className={isMyCoupon ? styles.active : ''} onClick={handleSwitchMyClick}>
           Ưu đãi của tôi
         </button>
       </div>
@@ -104,34 +90,34 @@ function ExplorePage() {
             slidesPerView={4}
             loop={false}
             height={'100%'}
-            className='mySwiper'
+            className="mySwiper"
             style={{ padding: '0.5rem', backgroundColor: 'white' }}
           >
             <SwiperSlide>
-              <Category icon={IoTicketSharp} name='Tất cả' type={0} />
+              <Category icon={IoTicketSharp} name="Tất cả" type={0} />
             </SwiperSlide>
             <SwiperSlide>
-              <Category icon={MdPool} name='Ăn uống' type={1} />
+              <Category icon={MdPool} name="Ăn uống" type={1} />
             </SwiperSlide>
             <SwiperSlide>
-              <Category icon={FaHotel} name='Khóa học' type={2} />
+              <Category icon={FaHotel} name="Khóa học" type={2} />
             </SwiperSlide>
             <SwiperSlide>
-              <Category icon={AiOutlinePrinter} name='In ấn' type={3} />
+              <Category icon={AiOutlinePrinter} name="In ấn" type={3} />
             </SwiperSlide>
             <SwiperSlide>
-              <Category icon={IoShirtOutline} name='Đồng phục' type={4} />
+              <Category icon={IoShirtOutline} name="Đồng phục" type={4} />
             </SwiperSlide>
           </Swiper>
           <VoucherList
             type={99}
-            title='Ưu đãi mới'
+            title="Ưu đãi mới"
             couponList={couponList}
             savedCouponList={{ myCouponList, setMyCouponList }}
           />
           <VoucherList
             type={100}
-            title='Ưu đãi độc quyền'
+            title="Ưu đãi độc quyền"
             couponList={whiteList}
             savedCouponList={{ myCouponList, setMyCouponList }}
           />
@@ -140,9 +126,7 @@ function ExplorePage() {
         myCouponList && myCouponList.length > 0 ? (
           <VoucherListVertical />
         ) : (
-          <p style={{ margin: '10rem 0 0', textAlign: 'center' }}>
-            Bạn chưa lưu mã ưu đãi nào :(
-          </p>
+          <p style={{ margin: '10rem 0 0', textAlign: 'center' }}>Bạn chưa lưu mã ưu đãi nào :(</p>
         )
       ) : (
         <div className={styles.loginContainer}>
@@ -151,7 +135,7 @@ function ExplorePage() {
         </div>
       )}
     </MainLayout>
-  );
+  )
 }
 
-export default ExplorePage;
+export default ExplorePage

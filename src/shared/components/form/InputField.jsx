@@ -3,39 +3,31 @@ import { Form } from 'react-bootstrap'
 import { useController } from 'react-hook-form'
 import styled from 'styled-components'
 
-function InputField({
-  label,
-  children,
-  control,
-  name,
-  rules,
-  defaultValue,
-  ...props
-}) {
+function InputField({ label, children, control, name, rules, defaultValue, ...props }) {
   const {
     field: { ref, ...controlProps },
-    fieldState: { invalid, isTouched, isDirty, error },
+    fieldState: { invalid, isTouched, isDirty, error }
   } = useController({
     name,
     control,
     rules: rules || { required: 'Vui lòng nhập trường này' },
-    defaultValue,
+    defaultValue
   })
 
   return (
     <Styles>
       <Form.Group>
-        <Form.Label className='my-3'>{label || children || ''}</Form.Label>
+        <Form.Label className="my-3">{label || children || ''}</Form.Label>
         <Form.Control
           {...props}
           control={control}
           ref={ref}
-          type='text'
+          type="text"
           isInvalid={invalid}
           {...controlProps}
-          onChange={(e) => controlProps?.onChange(e)}
+          onChange={e => controlProps?.onChange(e)}
         />
-        {error && <Form.Text style={{color: 'red'}}>{error?.message}</Form.Text>}
+        {error && <Form.Text style={{ color: 'red' }}>{error?.message}</Form.Text>}
       </Form.Group>
     </Styles>
   )

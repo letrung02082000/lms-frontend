@@ -1,72 +1,67 @@
-import axios from 'axios';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUser, updateName, updateTel, updateZalo } from 'store/userSlice';
-import styles from '../swimmingPoolTicketPage.module.css';
+import axios from 'axios'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectUser, updateName, updateTel, updateZalo } from 'store/userSlice'
+import styles from '../swimmingPoolTicketPage.module.css'
 
 export default function TutorForm(props) {
-  const dispatch = useDispatch();
-  let userInfo = useSelector(selectUser);
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch()
+  let userInfo = useSelector(selectUser)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmitButton = (e) => {
-    setIsLoading(true);
-    const name = document.getElementById('formName').value;
-    const tel = document.getElementById('formTel').value;
-    const zalo = document.getElementById('formZalo').value;
-    const feedback = document.getElementById('formFeedback').value;
+  const handleSubmitButton = e => {
+    setIsLoading(true)
+    const name = document.getElementById('formName').value
+    const tel = document.getElementById('formTel').value
+    const zalo = document.getElementById('formZalo').value
+    const feedback = document.getElementById('formFeedback').value
 
     if (!name || !tel || !zalo) {
-      setIsLoading(false);
-      return alert(
-        'Vui lòng nhập đầy đủ các trường Họ tên, số điện thoại và zalo!'
-      );
+      setIsLoading(false)
+      return alert('Vui lòng nhập đầy đủ các trường Họ tên, số điện thoại và zalo!')
     }
 
     axios({
       method: 'post',
       url: '/api/pool/tutor-user',
-      data: { name, tel, zalo, feedback },
+      data: { name, tel, zalo, feedback }
     })
-      .then((res) => {
+      .then(res => {
         if (res.status === 200) {
           alert(
             'Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo để được xử lý.'
-          );
-          setIsLoading(false);
+          )
+          setIsLoading(false)
         } else {
-          alert('Lỗi: ' + res.data.message);
-          setIsLoading(false);
+          alert('Lỗi: ' + res.data.message)
+          setIsLoading(false)
         }
       })
-      .catch((error) => {
-        console.log(error);
-        alert('Lỗi: ' + error);
-        setIsLoading(false);
-      });
-  };
+      .catch(error => {
+        console.log(error)
+        alert('Lỗi: ' + error)
+        setIsLoading(false)
+      })
+  }
 
-  const handleNameChange = (e) => {
-    dispatch(updateName(e.target.value));
-  };
+  const handleNameChange = e => {
+    dispatch(updateName(e.target.value))
+  }
 
-  const handleTelChange = (e) => {
-    dispatch(updateTel(e.target.value));
-  };
+  const handleTelChange = e => {
+    dispatch(updateTel(e.target.value))
+  }
 
-  const handleZaloChange = (e) => {
-    dispatch(updateZalo(e.target.value));
-  };
+  const handleZaloChange = e => {
+    dispatch(updateZalo(e.target.value))
+  }
 
   return (
     <form style={props.display === false ? { display: 'none' } : null}>
       <ul style={{ listStyle: 'none', padding: '0' }}>
         <li>
           <p>Học phí: 600.000 đồng/1 kỳ (6 buổi).</p>
-          <p>
-            Học phí toàn khóa: 1.200.000 đồng/2 kỳ (12 buổi) bao biết bơi, miễn
-            phí vé vào hồ bơi.
-          </p>
+          <p>Học phí toàn khóa: 1.200.000 đồng/2 kỳ (12 buổi) bao biết bơi, miễn phí vé vào hồ bơi.</p>
         </li>
         <li>
           <p>Giảm 10% khi đăng ký theo nhóm 5 người.</p>
@@ -79,11 +74,7 @@ export default function TutorForm(props) {
         </li>
         <li>
           Liên hệ tư vấn:{' '}
-          <a
-            href='https://zalo.me/0877876877'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
+          <a href="https://zalo.me/0877876877" target="_blank" rel="noopener noreferrer">
             0877.876.877
           </a>
         </li>
@@ -94,9 +85,9 @@ export default function TutorForm(props) {
         <label className={styles.formLabel}>Tên của bạn*</label>
         <input
           className={styles.formInput}
-          id='formName'
-          type='text'
-          placeholder='Nhập họ tên đầy đủ, có dấu'
+          id="formName"
+          type="text"
+          placeholder="Nhập họ tên đầy đủ, có dấu"
           required
           value={userInfo.data.name}
           onChange={handleNameChange}
@@ -106,9 +97,9 @@ export default function TutorForm(props) {
         <label className={styles.formLabel}>Số điện thoại liên hệ*</label>
         <input
           className={styles.formInput}
-          id='formTel'
-          type='text'
-          placeholder='Nhập số điện thoại của bạn'
+          id="formTel"
+          type="text"
+          placeholder="Nhập số điện thoại của bạn"
           required
           value={userInfo.data.tel}
           onChange={handleTelChange}
@@ -118,9 +109,9 @@ export default function TutorForm(props) {
         <label className={styles.formLabel}>Số điện thoại Zalo*</label>
         <input
           className={styles.formInput}
-          id='formZalo'
-          type='text'
-          placeholder='Nhập số điện thoại Zalo của bạn'
+          id="formZalo"
+          type="text"
+          placeholder="Nhập số điện thoại Zalo của bạn"
           required
           value={userInfo.data.zalo}
           onChange={handleZaloChange}
@@ -129,7 +120,7 @@ export default function TutorForm(props) {
 
       <div className={styles.formGroup}>
         <label className={styles.formLabel}>Thắc mắc/Góp ý</label>
-        <textarea className={styles.formFeedbackInput} id='formFeedback' />
+        <textarea className={styles.formFeedbackInput} id="formFeedback" />
       </div>
 
       {isLoading ? (
@@ -138,26 +129,17 @@ export default function TutorForm(props) {
           <p className={styles.formSubmitButton}>Đang đăng ký...</p>
         </>
       ) : (
-        <button
-          type='button'
-          onClick={handleSubmitButton}
-          className={styles.formSubmitButton}
-        >
+        <button type="button" onClick={handleSubmitButton} className={styles.formSubmitButton}>
           Đăng ký
         </button>
       )}
       <p style={{ margin: '1rem 0' }}>
-        Trong quá trình đăng ký, nếu xảy ra lỗi hệ thống, vui lòng chụp màn hình
-        lỗi gửi về Zalo:{' '}
-        <a
-          href="href='https://zalo.me/0797324886"
-          target='_blank'
-          rel='noopener noreferrer'
-        >
+        Trong quá trình đăng ký, nếu xảy ra lỗi hệ thống, vui lòng chụp màn hình lỗi gửi về Zalo:{' '}
+        <a href="href='https://zalo.me/0797324886" target="_blank" rel="noopener noreferrer">
           0797324886
         </a>{' '}
         để được hỗ trợ nhanh nhất. Xin cảm ơn.
       </p>
     </form>
-  );
+  )
 }

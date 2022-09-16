@@ -1,2 +1,2 @@
-export * from './BicyclePage';
-export * from './BicyclesPage';
+export * from './BicyclePage'
+export * from './BicyclesPage'

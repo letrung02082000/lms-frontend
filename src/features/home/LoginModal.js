@@ -1,27 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './loginModal.module.css';
-import { MdOutlineClose } from 'react-icons/md';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import styles from './loginModal.module.css'
+import { MdOutlineClose } from 'react-icons/md'
 
-const LoginModal = (props) => {
-  const navigate = useNavigate();
+const LoginModal = props => {
+  const navigate = useNavigate()
 
   const handleLoginClick = () => {
-    navigate('/login');
-  };
+    navigate('/login')
+  }
 
   const handleSignUpClick = () => {
-    navigate('/signup');
-  };
+    navigate('/signup')
+  }
 
   return (
     <div className={styles.loginBackdrop}>
       <div className={styles.loginModal}>
         <div className={styles.closeModalButton}>
-          <button
-            style={{ backgroundColor: 'white', borderWidth: '0' }}
-            onClick={props.onClose}
-          >
+          <button style={{ backgroundColor: 'white', borderWidth: '0' }} onClick={props.onClose}>
             <MdOutlineClose size={25} />
           </button>
         </div>
@@ -30,17 +27,13 @@ const LoginModal = (props) => {
           <button onClick={handleLoginClick} className={'btn btn-primary'}>
             Đăng nhập
           </button>
-          <button
-            onClick={handleSignUpClick}
-            className={'btn btn-primary'}
-            style={{ marginTop: '1rem' }}
-          >
+          <button onClick={handleSignUpClick} className={'btn btn-primary'} style={{ marginTop: '1rem' }}>
             Đăng ký
           </button>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginModal;
+export default LoginModal
