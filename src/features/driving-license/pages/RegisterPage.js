@@ -287,17 +287,18 @@ export default function DrivingRegisterPage() {
         <LazyImage src={PortraitBanner} />
       </div>
       <form className={styles.drivingFormContainer}>
-        <p style={{ margin: 0 }}>
-          Xem hướng dẫn đăng ký dự thi{' '}
-          <a
-            href='/driving-instruction'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            tại đây.
-          </a>
-        </p>
-        <ul style={{ listStyle: 'none', padding: '0' }}>
+        
+        <ul className='px-2'>
+          <li style={{ margin: 0 }}>
+            Xem hướng dẫn đăng ký dự thi{' '}
+            <a
+              href='/driving-instruction'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              tại đây.
+            </a>
+          </li>
           <li>
             Thông tin chuyển khoản:
             <br />- Chủ tài khoản: Nguyễn Ngọc Huân
@@ -308,18 +309,25 @@ export default function DrivingRegisterPage() {
             với bằng A2
             <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã chuyển
             khoản.
-            <br />- Gửi lại ảnh chụp biên lai tại Zalo:{' '}
+            <br />- Gửi lại ảnh chụp biên lai tại {' '}
             <a
-              href='https://zalo.me/0886405887'
+              href='http://zalo.me/4013961016678131109?src=qr'
               target='_blank'
               rel='noopener noreferrer'
             >
-              0886.405.887
+              Zalo OA
             </a>{' '}
             nếu đóng sau khi đăng ký.
           </li>
+          <li>Truy cập Zalo Official Account <a
+            href='http://zalo.me/4013961016678131109?src=qr'
+            target='_blank'
+            rel='noreferrer'
+          >
+            Trung tâm dịch vụ sinh viên iStudent
+          </a> và nhấn "Quan tâm" để trung tâm có thể liên hệ với bạn (Quan trọng)</li>
 
-          <li>Hoàn thành lệ phí thi trước ngày dự thi 14 ngày.</li>
+          <li>Hoàn thành lệ phí thi trước ngày dự thi 16 ngày.</li>
         </ul>
         <p style={{ margin: 0, color: ' #ff0000 ' }}>* bắt buộc</p>
 

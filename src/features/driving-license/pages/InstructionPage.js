@@ -144,7 +144,18 @@ export default function DrivingInstructionPage(props) {
           </div>
           <div id='online'>
             <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký online</h3>
-            <p>1. Hoàn thành mẫu đơn đăng ký online bao gồm:</p>
+            <p>1. Quan tâm Zalo Official Account để nhận hướng dẫn dự thi</p>
+            <ul>
+              <li>Truy cập vào Zalo OA tại <a
+              href='http://zalo.me/4013961016678131109?src=qr'
+              target='_blank'
+              rel='noreferrer'
+            >
+              Trung tâm dịch vụ sinh viên iStudent
+            </a> </li>
+              <li>Chọn "Quan tâm" (quan trọng)</li>
+            </ul>
+            <p>2. Hoàn thành mẫu đơn đăng ký online bao gồm:</p>
             <ul>
               <li>Họ tên đầy đủ, có dấu.</li>
               <li>Số điện thoại liên hệ của bạn.</li>
@@ -152,8 +163,7 @@ export default function DrivingInstructionPage(props) {
               <li>
                 Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (ảnh tự chụp
                 bằng điện thoại, không quá 3 tháng, không chụp ảnh thẻ): Tóc
-                không quá trán, vén tóc ra sau mang tai, lấy đủ 2 vai, lấy từ
-                thắt lưng trở lên qua đầu, không đeo kính, trang phục lịch sự,
+                không quá trán, vén tóc ra sau mang tai, LẤY ĐỦ 2 VAI, LẤY TỪ THẮT LƯNG TRỞ LÊN QUA ĐẦU, không đeo kính, trang phục lịch sự,
                 lấy nền tường. Vui lòng không sử dụng filter hay chỉnh sửa làm
                 mất đặc điểm nhận dạng. Xem ảnh mẫu{' '}
                 <a
@@ -164,8 +174,9 @@ export default function DrivingInstructionPage(props) {
                   tại đây.
                 </a>
               </li>
+              <li>Ảnh chụp chân dung không đúng chuẩn sẽ làm chậm quá trình xử lý hồ sơ của bạn.</li>
             </ul>
-            <p>2. Thanh toán lệ phí</p>
+            <p>3. Thanh toán lệ phí</p>
             <ul>
               <li>
                 Thông tin chuyển khoản:
@@ -176,22 +187,23 @@ export default function DrivingInstructionPage(props) {
                 <br />- Số tiền: 590.000 đồng
                 <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã
                 chuyển khoản.
-                <br />- Gửi lại ảnh chụp biên lai tại Zalo:{' '}
+                <br />- Gửi lại ảnh chụp biên lai tại Zalo Official Account:{' '}
                 <a
-                  href='https://zalo.me/0886405887'
+                  href='https://zalo.me/4013961016678131109?src=qr'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  0886.405.887
+                  Trung tâm dịch vụ sinh viên iStudent
                 </a>{' '}
-                (Ms.Trang) nếu đóng sau khi đăng ký.
+                nếu đóng sau khi đăng ký.
               </li>
               <li>
-                Đóng trực tiếp: Tại nhà khách ĐHQG. Vui lòng liên hệ di động/Zalo{' '}
-                <a href='tel:+84384936540' alt='tel' rel='nopenner noreferrer'>
-                  0384.936.540
-                </a>{' '}
-                (Ms.Hằng) để hẹn thời gian trước khi đến đóng lệ phí.
+                Đóng trực tiếp: Tại văn phòng iSinhvien
+                <br/> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương (Tầng trệt Nhà khách ĐHQG)
+                <br/> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
+                <br/> - Mang theo CMND/CCCD để làm thủ tục.
+                <br/> - Hotline: 0877.876.877
+                <br/> - Google maps: <a href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8" target='_blank' rel='noreferrer'>https://goo.gl/maps/mNj1KKJuJXFHLRsw8</a>
               </li>
               <li>Hoàn thành lệ phí thi trước ngày dự thi 16 ngày.</li>
             </ul>
@@ -200,40 +212,31 @@ export default function DrivingInstructionPage(props) {
               mời chào làm hồ sơ tận nơi, giá rẻ hay mạo danh trung tâm yêu cầu
               chuyển tiền. Trung tâm không chịu trách nhiệm.
             </p>
-            <p>3. Chờ duyệt hồ sơ:</p>
+            <p>4. Chờ duyệt hồ sơ:</p>
             <ul>
               <li>
                 Sau khi đăng ký, trung tâm sẽ xác nhận lại trong vòng 1 ngày làm việc,
                 mọi thủ tục cần hoàn tất trước ngày thi 16 ngày.
               </li>
               <li>
-                Nếu không nhận được thông báo, vui lòng liên hệ di động/Zalo:{' '}
+                Nếu bạn không nhận được thông báo, vui lòng liên hệ di động/Zalo:{' '}
                 <a
-                  href='https://zalo.me/0886405887'
+                  href='https://zalo.me/0876877789'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  0886.405.887
+                  0876.877.789
                 </a>{' '}
                 để được hỗ trợ.
               </li>
               <li>
-                Khung giờ phản hồi: 6h30-7h30, 12h30-13h30, 16h30-17h00,
-                22h30-23h00.
+                Khung giờ phản hồi: 6h30-8h30, 18h30-20h30.
               </li>
             </ul>
-            <p>4. Đi thi</p>
+            <p>5. Đi thi</p>
             <ul>
               <li>
-                Trước ngày thi 10 ngày, trung tâm sẽ cập nhật thời gian và danh
-                sách dự thi tại page:{' '}
-                <a
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  href='https://www.facebook.com/daihocquocgia'
-                >
-                  www.facebook.com/daihocquocgia
-                </a>
+                Danh sách dự thi và hướng dẫn dự thi sẽ được gửi đến thí sinh thông qua nhóm Zalo
                 . Thi sinh vui lòng theo dõi để cập nhật thông tin sớm nhất.
               </li>
               <li>
@@ -244,13 +247,19 @@ export default function DrivingInstructionPage(props) {
           </div>
           <div id='offline'>
             <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký trực tiếp</h3>
-            <p>
-              Địa điểm: Tại nhà khách ĐHQG. Vui lòng gọi{' '}
-              <a href='tel:+84384936540' alt='tel' rel='nopenner noreferrer'>
-                0384.936.540
-              </a>{' '}
-              (Ms.Hằng) để hẹn thời gian trước khi đến đăng ký (giờ hành chính).
-            </p>
+            <ul>
+              <li>
+                Địa điểm: Tại văn phòng iSinhvien
+                <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương (Tầng trệt Nhà khách ĐHQG)
+                <br /> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
+                <br /> - Mang theo CMND/CCCD để làm thủ tục.
+                <br /> - Hotline: 0877.876.877
+                <br /> - Google maps: <a href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8" target='_blank' rel='noreferrer'>https://goo.gl/maps/mNj1KKJuJXFHLRsw8</a>
+              </li>
+              <li>
+                Khi đăng ký trực tiếp, bạn vẫn cần phải đăng ký thông tin như hướng dẫn ở trên.
+              </li>
+            </ul>
           </div>
           <div id='mocktest'>
             <h3 className={styles.sectionTitle}>
@@ -304,21 +313,13 @@ export default function DrivingInstructionPage(props) {
         </div>
         <div className={styles.footer}>
           <p id='contact'>
-            Để được hỗ trợ thêm, vui lòng liên hệ di động/Zalo:{' '}
+            Để được hỗ trợ thêm, vui lòng liên hệ Zalo:{' '}
             <a
-              href='https://zalo.me/0886405887'
+              href='https://zalo.me/0876877789'
               target='_blank'
               rel='noopener noreferrer'
             >
-              0886.405.887 (Ms. Trang)
-            </a>{' '}
-            hoặc{' '}
-            <a
-              href='https://zalo.me/0797324886'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              0797.324.886 (Mr. Trung)
+              0876.877.789 (Mr. Trung)
             </a>
           </p>
         </div>
