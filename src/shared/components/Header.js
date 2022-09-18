@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import './header.css'
 import useMediaQuery from 'hooks/useMediaQuery'
 
-import { useScrollDirection } from 'utils'
+import useScrollDirection from 'hooks/useScrollDirection'
 
 function Header() {
   const isMobile = useMediaQuery('(max-width: 768px)')

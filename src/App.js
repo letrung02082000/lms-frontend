@@ -1,7 +1,8 @@
 import React from 'react'
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import { checkLogin, useScrollDirection } from 'utils'
+import { checkLogin } from 'utils'
+import useScrollDirection from 'hooks/useScrollDirection'
 import AdminRoutes from 'features/admin/AdminRoutes'
 import PhotocopyRoutes from 'features/photocopy/Routes'
 import {

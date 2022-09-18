@@ -9,7 +9,7 @@ const Logo = () => {
         <img className={styles.logo} src="/logo.png" alt="logo" />
         <span style={{ color: '#EE6A26', fontWeight: 'bold' }}>inhvien</span>
       </div>
-      <span className={styles.slogan}>Chất lượng hơn - giá rẻ hơn</span>
+      {/* <span className={styles.slogan}>Chất lượng hơn - giá rẻ hơn</span> */}
     </div>
   )
 }
