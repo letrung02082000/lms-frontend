@@ -13,7 +13,7 @@ function DrivingTestPage() {
 
   return (
     <div className={styles.drivingContainer}>
-      <TitleBar title="Đăng ký thi sát hạch lái xe" />
+      {/* <TitleBar title="Đăng ký thi sát hạch lái xe" /> */}
       <div className={styles.header}>
         <img src="/drivingbanner.jpg" alt="driving banner" className={styles.drivingBanner} />
         <div className={styles.introContainerTop}>

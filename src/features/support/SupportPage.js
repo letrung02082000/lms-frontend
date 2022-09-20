@@ -6,7 +6,7 @@ import styled from 'styled-components'
 function SupportPage() {
   return (
     <>
-      <TitleBar title="Hỗ trợ" />
+      {/* <TitleBar title="Hỗ trợ" /> */}
       <Styles>
         <h3>Thông tin hỗ trợ</h3>
         <div className="body d-flex flex-column">

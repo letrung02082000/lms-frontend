@@ -38,7 +38,7 @@ function BankPage() {
   return (
     <div>
       <div className={styles.container}>
-        <TitleBar title="Mở thẻ MB Bank" />
+        {/* <TitleBar title="Mở thẻ MB Bank" /> */}
         <img src="/bankbanner.jpg" style={{ width: '100%' }} />
         <p className={styles.header}>
           Mở tài khoản miễn phí, hoàn toàn online bằng công nghệ eKYC, miễn phí giao dịch trọn đời tại MBBank

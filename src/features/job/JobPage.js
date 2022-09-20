@@ -26,7 +26,7 @@ function JobPage() {
 
   return (
     <div className={styles.container}>
-      <TitleBar title="Việc làm sinh viên" />
+      {/* <TitleBar title="Việc làm sinh viên" /> */}
       {loading ? <Loading /> : null}
       {data.map(child => {
         let date = new Date(child.createdAt)

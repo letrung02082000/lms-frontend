@@ -22,7 +22,7 @@ function QrScanPage() {
 
   return (
     <>
-      <TitleBar title="Mã QR" />
+      {/* <TitleBar title="Mã QR" /> */}
       <div className={styles.container}>
         <p style={{ margin: '7rem 0 1rem 0' }}>Đưa mã này cho nhân viên để check-in</p>
         <QRCode

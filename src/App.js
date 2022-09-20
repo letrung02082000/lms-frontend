@@ -2,9 +2,9 @@ import React from 'react'
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { checkLogin } from 'utils'
-import useScrollDirection from 'hooks/useScrollDirection'
 import AdminRoutes from 'features/admin/AdminRoutes'
 import PhotocopyRoutes from 'features/photocopy/Routes'
+import ServiceLayout from 'shared/layouts/ServiceLayout'
 import {
   AccountPage,
   AdminBicyclePage,
@@ -45,24 +45,6 @@ import {
   B2InfoPage
 } from 'features'
 
-import useMediaQuery from 'hooks/useMediaQuery'
-import styled from 'styled-components'
-import TitleBar from 'shared/components/TitleBar'
-
-function SubPage({ pageTitle, navigationTo, navbarColor, renderComponent }) {
-  const isTablet = useMediaQuery('(max-width: 768px)')
-  const scrollDirection = useScrollDirection()
-
-  return (
-    <div>
-      <NavStyled status={scrollDirection}>
-        <TitleBar title={pageTitle} navigation={navigationTo} backgroundColor={navbarColor} />
-      </NavStyled>
-      <LayoutStyled isTablet={isTablet}>{renderComponent}</LayoutStyled>
-    </div>
-  )
-}
-
 class App extends React.Component {
   render() {
     checkLogin()
@@ -91,52 +73,193 @@ class App extends React.Component {
 
           <Route
             path="/pool-info"
-            element={<SubPage pageTitle="Hồ bơi" navigationTo="/pool-info" renderComponent=<PoolInfoPage /> />}
+            element={
+              <ServiceLayout pageTitle="Hồ bơi" navigationTo="/pool-info">
+                <PoolInfoPage />
+              </ServiceLayout>
+            }
           />
           <Route
             path="/pool-ticket"
             element={
-              <SubPage pageTitle="Mua vé tháng" navigationTo="/pool-ticket" renderComponent=<PoolTicketPage /> />
+              <ServiceLayout pageTitle="Mua vé tháng" navigationTo="/pool-ticket">
+                <PoolTicketPage />
+              </ServiceLayout>
             }
           />
           <Route
             path="/pool-tutor"
             element={
-              <SubPage pageTitle="Đăng ký học bơi" navigationTo="/pool-tutor" renderComponent=<PoolTutorPage /> />
+              <ServiceLayout pageTitle="Đăng ký học bơi" navigationTo="/pool-tutor">
+                <PoolTutorPage />
+              </ServiceLayout>
             }
           />
 
-          <Route path="/qrscan" element={<QrScanPage />} />
-          <Route path="/guest-house-info" element={<GuestHouseInfoPage />} />
+          <Route
+            path="/qrscan"
+            element={
+              <ServiceLayout pageTitle="Mã QR" navigationTo="/qrscan">
+                <QrScanPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/guest-house-info"
+            element={
+              <ServiceLayout pageTitle="Thông tin nhà khách" navigationTo="/guest-house-info">
+                <GuestHouseInfoPage />
+              </ServiceLayout>
+            }
+          />
 
-          <Route path="/driving-test" element={<DrivingInfoPage />} />
-          <Route path="/driving-registration" element={<DrivingRegisterPage />} />
-          <Route path="/driving-instruction" element={<DrivingInstructionPage />} />
-          <Route path="/driving-license" element={<B2InfoPage />}>
-            <Route path="b2" element={<B2InfoPage />} />
+          <Route
+            path="/driving-test"
+            element={
+              <ServiceLayout pageTitle="Đăng ký thi sát hạch lái xe" navigationTo="/driving-test">
+                <DrivingInfoPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/driving-registration"
+            element={
+              <ServiceLayout pageTitle="Đăng ký dự thi" navigationTo="/driving-registration">
+                <DrivingRegisterPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/driving-instruction"
+            element={
+              <ServiceLayout pageTitle="Hướng dẫn dự thi" navigationTo="/driving-instruction">
+                <DrivingInstructionPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/driving-license"
+            element={
+              <ServiceLayout pageTitle="Hướng dẫn B1-B2" navigationTo="/driving-license">
+                <B2InfoPage />
+              </ServiceLayout>
+            }
+          >
+            <Route
+              path="b2"
+              element={
+                <ServiceLayout pageTitle="Hướng dẫn B1-B2" navigationTo="/driving-license">
+                  <B2InfoPage />
+                </ServiceLayout>
+              }
+            />
           </Route>
 
-          <Route path="/jobs" element={<JobPage />} />
-          <Route path="/job" element={<JobDetailPage />} />
+          <Route
+            path="/jobs"
+            element={
+              <ServiceLayout pageTitle="Việc làm sinh viên" navigationTo="/jobs">
+                <JobPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/job"
+            element={
+              <ServiceLayout pageTitle="Thông tin việc làm" navigationTo="/jobs">
+                <JobDetailPage />
+              </ServiceLayout>
+            }
+          />
 
           <Route path="/coupon-list" element={<CouponListPage />} />
           <Route path="/coupon" element={<CouponPage />} />
           <Route path="/coupon-scanned" element={<CouponScannedPage />} />
 
-          <Route path="/bicycles" element={<BicyclesPage />} />
-          <Route path="/bicycle" element={<BicyclePage />} />
+          <Route
+            path="/bicycles"
+            element={
+              <ServiceLayout pageTitle="Xe đạp công cộng" navigationTo="/bicycles">
+                <BicyclesPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/bicycle"
+            element={
+              <ServiceLayout pageTitle="Thuê xe" navigationTo="/bicycles">
+                <BicyclePage />
+              </ServiceLayout>
+            }
+          />
 
-          <Route path="/bank" element={<BankPage />} />
+          <Route
+            path="/bank"
+            element={
+              <ServiceLayout pageTitle="Mở thẻ MB Bank" navigationTo="/bank">
+                <BankPage />
+              </ServiceLayout>
+            }
+          />
           <Route path="/bus-survey" element={<BusSurveyPage />} />
-          <Route index path="uniform" element={<UniformRegistrationPage />} />
-          <Route path="/guides" element={<GuidePage />} />
-          <Route path="/guide" element={<GuideDetailPage />} />
+          <Route
+            path="/uniform"
+            element={
+              <ServiceLayout pageTitle="Đặt đồng phục" navigationTo="/uniform">
+                <UniformRegistrationPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/guides"
+            element={
+              <ServiceLayout pageTitle="Cẩm nang sinh viên" navigationTo="/guides">
+                <GuidePage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/guide"
+            element={
+              <ServiceLayout pageTitle="Bài viết" navigationTo="/guides">
+                <GuideDetailPage />
+              </ServiceLayout>
+            }
+          />
 
-          <Route path="/health" element={<HealthDetailPage />} />
-          <Route path="/healths" element={<HealthPage />} />
-          <Route path="/photocopy/*" element={<PhotocopyRoutes />} />
+          <Route
+            path="/health"
+            element={
+              <ServiceLayout pageTitle="Bài viết" navigationTo="/health">
+                <HealthDetailPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/healths"
+            element={
+              <ServiceLayout pageTitle="Sức khỏe sinh viên" navigationTo="/healths">
+                <HealthPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/photocopy/*"
+            element={
+              <ServiceLayout pageTitle="Gửi in ấn" navigationTo="/photocopy">
+                <PhotocopyRoutes />
+              </ServiceLayout>
+            }
+          />
 
-          <Route path="/bus-registration" element={<BusRegistrationPage />} />
+          <Route
+            path="/bus-registration"
+            element={
+              <ServiceLayout pageTitle="Đặt xe đưa rước" navigationTo="/bus-registration">
+                <BusRegistrationPage />
+              </ServiceLayout>
+            }
+          />
 
           <Route path="/driving-admin" element={<AdminDrivingPage />} />
           <Route
@@ -156,9 +279,30 @@ class App extends React.Component {
             }
           />
 
-          <Route path="/support" element={<SupportPage />} />
-          <Route path="/maintain" element={<MaintainPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route
+            path="/support"
+            element={
+              <ServiceLayout pageTitle="Hỗ trợ" navigationTo="/support">
+                <SupportPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="/maintain"
+            element={
+              <ServiceLayout pageTitle="Đang phát triển" navigationTo="/maintain">
+                <MaintainPage />
+              </ServiceLayout>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <ServiceLayout pageTitle="Lỗi" navigationTo="/maintain">
+                <NotFoundPage />
+              </ServiceLayout>
+            }
+          />
         </Routes>
       </Router>
     )
@@ -187,15 +331,3 @@ const RequireAdminAuth = ({ children }) => {
   }
   return children
 }
-
-const LayoutStyled = styled.div`
-  margin: ${props => (props.isTablet === true ? '0 0%' : '0 15%')};
-`
-
-const NavStyled = styled.div`
-  position: sticky;
-  z-index: 2000;
-  top: ${props => (props.status === 'down' ? '-150px' : '0px')};
-  transition: all;
-  transition-duration: 0.25s;
-`

@@ -210,7 +210,7 @@ export default function DrivingRegisterPage() {
 
   return (
     <Styles className={styles.drivingRegisterContainer}>
-      <TitleBar title="Đăng ký dự thi" navigation="/driving-test" />
+      {/* <TitleBar title="Đăng ký dự thi" navigation="/driving-test" /> */}
       <SearchBar
         placeholder={'Tra cứu trạng thái hồ sơ'}
         focusText={'Nhập số điện thoại và nhấn Enter'}

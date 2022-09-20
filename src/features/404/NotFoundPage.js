@@ -3,7 +3,7 @@ import TitleBar from 'shared/components/TitleBar'
 export function NotFoundPage() {
   return (
     <>
-      <TitleBar title="Lỗi" />
+      {/* <TitleBar title="Lỗi" /> */}
       <div
         style={{
           textAlign: 'center',

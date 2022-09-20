@@ -24,11 +24,11 @@ function TitleBar(props) {
 
   return (
     <div className={styles.titleBar} style={{ backgroundColor: bcolor }}>
-      <TitleBarStyled isTablet={isTablet}>
-        <button onClick={goBack} className={styles.goBackButton}>
-          <MdArrowBack size={25} color="#fff" />
-        </button>
-      </TitleBarStyled>
+      {/* <TitleBarStyled isTablet={isTablet}> */}
+      <button onClick={goBack} className={styles.goBackButton}>
+        <MdArrowBack size={25} color="#fff" />
+      </button>
+      {/* </TitleBarStyled> */}
       <p className={styles.pageTitle}>{props?.title || props?.children || ''}</p>
     </div>
   )
@@ -36,6 +36,6 @@ function TitleBar(props) {
 
 export default TitleBar
 
-const TitleBarStyled = styled.div`
-  margin: ${props => (props.isTablet === true ? '0 0%' : '0 15%')};
-`
+// const TitleBarStyled = styled.div`
+//   margin: ${props => (props.isTablet === true ? '0 0%' : '0 15%')};
+// `

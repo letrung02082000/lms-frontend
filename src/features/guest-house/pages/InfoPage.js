@@ -14,7 +14,7 @@ function GuestHouseInfoPage() {
 
   return (
     <div className={styles.container}>
-      <TitleBar title="Thông tin nhà khách" backgroundColor="#01787A" />
+      {/* <TitleBar title="Thông tin nhà khách" backgroundColor="#01787A" /> */}
       <img className={styles.banner} src="/guesthouse.jpg" alt="guest-house" style={{ width: '100%' }} />
 
       <div className={styles.body}>

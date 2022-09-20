@@ -39,7 +39,7 @@ export function HealthPage() {
 
   return (
     <>
-      <TitleBar title="Sức khỏe sinh viên" />
+      {/* <TitleBar title="Sức khỏe sinh viên" /> */}
       <div className={styles.guideContainer}>
         {guideList.length === 0 ? (
           <p style={{ textAlign: 'center' }}>

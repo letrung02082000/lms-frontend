@@ -10,17 +10,17 @@ import useMediaQuery from 'hooks/useMediaQuery'
 import useScrollDirection from 'hooks/useScrollDirection'
 
 function Header() {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isDesktop = useMediaQuery('(min-width: 768px)')
   const scrollDirection = useScrollDirection()
 
-  if (isMobile) {
-    return <MobileNavBar />
-  }
-  return (
-    <DesktopNavStyled status={scrollDirection}>
-      <DesktopNavBar />
-    </DesktopNavStyled>
-  )
+  if (isDesktop)
+    return (
+      <DesktopNavStyled status={scrollDirection}>
+        <DesktopNavBar />
+      </DesktopNavStyled>
+    )
+
+  return <MobileNavBar />
 }
 
 const DesktopNavStyled = styled.div`

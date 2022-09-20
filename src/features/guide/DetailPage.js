@@ -33,7 +33,7 @@ export default function GuideDetailPage(props) {
 
   return (
     <>
-      <TitleBar title="Bài viết" />
+      {/* <TitleBar title="Bài viết" /> */}
       <div className={styles.guideContainer}>
         <h3>{guide?.title}</h3>
         <span className={styles.date}>Đăng ngày: {new Date(guide?.createdAt).toLocaleDateString('en-GB')}</span>

@@ -7,7 +7,7 @@ import LazyImage from 'shared/components/LazyImage'
 function PhotocopyPage() {
   return (
     <Styles>
-      <TitleBar>Đặt đồng phục</TitleBar>
+      {/* <TitleBar>Đặt đồng phục</TitleBar> */}
       <LazyImage src={'/images/uniform/size.jpg'} />
       <div className="form-body">
         <RegistrationForm />

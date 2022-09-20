@@ -12,12 +12,12 @@ import Footer from '../../shared/components/Footer'
 import styled from 'styled-components'
 
 const HomePage = () => {
-  const isTablet = useMediaQuery('(max-width: 768px)')
+  const isDesktop = useMediaQuery('(min-width: 768px)')
 
   return (
     <MainLayout className={styles.homeContainer}>
-      {isTablet ? (
-        <div className={styles.logoContainer}>
+      {!isDesktop ? (
+        <LogoContainer>
           <Logo />
           <div
             className={styles.searchIcon}
@@ -25,10 +25,10 @@ const HomePage = () => {
           >
             <BiSearchAlt size={25} />
           </div>
-        </div>
+        </LogoContainer>
       ) : null}
 
-      <MainLayoutStyled isTablet={isTablet}>
+      <MainLayoutStyled isDesktop={isDesktop}>
         <div className={styles.homeSliderContainer}>
           <HomeSlider />
         </div>
@@ -60,11 +60,17 @@ const HomePage = () => {
 }
 
 const MainLayoutStyled = styled.div`
-  margin: ${props => (props.isTablet === true ? '0 0%' : '0 15%')};
+  margin: ${props => (props.isDesktop === true ? '0 0%' : '0 15%')};
   ${
     '' /* width: 60%;
   margin: 0 auto; */
   }
+`
+
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 export default HomePage

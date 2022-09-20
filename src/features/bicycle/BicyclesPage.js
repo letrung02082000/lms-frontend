@@ -120,7 +120,7 @@ export function BicyclesPage() {
 
   return (
     <div className={styles.container}>
-      <TitleBar title="Xe đạp công cộng" />
+      {/* <TitleBar title="Xe đạp công cộng" /> */}
       <img src="/bicyclebanner.jpg" alt="banner" width={'100%'} />
       <div
         style={{

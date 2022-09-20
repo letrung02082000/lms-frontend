@@ -37,7 +37,7 @@ function JobDetailPage(props) {
 
   return (
     <>
-      <TitleBar title="Thông tin việc làm" navigation="/jobs" />
+      {/* <TitleBar title="Thông tin việc làm" navigation="/jobs" /> */}
       <div className={styles.container}>
         <div className={styles.imageContainer}>
           <img src={data && data.banner} />

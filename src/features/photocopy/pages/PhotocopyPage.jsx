@@ -19,7 +19,7 @@ function PhotocopyPage() {
 
   return (
     <Styles>
-      <TitleBar>Gửi in ấn</TitleBar>
+      {/* <TitleBar>Gửi in ấn</TitleBar> */}
       <SearchPlaceHolder
         className="search-placeholder"
         text="Tra cứu tình trạng đơn hàng"

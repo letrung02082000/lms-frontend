@@ -33,7 +33,7 @@ export function HealthDetailPage(props) {
 
   return (
     <>
-      <TitleBar title="Bài viết" />
+      {/* <TitleBar title="Bài viết" /> */}
       <div className={styles.guideContainer}>
         <h3>{health?.title}</h3>
         <span className={styles.date}>Đăng ngày: {new Date(health?.createdAt).toLocaleDateString('en-GB')}</span>

@@ -43,7 +43,7 @@ export function BusRegistrationPage(props) {
 
   return (
     <Styles>
-      <TitleBar title="Đặt xe đưa rước" navigation="/uniforms" />
+      {/* <TitleBar title="Đặt xe đưa rước" navigation="/uniforms" /> */}
 
       <Form onSubmit={handleSubmit(handleSubmitButton)} className="drivingFormContainer">
         <Content />

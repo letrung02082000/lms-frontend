@@ -20,7 +20,7 @@ function useScrollDirection() {
     }
   }, [scrollDirection])
 
-  console.log(scrollDirection + ' scrollDirection')
+  // console.log(scrollDirection + ' scrollDirection')
   return scrollDirection
 }
 

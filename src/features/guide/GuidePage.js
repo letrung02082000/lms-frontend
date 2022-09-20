@@ -38,7 +38,7 @@ export default function GuidePage() {
 
   return (
     <>
-      <TitleBar title="Cẩm nang sinh viên" />
+      {/* <TitleBar title="Cẩm nang sinh viên" /> */}
       <div className={styles.guideContainer}>
         {guideList.length === 0 ? (
           <p style={{ textAlign: 'center' }}>

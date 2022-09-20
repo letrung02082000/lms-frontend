@@ -40,7 +40,7 @@ export default function DrivingInstructionPage(props) {
 
   return (
     <div className={styles.container}>
-      <TitleBar title="Hướng dẫn dự thi" navigation="driving-test" />
+      {/* <TitleBar title="Hướng dẫn dự thi" navigation="driving-test" /> */}
       <div className={styles.topHeader}>
         <img src="/drivingbanner.jpg" alt="driving banner" className={styles.drivingBanner} />
         <div className={styles.introContainerTop}>
