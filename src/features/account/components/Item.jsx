@@ -1,31 +1,31 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 
 function Item({ children, path, onClick }) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleClick = () => {
-    if(path) {
-      navigate(path);
+    if (path) {
+      navigate(path)
     }
 
-    if(onClick) {
-      onClick();
+    if (onClick) {
+      onClick()
     }
   }
 
   return (
     <Styles>
-      <button className='btn' onClick={handleClick}>
+      <button className="btn" onClick={handleClick}>
         <span>{children}</span>
-        <i class='bi bi-chevron-right'></i>
+        <i class="bi bi-chevron-right"></i>
       </button>
     </Styles>
-  );
+  )
 }
 
-export default Item;
+export default Item
 
 const Styles = styled.div`
   button {
@@ -36,4 +36,4 @@ const Styles = styled.div`
     margin-top: 0.2rem;
     width: 100%;
   }
-`;
+`

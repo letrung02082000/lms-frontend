@@ -1,71 +1,63 @@
-import healthApi from 'api/healthApi';
-import Loading from 'shared/components/Loading';
-import {
-  ContentState,
-  convertFromHTML,
-  convertToRaw,
-  EditorState,
-} from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
-import { useEffect, useState } from 'react';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { ToastWrapper } from 'utils';
-import styles from './update.module.css';
+import healthApi from 'api/healthApi'
+import Loading from 'shared/components/Loading'
+import { ContentState, convertFromHTML, convertToRaw, EditorState } from 'draft-js'
+import draftToHtml from 'draftjs-to-html'
+import { useEffect, useState } from 'react'
+import { Editor } from 'react-draft-wysiwyg'
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import { toastWrapper } from 'utils'
+import styles from './update.module.css'
 
 function Update(props) {
-  const { id } = props;
-  const [guide, setGuide] = useState(null);
-  const [updating, setUpdating] = useState(false);
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const { id } = props
+  const [guide, setGuide] = useState(null)
+  const [updating, setUpdating] = useState(false)
+  const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const hashtagConfig = {
     trigger: '#',
-    separator: ' ',
-  };
+    separator: ' '
+  }
 
   useEffect(() => {
     if (id) {
       healthApi
         .getHealthById(id)
-        .then((res) => {
+        .then(res => {
           if (res.data.content) {
-            const blocksFromHTML = convertFromHTML(res.data.content);
-            console.log(blocksFromHTML);
-            const state = ContentState.createFromBlockArray(
-              blocksFromHTML.contentBlocks,
-              blocksFromHTML.entityMap
-            );
-            setEditorState(EditorState.createWithContent(state));
+            const blocksFromHTML = convertFromHTML(res.data.content)
+            console.log(blocksFromHTML)
+            const state = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap)
+            setEditorState(EditorState.createWithContent(state))
           }
-          setGuide(res.data);
+          setGuide(res.data)
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err))
     } else {
-      alert('Không tìm thấy bài viết!');
+      alert('Không tìm thấy bài viết!')
     }
-  }, []);
+  }, [])
 
-  const onEditorStateChange = (editorState) => {
-    setEditorState(editorState);
-  };
+  const onEditorStateChange = editorState => {
+    setEditorState(editorState)
+  }
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    setUpdating(true);
-    const rawContentState = convertToRaw(editorState.getCurrentContent());
-    const content = draftToHtml(rawContentState, hashtagConfig, true);
-    const title = document.getElementById('formTitle').value;
-    const priority = parseInt(document.getElementById('formPriority').value);
+  const onSubmit = e => {
+    e.preventDefault()
+    setUpdating(true)
+    const rawContentState = convertToRaw(editorState.getCurrentContent())
+    const content = draftToHtml(rawContentState, hashtagConfig, true)
+    const title = document.getElementById('formTitle').value
+    const priority = parseInt(document.getElementById('formPriority').value)
 
     if (!title) {
-      setUpdating(false);
-      return alert('Vui lòng nhập đầy đủ tiêu đề và nội dung bài viết!');
+      setUpdating(false)
+      return alert('Vui lòng nhập đầy đủ tiêu đề và nội dung bài viết!')
     }
 
     if (!priority || priority < 0) {
-      setUpdating(false);
+      setUpdating(false)
 
-      return alert('Độ ưu tiên phải là số lớn hơn 0!');
+      return alert('Độ ưu tiên phải là số lớn hơn 0!')
     }
 
     healthApi
@@ -73,23 +65,23 @@ function Update(props) {
         priority,
         title,
         content,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
-      .then((res) => {
-        setUpdating(false);
+      .then(res => {
+        setUpdating(false)
 
         if (res.data) {
-          return ToastWrapper('Cập nhật bài viết thành công!');
+          return toastWrapper('Cập nhật bài viết thành công!')
         }
       })
-      .catch((err) => {
-        setUpdating(false);
-        console.log(err);
-      });
-  };
+      .catch(err => {
+        setUpdating(false)
+        console.log(err)
+      })
+  }
 
   if (!guide) {
-    return <Loading />;
+    return <Loading />
   }
 
   return (
@@ -107,8 +99,8 @@ function Update(props) {
           <label className={styles.formLabel}>Độ ưu tiên</label>
           <input
             className={styles.formInput}
-            id='formPriority'
-            placeholder='Nhập số lớn hơn 0'
+            id="formPriority"
+            placeholder="Nhập số lớn hơn 0"
             defaultValue={guide.priority}
           />
         </div>
@@ -116,8 +108,8 @@ function Update(props) {
           <label className={styles.formLabel}>Tiêu đề</label>
           <input
             className={styles.formInput}
-            id='formTitle'
-            placeholder='Nhập tiêu đề bài viết'
+            id="formTitle"
+            placeholder="Nhập tiêu đề bài viết"
             defaultValue={guide.title}
           />
         </div>
@@ -125,24 +117,20 @@ function Update(props) {
         <div className={styles.editorContainer}>
           <Editor
             editorState={editorState}
-            toolbarClassName='toolbarClassName'
-            wrapperClassName='wrapperClassName'
-            editorClassName='editorClassName'
+            toolbarClassName="toolbarClassName"
+            wrapperClassName="wrapperClassName"
+            editorClassName="editorClassName"
             onEditorStateChange={onEditorStateChange}
           />
         </div>
         {updating ? (
           <span className={styles.submitButton}>Đang cập nhật...</span>
         ) : (
-          <input
-            className={styles.submitButton}
-            type='submit'
-            value={'Cập nhật bài viết'}
-          />
+          <input className={styles.submitButton} type="submit" value={'Cập nhật bài viết'} />
         )}
       </form>
     </div>
-  );
+  )
 }
 
-export default Update;
+export default Update

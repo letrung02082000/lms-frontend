@@ -1,38 +1,37 @@
-import React, { useState } from 'react';
-import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
-import styles from './drivingAdminLayout.module.css';
+import React, { useState } from 'react'
+import * as FileSaver from 'file-saver'
+import * as XLSX from 'xlsx'
+import styles from './drivingAdminLayout.module.css'
 
 //redux
-import { selectDrivingData } from '../../store/drivingAdminSlice';
-import { useSelector } from 'react-redux';
+import { selectDrivingData } from '../../store/drivingAdminSlice'
+import { useSelector } from 'react-redux'
 
 function DrivingAdminLayout({ children, onNavigate, onLogout }) {
-  const [visible, setVisible] = useState(true);
-  const data = useSelector(selectDrivingData);
+  const [visible, setVisible] = useState(true)
+  const data = useSelector(selectDrivingData)
 
   const exportToCSV = (csvData, fileName) => {
     csvData = csvData.map((child, index) => {
-      let NgayThi = new Date(child.date);
-      let TimeStamp = new Date(child.createdAt);
-      NgayThi = NgayThi.toLocaleDateString();
-      let Timestamp = new Date(child.createdAt);
-      Timestamp = `${Timestamp.toLocaleDateString('en-GB')} ${Timestamp.toLocaleTimeString('en-GB')}`;
+      let NgayThi = new Date(child.date)
+      let TimeStamp = new Date(child.createdAt)
+      NgayThi = NgayThi.toLocaleDateString()
+      let Timestamp = new Date(child.createdAt)
+      Timestamp = `${Timestamp.toLocaleDateString('en-GB')} ${Timestamp.toLocaleTimeString('en-GB')}`
 
-      const PhuongThucThanhToan =
-        child.paymentMethod === 0 ? 'Trực tiếp' : 'Chuyển khoản';
+      const PhuongThucThanhToan = child.paymentMethod === 0 ? 'Trực tiếp' : 'Chuyển khoản'
 
-      let TrangThai = '';
+      let TrangThai = ''
       if (child.processState == 0) {
-        TrangThai = 'Đã tạo';
+        TrangThai = 'Đã tạo'
       } else if (child.processState == 1) {
-        TrangThai = 'Chờ cập nhật thông tin';
+        TrangThai = 'Chờ cập nhật thông tin'
       } else if (child.processState == 2) {
-        TrangThai = 'Chờ thanh toán';
+        TrangThai = 'Chờ thanh toán'
       } else if (child.processState == 3) {
-        TrangThai = 'Đã hoàn tất';
+        TrangThai = 'Đã hoàn tất'
       } else if (child.processState == 4) {
-        TrangThai = 'Đã hủy';
+        TrangThai = 'Đã hủy'
       }
 
       return {
@@ -47,18 +46,17 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         MatSau: `https://drive.google.com/file/d/${child.backsideId}/view`,
         BienLai: `https://drive.google.com/file/d/${child.receiptId}/view`,
         PhuongThucThanhToan,
-        TrangThai,
-      };
-    });
-    const fileType =
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const fileExtension = '.xlsx';
-    const ws = XLSX.utils.json_to_sheet(csvData);
-    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const data = new Blob([excelBuffer], { type: fileType });
-    FileSaver.saveAs(data, fileName + fileExtension);
-  };
+        TrangThai
+      }
+    })
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+    const fileExtension = '.xlsx'
+    const ws = XLSX.utils.json_to_sheet(csvData)
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] }
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    const data = new Blob([excelBuffer], { type: fileType })
+    FileSaver.saveAs(data, fileName + fileExtension)
+  }
 
   return (
     <div className={styles.container}>
@@ -80,16 +78,10 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
               <div className={styles.navItem} onClick={() => onNavigate('/b2')}>
                 <p>Quản lý hồ sơ B2</p>
               </div>
-              <div
-                className={styles.navItem}
-                onClick={() => onNavigate('/date')}
-              >
+              <div className={styles.navItem} onClick={() => onNavigate('/date')}>
                 <p>Quản lý ngày thi</p>
               </div>
-              <div
-                className={styles.navItem}
-                onClick={() => exportToCSV(data, 'data')}
-              >
+              <div className={styles.navItem} onClick={() => exportToCSV(data, 'data')}>
                 <p>Tạo File Excel</p>
               </div>
               <div className={styles.navItem} onClick={() => setVisible(false)}>
@@ -104,7 +96,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
       ) : (
         <button
           onClick={() => {
-            setVisible(true);
+            setVisible(true)
           }}
         >
           Hiện
@@ -112,7 +104,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
       )}
       <div className={styles.mainBoard}>{children}</div>
     </div>
-  );
+  )
 }
 
-export default DrivingAdminLayout;
+export default DrivingAdminLayout

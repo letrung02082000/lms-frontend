@@ -1,45 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
-import styles from './voucherCard.module.css';
-import authHeader from '../../../utils/authHeader';
+import styles from './voucherCard.module.css'
+import { authHeader } from 'utils'
+
 function VoucherCard(props) {
-  const navigate = useNavigate();
-  const [refresh, setRefresh] = useState(false);
-  const [startTime, setStartTime] = useState(null);
-  const [expiryTime, setExpiryTime] = useState(null);
-  const coupon = props.coupon;
+  const navigate = useNavigate()
+  const [refresh, setRefresh] = useState(false)
+  const [startTime, setStartTime] = useState(null)
+  const [expiryTime, setExpiryTime] = useState(null)
+  const coupon = props.coupon
 
   useEffect(() => {
-    setStartTime(new Date(coupon.startTime).toLocaleDateString('en-GB'));
-    setExpiryTime(new Date(coupon.expiryTime).toLocaleDateString('en-GB'));
-  }, [coupon]);
+    setStartTime(new Date(coupon.startTime).toLocaleDateString('en-GB'))
+    setExpiryTime(new Date(coupon.expiryTime).toLocaleDateString('en-GB'))
+  }, [coupon])
 
-  const today = new Date();
-  const isSaved = props.myCouponList.some((c) => c.coupon === coupon._id);
+  const today = new Date()
+  const isSaved = props.myCouponList.some(c => c.coupon === coupon._id)
   const notStarted =
     today >= new Date(coupon.startTime) && today < new Date(coupon.expiryTime)
       ? false
       : today < new Date(coupon.startTime)
       ? 'Chưa mở'
-      : 'Hết hạn';
+      : 'Hết hạn'
 
   const handleSaveClick = () => {
     axios
       .post('/api/coupon-user/save', { coupon: coupon._id }, authHeader())
-      .then((res) => {
-        props.setMyCouponList([...props.myCouponList, res.data.data]);
-        setRefresh(!refresh);
+      .then(res => {
+        props.setMyCouponList([...props.myCouponList, res.data.data])
+        setRefresh(!refresh)
       })
-      .catch((err) => {
-        navigate(`/coupon?id=${coupon._id}`);
-      });
-  };
+      .catch(err => {
+        navigate(`/coupon?id=${coupon._id}`)
+      })
+  }
 
   const handleClick = () => {
-    navigate(`/coupon?id=${coupon._id}&saved=${isSaved ? 1 : 0}`);
-  };
+    navigate(`/coupon?id=${coupon._id}&saved=${isSaved ? 1 : 0}`)
+  }
 
   return (
     <div className={props.isVertical ? styles.cardVertical : styles.card}>
@@ -63,7 +64,7 @@ function VoucherCard(props) {
         </button>
       )}
       <div onClick={handleClick}>
-        <img src='/logo2.png' alt='logo' />
+        <img src="/logo2.png" alt="logo" />
         <h6 className={styles.cardTitle}>{coupon.name}</h6>
         <div className={styles.cardInfo}>
           <span>Còn lại: {coupon.maxQuantity - coupon.count}</span>
@@ -71,7 +72,7 @@ function VoucherCard(props) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default VoucherCard;
+export default VoucherCard

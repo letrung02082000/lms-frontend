@@ -1,21 +1,21 @@
-import React from 'react';
-import { BiSearch } from 'react-icons/bi';
-import styled from 'styled-components';
+import React from 'react'
+import { BiSearch } from 'react-icons/bi'
+import styled from 'styled-components'
 
 function PlaceHolder(props) {
   return (
     <Styles {...props}>
-      <div className='placeholder-text'>
-        <p className='form-text'>{props?.text}</p>
+      <div className="placeholder-text">
+        <p className="form-text">{props?.text}</p>
       </div>
-      <div className='search-icon'>
+      <div className="search-icon">
         <BiSearch size={25} />
       </div>
     </Styles>
-  );
+  )
 }
 
-export default PlaceHolder;
+export default PlaceHolder
 
 const Styles = styled.div`
   display: flex;
@@ -38,4 +38,4 @@ const Styles = styled.div`
       margin: 0;
     }
   }
-`;
+`

@@ -10,11 +10,12 @@
   flex-direction: column;
   float: right;
 }
-.avatar img{
+.avatar img {
   max-height: 300px;
-  object-fit : contain ;
+  object-fit: contain;
 }
-.avatar, .avatarMobile{
+.avatar,
+.avatarMobile {
   padding-left: 1rem;
 }
 .avatarMobile {

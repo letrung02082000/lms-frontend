@@ -1,14 +1,14 @@
-import React from 'react';
+import React from 'react'
 
-import { useNavigate } from 'react-router-dom';
-import styles from './voucherCard.module.css';
+import { useNavigate } from 'react-router-dom'
+import styles from './voucherCard.module.css'
 function VoucherCardVertical(props) {
-  const navigate = useNavigate();
-  const coupon = props.coupon;
-  let d = new Date(coupon.expiryTime);
+  const navigate = useNavigate()
+  const coupon = props.coupon
+  let d = new Date(coupon.expiryTime)
   const handleClick = () => {
-    navigate(`/coupon?id=${coupon._id}`);
-  };
+    navigate(`/coupon?id=${coupon._id}`)
+  }
 
   return (
     <div className={styles.cardVertical} onClick={handleClick}>
@@ -20,7 +20,7 @@ function VoucherCardVertical(props) {
             backgroundColor: 'var(--primary)',
             color: 'white',
             padding: '0.2rem 0.5rem',
-            borderRadius: '5px',
+            borderRadius: '5px'
           }}
         >
           Chưa sử dụng
@@ -33,21 +33,21 @@ function VoucherCardVertical(props) {
             backgroundColor: '#ccc',
             color: 'white',
             padding: '0.2rem 0.5rem',
-            borderRadius: '5px',
+            borderRadius: '5px'
           }}
         >
           Đã sử dụng
         </span>
       )}
 
-      <img src='./logo.jpg' alt='logo' />
+      <img src="./logo.jpg" alt="logo" />
       <h6>{coupon.name}</h6>
       <div className={styles.cardInfo}>
         <span>Còn lại: {coupon.maxQuantity - coupon.count}</span>
         <span>HSD: {d.toLocaleDateString('en-GB')}</span>
       </div>
     </div>
-  );
+  )
 }
 
-export default VoucherCardVertical;
+export default VoucherCardVertical

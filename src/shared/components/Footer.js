@@ -1,27 +1,19 @@
-import React from 'react';
-import styles from './footer.module.css';
+import React from 'react'
+import styles from './footer.module.css'
 
 function Footer() {
   return (
     <div className={styles.container}>
       <p className={styles.title}>Đối tác</p>
       <div className={styles.goldenSponsorContainer}>
-        <img
-          src='/sponsor/ipsc.png'
-          alt='ipsc'
-          className={styles.sponsorIcon}
-        />
+        <img src="/sponsor/ipsc.png" alt="ipsc" className={styles.sponsorIcon} />
         {/* <p>Trung tâm dịch vụ và xúc tiến đầu tư ĐHQG-HCM</p> */}
       </div>
 
       <div className={styles.sponsorsContainer}>
         <div className={styles.sponsorsContainer}>
           <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/thoidai.jpg'
-              alt='apsc'
-              className={styles.sponsorIcon}
-            />
+            <img src="/sponsor/thoidai.jpg" alt="apsc" className={styles.sponsorIcon} />
             {/* <p>
               Trung tâm in ấn
               <br />
@@ -29,11 +21,7 @@ function Footer() {
             </p> */}
           </div>
           <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/saigonpt.png'
-              alt='apsc'
-              className={styles.sponsorIcon}
-            />
+            <img src="/sponsor/saigonpt.png" alt="apsc" className={styles.sponsorIcon} />
             {/* <p>
               Công ty TNHH
               <br />
@@ -41,66 +29,38 @@ function Footer() {
             </p> */}
           </div>
           <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/igen.png'
-              alt='igen'
-              className={styles.sponsorIcon}
-            />
+            <img src="/sponsor/igen.png" alt="igen" className={styles.sponsorIcon} />
             {/* <p>iGen Group</p> */}
           </div>
           <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/uelspace.png'
-              alt='apsc'
-              className={styles.sponsorIcon}
-            />
+            <img src="/sponsor/uelspace.png" alt="apsc" className={styles.sponsorIcon} />
             {/* <p>UEL Space</p> */}
           </div>
 
           <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/langf.png'
-              alt='apsc'
-              className={styles.sponsorIcon}
-            />
+            <img src="/sponsor/langf.png" alt="apsc" className={styles.sponsorIcon} />
             {/* <p>Cẩm nang làng đại học</p> */}
           </div>
           <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/tnsv.png'
-              alt='apsc'
-              className={styles.sponsorIcon}
-            />
+            <img src="/sponsor/tnsv.png" alt="apsc" className={styles.sponsorIcon} />
             {/* <p>Thiện nguyện sinh viên</p> */}
           </div>
           <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/hqsv.png'
-              alt='apsc'
-              className={styles.sponsorIcon}
-            />
+            <img src="/sponsor/hqsv.png" alt="apsc" className={styles.sponsorIcon} />
             {/* <p>Hội quán sinh viên</p> */}
           </div>
           <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/dhanninh.jpeg'
-              alt='dhanninh'
-              className={styles.sponsorIcon}
-            />
+            <img src="/sponsor/dhanninh.jpeg" alt="dhanninh" className={styles.sponsorIcon} />
             {/* <p>Trung tâm đào tạo và sát hạch lái xe Đại Học An Ninh Nhân Dân</p> */}
           </div>
           <div className={styles.sponsorContainer}>
-            <img
-              src='/sponsor/hafu.jpg'
-              alt='apsc'
-              className={styles.sponsorIcon}
-            />
+            <img src="/sponsor/hafu.jpg" alt="apsc" className={styles.sponsorIcon} />
             {/* <p>Đồng phục HaFu</p> */}
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Footer;
+export default Footer

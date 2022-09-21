@@ -1,46 +1,46 @@
 .btn-primary {
-    background-color: var(--primary);
-    border-color: var(--primary);
+  background-color: var(--primary);
+  border-color: var(--primary);
 
-    &:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-        background-color: white;
-    }
+  &:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: white;
+  }
 
-    &:focus {
-        border-color: var(--primary);
-        color: var(--primary);
-        background-color: white;
-    }
+  &:focus {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: white;
+  }
 
-    &:click {
-        border-color: var(--primary);
-        color: var(--primary);
-        background-color: white;
-    }
+  &:click {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: white;
+  }
 }
 
 .btn-outline-primary {
-    border-color: var(--primary);
-    color: var(--primary);
-    background-color: white;
+  border-color: var(--primary);
+  color: var(--primary);
+  background-color: white;
 
-    &:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-        background-color: white;
-    }
+  &:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: white;
+  }
 
-    &:focus {
-        border-color: var(--primary);
-        color: var(--primary);
-        background-color: white;
-    }
+  &:focus {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: white;
+  }
 
-    &:click {
-        border-color: var(--primary);
-        color: var(--primary);
-        background-color: white;
-    }
+  &:click {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: white;
+  }
 }

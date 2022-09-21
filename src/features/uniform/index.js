@@ -1,9 +1,5 @@
 import UniformDetailPage from './DetailPage'
 import UniformPage from './UniformPage'
-import UniformRegistrationPage from './pages/RegistrationPage';
+import UniformRegistrationPage from './pages/RegistrationPage'
 
-export {
-    UniformDetailPage,
-    UniformPage,
-    UniformRegistrationPage
-}
+export { UniformDetailPage, UniformPage, UniformRegistrationPage }

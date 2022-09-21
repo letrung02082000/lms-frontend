@@ -112,7 +112,6 @@ input[type='file'] {
   margin: 0.5rem;
 }
 
-
 .drivingFormContainer {
   width: 95%;
   margin: 1rem auto;
@@ -182,8 +181,8 @@ input[type='file'] {
 }
 
 .inTimeContainer {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .boxGroup {
@@ -195,21 +194,19 @@ input[type='file'] {
 }
 
 .formSchool__container {
-list-style: none;
-
+  list-style: none;
 }
 
 .formSchool__input {
-width: 100%;
-padding: 0.5rem;
+  width: 100%;
+  padding: 0.5rem;
 }
 
 .formSchool__highlight {
-background-color: #ccc;
-
+  background-color: #ccc;
 }
 
 .formSchool__suggestionList {
-list-style: none;
-padding: 0;
+  list-style: none;
+  padding: 0;
 }

@@ -1,1 +1,1 @@
-export { default as MaintainPage } from './MaintainPage';
+export { default as MaintainPage } from './MaintainPage'

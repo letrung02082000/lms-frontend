@@ -1,2 +1,2 @@
-export * from './DetailPage';
-export * from './HealthPage';
+export * from './DetailPage'
+export * from './HealthPage'

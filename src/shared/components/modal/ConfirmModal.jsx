@@ -1,9 +1,8 @@
-import React from 'react';
-import { useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import React from 'react'
+import { useState } from 'react'
+import { Button, Modal } from 'react-bootstrap'
 
 function ConfirmModal({ onConfirm, hideModal, data }) {
-
   return (
     <Modal show onHide={hideModal}>
       <Modal.Header closeButton>
@@ -11,15 +10,15 @@ function ConfirmModal({ onConfirm, hideModal, data }) {
       </Modal.Header>
       <Modal.Body>{data?.body || 'Bạn có muốn tiếp tục thực hiện hành động này?'}</Modal.Body>
       <Modal.Footer>
-        <Button variant='outline-secondary' onClick={hideModal}>
+        <Button variant="outline-secondary" onClick={hideModal}>
           Hủy bỏ
         </Button>
-        <Button variant='danger' onClick={onConfirm}>
+        <Button variant="danger" onClick={onConfirm}>
           Xác nhận
         </Button>
       </Modal.Footer>
     </Modal>
-  );
+  )
 }
 
-export default ConfirmModal;
+export default ConfirmModal

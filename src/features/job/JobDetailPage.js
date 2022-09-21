@@ -1,47 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 // import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import TitleBar from 'shared/components/TitleBar';
+import axios from 'axios'
+import TitleBar from 'shared/components/TitleBar'
 
-import { MdOutlineContentCopy } from 'react-icons/md';
-import styles from './jobDetailPage.module.css';
-import { useLocation } from 'react-router-dom';
+import { MdOutlineContentCopy } from 'react-icons/md'
+import styles from './jobDetailPage.module.css'
+import { useLocation } from 'react-router-dom'
 
 function JobDetailPage(props) {
-  const location = useLocation();
-  const id = new URLSearchParams(location.search).get('id');
-  const [data, setData] = useState(null);
-  const [telCopied, setTelCopied] = useState(false);
-  const [zaloCopied, setZaloCopied] = useState(false);
+  const location = useLocation()
+  const id = new URLSearchParams(location.search).get('id')
+  const [data, setData] = useState(null)
+  const [telCopied, setTelCopied] = useState(false)
+  const [zaloCopied, setZaloCopied] = useState(false)
 
   useEffect(() => {
     axios
       .get(`/api/job/${id}`)
-      .then((res) => {
+      .then(res => {
         if (res.data.data) {
-          setData(res.data.data);
+          setData(res.data.data)
         }
       })
-      .catch((error) =>
-        alert(
-          'Xin lỗi, không tìm thấy công việc này hoặc công việc đã bị gỡ bỏ!'
-        )
-      );
-  }, []);
+      .catch(error => alert('Xin lỗi, không tìm thấy công việc này hoặc công việc đã bị gỡ bỏ!'))
+  }, [])
 
   const handleTelCopy = () => {
-    navigator.clipboard.writeText(data.tel);
-    setTelCopied(true);
-  };
+    navigator.clipboard.writeText(data.tel)
+    setTelCopied(true)
+  }
 
   const handleZaloCopy = () => {
-    navigator.clipboard.writeText(data.zalo);
-    setZaloCopied(true);
-  };
+    navigator.clipboard.writeText(data.zalo)
+    setZaloCopied(true)
+  }
 
   return (
     <>
-      <TitleBar title='Thông tin việc làm' navigation='/jobs' />
+      {/* <TitleBar title="Thông tin việc làm" navigation="/jobs" /> */}
       <div className={styles.container}>
         <div className={styles.imageContainer}>
           <img src={data && data.banner} />
@@ -64,9 +60,7 @@ function JobDetailPage(props) {
             <strong>Mô tả chi tiết:</strong> {data && data.description}
           </p>
           <p>
-            <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>
-              Di động:{' '}
-            </span>
+            <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Di động: </span>
             {data && data.tel}
             <span onClick={handleTelCopy} className={styles.copyButton}>
               {telCopied ? 'Đã chép' : <MdOutlineContentCopy />}
@@ -74,9 +68,7 @@ function JobDetailPage(props) {
           </p>
 
           <p>
-            <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>
-              Zalo:{' '}
-            </span>
+            <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Zalo: </span>
             {data && data.zalo ? (
               <>
                 {data.zalo}
@@ -91,7 +83,7 @@ function JobDetailPage(props) {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default JobDetailPage;
+export default JobDetailPage

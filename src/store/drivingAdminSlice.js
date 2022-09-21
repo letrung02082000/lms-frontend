@@ -1,19 +1,19 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  data: [],
-};
+  data: []
+}
 
 export const navSlice = createSlice({
   name: 'drivingAdmin',
   initialState,
   reducers: {
     updateDrivingData: (state, action) => {
-      state.data = action.payload;
-    },
-  },
-});
+      state.data = action.payload
+    }
+  }
+})
 
-export const { updateDrivingData } = navSlice.actions;
-export const selectDrivingData = (state) => state.drivingAdmin.data;
-export default navSlice.reducer;
+export const { updateDrivingData } = navSlice.actions
+export const selectDrivingData = state => state.drivingAdmin.data
+export default navSlice.reducer

@@ -1,22 +1,22 @@
-import React from "react";
-import TitleBar from "shared/components/TitleBar";
-import styled from "styled-components";
-import RegistrationForm from "../components/RegistrationForm";
-import LazyImage from 'shared/components/LazyImage';
+import React from 'react'
+import TitleBar from 'shared/components/TitleBar'
+import styled from 'styled-components'
+import RegistrationForm from '../components/RegistrationForm'
+import LazyImage from 'shared/components/LazyImage'
 
 function PhotocopyPage() {
   return (
     <Styles>
-      <TitleBar>Đặt đồng phục</TitleBar>
-      <LazyImage src={'/images/uniform/size.jpg'}/>
+      {/* <TitleBar>Đặt đồng phục</TitleBar> */}
+      <LazyImage src={'/images/uniform/size.jpg'} />
       <div className="form-body">
         <RegistrationForm />
       </div>
     </Styles>
-  );
+  )
 }
 
-export default PhotocopyPage;
+export default PhotocopyPage
 
 const Styles = styled.div`
   .form-body {
@@ -33,4 +33,4 @@ const Styles = styled.div`
     top: 0.5rem;
     z-index: 100;
   }
-`;
+`

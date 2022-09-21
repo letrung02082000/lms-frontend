@@ -1,12 +1,12 @@
-import SwimmingPoolLayout from 'shared/layouts/SwimmingPoolLayout';
-import TutorForm from './components/TutorForm';
+import SwimmingPoolLayout from 'shared/layouts/SwimmingPoolLayout'
+import TutorForm from './components/TutorForm'
 
 function SwimmingPoolTutorPage() {
   return (
-    <SwimmingPoolLayout route='/tutor'>
+    <SwimmingPoolLayout route="/tutor">
       <TutorForm />
     </SwimmingPoolLayout>
-  );
+  )
 }
 
-export default SwimmingPoolTutorPage;
+export default SwimmingPoolTutorPage

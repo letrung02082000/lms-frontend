@@ -5,7 +5,7 @@ import PhotocopyPage from './pages/PhotocopyPage'
 function PhotocopyRoutes() {
   return (
     <Routes>
-        <Route index element={<PhotocopyPage/>}/>
+      <Route index element={<PhotocopyPage />} />
     </Routes>
   )
 }

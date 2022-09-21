@@ -1,6 +1,6 @@
-import React from 'react';
-import { useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import React from 'react'
+import { useState } from 'react'
+import { Button, Modal } from 'react-bootstrap'
 
 function InstructionModal({ onConfirm, hideModal, data }) {
   return (
@@ -74,7 +74,7 @@ function InstructionModal({ onConfirm, hideModal, data }) {
         <div>- Nội dung: [Mã đơn hàng] [dấu cách] [Họ tên không dấu] </div>
       </Modal.Body>
     </Modal>
-  );
+  )
 }
 
-export default InstructionModal;
+export default InstructionModal

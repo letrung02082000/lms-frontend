@@ -29,17 +29,17 @@ function SearchOrder(data) {
       <p>
         Tài liệu (admin):{' '}
         {typeof document === 'string' ? (
-          <a href={document} rel='noopenner noreferrer' target='_blank'>
+          <a href={document} rel="noopenner noreferrer" target="_blank">
             Tài liệu
           </a>
         ) : (
           <div>
             {document?.map((url, index) => {
               return (
-                <a href={url} rel='noopenner noreferrer' target='_blank'>
+                <a href={url} rel="noopenner noreferrer" target="_blank">
                   Tài liệu {index + 1} <br />
                 </a>
-              );
+              )
             })}
           </div>
         )}
@@ -74,9 +74,9 @@ function SearchOrder(data) {
 
       <hr />
     </Styles>
-  );
+  )
 }
 
-export default SearchOrder;
+export default SearchOrder
 
-const Styles = styled.div``;
+const Styles = styled.div``

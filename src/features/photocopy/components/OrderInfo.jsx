@@ -58,7 +58,7 @@ function OrderInfo(props) {
       </div>
       <div className='text-center my-5'>Rất hân hạnh được phục vụ bạn!</div>
     </div>
-  );
+  )
 }
 
-export default OrderInfo;
+export default OrderInfo

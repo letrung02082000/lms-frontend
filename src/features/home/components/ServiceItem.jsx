@@ -1,21 +1,21 @@
-import styled from 'styled-components';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components'
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function ServiceItem({ children, path, iconSrc, alt, ...props }) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
     <Styles onClick={() => navigate(path)}>
       <div>
-        <img src={iconSrc} className='' alt={alt} {...props} />
+        <img src={iconSrc} className="" alt={alt} {...props} />
       </div>
       <p>{children}</p>
     </Styles>
-  );
+  )
 }
 
-export default ServiceItem;
+export default ServiceItem
 
 const Styles = styled.div`
   display: flex;
@@ -52,4 +52,4 @@ const Styles = styled.div`
     -webkit-box-shadow: 6px 2px 2px 0px rgba(187, 204, 255, 0.75);
     -moz-box-shadow: 6px 2px 2px 0px rgba(187, 204, 255, 0.75);
   }
-`;
+`
