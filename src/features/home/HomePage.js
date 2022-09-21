@@ -1,6 +1,5 @@
 import MainLayout from 'shared/layouts/MainLayout'
 import { BiSearchAlt } from 'react-icons/bi'
-import styles from './homePage.module.css'
 import useMediaQuery from 'hooks/useMediaQuery'
 import HomeSlider from './components/HomeSlider'
 import Logo from '../../shared/components/Logo'
@@ -10,67 +9,139 @@ import MainServices from './components/MainServices'
 import Footer from '../../shared/components/Footer'
 
 import styled from 'styled-components'
+import useScrollDirection from 'hooks/useScrollDirection'
 
 const HomePage = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)')
+  const scrollDirection = useScrollDirection()
 
   return (
-    <MainLayout className={styles.homeContainer}>
-      {!isDesktop ? (
-        <LogoContainer>
-          <Logo />
-          <div
-            className={styles.searchIcon}
-            onClick={() => alert('Xin lỗi, tính năng này đang được phát triển. Vui lòng quay lại sau!')}
-          >
-            <BiSearchAlt size={25} />
+    <Styles isDesktop={isDesktop} status={scrollDirection}>
+      <MainLayout className="homeContainer">
+        {!isDesktop ? (
+          <div className="logoContainer">
+            <Logo />
+            <div
+              className="searchIcon"
+              onClick={() => alert('Xin lỗi, tính năng này đang được phát triển. Vui lòng quay lại sau!')}
+            >
+              <BiSearchAlt size={25} />
+            </div>
           </div>
-        </LogoContainer>
-      ) : null}
+        ) : null}
+        <div className="mainLayout">
+          <div className="homeSliderContainer">
+            <HomeSlider />
+          </div>
 
-      <MainLayoutStyled isDesktop={isDesktop}>
-        <div className={styles.homeSliderContainer}>
-          <HomeSlider />
+          <div className="categorySliderContainer">
+            <p
+              style={{
+                fontSize: '1.2rem',
+                fontWeight: 'bold'
+              }}
+            >
+              Loại hình
+            </p>
+            <CategorySlider />
+          </div>
+
+          <div className="hotSliderContainer">
+            <HotSlider />
+          </div>
+
+          <div className="categorySliderContainer">
+            <MainServices />
+          </div>
+
+          <Footer />
         </div>
-
-        <div className={styles.categorySliderContainer}>
-          <p
-            style={{
-              fontSize: '1.2rem',
-              fontWeight: 'bold'
-            }}
-          >
-            Loại hình
-          </p>
-          <CategorySlider />
-        </div>
-
-        <div className={styles.hotSliderContainer}>
-          <HotSlider />
-        </div>
-
-        <div className={styles.categorySliderContainer}>
-          <MainServices />
-        </div>
-
-        <Footer />
-      </MainLayoutStyled>
-    </MainLayout>
+      </MainLayout>
+    </Styles>
   )
 }
 
-const MainLayoutStyled = styled.div`
-  margin: ${props => (props.isDesktop === true ? '0 0%' : '0 15%')};
-  ${
-    '' /* width: 60%;
-  margin: 0 auto; */
+const Styles = styled.div`
+  .mainLayout {
+    margin: ${props => (props.isDesktop === true ? '0 15%' : '0 0%')};
   }
-`
 
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  .homeContainer {
+    min-height: 150vh;
+    position: relative;
+  }
+
+  .logoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+
+    position: sticky;
+    z-index: 2000;
+    top: ${props => (props.status === 'down' ? '-150px' : '0px')};
+    transition: all;
+    transition-duration: 0.25s;
+  }
+
+  .homeSliderContainer {
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  .categorySliderContainer {
+    width: 95%;
+    margin: 1rem auto;
+  }
+
+  .hotSliderContainer {
+    width: 95%;
+    margin: 1rem auto;
+  }
+
+  .searchInput {
+    width: 95%;
+    background-color: white;
+    display: flex;
+    padding: 0.1rem 0 !important;
+    margin: 0 auto 1rem;
+    border-radius: 5px;
+  }
+
+  .logoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .searchIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    margin: 0 1rem;
+    background-color: rgb(226, 225, 225);
+    border-radius: 50px;
+    position: absolute;
+    top: 1rem;
+    right: 0;
+  }
+
+  .searchIcon svg {
+    width: 100%;
+    height: 100%;
+    color: var(--primary);
+  }
+
+  .slogan {
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: #ee6a26;
+    background-color: white;
+    width: fit-content;
+    border-radius: 50px;
+    padding: 0 0.5rem;
+    margin: 0.5rem 0;
+  }
 `
 
 export default HomePage
