@@ -59,7 +59,11 @@ class App extends React.Component {
           <Route path="/contact" element={<MaintainPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/guest-house" element={<GuestHouseInfoPage />} />
+          <Route path="/guest-house" element={
+            <ServiceLayout pageTitle="Thông tin nhà khách" navigationTo="/guest-house-info">
+              <GuestHouseInfoPage />
+            </ServiceLayout>
+          } />
           <Route path="/guest-house-user" element={<GuestHouseUserPage />} />
           <Route path="/guest-house-report" element={<GuestHouseReportPage />} />
           <Route

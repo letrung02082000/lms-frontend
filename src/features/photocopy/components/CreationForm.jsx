@@ -115,14 +115,13 @@ function CreationForm() {
 
     photocopyApi
       .addOrder(order)
-      .then(res => {
-        console.log(res)
-        setFileIds([])
-        setReceiptId([])
-        setFileNames([])
-        setReceiptName('')
-        setValue('document', '', { shouldValidate: true })
-        toastWrapper(res?.message || 'Tạo đơn hàng thành công!', 'success')
+      .then((res) => {
+        setFileIds([]);
+        setReceiptId([]);
+        setFileNames([]);
+        setReceiptName("");
+        setValue("document", "", { shouldValidate: true });
+        toastWrapper(res?.message || "Tạo đơn hàng thành công!", "success");
         setTimeout(() => {
           setOrderInfo(res?.data)
         }, 1000)
@@ -163,20 +162,19 @@ function CreationForm() {
 
   const onDeleteConfirm = () => {
     if (typeof deleteIndex === 'number') {
-      setFileIds(prev => {
-        const temp = [...prev]
-        temp.splice(deleteIndex, 1)
-        return temp
-      })
-      setFileNames(prev => {
-        const temp = [...prev]
-        temp.splice(deleteIndex, 1)
-        return temp
-      })
+      setFileIds((prev) => {
+        const temp = [...prev];
+        temp.splice(deleteIndex, 1);
+        return temp;
+      });
+      setFileNames((prev) => {
+        const temp = [...prev];
+        temp.splice(deleteIndex, 1);
+        return temp;
+      });
+      setDeleteIndex(null);
     }
-
-    hideModal()
-  }
+  };
 
   if (orderInfo) {
     return <OrderInfo {...orderInfo} />
@@ -188,20 +186,31 @@ function CreationForm() {
         <div className="files-stack d-flex flex-column justify-content-center align-items-start">
           {fileNames?.map((name, index) => {
             return (
-              <div key={`${name}_${index}`} className="d-flex align-items-center justify-content-between w-100">
-                <span>
+              <div
+                key={`${name}_${index}`}
+                className='d-flex align-items-center justify-content-between w-100'
+              >
+                <span style={{ overflowWrap: 'anywhere' }}>
                   {index + 1}. {name}
                 </span>
-                <button
-                  type="button"
-                  className="btn ms-2"
-                  onClick={() => {
-                    setDeleteIndex(index)
-                    showModal()
-                  }}
-                >
-                  <AiOutlineDelete color="red" />
-                </button>
+                {index !== deleteIndex && <button
+                    type='button'
+                    className='btn ms-2'
+                    onClick={() => {
+                      setDeleteIndex(index);
+                    }}
+                  >
+                    <AiOutlineDelete color='red' />
+                  </button>}
+                {typeof deleteIndex === 'number' && deleteIndex === index && (
+                  <button
+                    type='button'
+                    className='btn btn-outline-danger text-danger'
+                    onClick={onDeleteConfirm}
+                  >
+                    Nhấn để xóa
+                  </button>
+                )}
               </div>
             )
           })}
@@ -260,7 +269,7 @@ function CreationForm() {
           name="receipt"
         /> */}
         <p className="w-100 text-center form-text">{receiptName}</p>
-        <Form.Group className="d-flex align-items-end justify-content-between">
+        <Form.Group className="d-flex align-items-end">
           <InputField
             label={'Mã giảm giá (nếu có)'}
             control={control}
