@@ -27,7 +27,8 @@ function InstructionModal({ onConfirm, hideModal, data }) {
         <h6>1. Quy trình in chỉ trong 2 giờ</h6>
         <div>
           <div>
-            Bước 1:<br/>- Tải tệp cần in lên
+            Bước 1:
+            <br />- Tải tệp cần in lên
             <br />
             - Hoặc chia sẻ liên kết đến tài liệu
             <br />
@@ -39,32 +40,33 @@ function InstructionModal({ onConfirm, hideModal, data }) {
               Xem hướng dẫn chia sẻ link Google Drive
             </a>
           </div>
-          <hr/>
+          <hr />
           <div>Bước 2: Nhập hướng dẫn in cho nhân viên</div>
           <div>- Khổ in: A3, A4, A5,...</div>
           <div>- Quy cách in: 1 mặt, 2 mặt, in màu, trắng đen,...</div>
           <div>- Số lượng cần in</div>
           <div>Phần thể loại: Chọn "Thể loại khác"</div>
-          <hr/>
+          <hr />
           <div>Bước 3: Nhập thông tin liên hệ và cách thức nhận hàng</div>
-          <hr/>
+          <hr />
           <div>
-            Bước 4: Quan tâm Zalo Official Account để nhận thông báo về đơn hàng
-            
+            Bước 4: Quan tâm Zalo Official Account để nhận thông báo về đơn
+            hàng. Truy cập{' '}
             <a
               href='http://zalo.me/4013961016678131109?src=qr'
               target='_blank'
               rel='noreferrer'
             >
               Trung tâm dịch vụ sinh viên iStudent
-            </a> và nhấn "Quan tâm"
+            </a>{' '}
+            và nhấn "Quan tâm"
           </div>
-          <hr/>
+          <hr />
         </div>
         <h6>2. Hướng dẫn thanh toán</h6>
         <div>
-          Sau khi nhận báo giá tại Zalo OA, vui lòng chuyển khoản về tài khoản để xác nhận
-          in tự động:
+          Sau khi nhận báo giá tại Zalo OA, vui lòng chuyển khoản về tài khoản
+          để xác nhận in tự động:
         </div>
         <div>- Ngân hàng quân đội MB</div>
         <div>- Chủ tài khoản: NGUYEN NGOC HUAN</div>
