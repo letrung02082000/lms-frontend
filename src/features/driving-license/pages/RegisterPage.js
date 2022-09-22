@@ -2,7 +2,6 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import SearchBar from 'shared/components/SearchBar'
-import TitleBar from 'shared/components/TitleBar'
 import styles from './registerPage.module.css'
 import LazyImage from 'shared/components/LazyImage'
 import PortraitBanner from 'assets/images/portrait.jpg'
@@ -48,10 +47,10 @@ export default function DrivingRegisterPage() {
 
           setDateList(data)
         } else {
-          toastWrapper('Chưa có danh sách ngày thi mới')
+          toastWrapper('Chưa có danh sách ngày thi mới', 'info')
         }
       } catch (e) {
-        toastWrapper('Lỗi khi lấy danh sách ngày thi')
+        toastWrapper('Lỗi khi lấy danh sách ngày thi', 'error')
       }
     }
 
@@ -197,20 +196,19 @@ export default function DrivingRegisterPage() {
           const data = res.data.data
 
           if (data.length === 0) {
-            toastWrapper('Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue)
+            toastWrapper('Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue, 'error')
           } else {
             setSearchData(data)
           }
         })
         .catch(e => {
-          toastWrapper('Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue)
+          toastWrapper('Không tìm thấy hồ sơ khớp với số điện thoại ' + searchValue, 'error')
         })
     }
   }
 
   return (
     <Styles className={styles.drivingRegisterContainer}>
-      {/* <TitleBar title="Đăng ký dự thi" navigation="/driving-test" /> */}
       <SearchBar
         placeholder={'Tra cứu trạng thái hồ sơ'}
         focusText={'Nhập số điện thoại và nhấn Enter'}
@@ -264,14 +262,10 @@ export default function DrivingRegisterPage() {
         <LazyImage src={PortraitBanner} />
       </div>
       <form className={styles.drivingFormContainer}>
-        <ul className='px-2'>
+        <ul className="px-2">
           <li style={{ margin: 0 }}>
             Xem hướng dẫn đăng ký dự thi{' '}
-            <a
-              href='/driving-instruction'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
+            <a href="/driving-instruction" target="_blank" rel="noopener noreferrer">
               tại đây.
             </a>
           </li>
@@ -281,27 +275,21 @@ export default function DrivingRegisterPage() {
             <br />- Ngân hàng: MB Bank (Ngân hàng Quân đội)
             <br />- Số tài khoản: 0877876877
             <br />- Nội dung: Họ tên_SĐT_Bang A1_Ngày dự thi
-            <br />- Số tiền: 590.000 đồng đối với bằng A1, 2.000.000 đồng đối
-            với bằng A2
-            <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã chuyển
-            khoản.
-            <br />- Gửi lại ảnh chụp biên lai tại {' '}
-            <a
-              href='http://zalo.me/4013961016678131109?src=qr'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
+            <br />- Số tiền: 590.000 đồng đối với bằng A1, 2.000.000 đồng đối với bằng A2
+            <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã chuyển khoản.
+            <br />- Gửi lại ảnh chụp biên lai tại{' '}
+            <a href="http://zalo.me/4013961016678131109?src=qr" target="_blank" rel="noopener noreferrer">
               Zalo OA
             </a>{' '}
             nếu đóng sau khi đăng ký.
           </li>
-          <li>Truy cập Zalo Official Account <a
-            href='http://zalo.me/4013961016678131109?src=qr'
-            target='_blank'
-            rel='noreferrer'
-          >
-            Trung tâm dịch vụ sinh viên iStudent
-          </a> và nhấn "Quan tâm" để trung tâm có thể liên hệ với bạn (Quan trọng)</li>
+          <li>
+            Truy cập Zalo Official Account{' '}
+            <a href="http://zalo.me/4013961016678131109?src=qr" target="_blank" rel="noreferrer">
+              Trung tâm dịch vụ sinh viên iStudent
+            </a>{' '}
+            và nhấn "Quan tâm" để trung tâm có thể liên hệ với bạn (Quan trọng)
+          </li>
 
           <li>Hoàn thành lệ phí thi trước ngày dự thi 16 ngày.</li>
         </ul>
@@ -476,7 +464,7 @@ export default function DrivingRegisterPage() {
               className={styles.formInput}
               type="radio"
               onChange={() => handleIsPaidChange(0)}
-              checked={isPaid == 0}
+              checked={isPaid === 0}
             />
             <p onClick={() => handleIsPaidChange(0)}>Đã thanh toán</p>
           </div>
@@ -486,7 +474,7 @@ export default function DrivingRegisterPage() {
               className={styles.formInput}
               type="radio"
               onChange={() => handleIsPaidChange(1)}
-              checked={isPaid == 1}
+              checked={isPaid === 1}
             />
             <p onClick={() => handleIsPaidChange(1)}>Mình sẽ đóng lệ phí sau</p>
           </div>

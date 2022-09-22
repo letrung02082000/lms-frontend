@@ -80,7 +80,7 @@ function CreationForm() {
 
   const onSubmit = data => {
     if (fileUploading || receiptUploading) {
-      return toastWrapper('Vui lòng chờ tải tệp lên hoàn tất!')
+      return toastWrapper('Vui lòng chờ tải tệp lên hoàn tất!', 'info')
     }
 
     if (data?.category) {
@@ -115,13 +115,13 @@ function CreationForm() {
 
     photocopyApi
       .addOrder(order)
-      .then((res) => {
-        setFileIds([]);
-        setReceiptId([]);
-        setFileNames([]);
-        setReceiptName("");
-        setValue("document", "", { shouldValidate: true });
-        toastWrapper(res?.message || "Tạo đơn hàng thành công!", "success");
+      .then(res => {
+        setFileIds([])
+        setReceiptId([])
+        setFileNames([])
+        setReceiptName('')
+        setValue('document', '', { shouldValidate: true })
+        toastWrapper(res?.message || 'Tạo đơn hàng thành công!', 'success')
         setTimeout(() => {
           setOrderInfo(res?.data)
         }, 1000)
@@ -141,7 +141,7 @@ function CreationForm() {
         setCategories(data?.data.map(c => ({ label: c?.name, value: c?._id })))
       })
       .catch(error => {
-        toastWrapper(error?.response?.data?.message)
+        toastWrapper(error?.response?.data?.message, 'error')
       })
 
     photocopyApi
@@ -150,31 +150,31 @@ function CreationForm() {
         setOffices(data?.data.map(c => ({ label: c?.name, value: c?._id })))
       })
       .catch(error => {
-        toastWrapper(error?.response?.data?.message)
+        toastWrapper(error?.response?.data?.message, 'error')
       })
   }, [])
 
   const handleFileUpload = value => {
-    if (fileIds.length > 10) return toastWrapper('Chỉ có thể tải lên tối đa 10 tệp')
+    if (fileIds.length > 10) return toastWrapper('Chỉ có thể tải lên tối đa 10 tệp', 'error')
     setFileIds(prev => [...prev, `https://drive.google.com/file/d/${value}`])
   }
   const handleFileNames = value => setFileNames(prev => [...prev, value])
 
   const onDeleteConfirm = () => {
     if (typeof deleteIndex === 'number') {
-      setFileIds((prev) => {
-        const temp = [...prev];
-        temp.splice(deleteIndex, 1);
-        return temp;
-      });
-      setFileNames((prev) => {
-        const temp = [...prev];
-        temp.splice(deleteIndex, 1);
-        return temp;
-      });
-      setDeleteIndex(null);
+      setFileIds(prev => {
+        const temp = [...prev]
+        temp.splice(deleteIndex, 1)
+        return temp
+      })
+      setFileNames(prev => {
+        const temp = [...prev]
+        temp.splice(deleteIndex, 1)
+        return temp
+      })
+      setDeleteIndex(null)
     }
-  };
+  }
 
   if (orderInfo) {
     return <OrderInfo {...orderInfo} />
@@ -186,28 +186,23 @@ function CreationForm() {
         <div className="files-stack d-flex flex-column justify-content-center align-items-start">
           {fileNames?.map((name, index) => {
             return (
-              <div
-                key={`${name}_${index}`}
-                className='d-flex align-items-center justify-content-between w-100'
-              >
+              <div key={`${name}_${index}`} className="d-flex align-items-center justify-content-between w-100">
                 <span style={{ overflowWrap: 'anywhere' }}>
                   {index + 1}. {name}
                 </span>
-                {index !== deleteIndex && <button
-                    type='button'
-                    className='btn ms-2'
+                {index !== deleteIndex && (
+                  <button
+                    type="button"
+                    className="btn ms-2"
                     onClick={() => {
-                      setDeleteIndex(index);
+                      setDeleteIndex(index)
                     }}
                   >
-                    <AiOutlineDelete color='red' />
-                  </button>}
+                    <AiOutlineDelete color="red" />
+                  </button>
+                )}
                 {typeof deleteIndex === 'number' && deleteIndex === index && (
-                  <button
-                    type='button'
-                    className='btn btn-outline-danger text-danger'
-                    onClick={onDeleteConfirm}
-                  >
+                  <button type="button" className="btn btn-outline-danger text-danger" onClick={onDeleteConfirm}>
                     Nhấn để xóa
                   </button>
                 )}
