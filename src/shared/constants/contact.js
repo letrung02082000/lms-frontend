@@ -1,0 +1,1 @@
+export const DRIVING_LICENSE_NUMBER = '0876877789'

@@ -8,6 +8,10 @@ import PortraitBanner from 'assets/images/portrait.jpg'
 import styled from 'styled-components'
 import { toastWrapper } from 'utils'
 
+import { DRIVING_LICENSE_NUMBER } from 'shared/constants/contact'
+import { convertPhoneNumber } from 'utils'
+import ZaloLink from 'shared/components/link/ZaloLink'
+
 export default function DrivingRegisterPage() {
   const { search } = useLocation()
   const source = new URLSearchParams(search).get('s') || 0
@@ -112,7 +116,7 @@ export default function DrivingRegisterPage() {
       .then(res => {
         if (res.status === 200) {
           toastWrapper(
-            'Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: 0886.405.887 (Ms. Trang) để được xử lý.',
+            `Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: ${DRIVING_LICENSE_NUMBER} (Mr. Trung) để được xử lý.`,
             'success',
             { autoClose: 10000 }
           )
@@ -249,9 +253,7 @@ export default function DrivingRegisterPage() {
               </p>
               <p>
                 Vui lòng liên hệ{' '}
-                <a href="https://zalo.me/0886405887" target="_blank" rel="noopener noreferrer">
-                  0886.405.887
-                </a>{' '}
+                <ZaloLink tel={DRIVING_LICENSE_NUMBER}>{convertPhoneNumber(DRIVING_LICENSE_NUMBER, '.')}</ZaloLink>
                 để được hỗ trợ trong trường hợp hồ sơ của bạn chưa được xử lý.
               </p>
             </div>
