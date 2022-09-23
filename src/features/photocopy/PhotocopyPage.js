@@ -75,7 +75,7 @@ function PhotocopyPage() {
           const date = new Date(child.createdAt)
           let state = ''
 
-          if (child.state == 0) {
+          if (child.state === 0) {
             state = 'Đang chờ xử lý'
           }
 

@@ -1,9 +1,12 @@
 import axios from 'axios'
-import TitleBar from 'shared/components/TitleBar'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import styles from './instructionPage.module.css'
+
+import { DRIVING_LICENSE_NUMBER } from 'shared/constants/contact'
+import ZaloLink from 'shared/components/link/ZaloLink'
+import { convertPhoneNumber } from 'utils'
 
 export default function DrivingInstructionPage(props) {
   const location = useLocation()
@@ -59,7 +62,7 @@ export default function DrivingInstructionPage(props) {
 
           <a
             className={styles.contactButtonTop}
-            href="https://zalo.me/0886405887"
+            href={`https://zalo.me/${DRIVING_LICENSE_NUMBER}`}
             target="_blank"
             rel="noreferer noreferrer"
           >
@@ -136,13 +139,12 @@ export default function DrivingInstructionPage(props) {
             <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký online</h3>
             <p>1. Quan tâm Zalo Official Account để nhận hướng dẫn dự thi</p>
             <ul>
-              <li>Truy cập vào Zalo OA tại <a
-              href='http://zalo.me/4013961016678131109?src=qr'
-              target='_blank'
-              rel='noreferrer'
-            >
-              Trung tâm dịch vụ sinh viên iStudent
-            </a> </li>
+              <li>
+                Truy cập vào Zalo OA tại{' '}
+                <a href="http://zalo.me/4013961016678131109?src=qr" target="_blank" rel="noreferrer">
+                  Trung tâm dịch vụ sinh viên iStudent
+                </a>{' '}
+              </li>
               <li>Chọn "Quan tâm" (quan trọng)</li>
             </ul>
             <p>2. Hoàn thành mẫu đơn đăng ký online bao gồm:</p>
@@ -151,16 +153,11 @@ export default function DrivingInstructionPage(props) {
               <li>Số điện thoại liên hệ của bạn.</li>
               <li>Ảnh chụp 2 mặt chứng minh nhân dân/Căn cước công dân.</li>
               <li>
-                Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (ảnh tự chụp
-                bằng điện thoại, không quá 3 tháng, không chụp ảnh thẻ): Tóc
-                không quá trán, vén tóc ra sau mang tai, LẤY ĐỦ 2 VAI, LẤY TỪ THẮT LƯNG TRỞ LÊN QUA ĐẦU, không đeo kính, trang phục lịch sự,
-                lấy nền tường. Vui lòng không sử dụng filter hay chỉnh sửa làm
-                mất đặc điểm nhận dạng. Xem ảnh mẫu{' '}
-                <a
-                  href='https://i.imgur.com/pfjgD5m.jpg'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
+                Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (ảnh tự chụp bằng điện thoại, không quá 3 tháng,
+                không chụp ảnh thẻ): Tóc không quá trán, vén tóc ra sau mang tai, LẤY ĐỦ 2 VAI, LẤY TỪ THẮT LƯNG TRỞ LÊN
+                QUA ĐẦU, không đeo kính, trang phục lịch sự, lấy nền tường. Vui lòng không sử dụng filter hay chỉnh sửa
+                làm mất đặc điểm nhận dạng. Xem ảnh mẫu{' '}
+                <a href="https://i.imgur.com/pfjgD5m.jpg" target="_blank" rel="noopener noreferrer">
                   tại đây.
                 </a>
               </li>
@@ -175,25 +172,23 @@ export default function DrivingInstructionPage(props) {
                 <br />- Số tài khoản: 0877876877
                 <br />- Nội dung: Họ tên_SĐT_Bang A1_Ngày dự thi
                 <br />- Số tiền: 590.000 đồng
-                <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã
-                chuyển khoản.
+                <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã chuyển khoản.
                 <br />- Gửi lại ảnh chụp biên lai tại Zalo Official Account:{' '}
-                <a
-                  href='https://zalo.me/4013961016678131109?src=qr'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
+                <a href="https://zalo.me/4013961016678131109?src=qr" target="_blank" rel="noopener noreferrer">
                   Trung tâm dịch vụ sinh viên iStudent
                 </a>{' '}
                 nếu đóng sau khi đăng ký.
               </li>
               <li>
                 Đóng trực tiếp: Tại văn phòng iSinhvien
-                <br/> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương (Tầng trệt Nhà khách ĐHQG)
-                <br/> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
-                <br/> - Mang theo CMND/CCCD để làm thủ tục.
-                <br/> - Hotline: 0877.876.877
-                <br/> - Google maps: <a href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8" target='_blank' rel='noreferrer'>https://goo.gl/maps/mNj1KKJuJXFHLRsw8</a>
+                <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương (Tầng trệt Nhà khách ĐHQG)
+                <br /> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
+                <br /> - Mang theo CMND/CCCD để làm thủ tục.
+                <br /> - Hotline: 0877.876.877
+                <br /> - Google maps:{' '}
+                <a href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8" target="_blank" rel="noreferrer">
+                  https://goo.gl/maps/mNj1KKJuJXFHLRsw8
+                </a>
               </li>
               <li>Hoàn thành lệ phí thi trước ngày dự thi 16 ngày.</li>
             </ul>
@@ -209,24 +204,16 @@ export default function DrivingInstructionPage(props) {
               </li>
               <li>
                 Nếu bạn không nhận được thông báo, vui lòng liên hệ di động/Zalo:{' '}
-                <a
-                  href='https://zalo.me/0876877789'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  0876.877.789
-                </a>{' '}
-                để được hỗ trợ.
+                <ZaloLink tel={DRIVING_LICENSE_NUMBER}>{convertPhoneNumber(DRIVING_LICENSE_NUMBER, '.')}</ZaloLink> để
+                được hỗ trợ.
               </li>
-              <li>
-                Khung giờ phản hồi: 6h30-8h30, 18h30-20h30.
-              </li>
+              <li>Khung giờ phản hồi: 6h30-8h30, 18h30-20h30.</li>
             </ul>
             <p>5. Đi thi</p>
             <ul>
               <li>
-                Danh sách dự thi và hướng dẫn dự thi sẽ được gửi đến thí sinh thông qua nhóm Zalo
-                . Thi sinh vui lòng theo dõi để cập nhật thông tin sớm nhất.
+                Danh sách dự thi và hướng dẫn dự thi sẽ được gửi đến thí sinh thông qua nhóm Zalo . Thi sinh vui lòng
+                theo dõi để cập nhật thông tin sớm nhất.
               </li>
               <li>
                 Khi đi thi thí sinh cần mang theo chứng minh nhân dân hoặc căn cước công dân bản gốc để đối chiếu.
@@ -242,11 +229,12 @@ export default function DrivingInstructionPage(props) {
                 <br /> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
                 <br /> - Mang theo CMND/CCCD để làm thủ tục.
                 <br /> - Hotline: 0877.876.877
-                <br /> - Google maps: <a href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8" target='_blank' rel='noreferrer'>https://goo.gl/maps/mNj1KKJuJXFHLRsw8</a>
+                <br /> - Google maps:{' '}
+                <a href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8" target="_blank" rel="noreferrer">
+                  https://goo.gl/maps/mNj1KKJuJXFHLRsw8
+                </a>
               </li>
-              <li>
-                Khi đăng ký trực tiếp, bạn vẫn cần phải đăng ký thông tin như hướng dẫn ở trên.
-              </li>
+              <li>Khi đăng ký trực tiếp, bạn vẫn cần phải đăng ký thông tin như hướng dẫn ở trên.</li>
             </ul>
           </div>
           <div id="mocktest">
@@ -287,15 +275,12 @@ export default function DrivingInstructionPage(props) {
           </dl>
         </div>
         <div className={styles.footer}>
-          <p id='contact'>
+          <p id="contact">
             Để được hỗ trợ thêm, vui lòng liên hệ Zalo:{' '}
-            <a
-              href='https://zalo.me/0876877789'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              0876.877.789 (Mr. Trung)
-            </a>
+            <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
+              {convertPhoneNumber(DRIVING_LICENSE_NUMBER, '.')}
+              <span> (Mr. Trung)</span>
+            </ZaloLink>
           </p>
         </div>
       </div>

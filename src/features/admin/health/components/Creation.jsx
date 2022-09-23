@@ -37,7 +37,7 @@ function Creation() {
       .createHealth({ priority, title, content })
       .then(res => {
         if (res.data) {
-          return toastWrapper('Tạo bài viết thành công!')
+          return toastWrapper('Tạo bài viết thành công!', 'success')
         }
       })
       .catch(err => console.log(err))

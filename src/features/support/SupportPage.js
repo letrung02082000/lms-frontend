@@ -1,6 +1,7 @@
 import React from 'react'
-import TitleBar from 'shared/components/TitleBar'
 import ZaloLink from 'shared/components/link/ZaloLink'
+import { DRIVING_LICENSE_NUMBER } from 'shared/constants/contact'
+import { convertPhoneNumber } from 'utils'
 import styled from 'styled-components'
 
 function SupportPage() {
@@ -15,7 +16,8 @@ function SupportPage() {
             <ZaloLink tel="0877876877">0877.876.877</ZaloLink>
           </div>
           <div>
-            <span>Zalo hỗ trợ dịch vụ giấy phép lái xe: </span> <ZaloLink tel="0886405887">0886.405.887</ZaloLink>
+            <span>Zalo hỗ trợ dịch vụ giấy phép lái xe: </span>
+            <ZaloLink tel={DRIVING_LICENSE_NUMBER}>{convertPhoneNumber(DRIVING_LICENSE_NUMBER, '.')}</ZaloLink>
           </div>
           <div>
             <span>Zalo hỗ trợ kỹ thuật: </span> <ZaloLink tel="0797324886">0797.324.886</ZaloLink>
