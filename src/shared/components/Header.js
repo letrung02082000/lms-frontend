@@ -1,5 +1,4 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
 import DesktopNavBar from './DesktopNavBar'
 import MobileNavBar from './MobileNavBar'
 import styled from 'styled-components'
