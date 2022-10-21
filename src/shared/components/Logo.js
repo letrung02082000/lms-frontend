@@ -7,22 +7,18 @@ const Logo = () => {
 
   return (
     <Styles isDesktop={isDesktop}>
-      <span className="i">i</span>
-      <img className="logo" src="/logo.png" alt="logo" />
-      <span className="inhvien">inhvien</span>
+      <img className="logo" src="/logo3.png" alt="logo" />
     </Styles>
   )
 }
 
 const Styles = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex;
   align-items: center;
-  margin: ${props => (props.isDesktop === true ? '0.5rem' : '1.5rem 0.5rem')};
 
   .logo {
-    width: 2rem;
-    border-radius: 15px;
+    width: 10rem;
   }
 
   .i {

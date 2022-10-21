@@ -76,7 +76,6 @@ const Styles = styled.div`
     align-items: center;
     justify-content: center;
     background-color: white;
-
     position: sticky;
     z-index: 2000;
     top: ${props => (props.status === 'down' ? '-150px' : '0px')};

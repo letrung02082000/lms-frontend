@@ -71,7 +71,7 @@ function Update(props) {
         setUpdating(false)
 
         if (res.data) {
-          return toastWrapper('Cập nhật bài viết thành công!')
+          return toastWrapper('Cập nhật bài viết thành công!', 'success')
         }
       })
       .catch(err => {

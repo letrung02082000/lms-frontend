@@ -1,7 +1,9 @@
 import React from 'react'
-import TitleBar from 'shared/components/TitleBar'
 import styles from './infoPage.module.css'
+import { DRIVING_LICENSE_NUMBER } from 'shared/constants/contact'
+import ZaloLink from 'shared/components/link/ZaloLink'
 
+import { convertPhoneNumber } from 'utils'
 import { useNavigate } from 'react-router-dom'
 
 function DrivingTestPage() {
@@ -13,16 +15,20 @@ function DrivingTestPage() {
 
   return (
     <div className={styles.drivingContainer}>
-      {/* <TitleBar title="Đăng ký thi sát hạch lái xe" /> */}
       <div className={styles.header}>
         <img src="/drivingbanner.jpg" alt="driving banner" className={styles.drivingBanner} />
         <div className={styles.introContainerTop}>
-          <a className={styles.contactButtonTop} href="tel:+84886405887" target="_blank" rel="noreferer noreferrer">
+          <a
+            className={styles.contactButtonTop}
+            href={`tel:${convertPhoneNumber(DRIVING_LICENSE_NUMBER, '+84')}`}
+            target="_blank"
+            rel="noreferer noreferrer"
+          >
             Gọi ngay
           </a>
           <a
             className={styles.contactButtonTop}
-            href="https://zalo.me/0886405887"
+            href={`https://zalo.me/${DRIVING_LICENSE_NUMBER}`}
             target="_blank"
             rel="noreferer noreferrer"
           >
@@ -100,12 +106,17 @@ function DrivingTestPage() {
         </div>
         <p className={styles.helpText}>Liên hệ hỗ trợ</p>
         <div className={styles.introContainer}>
-          <a className={styles.contactButton} href="tel:+84886405887" target="_blank" rel="noreferer noreferrer">
+          <a
+            className={styles.contactButton}
+            href={`tel:${convertPhoneNumber(DRIVING_LICENSE_NUMBER, '+84')}`}
+            target="_blank"
+            rel="noreferer noreferrer"
+          >
             Gọi ngay
           </a>
           <a
             className={styles.contactButton}
-            href="https://zalo.me/0886405887"
+            href={`https://zalo.me/${DRIVING_LICENSE_NUMBER}`}
             target="_blank"
             rel="noreferer noreferrer"
           >

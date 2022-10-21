@@ -1,14 +1,17 @@
 import { toast } from 'react-toastify'
 
-const toastWrapper = msg =>
-  toast(msg, {
+const toastWrapper = (msg, type, options) => {
+  return toast(msg, {
     position: 'top-right',
     autoClose: 5000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
-    progress: undefined
+    progress: undefined,
+    type: type || 'info',
+    ...options
   })
+}
 
 export default toastWrapper

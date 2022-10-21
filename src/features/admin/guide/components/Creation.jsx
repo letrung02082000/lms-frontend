@@ -35,7 +35,7 @@ function Creation() {
 
     guideApi
       .createGuide({ priority, title, content })
-      .then(res => toastWrapper('Tạo bài viết thành công!'))
+      .then(res => toastWrapper('Tạo bài viết thành công!', 'success'))
       .catch(err => console.log(err))
   }
 

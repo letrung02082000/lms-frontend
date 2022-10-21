@@ -19,23 +19,28 @@ function PhotocopyPage() {
 
   return (
     <Styles>
-      {/* <TitleBar>Gửi in ấn</TitleBar> */}
       <SearchPlaceHolder
-        className="search-placeholder"
-        text="Tra cứu tình trạng đơn hàng"
+        className='search-placeholder'
+        text='Tra cứu tình trạng đơn hàng'
         onClick={() => setShow(true)}
       />
-      <div className="action-btn-group d-flex justify-content-center">
-        <Button className="instruction-btn" onClick={openInstruction}>
-          <u>Bấm để xem hướng dẫn tạo đơn hàng để được xử lý nhanh chỉ trong 2 giờ</u>
-        </Button>
+      <div className='action-btn-group d-flex justify-content-center'>
+        <button
+          className='btn btn-outline-primary instruction-btn'
+          onClick={openInstruction}
+        >
+          <b>
+            Xem hướng dẫn tạo đơn hàng để được xử lý nhanh chỉ trong 2
+            giờ
+          </b>
+        </button>
       </div>
-      <div className="form-body">
+      <div className='form-body'>
         <CreationForm />
       </div>
       <SearchModal show={show} handleClose={() => setShow(false)} />
     </Styles>
-  )
+  );
 }
 
 export default PhotocopyPage

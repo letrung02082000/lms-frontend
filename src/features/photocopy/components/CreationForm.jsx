@@ -80,7 +80,7 @@ function CreationForm() {
 
   const onSubmit = data => {
     if (fileUploading || receiptUploading) {
-      return toastWrapper('Vui lòng chờ tải tệp lên hoàn tất!')
+      return toastWrapper('Vui lòng chờ tải tệp lên hoàn tất!', 'info')
     }
 
     if (data?.category) {
@@ -100,7 +100,6 @@ function CreationForm() {
     } else {
       delete data.coupon
     }
-    console.log(appliedCoupon)
 
     localStorage.setItem('photocopy-info', JSON.stringify(data))
     const order = {
@@ -117,7 +116,6 @@ function CreationForm() {
     photocopyApi
       .addOrder(order)
       .then(res => {
-        console.log(res)
         setFileIds([])
         setReceiptId([])
         setFileNames([])
@@ -143,7 +141,7 @@ function CreationForm() {
         setCategories(data?.data.map(c => ({ label: c?.name, value: c?._id })))
       })
       .catch(error => {
-        toastWrapper(error?.response?.data?.message)
+        toastWrapper(error?.response?.data?.message, 'error')
       })
 
     photocopyApi
@@ -152,12 +150,12 @@ function CreationForm() {
         setOffices(data?.data.map(c => ({ label: c?.name, value: c?._id })))
       })
       .catch(error => {
-        toastWrapper(error?.response?.data?.message)
+        toastWrapper(error?.response?.data?.message, 'error')
       })
   }, [])
 
   const handleFileUpload = value => {
-    if (fileIds.length > 10) return toastWrapper('Chỉ có thể tải lên tối đa 10 tệp')
+    if (fileIds.length > 10) return toastWrapper('Chỉ có thể tải lên tối đa 10 tệp', 'error')
     setFileIds(prev => [...prev, `https://drive.google.com/file/d/${value}`])
   }
   const handleFileNames = value => setFileNames(prev => [...prev, value])
@@ -174,9 +172,8 @@ function CreationForm() {
         temp.splice(deleteIndex, 1)
         return temp
       })
+      setDeleteIndex(null)
     }
-
-    hideModal()
   }
 
   if (orderInfo) {
@@ -190,19 +187,25 @@ function CreationForm() {
           {fileNames?.map((name, index) => {
             return (
               <div key={`${name}_${index}`} className="d-flex align-items-center justify-content-between w-100">
-                <span>
+                <span style={{ overflowWrap: 'anywhere' }}>
                   {index + 1}. {name}
                 </span>
-                <button
-                  type="button"
-                  className="btn ms-2"
-                  onClick={() => {
-                    setDeleteIndex(index)
-                    showModal()
-                  }}
-                >
-                  <AiOutlineDelete color="red" />
-                </button>
+                {index !== deleteIndex && (
+                  <button
+                    type="button"
+                    className="btn ms-2"
+                    onClick={() => {
+                      setDeleteIndex(index)
+                    }}
+                  >
+                    <AiOutlineDelete color="red" />
+                  </button>
+                )}
+                {typeof deleteIndex === 'number' && deleteIndex === index && (
+                  <button type="button" className="btn btn-outline-danger text-danger" onClick={onDeleteConfirm}>
+                    Nhấn để xóa
+                  </button>
+                )}
               </div>
             )
           })}
@@ -249,15 +252,17 @@ function CreationForm() {
         {isDelivered === '1' && (
           <SelectField options={addressOptions} label="Chọn khu vực" control={control} name="address" />
         )}
-        <FileUploader
-          setFileId={value => setReceiptId(prev => `https://drive.google.com/file/d/${value}`)}
-          label={'Tải lên hóa đơn đặt cọc (nếu có)'}
+        {/* <FileUploader
+          setFileId={(value) =>
+            setReceiptId((prev) => `https://drive.google.com/file/d/${value}`)
+          }
+          label={"Tải lên hóa đơn đặt cọc (nếu có)"}
           uploading={receiptUploading}
           setUploading={setReceiptUploading}
           setFileName={setReceiptName}
           url={'/photocopy/upload/receipt'}
           name="receipt"
-        />
+        /> */}
         <p className="w-100 text-center form-text">{receiptName}</p>
         <Form.Group className="d-flex align-items-end">
           <InputField

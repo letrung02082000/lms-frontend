@@ -36,6 +36,5 @@ function InputField({ label, children, control, name, rules, defaultValue, ...pr
 export default InputField
 
 const Styles = styled.div`
-  label {
-  }
+  width: 100%
 `

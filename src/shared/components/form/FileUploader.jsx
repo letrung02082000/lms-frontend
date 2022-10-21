@@ -1,4 +1,3 @@
-import axios from 'axios'
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toastWrapper } from 'utils'
@@ -70,9 +69,9 @@ function FileUploader({ className, ...props }) {
         disabled={props?.uploading}
       >
         <input {...getInputProps()} />
-        <div className={`upload-button d-flex align-items-center justify-content-center px-3 py-2 btn btn-success`}>
-          <BsCloudUpload size={25} />
-          <p className="ms-2">{props?.text || 'Thêm tệp'}</p>
+        <div className={`upload-button d-flex align-items-center justify-content-center px-3 py-2 btn btn-primary`}>
+          <BsCloudUpload size={25}/>
+          <p className='ms-2'>{props?.text || 'Thêm tệp'}</p>
         </div>
         {props?.uploading && <p className="form-text my-2 text-center">Đang tải {uploadPercent}%</p>}
         {fileRejections?.[0]?.errors?.map(error => {
