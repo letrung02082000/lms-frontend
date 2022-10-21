@@ -73,11 +73,9 @@ const Styles = styled.div`
 
   .logoContainer {
     display: flex;
-    height: 4.5rem;
     align-items: center;
     justify-content: center;
     background-color: white;
-
     position: sticky;
     z-index: 2000;
     top: ${props => (props.status === 'down' ? '-150px' : '0px')};
@@ -109,6 +107,12 @@ const Styles = styled.div`
     border-radius: 5px;
   }
 
+  .logoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .searchIcon {
     width: 2.5rem;
     height: 2.5rem;
@@ -118,7 +122,7 @@ const Styles = styled.div`
     border-radius: 50px;
     position: absolute;
     top: 1rem;
-    right: 0rem;
+    right: 0;
   }
 
   .searchIcon svg {
