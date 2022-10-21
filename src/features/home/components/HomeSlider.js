@@ -33,13 +33,16 @@ function HomeSlider() {
         className="mySwiper"
       >
         <SwiperSlide>
-          <img src="/home-banner/01.jpg" alt="Banner Đồng phục" />
+          <img src="/home-banner/01.jpg" alt="Banner Văn phòng" />
         </SwiperSlide>
         <SwiperSlide>
-          <img src="/home-banner/02.jpg" alt="Banner In ấn" />
+          <img src="/home-banner/02.jpg" alt="Banner Đồng phục" />
         </SwiperSlide>
         <SwiperSlide>
-          <img src="/home-banner/03.jpg" alt="Banner Xe dịch vụ" />
+          <img src="/home-banner/03.jpg" alt="Banner In ấn" />
+        </SwiperSlide>
+        <SwiperSlide>
+          <img src="/home-banner/04.jpg" alt="Banner Xe dịch vụ" />
         </SwiperSlide>
       </Swiper>
     </>
