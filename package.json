@@ -1,6 +1,6 @@
 {
   "name": "camp-booking-client",
-  "homepage": "",
+  "homepage": "https://istudent-client-5jv8l.ondigitalocean.app",
   "proxy": "http://localhost:5000",
   "version": "0.1.0",
   "private": true,
