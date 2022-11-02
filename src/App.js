@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import { checkLogin } from 'utils'
 import AdminRoutes from 'features/admin/AdminRoutes'
 import PhotocopyRoutes from 'features/photocopy/Routes'
+import DrivingRoutes from 'features/driving-license-v2/Routes'
 import ServiceLayout from 'shared/layouts/ServiceLayout'
 import {
   AccountPage,
@@ -11,8 +12,8 @@ import {
   AdminDrivingPage,
   AdminGuestHousePage,
   BankPage,
-  BicyclePage,
-  BicyclesPage,
+  // BicyclePage,
+  // BicyclesPage,
   BusRegistrationPage,
   BusSurveyPage,
   CouponListPage,
@@ -141,6 +142,12 @@ class App extends React.Component {
               </ServiceLayout>
             }
           />
+
+          <Route
+            path="/driving-licenses/*"
+            element={<DrivingRoutes />}
+          />
+
           <Route
             path="/driving-license"
             element={
@@ -184,7 +191,7 @@ class App extends React.Component {
             path="/bicycles"
             element={
               <ServiceLayout pageTitle="Xe đạp công cộng" navigationTo="/bicycles">
-                <BicyclesPage />
+                <MaintainPage />
               </ServiceLayout>
             }
           />
@@ -192,7 +199,7 @@ class App extends React.Component {
             path="/bicycle"
             element={
               <ServiceLayout pageTitle="Thuê xe" navigationTo="/bicycles">
-                <BicyclePage />
+                <MaintainPage />
               </ServiceLayout>
             }
           />
@@ -291,6 +298,7 @@ class App extends React.Component {
               </ServiceLayout>
             }
           />
+
           <Route
             path="/maintain"
             element={
@@ -299,6 +307,7 @@ class App extends React.Component {
               </ServiceLayout>
             }
           />
+
           <Route
             path="*"
             element={
