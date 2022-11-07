@@ -5,3 +5,4 @@ yarn-error.log
 .prettierrc
 .prettierignore
 build
+.env
