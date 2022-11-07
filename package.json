@@ -1,11 +1,7 @@
 {
   "name": "camp-booking-client",
-  "proxy": "http://localhost:5000",
   "version": "0.1.0",
   "private": true,
-  "resolutions": {
-    "react-error-overlay": "6.0.9"
-  },
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -58,7 +54,6 @@
     "react-modal": "^3.15.1",
     "react-modal-hook": "^3.0.2",
     "react-pro-sidebar": "^0.7.1",
-    "react-qr-reader": "^3.0.0-beta-1",
     "react-redux": "^7.2.5",
     "react-responsive-carousel": "^3.2.22",
     "react-router-dom": "^6.3.0",
@@ -109,5 +104,8 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1"
+  },
+  "engines" : { 
+    "node" : ">=16.0.0 <17.0.0"
   }
 }
