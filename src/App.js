@@ -10,6 +10,7 @@ import ReactGA from "react-ga";
 import { checkLogin } from "utils";
 import AdminRoutes from "features/admin/AdminRoutes";
 import PhotocopyRoutes from "features/photocopy/Routes";
+import DrivingRoutes from "features/driving-license-v2/Routes";
 import ServiceLayout from "shared/layouts/ServiceLayout";
 import {
   AccountPage,
@@ -17,8 +18,8 @@ import {
   AdminDrivingPage,
   AdminGuestHousePage,
   BankPage,
-  BicyclePage,
-  BicyclesPage,
+  // BicyclePage,
+  // BicyclesPage,
   BusRegistrationPage,
   BusSurveyPage,
   CouponListPage,
@@ -174,6 +175,9 @@ const App = () => {
             </ServiceLayout>
           }
         />
+
+        <Route path="/driving-licenses/*" element={<DrivingRoutes />} />
+
         <Route
           path="/driving-license"
           element={
@@ -226,7 +230,7 @@ const App = () => {
               pageTitle="Xe đạp công cộng"
               navigationTo="/bicycles"
             >
-              <BicyclesPage />
+              <MaintainPage />
             </ServiceLayout>
           }
         />
@@ -234,7 +238,7 @@ const App = () => {
           path="/bicycle"
           element={
             <ServiceLayout pageTitle="Thuê xe" navigationTo="/bicycles">
-              <BicyclePage />
+              <MaintainPage />
             </ServiceLayout>
           }
         />
@@ -342,6 +346,7 @@ const App = () => {
             </ServiceLayout>
           }
         />
+
         <Route
           path="/maintain"
           element={
@@ -350,6 +355,7 @@ const App = () => {
             </ServiceLayout>
           }
         />
+
         <Route
           path="*"
           element={
