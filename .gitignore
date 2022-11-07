@@ -6,3 +6,4 @@ package-lock.json
 .eslintrc
 .prettierrc
 .prettierignore
+.env

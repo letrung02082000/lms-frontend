@@ -1,10 +1,16 @@
-import React from 'react'
-import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import { checkLogin } from 'utils'
-import AdminRoutes from 'features/admin/AdminRoutes'
-import PhotocopyRoutes from 'features/photocopy/Routes'
-import ServiceLayout from 'shared/layouts/ServiceLayout'
+import React, { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import ReactGA from "react-ga";
+import { checkLogin } from "utils";
+import AdminRoutes from "features/admin/AdminRoutes";
+import PhotocopyRoutes from "features/photocopy/Routes";
+import ServiceLayout from "shared/layouts/ServiceLayout";
 import {
   AccountPage,
   AdminBicyclePage,
@@ -42,296 +48,340 @@ import {
   QrScanPage,
   UniformRegistrationPage,
   SupportPage,
-  B2InfoPage
-} from 'features'
+  B2InfoPage,
+} from "features";
 
-class App extends React.Component {
-  render() {
-    checkLogin()
+const GA_TRACKING_ID = process.env.GA_TRACKING_ID;
+ReactGA.initialize(GA_TRACKING_ID);
 
-    return (
-      <Router>
-        <ToastContainer />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/explore" element={<ExplorePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/contact" element={<MaintainPage />} />
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/guest-house" element={
-            <ServiceLayout pageTitle="Thông tin nhà khách" navigationTo="/guest-house-info">
+const App = () => {
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }, []);
+
+  checkLogin();
+
+  return (
+    <Router>
+      <ToastContainer />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/contact" element={<MaintainPage />} />
+        <Route path="/account" element={<AccountPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/guest-house"
+          element={
+            <ServiceLayout
+              pageTitle="Thông tin nhà khách"
+              navigationTo="/guest-house-info"
+            >
               <GuestHouseInfoPage />
             </ServiceLayout>
-          } />
-          <Route path="/guest-house-user" element={<GuestHouseUserPage />} />
-          <Route path="/guest-house-report" element={<GuestHouseReportPage />} />
-          <Route
-            path="/guest-house-admin"
-            element={
-              <RequireAdminAuth>
-                <AdminGuestHousePage />
-              </RequireAdminAuth>
-            }
-          />
+          }
+        />
+        <Route path="/guest-house-user" element={<GuestHouseUserPage />} />
+        <Route path="/guest-house-report" element={<GuestHouseReportPage />} />
+        <Route
+          path="/guest-house-admin"
+          element={
+            <RequireAdminAuth>
+              <AdminGuestHousePage />
+            </RequireAdminAuth>
+          }
+        />
 
-          <Route
-            path="/pool-info"
-            element={
-              <ServiceLayout pageTitle="Hồ bơi" navigationTo="/pool-info">
-                <PoolInfoPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/pool-ticket"
-            element={
-              <ServiceLayout pageTitle="Mua vé tháng" navigationTo="/pool-ticket">
-                <PoolTicketPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/pool-tutor"
-            element={
-              <ServiceLayout pageTitle="Đăng ký học bơi" navigationTo="/pool-tutor">
-                <PoolTutorPage />
-              </ServiceLayout>
-            }
-          />
+        <Route
+          path="/pool-info"
+          element={
+            <ServiceLayout pageTitle="Hồ bơi" navigationTo="/pool-info">
+              <PoolInfoPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/pool-ticket"
+          element={
+            <ServiceLayout pageTitle="Mua vé tháng" navigationTo="/pool-ticket">
+              <PoolTicketPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/pool-tutor"
+          element={
+            <ServiceLayout
+              pageTitle="Đăng ký học bơi"
+              navigationTo="/pool-tutor"
+            >
+              <PoolTutorPage />
+            </ServiceLayout>
+          }
+        />
 
-          <Route
-            path="/qrscan"
-            element={
-              <ServiceLayout pageTitle="Mã QR" navigationTo="/qrscan">
-                <QrScanPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/guest-house-info"
-            element={
-              <ServiceLayout pageTitle="Thông tin nhà khách" navigationTo="/guest-house-info">
-                <GuestHouseInfoPage />
-              </ServiceLayout>
-            }
-          />
+        <Route
+          path="/qrscan"
+          element={
+            <ServiceLayout pageTitle="Mã QR" navigationTo="/qrscan">
+              <QrScanPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/guest-house-info"
+          element={
+            <ServiceLayout
+              pageTitle="Thông tin nhà khách"
+              navigationTo="/guest-house-info"
+            >
+              <GuestHouseInfoPage />
+            </ServiceLayout>
+          }
+        />
 
+        <Route
+          path="/driving-test"
+          element={
+            <ServiceLayout
+              pageTitle="Đăng ký thi sát hạch lái xe"
+              navigationTo="/driving-test"
+            >
+              <DrivingInfoPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/driving-registration"
+          element={
+            <ServiceLayout
+              pageTitle="Đăng ký dự thi"
+              navigationTo="/driving-registration"
+            >
+              <DrivingRegisterPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/driving-instruction"
+          element={
+            <ServiceLayout
+              pageTitle="Hướng dẫn dự thi"
+              navigationTo="/driving-instruction"
+            >
+              <DrivingInstructionPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/driving-license"
+          element={
+            <ServiceLayout
+              pageTitle="Hướng dẫn B1-B2"
+              navigationTo="/driving-license"
+            >
+              <B2InfoPage />
+            </ServiceLayout>
+          }
+        >
           <Route
-            path="/driving-test"
+            path="b2"
             element={
-              <ServiceLayout pageTitle="Đăng ký thi sát hạch lái xe" navigationTo="/driving-test">
-                <DrivingInfoPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/driving-registration"
-            element={
-              <ServiceLayout pageTitle="Đăng ký dự thi" navigationTo="/driving-registration">
-                <DrivingRegisterPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/driving-instruction"
-            element={
-              <ServiceLayout pageTitle="Hướng dẫn dự thi" navigationTo="/driving-instruction">
-                <DrivingInstructionPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/driving-license"
-            element={
-              <ServiceLayout pageTitle="Hướng dẫn B1-B2" navigationTo="/driving-license">
+              <ServiceLayout
+                pageTitle="Hướng dẫn B1-B2"
+                navigationTo="/driving-license"
+              >
                 <B2InfoPage />
               </ServiceLayout>
             }
-          >
-            <Route
-              path="b2"
-              element={
-                <ServiceLayout pageTitle="Hướng dẫn B1-B2" navigationTo="/driving-license">
-                  <B2InfoPage />
-                </ServiceLayout>
-              }
-            />
-          </Route>
+          />
+        </Route>
 
-          <Route
-            path="/jobs"
-            element={
-              <ServiceLayout pageTitle="Việc làm sinh viên" navigationTo="/jobs">
-                <JobPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/job"
-            element={
-              <ServiceLayout pageTitle="Thông tin việc làm" navigationTo="/jobs">
-                <JobDetailPage />
-              </ServiceLayout>
-            }
-          />
+        <Route
+          path="/jobs"
+          element={
+            <ServiceLayout pageTitle="Việc làm sinh viên" navigationTo="/jobs">
+              <JobPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/job"
+          element={
+            <ServiceLayout pageTitle="Thông tin việc làm" navigationTo="/jobs">
+              <JobDetailPage />
+            </ServiceLayout>
+          }
+        />
 
-          <Route path="/coupon-list" element={<CouponListPage />} />
-          <Route path="/coupon" element={<CouponPage />} />
-          <Route path="/coupon-scanned" element={<CouponScannedPage />} />
+        <Route path="/coupon-list" element={<CouponListPage />} />
+        <Route path="/coupon" element={<CouponPage />} />
+        <Route path="/coupon-scanned" element={<CouponScannedPage />} />
 
-          <Route
-            path="/bicycles"
-            element={
-              <ServiceLayout pageTitle="Xe đạp công cộng" navigationTo="/bicycles">
-                <BicyclesPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/bicycle"
-            element={
-              <ServiceLayout pageTitle="Thuê xe" navigationTo="/bicycles">
-                <BicyclePage />
-              </ServiceLayout>
-            }
-          />
+        <Route
+          path="/bicycles"
+          element={
+            <ServiceLayout
+              pageTitle="Xe đạp công cộng"
+              navigationTo="/bicycles"
+            >
+              <BicyclesPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/bicycle"
+          element={
+            <ServiceLayout pageTitle="Thuê xe" navigationTo="/bicycles">
+              <BicyclePage />
+            </ServiceLayout>
+          }
+        />
 
-          <Route
-            path="/bank"
-            element={
-              <ServiceLayout pageTitle="Mở thẻ MB Bank" navigationTo="/bank">
-                <BankPage />
-              </ServiceLayout>
-            }
-          />
-          <Route path="/bus-survey" element={<BusSurveyPage />} />
-          <Route
-            path="/uniform"
-            element={
-              <ServiceLayout pageTitle="Đặt đồng phục" navigationTo="/uniform">
-                <UniformRegistrationPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/guides"
-            element={
-              <ServiceLayout pageTitle="Cẩm nang sinh viên" navigationTo="/guides">
-                <GuidePage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/guide"
-            element={
-              <ServiceLayout pageTitle="Bài viết" navigationTo="/guides">
-                <GuideDetailPage />
-              </ServiceLayout>
-            }
-          />
+        <Route
+          path="/bank"
+          element={
+            <ServiceLayout pageTitle="Mở thẻ MB Bank" navigationTo="/bank">
+              <BankPage />
+            </ServiceLayout>
+          }
+        />
+        <Route path="/bus-survey" element={<BusSurveyPage />} />
+        <Route
+          path="/uniform"
+          element={
+            <ServiceLayout pageTitle="Đặt đồng phục" navigationTo="/uniform">
+              <UniformRegistrationPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/guides"
+          element={
+            <ServiceLayout
+              pageTitle="Cẩm nang sinh viên"
+              navigationTo="/guides"
+            >
+              <GuidePage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/guide"
+          element={
+            <ServiceLayout pageTitle="Bài viết" navigationTo="/guides">
+              <GuideDetailPage />
+            </ServiceLayout>
+          }
+        />
 
-          <Route
-            path="/health"
-            element={
-              <ServiceLayout pageTitle="Bài viết" navigationTo="/health">
-                <HealthDetailPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/healths"
-            element={
-              <ServiceLayout pageTitle="Sức khỏe sinh viên" navigationTo="/healths">
-                <HealthPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/photocopy/*"
-            element={
-              <ServiceLayout navigationTo="/photocopy" pageTitle='Gửi in ấn'>
-                <PhotocopyRoutes/>
-              </ServiceLayout>
-            }
-          />
+        <Route
+          path="/health"
+          element={
+            <ServiceLayout pageTitle="Bài viết" navigationTo="/health">
+              <HealthDetailPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/healths"
+          element={
+            <ServiceLayout
+              pageTitle="Sức khỏe sinh viên"
+              navigationTo="/healths"
+            >
+              <HealthPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/photocopy/*"
+          element={
+            <ServiceLayout navigationTo="/photocopy" pageTitle="Gửi in ấn">
+              <PhotocopyRoutes />
+            </ServiceLayout>
+          }
+        />
 
-          <Route
-            path="/bus-registration"
-            element={
-              <ServiceLayout pageTitle="Đặt xe đưa rước" navigationTo="/bus-registration">
-                <BusRegistrationPage />
-              </ServiceLayout>
-            }
-          />
+        <Route
+          path="/bus-registration"
+          element={
+            <ServiceLayout
+              pageTitle="Đặt xe đưa rước"
+              navigationTo="/bus-registration"
+            >
+              <BusRegistrationPage />
+            </ServiceLayout>
+          }
+        />
 
-          <Route path="/driving-admin" element={<AdminDrivingPage />} />
-          <Route
-            path="/bicycle-admin"
-            element={
-              <RequireAdminAuth>
-                <AdminBicyclePage />
-              </RequireAdminAuth>
-            }
-          />
-          <Route
-            path="admin/*"
-            element={
-              <RequireAdminAuth>
-                <AdminRoutes />
-              </RequireAdminAuth>
-            }
-          />
+        <Route path="/driving-admin" element={<AdminDrivingPage />} />
+        <Route
+          path="/bicycle-admin"
+          element={
+            <RequireAdminAuth>
+              <AdminBicyclePage />
+            </RequireAdminAuth>
+          }
+        />
+        <Route
+          path="admin/*"
+          element={
+            <RequireAdminAuth>
+              <AdminRoutes />
+            </RequireAdminAuth>
+          }
+        />
 
-          <Route
-            path="/support"
-            element={
-              <ServiceLayout pageTitle="Hỗ trợ" navigationTo="/support">
-                <SupportPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/maintain"
-            element={
-              <ServiceLayout pageTitle="Đang phát triển" navigationTo="/maintain">
-                <MaintainPage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <ServiceLayout pageTitle="Lỗi" navigationTo="/maintain">
-                <NotFoundPage />
-              </ServiceLayout>
-            }
-          />
-        </Routes>
-      </Router>
-    )
-  }
-}
+        <Route
+          path="/support"
+          element={
+            <ServiceLayout pageTitle="Hỗ trợ" navigationTo="/support">
+              <SupportPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="/maintain"
+          element={
+            <ServiceLayout pageTitle="Đang phát triển" navigationTo="/maintain">
+              <MaintainPage />
+            </ServiceLayout>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <ServiceLayout pageTitle="Lỗi" navigationTo="/maintain">
+              <NotFoundPage />
+            </ServiceLayout>
+          }
+        />
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;
 
 const RequireAuth = ({ children }) => {
-  const token = localStorage.getItem('user-jwt-tk')
-  const refreshToken = localStorage.getItem('user-jwt-rftk')
+  const token = localStorage.getItem("user-jwt-tk");
+  const refreshToken = localStorage.getItem("user-jwt-rftk");
 
   if (!token || !refreshToken) {
-    return <Navigate to="/login" />
+    return <Navigate to="/login" />;
   }
-  return children
-}
+  return children;
+};
 
 const RequireAdminAuth = ({ children }) => {
-  const token = localStorage.getItem('user-jwt-tk')
-  const refreshToken = localStorage.getItem('user-jwt-rftk')
-  const role = localStorage.getItem('user-role')
+  const token = localStorage.getItem("user-jwt-tk");
+  const refreshToken = localStorage.getItem("user-jwt-rftk");
+  const role = localStorage.getItem("user-role");
 
   if (!token || !refreshToken || Number(role) === 0 || !role) {
-    return <Navigate to="/login" />
+    return <Navigate to="/login" />;
   }
-  return children
-}
+  return children;
+};
