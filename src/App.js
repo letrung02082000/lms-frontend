@@ -52,15 +52,17 @@ import {
   B2InfoPage,
 } from "features";
 
-const GA_TRACKING_ID = process.env.GA_TRACKING_ID;
+
+const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
 ReactGA.initialize(GA_TRACKING_ID);
 
 const App = () => {
+  checkLogin();
+
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
+    console.log("REACT_APP_GA_TRACKING_ID is", GA_TRACKING_ID);
   }, []);
-
-  checkLogin();
 
   return (
     <Router>
