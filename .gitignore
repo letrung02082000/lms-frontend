@@ -1,8 +1,8 @@
 node_modules
-yarn.lock
 yarn-error.log
 .eslintignore
 .eslintrc
 .prettierrc
 .prettierignore
 build
+.env
