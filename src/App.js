@@ -52,7 +52,6 @@ import {
   B2InfoPage,
 } from "features";
 
-
 const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
 ReactGA.initialize(GA_TRACKING_ID);
 
