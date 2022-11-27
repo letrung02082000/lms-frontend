@@ -1,58 +1,56 @@
-import axios from 'axios'
-import { store } from '../../store'
-import { updateUser, logoutUser } from '../../store/userSlice'
+import { store } from "../../store";
+import { updateUser, logoutUser } from "../../store/userSlice";
+
+import AccountApi from "api/accountApi";
 
 function checkLogin() {
-  const userInfo = localStorage.getItem('user-info')
-  const token = localStorage.getItem('user-jwt-tk')
-  const refreshToken = localStorage.getItem('user-jwt-rftk')
+  const userInfo = localStorage.getItem("user-info");
+  const token = localStorage.getItem("user-jwt-tk");
+  const refreshToken = localStorage.getItem("user-jwt-rftk");
 
   if (!token || !refreshToken) {
-    store.dispatch(logoutUser())
+    store.dispatch(logoutUser());
   }
 
   if (token && refreshToken) {
-    axios
-      .get('/api/user/profile', {
-        headers: { token: token }
-      })
-      .then(res => {
+    AccountApi.getProlfile(token)
+      .then((res) => {
         if (res.status === 200) {
-          const data = JSON.parse(userInfo)
-          store.dispatch(updateUser({ isLoggedIn: true, data }))
+          const data = JSON.parse(userInfo);
+          store.dispatch(updateUser({ isLoggedIn: true, data }));
         }
       })
-      .catch(error => {
-        const res = error.response
+      .catch((error) => {
+        const res = error.response;
 
         if (res.status === 401) {
-          axios
-            .post('/api/user/refresh-token', {
-              refreshToken
-            })
-            .then(refreshRes => {
+          AccountApi.refreshToken(refreshToken)
+            .then((refreshRes) => {
               if (refreshRes.status === 200) {
-                localStorage.setItem('user-jwt-tk', refreshRes.data.accessToken)
-                const data = JSON.parse(userInfo)
-                store.dispatch(updateUser({ isLoggedIn: true, data }))
+                localStorage.setItem(
+                  "user-jwt-tk",
+                  refreshRes.data.accessToken
+                );
+                const data = JSON.parse(userInfo);
+                store.dispatch(updateUser({ isLoggedIn: true, data }));
               }
             })
-            .catch(error => {
+            .catch((error) => {
               store.dispatch(
                 updateUser({
                   isLoggedIn: false,
-                  data: { name: '', tel: '', zalo: '' }
+                  data: { name: "", tel: "", zalo: "" },
                 })
-              )
-              localStorage.removeItem('user-info')
-              localStorage.removeItem('user-jwt-tk')
-              localStorage.removeItem('user-jwt-rftk')
-            })
+              );
+              localStorage.removeItem("user-info");
+              localStorage.removeItem("user-jwt-tk");
+              localStorage.removeItem("user-jwt-rftk");
+            });
         }
-      })
+      });
   } else {
-    return false
+    return false;
   }
 }
 
-export default checkLogin
+export default checkLogin;

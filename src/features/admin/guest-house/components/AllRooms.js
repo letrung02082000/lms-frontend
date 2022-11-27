@@ -1,158 +1,144 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import styles from './allRooms.module.css'
+import React, { useEffect, useState } from "react";
+import styles from "./allRooms.module.css";
+
+import GuesthouseApi from "api/guesthouseApi";
 
 function AllRooms() {
-  const [page, setPage] = useState(0)
-  const [limit, setLimit] = useState(20)
-  const [data, setData] = useState([])
-  const [category, setCategory] = useState([])
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(20);
+  const [data, setData] = useState([]);
+  const [category, setCategory] = useState([]);
 
   useEffect(() => {
-    axios
-      .get('/api/guest-house/room', {
-        params: {
-          page,
-          limit
-        }
+    GuesthouseApi.getRooms(page, limit)
+      .then((res) => {
+        setData(res.data.data);
       })
-      .then(res => {
-        setData(res.data.data)
-      })
-      .catch(err => alert(err.toString()))
+      .catch((err) => alert(err.toString()));
 
-    axios
-      .get('/api/guest-house/category', {
-        params: {
-          page: 0,
-          limit: 25
-        }
+    GuesthouseApi.getCategories(0, 25)
+      .then((res) => {
+        setCategory(res.data.data);
       })
-      .then(res => {
-        setCategory(res.data.data)
-      })
-      .catch(err => alert(err.toString()))
-  }, [page])
+      .catch((err) => alert(err.toString()));
+  }, [page]);
 
-  const toggleDetail = id => {
-    if (document.getElementById(`detail_${id}`).style.display === 'none') {
-      document.getElementById(`detail_${id}`).style.display = 'flex'
+  const toggleDetail = (id) => {
+    if (document.getElementById(`detail_${id}`).style.display === "none") {
+      document.getElementById(`detail_${id}`).style.display = "flex";
     } else {
-      document.getElementById(`detail_${id}`).style.display = 'none'
+      document.getElementById(`detail_${id}`).style.display = "none";
     }
-  }
+  };
 
-  const handleUpdateButton = id => {
-    const number = document.getElementById('formNumber_' + id).value
-    const description = document.getElementById('formDesc_' + id).value
-    const category = document.getElementById('formCategory_' + id).value
-    const dailyPrice = document.getElementById('formDailyPrice_' + id).value
-    const monthlyPrice = document.getElementById('formMonthlyPrice_' + id).value
-    const minQuantity = document.getElementById('formMinQuantity_' + id).value
-    const maxQuantity = document.getElementById('formMaxQuantity_' + id).value
-    const name = document.getElementById('formName_' + id).value
-    const tel = document.getElementById('formTel_' + id).value
-    const email = document.getElementById('formEmail_' + id).value
+  const handleUpdateButton = (id) => {
+    const number = document.getElementById("formNumber_" + id).value;
+    const description = document.getElementById("formDesc_" + id).value;
+    const category = document.getElementById("formCategory_" + id).value;
+    const dailyPrice = document.getElementById("formDailyPrice_" + id).value;
+    const monthlyPrice = document.getElementById(
+      "formMonthlyPrice_" + id
+    ).value;
+    const minQuantity = document.getElementById("formMinQuantity_" + id).value;
+    const maxQuantity = document.getElementById("formMaxQuantity_" + id).value;
+    const name = document.getElementById("formName_" + id).value;
+    const tel = document.getElementById("formTel_" + id).value;
+    const email = document.getElementById("formEmail_" + id).value;
 
-    if (!number || !description || !category || !dailyPrice || !monthlyPrice || !minQuantity || !maxQuantity) {
-      return alert('Vui lòng nhập đầy đủ các trường!')
+    if (
+      !number ||
+      !description ||
+      !category ||
+      !dailyPrice ||
+      !monthlyPrice ||
+      !minQuantity ||
+      !maxQuantity
+    ) {
+      return alert("Vui lòng nhập đầy đủ các trường!");
     }
 
     if (isNaN(dailyPrice)) {
-      return alert('Giá ngày không hợp lệ')
+      return alert("Giá ngày không hợp lệ");
     }
 
     if (isNaN(monthlyPrice)) {
-      return alert('Giá tháng không hợp lệ')
+      return alert("Giá tháng không hợp lệ");
     }
 
     if (isNaN(minQuantity)) {
-      return alert('Số lượng tối thiểu không hợp lệ')
+      return alert("Số lượng tối thiểu không hợp lệ");
     }
 
     if (isNaN(maxQuantity)) {
-      return alert('Số lượng tối đa không hợp lệ')
+      return alert("Số lượng tối đa không hợp lệ");
     }
 
-    const confirmed = window.confirm(`Bạn có chắc chắn cập nhật phòng ${number} với các thông tin đã cung cấp không?`)
+    const confirmed = window.confirm(
+      `Bạn có chắc chắn cập nhật phòng ${number} với các thông tin đã cung cấp không?`
+    );
 
     if (confirmed) {
-      axios
-        .patch(`/api/guest-house/room/${id}`, {
-          number,
-          description,
-          category,
-          dailyPrice,
-          monthlyPrice,
-          minQuantity,
-          maxQuantity,
-          name,
-          tel,
-          email
+      GuesthouseApi.patchRoom(id, {
+        number,
+        description,
+        category,
+        dailyPrice,
+        monthlyPrice,
+        minQuantity,
+        maxQuantity,
+        name,
+        tel,
+        email,
+      })
+        .then((res) => {
+          return alert("Cập nhật thông tin thành công!");
         })
-        .then(res => {
-          return alert('Cập nhật thông tin thành công!')
-        })
-        .catch(err => {
-          console.log(err)
-          return alert(err.toString())
-        })
+        .catch((err) => {
+          console.log(err);
+          return alert(err.toString());
+        });
     }
-  }
+  };
 
   const getPrevRoom = () => {
     if (page <= 0) {
-      return
+      return;
     } else {
-      setPage(page - 1)
+      setPage(page - 1);
     }
-  }
+  };
 
   const getNextRoom = () => {
-    setPage(page + 1)
-  }
+    setPage(page + 1);
+  };
 
   const handleVisibleButton = (id, value) => {
-    axios
-      .patch(`/api/guest-house/room/${id}`, { isVisible: value })
-      .then(res => {
+    GuesthouseApi.patchCategory(id, { isVisible: value })
+      .then((res) => {
         if (res.status === 200) {
-          axios
-            .get('/api/guest-house/room', {
-              params: {
-                page,
-                limit
-              }
+          GuesthouseApi.getRooms(page, limit)
+            .then((res) => {
+              setData(res.data.data);
             })
-            .then(res => {
-              setData(res.data.data)
-            })
-            .catch(err => alert(err.toString()))
+            .catch((err) => alert(err.toString()));
         }
       })
-      .catch(err => alert(err.toString()))
-  }
+      .catch((err) => alert(err.toString()));
+  };
 
   const handleAvailableButton = (id, value) => {
-    axios
-      .patch(`/api/guest-house/room/${id}`, { isAvailable: value })
-      .then(res => {
+    GuesthouseApi.patchCategory(id, { isVisible: value })
+      .then((res) => {
         if (res.status === 200) {
-          axios
-            .get('/api/guest-house/room', {
-              params: {
-                page,
-                limit
-              }
+          GuesthouseApi.getRooms(page, limit)
+            .then((res) => {
+              setData(res.data.data);
             })
-            .then(res => {
-              setData(res.data.data)
-            })
-            .catch(err => alert(err.toString()))
+            .catch((err) => alert(err.toString()));
         }
       })
-      .catch(err => alert(err.toString()))
-  }
+      .catch((err) => alert(err.toString()));
+  };
 
   return (
     <>
@@ -161,9 +147,11 @@ function AllRooms() {
         <span>{page + 1}</span>
         <button onClick={() => getNextRoom()}>Kế tiếp</button>
       </div>
-      {data.length === 0 ? <p style={{ textAlign: 'center', margin: '5rem' }}>Không có dữ liệu</p> : null}
+      {data.length === 0 ? (
+        <p style={{ textAlign: "center", margin: "5rem" }}>Không có dữ liệu</p>
+      ) : null}
       <div className={styles.container}>
-        {data.map(child => {
+        {data.map((child) => {
           return (
             <div className={styles.roomContainer} key={child._id}>
               <div className={styles.formGroup}>
@@ -177,7 +165,11 @@ function AllRooms() {
                 />
               </div>
 
-              <div className={styles.detailInfo} style={{ display: 'none' }} id={`detail_${child._id}`}>
+              <div
+                className={styles.detailInfo}
+                style={{ display: "none" }}
+                id={`detail_${child._id}`}
+              >
                 <div className={styles.roomInfo}>
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Mô tả</label>
@@ -192,14 +184,14 @@ function AllRooms() {
                     <select
                       id={`formCategory_${child._id}`}
                       defaultValue={child.category._id}
-                      style={{ width: '100%' }}
+                      style={{ width: "100%" }}
                     >
-                      {category.map(child => {
+                      {category.map((child) => {
                         return (
                           <option value={child._id} key={child._id}>
                             {child.name}
                           </option>
-                        )
+                        );
                       })}
                     </select>
                   </div>
@@ -224,7 +216,9 @@ function AllRooms() {
                     />
                   </div>
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Số lượng tối thiểu</label>
+                    <label className={styles.formLabel}>
+                      Số lượng tối thiểu
+                    </label>
                     <textarea
                       className={styles.formInput}
                       type="text"
@@ -247,7 +241,11 @@ function AllRooms() {
                 <div className={styles.userInfo}>
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Họ tên</label>
-                    <textarea className={styles.formInput} id={`formName_${child._id}`} defaultValue={child?.name} />
+                    <textarea
+                      className={styles.formInput}
+                      id={`formName_${child._id}`}
+                      defaultValue={child?.name}
+                    />
                   </div>
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Số điện thoại</label>
@@ -260,30 +258,38 @@ function AllRooms() {
                   </div>
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Email</label>
-                    <textarea className={styles.formInput} id={`formEmail_${child._id}`} defaultValue={child?.email} />
+                    <textarea
+                      className={styles.formInput}
+                      id={`formEmail_${child._id}`}
+                      defaultValue={child?.email}
+                    />
                   </div>
                   <div className={styles.buttonGroup}>
                     <button
-                      onClick={() => handleVisibleButton(child._id, !child.isVisible)}
+                      onClick={() =>
+                        handleVisibleButton(child._id, !child.isVisible)
+                      }
                       style={
                         child.isVisible
                           ? null
                           : {
-                              backgroundColor: 'white',
-                              color: 'var(--primary)'
+                              backgroundColor: "white",
+                              color: "var(--primary)",
                             }
                       }
                     >
                       Hiện trên website
                     </button>
                     <button
-                      onClick={() => handleAvailableButton(child._id, !child.isAvailable)}
+                      onClick={() =>
+                        handleAvailableButton(child._id, !child.isAvailable)
+                      }
                       style={
                         child.isAvailable
                           ? null
                           : {
-                              backgroundColor: 'white',
-                              color: 'var(--primary)'
+                              backgroundColor: "white",
+                              color: "var(--primary)",
                             }
                       }
                     >
@@ -294,19 +300,25 @@ function AllRooms() {
               </div>
 
               <div className={styles.buttonContainer}>
-                <button className={styles.formButton} onClick={() => handleUpdateButton(child._id)}>
+                <button
+                  className={styles.formButton}
+                  onClick={() => handleUpdateButton(child._id)}
+                >
                   Cập nhật
                 </button>
-                <button className={styles.formButton} onClick={() => toggleDetail(child._id)}>
+                <button
+                  className={styles.formButton}
+                  onClick={() => toggleDetail(child._id)}
+                >
                   Chi tiết/Ẩn
                 </button>
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </>
-  )
+  );
 }
 
-export default AllRooms
+export default AllRooms;

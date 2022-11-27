@@ -1,88 +1,97 @@
-import React, { useState, useEffect } from 'react'
-import { Button, Form } from 'react-bootstrap'
-import MainLayout from '../../layouts/MainLayout'
+import React, { useState, useEffect } from "react";
+import { Button, Form } from "react-bootstrap";
+import MainLayout from "../../layouts/MainLayout";
 
-import styles from './signUpPage.module.css'
+import styles from "./signUpPage.module.css";
 
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
-import { useDispatch } from 'react-redux'
-import { updateUser, selectUser } from '../../store/userSlice'
+import { useDispatch } from "react-redux";
+import { updateUser, selectUser } from "../../store/userSlice";
+
+import AccountApi from "api/accountApi";
 
 const SignUpPage = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [errorMsg, setErrorMsg] = useState('')
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSignUpClick = async e => {
-    e.preventDefault()
+  const handleSignUpClick = async (e) => {
+    e.preventDefault();
 
     const user = {
-      email: document.getElementById('formBasicEmail').value,
-      password: document.getElementById('formBasicPassword').value
-    }
+      email: document.getElementById("formBasicEmail").value,
+      password: document.getElementById("formBasicPassword").value,
+    };
 
     try {
-      const response = await axios.post('/api/user/signup', user)
+      const response = AccountApi.signupUser(user);
 
       if (response.status === 201) {
-        setErrorMsg('Đăng ký thành công! Đang đăng nhập lại...')
+        setErrorMsg("Đăng ký thành công! Đang đăng nhập lại...");
 
-        const loginResponse = await axios.post('/api/user/login', user)
+        const loginResponse = AccountApi.loginUser(user);
 
         if (loginResponse.status === 200) {
-          const result = loginResponse.data
+          const result = loginResponse.data;
           const userInfo = {
             id: result.data.id,
-            email: result.data.email
-          }
+            email: result.data.email,
+          };
 
-          localStorage.setItem('user-info', JSON.stringify(userInfo))
-          localStorage.setItem('user-jwt-tk', JSON.stringify(result.data.accessToken))
-          localStorage.setItem('user-jwt-rftk', JSON.stringify(result.data.refreshToken))
+          localStorage.setItem("user-info", JSON.stringify(userInfo));
+          localStorage.setItem(
+            "user-jwt-tk",
+            JSON.stringify(result.data.accessToken)
+          );
+          localStorage.setItem(
+            "user-jwt-rftk",
+            JSON.stringify(result.data.refreshToken)
+          );
 
           dispatch(
             updateUser({
               isLoggedIn: true,
-              data: userInfo
+              data: userInfo,
             })
-          )
-          navigate('/profile')
+          );
+          navigate("/profile");
         }
       }
     } catch (error) {
-      console.log(error.response)
+      console.log(error.response);
 
       if (error.response.status == 400) {
-        setErrorMsg('Địa chỉ email đã đăng ký. Nếu bạn không nhớ mật khẩu, vui lòng khôi phục lại')
+        setErrorMsg(
+          "Địa chỉ email đã đăng ký. Nếu bạn không nhớ mật khẩu, vui lòng khôi phục lại"
+        );
       }
     }
-  }
+  };
 
-  const handleEmailChange = event => {
-    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
+  const handleEmailChange = (event) => {
+    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 
     if (emailRegex.test(event.target.value)) {
-      setEmail(event.target.value)
-      setErrorMsg(null)
+      setEmail(event.target.value);
+      setErrorMsg(null);
     } else {
-      setErrorMsg('Email không hợp lệ')
+      setErrorMsg("Email không hợp lệ");
     }
-  }
+  };
 
-  const handlePasswordChange = event => {
-    const passwordRegex = /^[a-zA-Z0-9]{3,30}$/
+  const handlePasswordChange = (event) => {
+    const passwordRegex = /^[a-zA-Z0-9]{3,30}$/;
 
     if (passwordRegex.test(event.target.value)) {
-      setPassword(event.target.value)
-      setErrorMsg(null)
+      setPassword(event.target.value);
+      setErrorMsg(null);
     } else {
-      setErrorMsg('Mật khẩu chỉ chứa chữ cái và số, độ dài: 3-30 ký tự')
+      setErrorMsg("Mật khẩu chỉ chứa chữ cái và số, độ dài: 3-30 ký tự");
     }
-  }
+  };
 
   return (
     <MainLayout>
@@ -91,12 +100,20 @@ const SignUpPage = () => {
         <Form>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="" onChange={handleEmailChange} />
+            <Form.Control
+              type="email"
+              placeholder=""
+              onChange={handleEmailChange}
+            />
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Mật khẩu</Form.Label>
-            <Form.Control type="password" placeholder="" onChange={handlePasswordChange} />
+            <Form.Control
+              type="password"
+              placeholder=""
+              onChange={handlePasswordChange}
+            />
           </Form.Group>
           {/* <Form.Group className='mb-3' controlId='formBasicCheckbox'>
           <Form.Check type='checkbox' label='Nhớ mật khẩu' />
@@ -108,7 +125,7 @@ const SignUpPage = () => {
         <Form.Text>{errorMsg}</Form.Text>
       </div>
     </MainLayout>
-  )
-}
+  );
+};
 
-export default SignUpPage
+export default SignUpPage;
