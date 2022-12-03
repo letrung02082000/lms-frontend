@@ -1,9 +1,11 @@
 import axiosClient from "./axiosClient";
 import { authHeader } from "utils";
 
+const API_PATH = "/driving";
+
 class DrivingApi {
   getAllDrivings = async (state) => {
-    const url = "/driving/all";
+    const url = `${API_PATH}/all`;
     return axiosClient.get(url, {
       ...authHeader(),
       params: {
@@ -13,7 +15,7 @@ class DrivingApi {
   };
 
   getDateVisible = async () => {
-    const url = "/driving/date";
+    const url = `${API_PATH}/date`;
     return axiosClient.get(url, {
       ...authHeader(),
       params: {
@@ -23,7 +25,7 @@ class DrivingApi {
   };
 
   queryDrivings = async (date, state) => {
-    const url = "/driving/query";
+    const url = `${API_PATH}/query`;
     return axiosClient.get(url, {
       ...authHeader(),
       params: {
@@ -34,7 +36,7 @@ class DrivingApi {
   };
 
   countDrivings = async (state) => {
-    const url = "/driving/count";
+    const url = `${API_PATH}/count`;
     return axiosClient.get(url, {
       ...authHeader(),
       params: {
@@ -44,7 +46,7 @@ class DrivingApi {
   };
 
   getDrivingByType = async (type) => {
-    const url = "/driving/type";
+    const url = `${API_PATH}/type`;
     return axiosClient.get(url, {
       ...authHeader(),
       params: {
@@ -54,22 +56,22 @@ class DrivingApi {
   };
 
   updateDrivingDate = async (_id, date) => {
-    const url = "/api/driving/update";
+    const url = `${API_PATH}/update`;
     return axiosClient.put(url, { _id, date }, authHeader());
   };
 
   updateDrivingFeedback = async (_id, feedback) => {
-    const url = "/api/driving/update";
+    const url = `${API_PATH}/update`;
     return axiosClient.put(url, { _id, feedback }, authHeader());
   };
 
   updateProcessState = async (_id, state) => {
-    const url = "/api/driving/state";
+    const url = `${API_PATH}/state`;
     return axiosClient.put(url, { _id, state }, authHeader());
   };
 
   getImage = async (name) => {
-    const url = "/api/driving/image";
+    const url = `${API_PATH}/image`;
     return axiosClient.get(url, {
       params: { name },
       ...authHeader(),
@@ -77,12 +79,12 @@ class DrivingApi {
   };
 
   handleMessageSent = async (_id, messageSent) => {
-    const url = "/api/driving/sent";
+    const url = `${API_PATH}/sent`;
     return axiosClient.put(url, { _id, messageSent }, authHeader());
   };
 
   getAllDrivingsDate = async () => {
-    const url = "/api/driving/date";
+    const url = `${API_PATH}/date`;
     return axiosClient.get(url, {
       params: {
         all: true,
@@ -92,7 +94,7 @@ class DrivingApi {
   };
 
   handleVisibleButton = async (_id, date, isVisible, formVisible = false) => {
-    const url = "/api/driving/date";
+    const url = `${API_PATH}/date`;
     return axiosClient.put(
       url,
       { _id, date, isVisible, formVisible },
@@ -101,7 +103,7 @@ class DrivingApi {
   };
 
   handleAddDateButton = async (date, isVisible, description) => {
-    const url = "/api/driving/date";
+    const url = `${API_PATH}/date`;
     return axiosClient.post(
       url,
       {
@@ -114,7 +116,7 @@ class DrivingApi {
   };
 
   getFormVisible = async () => {
-    const url = "/api/driving/date";
+    const url = `${API_PATH}/date`;
     return axiosClient.get(url, {
       params: {
         formVisible: true,
@@ -124,7 +126,7 @@ class DrivingApi {
   };
 
   addDriving = async (data) => {
-    const url = "/api/driving/add";
+    const url = `${API_PATH}/add`;
     return axiosClient.post(url, data, {
       headers: { "Content-Type": "multipart/form-data" },
       ...authHeader(),
@@ -132,7 +134,7 @@ class DrivingApi {
   };
 
   searchDriving = async (category) => {
-    const url = "/api/driving/search";
+    const url = `${API_PATH}/search`;
     return axiosClient.get(url, {
       params: { category },
       ...authHeader(),

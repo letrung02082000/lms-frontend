@@ -1,67 +1,69 @@
-import axios from 'axios'
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { selectUser, updateName, updateTel, updateZalo } from 'store/userSlice'
-import styles from '../swimmingPoolTicketPage.module.css'
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser, updateName, updateTel, updateZalo } from "store/userSlice";
+import styles from "../swimmingPoolTicketPage.module.css";
+
+import PoolApi from "api/poolApi";
 
 export default function TutorForm(props) {
-  const dispatch = useDispatch()
-  let userInfo = useSelector(selectUser)
-  const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch();
+  let userInfo = useSelector(selectUser);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmitButton = e => {
-    setIsLoading(true)
-    const name = document.getElementById('formName').value
-    const tel = document.getElementById('formTel').value
-    const zalo = document.getElementById('formZalo').value
-    const feedback = document.getElementById('formFeedback').value
+  const handleSubmitButton = (e) => {
+    setIsLoading(true);
+    const name = document.getElementById("formName").value;
+    const tel = document.getElementById("formTel").value;
+    const zalo = document.getElementById("formZalo").value;
+    const feedback = document.getElementById("formFeedback").value;
 
     if (!name || !tel || !zalo) {
-      setIsLoading(false)
-      return alert('Vui lòng nhập đầy đủ các trường Họ tên, số điện thoại và zalo!')
+      setIsLoading(false);
+      return alert(
+        "Vui lòng nhập đầy đủ các trường Họ tên, số điện thoại và zalo!"
+      );
     }
 
-    axios({
-      method: 'post',
-      url: '/api/pool/tutor-user',
-      data: { name, tel, zalo, feedback }
-    })
-      .then(res => {
+    PoolApi.registerPoolTutor({ name, tel, zalo, feedback })
+      .then((res) => {
         if (res.status === 200) {
           alert(
-            'Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo để được xử lý.'
-          )
-          setIsLoading(false)
+            "Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo để được xử lý."
+          );
+          setIsLoading(false);
         } else {
-          alert('Lỗi: ' + res.data.message)
-          setIsLoading(false)
+          alert("Lỗi: " + res.data.message);
+          setIsLoading(false);
         }
       })
-      .catch(error => {
-        console.log(error)
-        alert('Lỗi: ' + error)
-        setIsLoading(false)
-      })
-  }
+      .catch((error) => {
+        console.log(error);
+        alert("Lỗi: " + error);
+        setIsLoading(false);
+      });
+  };
 
-  const handleNameChange = e => {
-    dispatch(updateName(e.target.value))
-  }
+  const handleNameChange = (e) => {
+    dispatch(updateName(e.target.value));
+  };
 
-  const handleTelChange = e => {
-    dispatch(updateTel(e.target.value))
-  }
+  const handleTelChange = (e) => {
+    dispatch(updateTel(e.target.value));
+  };
 
-  const handleZaloChange = e => {
-    dispatch(updateZalo(e.target.value))
-  }
+  const handleZaloChange = (e) => {
+    dispatch(updateZalo(e.target.value));
+  };
 
   return (
-    <form style={props.display === false ? { display: 'none' } : null}>
-      <ul style={{ listStyle: 'none', padding: '0' }}>
+    <form style={props.display === false ? { display: "none" } : null}>
+      <ul style={{ listStyle: "none", padding: "0" }}>
         <li>
           <p>Học phí: 600.000 đồng/1 kỳ (6 buổi).</p>
-          <p>Học phí toàn khóa: 1.200.000 đồng/2 kỳ (12 buổi) bao biết bơi, miễn phí vé vào hồ bơi.</p>
+          <p>
+            Học phí toàn khóa: 1.200.000 đồng/2 kỳ (12 buổi) bao biết bơi, miễn
+            phí vé vào hồ bơi.
+          </p>
         </li>
         <li>
           <p>Giảm 10% khi đăng ký theo nhóm 5 người.</p>
@@ -73,13 +75,17 @@ export default function TutorForm(props) {
           <p>Có thể đóng học phí theo 1 kỳ hoặc toàn khóa.</p>
         </li>
         <li>
-          Liên hệ tư vấn:{' '}
-          <a href="https://zalo.me/0877876877" target="_blank" rel="noopener noreferrer">
+          Liên hệ tư vấn:{" "}
+          <a
+            href="https://zalo.me/0877876877"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             0877.876.877
           </a>
         </li>
       </ul>
-      <p style={{ margin: 0, color: ' #ff0000 ' }}>* bắt buộc</p>
+      <p style={{ margin: 0, color: " #ff0000 " }}>* bắt buộc</p>
 
       <div className={styles.formGroup}>
         <label className={styles.formLabel}>Tên của bạn*</label>
@@ -125,21 +131,30 @@ export default function TutorForm(props) {
 
       {isLoading ? (
         <>
-          <p>Hệ thống đang xử lý, vui lòng chờ trong ít nhất 15 giây {'<3'}</p>
+          <p>Hệ thống đang xử lý, vui lòng chờ trong ít nhất 15 giây {"<3"}</p>
           <p className={styles.formSubmitButton}>Đang đăng ký...</p>
         </>
       ) : (
-        <button type="button" onClick={handleSubmitButton} className={styles.formSubmitButton}>
+        <button
+          type="button"
+          onClick={handleSubmitButton}
+          className={styles.formSubmitButton}
+        >
           Đăng ký
         </button>
       )}
-      <p style={{ margin: '1rem 0' }}>
-        Trong quá trình đăng ký, nếu xảy ra lỗi hệ thống, vui lòng chụp màn hình lỗi gửi về Zalo:{' '}
-        <a href="href='https://zalo.me/0797324886" target="_blank" rel="noopener noreferrer">
+      <p style={{ margin: "1rem 0" }}>
+        Trong quá trình đăng ký, nếu xảy ra lỗi hệ thống, vui lòng chụp màn hình
+        lỗi gửi về Zalo:{" "}
+        <a
+          href="href='https://zalo.me/0797324886"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           0797324886
-        </a>{' '}
+        </a>{" "}
         để được hỗ trợ nhanh nhất. Xin cảm ơn.
       </p>
     </form>
-  )
+  );
 }
