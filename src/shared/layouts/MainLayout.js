@@ -19,7 +19,7 @@ const MainLayout = ({ children }) => {
             src="/hotlineicon.gif"
             alt="icon"
             style={{
-              width: '5rem',
+              width: '3.3rem',
               borderRadius: '50px'
             }}
           />
