@@ -10,9 +10,7 @@ function A2Driving() {
   useEffect(() => {
     DrivingApi.getDrivingByType(1)
       .then((res) => {
-        if (res.status === 200) {
-          setData(res.data.data);
-        }
+        setData(res.data);
 
         setLoading(false);
       })

@@ -18,7 +18,7 @@ export default function UniformPage() {
     UniformApi.getUniformList(limit, page)
       .then((res) => {
         if (res.data) {
-          setUniformList(res.data.data);
+          setUniformList(res.data);
         }
       })
       .catch((err) => {
@@ -39,7 +39,7 @@ export default function UniformPage() {
       e.preventDefault();
       UniformApi.getUniformByTel(searchValue)
         .then((res) => {
-          const data = res.data.data;
+          const data = res.data;
 
           if (data.length === 0) {
             alert(

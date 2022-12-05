@@ -18,8 +18,8 @@ export default function DrivingInstructionPage(props) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = DrivingApi.getFormVisible();
-      let data = response.data.data;
+      const response = await DrivingApi.getFormVisible();
+      let data = response.data;
 
       if (data.length > 0) {
         data = data.map((child) => {

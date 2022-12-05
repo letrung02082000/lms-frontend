@@ -106,31 +106,28 @@ export default function LoginPage(props) {
     };
 
     try {
-      const response = AccountApi.loginUser(user);
+      const response = await AccountApi.loginUser(user);
 
-      if (response.status === 200) {
-        setIsLoggedIn(true);
-        setIsLogging(false);
+      setIsLoggedIn(true);
+      setIsLogging(false);
 
-        const result = response.data;
-        const userInfo = result.data;
+      const userInfo = response.data;
 
-        localStorage.setItem("user-jwt-tk", result.data.accessToken);
-        localStorage.setItem("user-jwt-rftk", result.data.refreshToken);
+      localStorage.setItem("user-jwt-tk", userInfo.accessToken);
+      localStorage.setItem("user-jwt-rftk", userInfo.refreshToken);
 
-        delete userInfo.accessToken;
-        delete userInfo.refreshToken;
-        localStorage.setItem("user-info", JSON.stringify(userInfo));
-        localStorage.setItem("user-role", Number(result.data.role) || 0);
+      delete userInfo.accessToken;
+      delete userInfo.refreshToken;
+      localStorage.setItem("user-info", JSON.stringify(userInfo));
+      localStorage.setItem("user-role", Number(userInfo.role) || 0);
 
-        dispatch(
-          updateUser({
-            isLoggedIn: true,
-            data: userInfo,
-          })
-        );
-        navigate(-1);
-      }
+      dispatch(
+        updateUser({
+          isLoggedIn: true,
+          data: userInfo,
+        })
+      );
+      navigate(-1);
     } catch (error) {
       console.log(error);
       if (
@@ -143,7 +140,6 @@ export default function LoginPage(props) {
       } else {
         setErrorMsg("Không thể kết nối đến máy chủ. Vui lòng thử lại sau!");
       }
-
       setIsLoggedIn(false);
       setIsLogging(false);
     }
@@ -157,20 +153,23 @@ export default function LoginPage(props) {
       password: document.getElementById("formBasicPassword").value,
     };
 
-    try {
-      const response = AccountApi.signupUser(user);
+    const response = await AccountApi.signupUser(user);
 
-      if (response.status === 201) {
-        setErrorMsg("Đăng ký thành công! Đang đăng nhập lại...");
+    console.log(response);
 
-        const loginResponse = AccountApi.loginUser(user);
+    if (response.message === "success") {
+      setErrorMsg("Đăng ký thành công! Đang đăng nhập lại...");
+      try {
+        const loginResponse = await AccountApi.loginUser(user);
 
-        if (loginResponse.status === 200) {
-          const result = loginResponse.data;
-          const userInfo = result.data;
+        console.log(loginResponse);
+        console.log(loginResponse.status);
 
-          localStorage.setItem("user-jwt-tk", result.data.accessToken);
-          localStorage.setItem("user-jwt-rftk", result.data.refreshToken);
+        if (loginResponse.message === "Logined successfully") {
+          const userInfo = loginResponse.data;
+
+          localStorage.setItem("user-jwt-tk", userInfo.accessToken);
+          localStorage.setItem("user-jwt-rftk", userInfo.refreshToken);
 
           delete userInfo.accessToken;
           delete userInfo.refreshToken;
@@ -187,19 +186,20 @@ export default function LoginPage(props) {
             navigate(-1);
           }, 1000);
         }
-      }
-    } catch (error) {
-      console.log(error.response);
-
-      if (error.response.status == 400 && error.response.data.errorCode == 0) {
-        setErrorMsg(
-          "Địa chỉ email đã tồn tại. Vui lòng liên hệ admin để khôi phục lại mật khẩu"
-        );
-      } else if (
-        error.response.status == 400 &&
-        error.response.data.errorCode == 1
-      ) {
-        setErrorMsg("Mật khẩu phải bao gồm chữ cái và số, độ dài: 8-30 ký tự");
+      } catch (error) {
+        console.log(error);
+        if (
+          error.response &&
+          (error.response.status === 400 ||
+            error.response.status === 401 ||
+            error.response.status === 404)
+        ) {
+          setErrorMsg("Email hoặc mật khẩu không đúng");
+        } else {
+          setErrorMsg("Không thể kết nối đến máy chủ. Vui lòng thử lại sau!");
+        }
+        setIsLoggedIn(false);
+        setIsLogging(false);
       }
     }
   };

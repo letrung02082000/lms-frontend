@@ -15,19 +15,19 @@ function Registration() {
   useEffect(() => {
     GuesthouseApi.getListUser()
       .then((res) => {
-        setData(res.data.data);
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
 
     GuesthouseApi.getCategories()
       .then((res) => {
-        setCategory(res.data.data);
+        setCategory(res.data);
       })
       .catch((err) => alert(err.toString()));
 
     GuesthouseApi.getRooms()
       .then((res) => {
-        setRooms(res.data.data);
+        setRooms(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, []);
@@ -38,7 +38,7 @@ function Registration() {
         if (res.status === 200) {
           GuesthouseApi.getListUser()
             .then((res) => {
-              setData(res.data.data);
+              setData(res.data);
             })
             .catch((err) => alert(err.toString()));
         }
@@ -76,7 +76,7 @@ function Registration() {
               if (res.status === 200) {
                 GuesthouseApi.getListUser()
                   .then((res) => {
-                    setData(res.data.data);
+                    setData(res.data);
                     alert("Đã nhận phòng thành công!");
                   })
                   .catch((err) => alert(err.toString()));
@@ -95,7 +95,7 @@ function Registration() {
       GuesthouseApi.getListUser(page - 1, limit)
         .then((res) => {
           setPage(page - 1);
-          setData(res.data.data);
+          setData(res.data);
         })
         .catch((err) => alert(err.toString()));
     }
@@ -105,7 +105,7 @@ function Registration() {
     GuesthouseApi.getListUser(page + 1, limit)
       .then((res) => {
         setPage(page + 1);
-        setData(res.data.data);
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
   };
@@ -116,7 +116,7 @@ function Registration() {
         if (res.status === 200) {
           GuesthouseApi.getListUser()
             .then((res) => {
-              setData(res.data.data);
+              setData(res.data);
             })
             .catch((err) => alert(err.toString()));
         }

@@ -12,7 +12,7 @@ function Category() {
       GuesthouseApi.getCategories(0, 25)
         .then((res) => {
           if (res.status === 200) {
-            setData(res.data.data);
+            setData(res.data);
           }
         })
         .catch((err) => console.log(err));
@@ -44,7 +44,7 @@ function Category() {
 
     GuesthouseApi.patchCategory(id, { name: newName, description: newDesc })
       .then((res) => {
-        console.log(res.data.data);
+        console.log(res.data);
         return alert("Cập nhật thể loại thành công!");
       })
       .catch((err) => alert(err.toString()));
@@ -57,7 +57,7 @@ function Category() {
           .then((res) => {
             if (res.status === 200) {
               console.log(res.data);
-              setData(res.data.data);
+              setData(res.data);
             }
           })
           .catch((err) => console.log(err));

@@ -35,8 +35,8 @@ export default function DetailPage(props) {
     UniformApi.getUniformById(id)
       .then((res) => {
         if (res.status === 200) {
-          console.log(res.data.data);
-          setData(res.data.data);
+          console.log(res.data);
+          setData(res.data);
         }
       })
       .catch((err) => alert(err.toString()));
@@ -64,7 +64,7 @@ export default function DetailPage(props) {
         },
       })
         .then((res) => {
-          setDocumentId(res.data.data.documentId);
+          setDocumentId(res.data.documentId);
           setUploadPercent(100);
           setUploading(false);
         })

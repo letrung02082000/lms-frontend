@@ -60,7 +60,7 @@ const DrivingLogin = (props) => {
     };
 
     try {
-      const response = AccountApi.loginAdminDriving(user);
+      const response = await AccountApi.loginAdminDriving(user);
 
       if (response.status === 200) {
         console.log(response.data);

@@ -25,7 +25,7 @@ function BicycleAdminPage() {
   useEffect(() => {
     BikeApi.getBike()
       .then((res) => {
-        setBicycleList(res.data.data);
+        setBicycleList(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, []);
@@ -34,7 +34,7 @@ function BicycleAdminPage() {
     BikeApi.handleLogin(email, password)
       .then((res) => {
         if (res.status === 200) {
-          const data = res.data.data;
+          const data = res.data;
           const userInfo = {
             id: data?.id,
             email: data?.email,
@@ -102,7 +102,7 @@ function BicycleAdminPage() {
         if (res.status === 200) {
           BikeApi.getBike()
             .then((res) => {
-              setBicycleList(res.data.data);
+              setBicycleList(res.data);
             })
             .catch((err) => alert(err.toString()));
         }

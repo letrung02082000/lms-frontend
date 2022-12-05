@@ -12,13 +12,13 @@ function AllRooms() {
   useEffect(() => {
     GuesthouseApi.getRooms(page, limit)
       .then((res) => {
-        setData(res.data.data);
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
 
     GuesthouseApi.getCategories(0, 25)
       .then((res) => {
-        setCategory(res.data.data);
+        setCategory(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, [page]);
@@ -118,7 +118,7 @@ function AllRooms() {
         if (res.status === 200) {
           GuesthouseApi.getRooms(page, limit)
             .then((res) => {
-              setData(res.data.data);
+              setData(res.data);
             })
             .catch((err) => alert(err.toString()));
         }
@@ -132,7 +132,7 @@ function AllRooms() {
         if (res.status === 200) {
           GuesthouseApi.getRooms(page, limit)
             .then((res) => {
-              setData(res.data.data);
+              setData(res.data);
             })
             .catch((err) => alert(err.toString()));
         }

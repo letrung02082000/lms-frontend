@@ -27,12 +27,12 @@ const SignUpPage = () => {
     };
 
     try {
-      const response = AccountApi.signupUser(user);
+      const response = await AccountApi.signupUser(user);
 
       if (response.status === 201) {
         setErrorMsg("Đăng ký thành công! Đang đăng nhập lại...");
 
-        const loginResponse = AccountApi.loginUser(user);
+        const loginResponse = await AccountApi.loginUser(user);
 
         if (loginResponse.status === 200) {
           const result = loginResponse.data;

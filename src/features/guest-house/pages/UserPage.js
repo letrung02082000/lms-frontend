@@ -26,8 +26,8 @@ export default function GuestHouseUserPage() {
     GuesthouseApi.getVisibleCategories()
       .then((res) => {
         if (res.status === 200) {
-          setCategoryList(res.data.data);
-          setCurrentCategory(res.data.data[0]);
+          setCategoryList(res.data);
+          setCurrentCategory(res.data[0]);
         }
       })
       .catch((err) => alert(err.toString()));
@@ -35,7 +35,7 @@ export default function GuestHouseUserPage() {
     GuesthouseApi.getVisibleRooms()
       .then((res) => {
         if (res.status === 200) {
-          setData(res.data.data);
+          setData(res.data);
         }
       })
       .catch((err) => alert(err.toString()));
@@ -54,7 +54,7 @@ export default function GuestHouseUserPage() {
       .then((res) => {
         if (res.status === 200) {
           setRoomSelected(null);
-          setCurrentCategory(res.data.data);
+          setCurrentCategory(res.data);
         }
       })
       .catch((err) => alert(err.toString()));

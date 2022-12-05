@@ -56,8 +56,8 @@ export default function TicketForm(props) {
       .then((res) => {
         if (res.status === 200) {
           setIsLoading(false);
-          setOrder(res.data.data);
-          console.log(res.data.data);
+          setOrder(res.data);
+          console.log(res.data);
         } else {
           alert("Lỗi: " + res.data.message);
           setIsLoading(false);

@@ -8,8 +8,9 @@ import {
 import { ToastContainer } from "react-toastify";
 import ReactGA from "react-ga";
 import { checkLogin } from "utils";
+import RedirectURL from "shared/components/RedirectURL";
 import AdminRoutes from "features/admin/AdminRoutes";
-import PhotocopyRoutes from "features/photocopy/Routes";
+// import PhotocopyRoutes from "features/photocopy/Routes";
 import DrivingRoutes from "features/driving-license-v2/Routes";
 import ServiceLayout from "shared/layouts/ServiceLayout";
 import {
@@ -302,11 +303,12 @@ const App = () => {
         />
         <Route
           path="/photocopy/*"
-          element={
-            <ServiceLayout navigationTo="/photocopy" pageTitle="Gửi in ấn">
-              <PhotocopyRoutes />
-            </ServiceLayout>
-          }
+          // element={
+          // <ServiceLayout navigationTo="/photocopy" pageTitle="Gửi in ấn">
+          //   <PhotocopyRoutes />
+          // </ServiceLayout>
+          // }
+          element={<RedirectURL url="https://in.isinhvien.vn" />}
         />
 
         <Route

@@ -31,8 +31,8 @@ export function CouponPage(props) {
   useEffect(() => {
     CouponApi.getCouponById(couponId)
       .then((res) => {
-        console.log(res.data.data);
-        setCoupon(res.data.data);
+        console.log(res.data);
+        setCoupon(res.data);
       })
       .catch((err) => {
         alert("Không tìm thấy mã giảm giá");
@@ -43,7 +43,7 @@ export function CouponPage(props) {
     if (user.isLoggedIn) {
       CouponApi.getCouponUserCheck(couponId)
         .then((res) => {
-          setSave(res.data.data);
+          setSave(res.data);
         })
         .catch((err) => {
           console.log(err);

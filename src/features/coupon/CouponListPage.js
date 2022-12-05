@@ -54,22 +54,22 @@ export function CouponListPage(props) {
     if (type == 99) {
       CouponApi.getCouponAvailable(limit).then((res) => {
         if (res.status === 200) {
-          console.log(res.data.data);
-          setData(res.data.data);
+          console.log(res.data);
+          setData(res.data);
         }
       });
     } else if (type == 100) {
       CouponApi.getCouponWhiteList(limit).then((res) => {
         if (res.status === 200) {
-          console.log(res.data.data);
-          setData(res.data.data);
+          console.log(res.data);
+          setData(res.data);
         }
       });
     } else {
       CouponApi.getCouponByType(type, limit).then((res) => {
         if (res.status === 200) {
-          console.log(res.data.data);
-          setData(res.data.data);
+          console.log(res.data);
+          setData(res.data);
         }
       });
     }
@@ -79,8 +79,8 @@ export function CouponListPage(props) {
     if (user.isLoggedIn) {
       CouponApi.getMyCoupon()
         .then((res) => {
-          if (res.data.data) {
-            setMyCouponList(res.data.data);
+          if (res.data) {
+            setMyCouponList(res.data);
           }
         })
         .catch((error) => {

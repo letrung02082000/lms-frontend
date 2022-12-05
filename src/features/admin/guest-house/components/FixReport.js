@@ -11,8 +11,8 @@ function FixReport() {
   useEffect(() => {
     GuesthouseApi.getListReport(limit, page)
       .then((res) => {
-        console.log(res.data.data);
-        setData(res.data.data);
+        console.log(res.data);
+        setData(res.data);
       })
       .catch((err) => {
         return alert(err.toString());
@@ -25,7 +25,7 @@ function FixReport() {
         if (res.status === 200) {
           GuesthouseApi.getListReport(limit, page)
             .then((res) => {
-              setData(res.data.data);
+              setData(res.data);
             })
             .catch((err) => {
               return alert(err.toString());

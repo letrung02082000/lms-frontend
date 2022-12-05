@@ -44,7 +44,7 @@ function AllDriving() {
     DrivingApi
       .getDateVisible()
       .then(async (res) => {
-        const temp = res.data.data;
+        const temp = res.data;
 
         for (let e of temp) {
           e.date = new Date(e.date);
@@ -56,7 +56,7 @@ function AllDriving() {
           DrivingApi
             .queryDrivings(temp[0].date, null)
             .then((res) => {
-              const newData = checkDuplicate(res.data.data);
+              const newData = checkDuplicate(res.data);
               setData(newData);
               setDateSelected(0);
               setLoading(false);
@@ -80,7 +80,7 @@ function AllDriving() {
       DrivingApi
         .queryDrivings(null, state)
         .then((res) => {
-          const newData = checkDuplicate(res.data.data);
+          const newData = checkDuplicate(res.data);
           setData(newData);
           setDateSelected(dateIndex);
           setLoading(false);
@@ -93,7 +93,7 @@ function AllDriving() {
       DrivingApi
         .queryDrivings(dates[dateIndex].date, state)
         .then((res) => {
-          const newData = checkDuplicate(res.data.data);
+          const newData = checkDuplicate(res.data);
           setData(newData);
           setDateSelected(dateIndex);
           setLoading(false);
@@ -137,7 +137,7 @@ function AllDriving() {
     DrivingApi
       .countDrivings(state)
       .then((res) => {
-        setCount(res.data.data);
+        setCount(res.data);
       })
       .catch((error) => {
         alert(error.toString());
@@ -148,7 +148,7 @@ function AllDriving() {
     DrivingApi
       .getAllDrivings(state)
       .then((res) => {
-        const newData = checkDuplicate(res.data.data);
+        const newData = checkDuplicate(res.data);
         setData(newData);
         setLoading(false);
       })

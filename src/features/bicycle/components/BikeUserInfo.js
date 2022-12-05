@@ -12,7 +12,7 @@ function BikeUserInfo() {
       .then((res) => {
         if (res.status === 200) {
           var image = new Image();
-          image.src = `data:image/png;base64,${res.data.data}`;
+          image.src = `data:image/png;base64,${res.data}`;
           document
             .getElementsByClassName("id-card-container")[0]
             .appendChild(image);

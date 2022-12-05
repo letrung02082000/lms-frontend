@@ -15,7 +15,7 @@ function DrivingByDate() {
 
     DrivingApi.getAllDrivingsDate()
       .then((res) => {
-        const temp = res.data.data;
+        const temp = res.data;
 
         for (let e of temp) {
           e.date = new Date(e.date);
@@ -34,7 +34,7 @@ function DrivingByDate() {
         if (res.status === 200) {
           DrivingApi.getAllDrivingsDate()
             .then((res) => {
-              const temp = res.data.data;
+              const temp = res.data;
 
               for (let e of temp) {
                 e.date = new Date(e.date);
@@ -92,7 +92,7 @@ function DrivingByDate() {
         if (res.status === 200) {
           DrivingApi.getAllDrivingsDate()
             .then((res) => {
-              const temp = res.data.data;
+              const temp = res.data;
 
               for (let e of temp) {
                 e.date = new Date(e.date);

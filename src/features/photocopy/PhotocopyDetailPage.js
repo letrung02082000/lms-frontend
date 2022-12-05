@@ -30,7 +30,7 @@ function PhotocopyDetail(props) {
     PhotocopyApi.getPhotocopy(id)
       .then((res) => {
         if (res.status == 200) {
-          setData(res.data.data);
+          setData(res.data);
         }
       })
       .catch((err) => alert(err.toString()));
@@ -58,7 +58,7 @@ function PhotocopyDetail(props) {
         },
       })
         .then((res) => {
-          setDocumentId(res.data.data.documentId);
+          setDocumentId(res.data.documentId);
           setUploadPercent(100);
           setUploading(false);
         })

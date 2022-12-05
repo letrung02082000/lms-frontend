@@ -10,7 +10,7 @@ function B2Driving() {
     DrivingApi.getDrivingByType(2)
       .then((res) => {
         if (res.status === 200) {
-          setData(res.data.data);
+          setData(res.data);
         }
 
         setLoading(false);
