@@ -1,53 +1,53 @@
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { useNavigate } from "react-router-dom";
 
 //redux
-import { useSelector, useDispatch } from 'react-redux'
-import { selectUser, logoutUser } from 'store/userSlice'
-import Tool from 'shared/components/Tool'
-import styled from 'styled-components'
-import MainLayout from 'shared/layouts/MainLayout'
-import Item from './components/Item'
-import ProfileImage from './components/ProfileImage'
-import { useState } from 'react'
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser, logoutUser } from "store/userSlice";
+import Tool from "shared/components/Tool";
+import styled from "styled-components";
+import MainLayout from "shared/layouts/MainLayout";
+import Item from "./components/Item";
+import ProfileImage from "./components/ProfileImage";
+import { useState } from "react";
+
+import AccountApi from "api/accountApi";
 
 function AccountPage() {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const user = useSelector(selectUser)
-  const [randomImageUrl, setRandomImageUrl] = useState()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const [randomImageUrl, setRandomImageUrl] = useState();
 
   const handleLoginClick = () => {
-    navigate('/login')
-  }
+    navigate("/login");
+  };
 
   const handleSignUpClick = () => {
-    navigate('/login')
-  }
+    navigate("/login");
+  };
 
   const getRandomImage = () => {
-    fetch('https://cataas.com/c?wi=200')
-      .then(response => response.blob())
-      .then(imageBlob => {
-        setRandomImageUrl(URL.createObjectURL(imageBlob))
-      })
-  }
+    fetch("https://cataas.com/c?wi=200")
+      .then((response) => response.blob())
+      .then((imageBlob) => {
+        setRandomImageUrl(URL.createObjectURL(imageBlob));
+      });
+  };
 
   const handleLogout = () => {
-    const refreshToken = localStorage.getItem('user-jwt-rftk')
-    axios
-      .post('/api/user/logout', { refreshToken })
-      .then(response => {
-        console.log(response)
+    const refreshToken = localStorage.getItem("user-jwt-rftk");
+    AccountApi.logoutUser(refreshToken)
+      .then((response) => {
+        console.log(response);
       })
-      .catch(error => {
-        console.log(error)
-      })
-    localStorage.removeItem('user-info')
-    localStorage.removeItem('user-jwt-tk')
-    localStorage.removeItem('user-jwt-rftk')
-    dispatch(logoutUser())
-  }
+      .catch((error) => {
+        console.log(error);
+      });
+    localStorage.removeItem("user-info");
+    localStorage.removeItem("user-jwt-tk");
+    localStorage.removeItem("user-jwt-rftk");
+    dispatch(logoutUser());
+  };
 
   return (
     <Styles>
@@ -80,10 +80,10 @@ function AccountPage() {
         )}
       </MainLayout>
     </Styles>
-  )
+  );
 }
 
-export default AccountPage
+export default AccountPage;
 
 const Styles = styled.div`
   .welcome {
@@ -104,4 +104,4 @@ const Styles = styled.div`
   .content {
     margin-top: 1rem;
   }
-`
+`;

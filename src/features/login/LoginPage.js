@@ -1,207 +1,221 @@
-import React, { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import axios from 'axios'
-import GoogleLogin from 'react-google-login'
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import GoogleLogin from "react-google-login";
 
-import { IoMdClose } from 'react-icons/io'
-import { BiUser, BiLockAlt } from 'react-icons/bi'
+import { IoMdClose } from "react-icons/io";
+import { BiUser, BiLockAlt } from "react-icons/bi";
 
-import styled from 'styled-components'
+import styled from "styled-components";
 
 //redux
-import { useDispatch, useSelector } from 'react-redux'
-import { updateUser, selectUser } from 'store/userSlice'
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser, selectUser } from "store/userSlice";
+
+import AccountApi from "api/accountApi";
 
 export default function LoginPage(props) {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const user = useSelector(selectUser)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = useSelector(selectUser);
 
-  const dispatch = useDispatch()
-  const clientId = '1068638586953-fgkf520a6sj0r4kv6epvmnppunfk2t1k.apps.googleusercontent.com'
+  const dispatch = useDispatch();
+  const clientId =
+    "1068638586953-fgkf520a6sj0r4kv6epvmnppunfk2t1k.apps.googleusercontent.com";
 
-  const [email, setEmail] = useState(null)
-  const [password, setPassword] = useState(null)
-  const [errorMsg, setErrorMsg] = useState(null)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [isLogging, setIsLogging] = useState(false)
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLogging, setIsLogging] = useState(false);
 
-  const responseSuccessGoogle = response => {
-    console.log(response)
-    axios
-      .post('/api/user/google-login', { tokenId: response.tokenId })
-      .then(response => {
-        if (response.status === 200) {
-          setIsLoggedIn(true)
-          setIsLogging(false)
+  const responseSuccessGoogle = (response) => {
+    AccountApi.loginViaGoogle(response.tokenId)
+      .then((response) => {
+        console.log(response);
 
-          const result = response.data
+        if (response) {
+          setIsLoggedIn(true);
+          setIsLogging(false);
+
+          const result = response;
           const userInfo = {
-            id: result.data.id,
-            email: result.data.email,
-            avatarUrl: result.data.avatarUrl || 'avatar-default.png',
-            name: result.data.name
-          }
+            id: result.id,
+            email: result.email,
+            avatarUrl: result.avatarUrl || "avatar-default.png",
+            name: result.name,
+          };
 
-          console.log(result)
+          console.log(result);
 
-          localStorage.setItem('user-info', JSON.stringify(userInfo))
-          localStorage.setItem('user-jwt-tk', result.data.accessToken)
-          localStorage.setItem('user-jwt-rftk', result.data.refreshToken)
-          localStorage.setItem('user-role', result.data.role)
+          localStorage.setItem("user-info", JSON.stringify(userInfo));
+          localStorage.setItem("user-jwt-tk", result.accessToken);
+          localStorage.setItem("user-jwt-rftk", result.refreshToken);
+          localStorage.setItem("user-role", result.role);
 
           dispatch(
             updateUser({
               isLoggedIn: true,
-              data: userInfo
+              data: userInfo,
             })
-          )
-          navigate(-1)
+          );
+          navigate(-1);
         } else {
-          setErrorMsg('Đăng nhập không thành công')
+          setErrorMsg("Đăng nhập không thành công");
         }
       })
-      .catch(err => {
-        console.log(err)
-        setErrorMsg('Đăng nhập không thành công')
-      })
-  }
+      .catch((err) => {
+        console.log(err);
+        setErrorMsg("Đăng nhập không thành công");
+      });
+  };
 
-  const responseFailureGoogle = response => {
-    console.log(response)
-  }
+  const responseFailureGoogle = (response) => {
+    console.log(response);
+  };
 
   const goBack = () => {
-    navigate(-1)
-  }
+    navigate(-1);
+  };
 
-  const handleEmailChange = event => {
-    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
+  const handleEmailChange = (event) => {
+    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 
     if (emailRegex.test(event.target.value)) {
-      setEmail(event.target.value)
-      setErrorMsg(null)
+      setEmail(event.target.value);
+      setErrorMsg(null);
     } else {
-      setErrorMsg('Email không hợp lệ')
+      setErrorMsg("Email không hợp lệ");
     }
-  }
+  };
 
-  const handlePasswordChange = event => {
-    const passwordRegex = /^.*(?=.{8,30})(?=.*\d)(?=.*[a-zA-Z]).*$/
+  const handlePasswordChange = (event) => {
+    const passwordRegex = /^.*(?=.{8,30})(?=.*\d)(?=.*[a-zA-Z]).*$/;
 
     if (passwordRegex.test(event.target.value)) {
-      setPassword(event.target.value)
-      setErrorMsg(null)
+      setPassword(event.target.value);
+      setErrorMsg(null);
     } else {
-      setErrorMsg('Mật khẩu phải bao gồm chữ cái và số, độ dài: 8-30 ký tự')
+      setErrorMsg("Mật khẩu phải bao gồm chữ cái và số, độ dài: 8-30 ký tự");
     }
-  }
+  };
 
-  const handleLoginClick = async event => {
-    setIsLogging(true)
+  const handleLoginClick = async (event) => {
+    setIsLogging(true);
 
     const user = {
-      email: document.getElementById('formBasicEmail').value,
-      password: document.getElementById('formBasicPassword').value
-    }
+      email: document.getElementById("formBasicEmail").value,
+      password: document.getElementById("formBasicPassword").value,
+    };
 
     try {
-      const response = await axios.post('/api/user/login', user)
+      const response = await AccountApi.loginUser(user);
 
-      if (response.status === 200) {
-        setIsLoggedIn(true)
-        setIsLogging(false)
+      setIsLoggedIn(true);
+      setIsLogging(false);
 
-        const result = response.data
-        const userInfo = result.data
+      const userInfo = response.data;
 
-        localStorage.setItem('user-jwt-tk', result.data.accessToken)
-        localStorage.setItem('user-jwt-rftk', result.data.refreshToken)
+      localStorage.setItem("user-jwt-tk", userInfo.accessToken);
+      localStorage.setItem("user-jwt-rftk", userInfo.refreshToken);
 
-        delete userInfo.accessToken
-        delete userInfo.refreshToken
-        localStorage.setItem('user-info', JSON.stringify(userInfo))
-        localStorage.setItem('user-role', Number(result.data.role) || 0)
+      delete userInfo.accessToken;
+      delete userInfo.refreshToken;
+      localStorage.setItem("user-info", JSON.stringify(userInfo));
+      localStorage.setItem("user-role", Number(userInfo.role) || 0);
 
-        dispatch(
-          updateUser({
-            isLoggedIn: true,
-            data: userInfo
-          })
-        )
-        navigate(-1)
-      }
+      dispatch(
+        updateUser({
+          isLoggedIn: true,
+          data: userInfo,
+        })
+      );
+      navigate(-1);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       if (
         error.response &&
-        (error.response.status === 400 || error.response.status === 401 || error.response.status === 404)
+        (error.response.status === 400 ||
+          error.response.status === 401 ||
+          error.response.status === 404)
       ) {
-        setErrorMsg('Email hoặc mật khẩu không đúng')
+        setErrorMsg("Email hoặc mật khẩu không đúng");
       } else {
-        setErrorMsg('Không thể kết nối đến máy chủ. Vui lòng thử lại sau!')
+        setErrorMsg("Không thể kết nối đến máy chủ. Vui lòng thử lại sau!");
       }
-
-      setIsLoggedIn(false)
-      setIsLogging(false)
+      setIsLoggedIn(false);
+      setIsLogging(false);
     }
-  }
+  };
 
-  const handleSignUpClick = async e => {
-    e.preventDefault()
+  const handleSignUpClick = async (e) => {
+    e.preventDefault();
 
     const user = {
-      email: document.getElementById('formBasicEmail').value,
-      password: document.getElementById('formBasicPassword').value
-    }
+      email: document.getElementById("formBasicEmail").value,
+      password: document.getElementById("formBasicPassword").value,
+    };
 
-    try {
-      const response = await axios.post('/api/user/signup', user)
+    const response = await AccountApi.signupUser(user);
 
-      if (response.status === 201) {
-        setErrorMsg('Đăng ký thành công! Đang đăng nhập lại...')
+    console.log(response);
 
-        const loginResponse = await axios.post('/api/user/login', user)
+    if (response.message === "success") {
+      setErrorMsg("Đăng ký thành công! Đang đăng nhập lại...");
+      try {
+        const loginResponse = await AccountApi.loginUser(user);
 
-        if (loginResponse.status === 200) {
-          const result = loginResponse.data
-          const userInfo = result.data
+        console.log(loginResponse);
+        console.log(loginResponse.status);
 
-          localStorage.setItem('user-jwt-tk', result.data.accessToken)
-          localStorage.setItem('user-jwt-rftk', result.data.refreshToken)
+        if (loginResponse.message === "Logined successfully") {
+          const userInfo = loginResponse.data;
 
-          delete userInfo.accessToken
-          delete userInfo.refreshToken
-          localStorage.setItem('user-info', JSON.stringify(userInfo))
+          localStorage.setItem("user-jwt-tk", userInfo.accessToken);
+          localStorage.setItem("user-jwt-rftk", userInfo.refreshToken);
+
+          delete userInfo.accessToken;
+          delete userInfo.refreshToken;
+          localStorage.setItem("user-info", JSON.stringify(userInfo));
 
           dispatch(
             updateUser({
               isLoggedIn: true,
-              data: userInfo
+              data: userInfo,
             })
-          )
+          );
 
           setTimeout(() => {
-            navigate(-1)
-          }, 1000)
+            navigate(-1);
+          }, 1000);
         }
-      }
-    } catch (error) {
-      console.log(error.response)
-
-      if (error.response.status == 400 && error.response.data.errorCode == 0) {
-        setErrorMsg('Địa chỉ email đã tồn tại. Vui lòng liên hệ admin để khôi phục lại mật khẩu')
-      } else if (error.response.status == 400 && error.response.data.errorCode == 1) {
-        setErrorMsg('Mật khẩu phải bao gồm chữ cái và số, độ dài: 8-30 ký tự')
+      } catch (error) {
+        console.log(error);
+        if (
+          error.response &&
+          (error.response.status === 400 ||
+            error.response.status === 401 ||
+            error.response.status === 404)
+        ) {
+          setErrorMsg("Email hoặc mật khẩu không đúng");
+        } else {
+          setErrorMsg("Không thể kết nối đến máy chủ. Vui lòng thử lại sau!");
+        }
+        setIsLoggedIn(false);
+        setIsLogging(false);
       }
     }
-  }
+  };
 
   return (
     <Styles>
       <div className="header">
-        <p>{location.state ? location.state.message : 'Xin chào!'}</p>
-        <IoMdClose size={25} color="white" onClick={goBack} style={{ cursor: 'pointer' }} />
+        <p>{location.state ? location.state.message : "Xin chào!"}</p>
+        <IoMdClose
+          size={25}
+          color="white"
+          onClick={goBack}
+          style={{ cursor: "pointer" }}
+        />
       </div>
       <form className="form-container">
         <div>
@@ -209,7 +223,7 @@ export default function LoginPage(props) {
             Email của bạn
           </label>
           <div className="input-container">
-            <BiUser style={{ padding: '0.3rem' }} size={30} />
+            <BiUser style={{ padding: "0.3rem" }} size={30} />
             <input
               id="formBasicEmail"
               type="email"
@@ -224,7 +238,7 @@ export default function LoginPage(props) {
             Mật khẩu
           </label>
           <div className="input-container">
-            <BiLockAlt style={{ padding: '0.3rem' }} size={30} />
+            <BiLockAlt style={{ padding: "0.3rem" }} size={30} />
             <input
               id="formBasicPassword"
               type="password"
@@ -237,10 +251,18 @@ export default function LoginPage(props) {
         <p className="error">{errorMsg}</p>
         {!isLogging ? (
           <>
-            <button className="login-btn" type="button" onClick={handleLoginClick}>
+            <button
+              className="login-btn"
+              type="button"
+              onClick={handleLoginClick}
+            >
               Đăng nhập
             </button>
-            <button className="signup-btn" type="button" onClick={handleSignUpClick}>
+            <button
+              className="signup-btn"
+              type="button"
+              onClick={handleSignUpClick}
+            >
               Đăng ký tài khoản
             </button>
           </>
@@ -255,20 +277,21 @@ export default function LoginPage(props) {
           <hr />
         </div>
         <div className="google-login-btn d-flex flex-column justify-content-center align-items-center">
-          <p style={{ textAlign: 'center' }}>
-            Vui lòng mở trình duyệt (Chrome, Firefox, Safari) và truy cập website isinhvien.vn để sử dụng tính năng này.
+          <p style={{ textAlign: "center" }}>
+            Vui lòng mở trình duyệt (Chrome, Firefox, Safari) và truy cập
+            website isinhvien.vn để sử dụng tính năng này.
           </p>
           <GoogleLogin
             clientId={clientId}
             buttonText="Đăng nhập bằng Google"
             onSuccess={responseSuccessGoogle}
             onFailure={responseFailureGoogle}
-            cookiePolicy={'single_host_origin'}
+            cookiePolicy={"single_host_origin"}
           />
         </div>
       </form>
     </Styles>
-  )
+  );
 }
 
 const Styles = styled.div`
@@ -377,4 +400,4 @@ const Styles = styled.div`
       padding: 1rem 0;
     }
   }
-`
+`;

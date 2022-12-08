@@ -1,30 +1,38 @@
-import axios from 'axios'
-import React, { useState } from 'react'
-import { AiFillEyeInvisible } from 'react-icons/ai'
-import { IoMdExit } from 'react-icons/io'
+import React, { useState } from "react";
+import { AiFillEyeInvisible } from "react-icons/ai";
+import { IoMdExit } from "react-icons/io";
 
-import { Menu, MenuItem, ProSidebar, SidebarContent, SidebarFooter, SidebarHeader, SubMenu } from 'react-pro-sidebar'
-import { Link, Outlet } from 'react-router-dom'
-import styled from 'styled-components'
+import {
+  Menu,
+  MenuItem,
+  ProSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SubMenu,
+} from "react-pro-sidebar";
+import { Link, Outlet } from "react-router-dom";
+import styled from "styled-components";
+
+import AccountApi from "api/accountApi";
 
 const AdminLayout = ({ menu, children, title, root }) => {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = () => {
-    const refreshToken = localStorage.getItem('user-jwt-rftk')
-    axios
-      .post('/api/user/logout', { refreshToken })
-      .then(response => {
-        console.log(response)
+    const refreshToken = localStorage.getItem("user-jwt-rftk");
+    AccountApi.logoutUser(refreshToken)
+      .then((response) => {
+        console.log(response);
       })
-      .catch(error => {
-        console.log(error)
-      })
-    localStorage.removeItem('user-info')
-    localStorage.removeItem('user-jwt-tk')
-    localStorage.removeItem('user-jwt-rftk')
-    window.location.reload()
-  }
+      .catch((error) => {
+        console.log(error);
+      });
+    localStorage.removeItem("user-info");
+    localStorage.removeItem("user-jwt-tk");
+    localStorage.removeItem("user-jwt-rftk");
+    window.location.reload();
+  };
   return (
     <Styles className="d-flex flex-row">
       <ProSidebar className="side-bar" collapsed={collapsed}>
@@ -33,32 +41,45 @@ const AdminLayout = ({ menu, children, title, root }) => {
         </SidebarHeader>
         <SidebarContent className="nav-bar-left">
           <Menu iconShape="circle">
-            {menu?.map(item => {
+            {menu?.map((item) => {
               if (item.children === undefined) {
                 return (
                   <MenuItem key={item.path} className="mb-3" icon={item.icon}>
-                    <Link to={root ? `${root}/${item.path}` : item.path}>{item.label}</Link>
+                    <Link to={root ? `${root}/${item.path}` : item.path}>
+                      {item.label}
+                    </Link>
                   </MenuItem>
-                )
+                );
               } else {
                 return (
-                  <SubMenu title={item.label} className="mb-3" icon={item.icons} key={item.path}>
-                    {item?.children.map(submenu => {
+                  <SubMenu
+                    title={item.label}
+                    className="mb-3"
+                    icon={item.icons}
+                    key={item.path}
+                  >
+                    {item?.children.map((submenu) => {
                       return (
-                        <MenuItem key={submenu.path} icon={submenu.icon} className="mb-2">
-                          <Link to={`${root}/${submenu.path}`}>{submenu.label}</Link>
+                        <MenuItem
+                          key={submenu.path}
+                          icon={submenu.icon}
+                          className="mb-2"
+                        >
+                          <Link to={`${root}/${submenu.path}`}>
+                            {submenu.label}
+                          </Link>
                         </MenuItem>
-                      )
+                      );
                     })}
                   </SubMenu>
-                )
+                );
               }
             })}
             <MenuItem
               className="mb-3"
               icon={<AiFillEyeInvisible />}
               onClick={() => {
-                setCollapsed(!collapsed)
+                setCollapsed(!collapsed);
               }}
             >
               Ẩn thanh bên
@@ -75,10 +96,10 @@ const AdminLayout = ({ menu, children, title, root }) => {
       </ProSidebar>
       <div className="content">{children || <Outlet />}</div>
     </Styles>
-  )
-}
+  );
+};
 
-export default AdminLayout
+export default AdminLayout;
 
 const Styles = styled.div`
   width: 100%;
@@ -97,4 +118,4 @@ const Styles = styled.div`
     height: calc(100vh - 1rem);
     overflow: auto;
   }
-`
+`;

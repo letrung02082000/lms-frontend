@@ -1,76 +1,84 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import styles from './creation.module.css'
+import React, { useEffect, useState } from "react";
+import styles from "./creation.module.css";
+
+import GuesthouseApi from "api/guesthouseApi";
 
 function Creation() {
-  const [category, setCategory] = useState([])
+  const [category, setCategory] = useState([]);
 
   useEffect(() => {
-    axios
-      .get('/api/guest-house/category', {
-        params: { page: 0, limit: 10 }
+    GuesthouseApi.getCategories()
+      .then((res) => {
+        setCategory(res.data);
       })
-      .then(res => {
-        setCategory(res.data.data)
-      })
-      .catch(err => alert(err.toString))
-  }, [])
+      .catch((err) => alert(err.toString));
+  }, []);
 
   const handleSubmitButton = () => {
-    const number = document.getElementById('formNumber').value
-    const description = document.getElementById('formDesc').value
-    const category = document.getElementById('formCategory').value
-    const dailyPrice = document.getElementById('formDailyPrice').value
-    const monthlyPrice = document.getElementById('formMonthlyPrice').value
-    const minQuantity = document.getElementById('formMinQuantity').value
-    const maxQuantity = document.getElementById('formMaxQuantity').value
+    const number = document.getElementById("formNumber").value;
+    const description = document.getElementById("formDesc").value;
+    const category = document.getElementById("formCategory").value;
+    const dailyPrice = document.getElementById("formDailyPrice").value;
+    const monthlyPrice = document.getElementById("formMonthlyPrice").value;
+    const minQuantity = document.getElementById("formMinQuantity").value;
+    const maxQuantity = document.getElementById("formMaxQuantity").value;
 
-    if (!number || !description || !category || !dailyPrice || !monthlyPrice || !minQuantity || !maxQuantity) {
-      return alert('Vui lòng nhập đầy đủ các trường!')
+    if (
+      !number ||
+      !description ||
+      !category ||
+      !dailyPrice ||
+      !monthlyPrice ||
+      !minQuantity ||
+      !maxQuantity
+    ) {
+      return alert("Vui lòng nhập đầy đủ các trường!");
     }
 
     if (isNaN(number)) {
-      return alert('Số phòng không hợp lệ')
+      return alert("Số phòng không hợp lệ");
     }
 
     if (isNaN(dailyPrice)) {
-      return alert('Giá ngày không hợp lệ')
+      return alert("Giá ngày không hợp lệ");
     }
 
     if (isNaN(monthlyPrice)) {
-      return alert('Giá tháng không hợp lệ')
+      return alert("Giá tháng không hợp lệ");
     }
 
     if (isNaN(minQuantity)) {
-      return alert('Số lượng tối thiểu không hợp lệ')
+      return alert("Số lượng tối thiểu không hợp lệ");
     }
 
     if (isNaN(maxQuantity)) {
-      return alert('Số lượng tối đa không hợp lệ')
+      return alert("Số lượng tối đa không hợp lệ");
     }
 
-    const confirmed = window.confirm(`Bạn có chắc chắn tạo phòng ${number} với các thông tin đã cung cấp không?`)
+    const confirmed = window.confirm(
+      `Bạn có chắc chắn tạo phòng ${number} với các thông tin đã cung cấp không?`
+    );
 
     if (confirmed) {
-      axios
-        .post('/api/guest-house/room', {
-          number,
-          description,
-          category,
-          dailyPrice,
-          monthlyPrice,
-          minQuantity,
-          maxQuantity
+      GuesthouseApi.postRoom({
+        number,
+        description,
+        category,
+        dailyPrice,
+        monthlyPrice,
+        minQuantity,
+        maxQuantity,
+      })
+
+        .then((res) => {
+          return alert("Tạo phòng thành công!");
         })
-        .then(res => {
-          return alert('Tạo phòng thành công!')
-        })
-        .catch(err => {
-          console.log(err)
-          return alert(err.toString())
-        })
+        .catch((err) => {
+          console.log(err);
+          return alert(err.toString());
+        });
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -85,8 +93,8 @@ function Creation() {
       <div className={styles.formGroup}>
         <label className={styles.formLabel}>Loại phòng</label>
         <select id="formCategory">
-          {category.map(child => {
-            return <option value={child._id}>{child.name}</option>
+          {category.map((child) => {
+            return <option value={child._id}>{child.name}</option>;
           })}
         </select>
       </div>
@@ -110,7 +118,7 @@ function Creation() {
         Tạo phòng
       </button>
     </div>
-  )
+  );
 }
 
-export default Creation
+export default Creation;

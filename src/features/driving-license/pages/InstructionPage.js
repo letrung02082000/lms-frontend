@@ -1,59 +1,64 @@
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import styles from './instructionPage.module.css'
+import styles from "./instructionPage.module.css";
 
-import { DRIVING_LICENSE_NUMBER } from 'shared/constants/contact'
-import ZaloLink from 'shared/components/link/ZaloLink'
-import { convertPhoneNumber } from 'utils'
+import { DRIVING_LICENSE_NUMBER } from "shared/constants/contact";
+import ZaloLink from "shared/components/link/ZaloLink";
+import { convertPhoneNumber } from "utils";
+
+import DrivingApi from "api/drivingApi";
 
 export default function DrivingInstructionPage(props) {
-  const location = useLocation()
-  const search = new URLSearchParams(location.search)
-  const source = search.get('s')
-  const navigate = useNavigate()
-  const [dateList, setDateList] = useState([])
+  const location = useLocation();
+  const search = new URLSearchParams(location.search);
+  const source = search.get("s");
+  const navigate = useNavigate();
+  const [dateList, setDateList] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get('/api/driving/date?formVisible=true')
-      let data = response.data.data
+      const response = await DrivingApi.getFormVisible();
+      let data = response.data;
 
       if (data.length > 0) {
-        data = data.map(child => {
+        data = data.map((child) => {
           return {
             ...child,
-            date: new Date(child.date)
-          }
-        })
+            date: new Date(child.date),
+          };
+        });
 
-        setDateList(data)
+        setDateList(data);
       } else {
-        alert('Chưa có danh sách ngày thi mới')
+        alert("Chưa có danh sách ngày thi mới");
       }
-    }
+    };
 
     try {
-      fetchData()
+      fetchData();
     } catch (e) {
-      alert('Lỗi: ' + e)
+      alert("Lỗi: " + e);
     }
-  }, [])
+  }, []);
 
   return (
     <div className={styles.container}>
       {/* <TitleBar title="Hướng dẫn dự thi" navigation="driving-test" /> */}
       <div className={styles.topHeader}>
-        <img src="/drivingbanner.jpg" alt="driving banner" className={styles.drivingBanner} />
+        <img
+          src="/drivingbanner.jpg"
+          alt="driving banner"
+          className={styles.drivingBanner}
+        />
         <div className={styles.introContainerTop}>
           <button
             className={styles.contactButtonTop}
             onClick={() => {
               if (source == 2) {
-                navigate('/driving-registration?s=2')
+                navigate("/driving-registration?s=2");
               } else {
-                navigate('/driving-registration')
+                navigate("/driving-registration");
               }
             }}
           >
@@ -103,35 +108,41 @@ export default function DrivingInstructionPage(props) {
             <h3 className={styles.sectionTitle}>Địa điểm dự thi</h3>
             <p>Trường đại học thể dục thể thao TP.HCM.</p>
             <p>
-              Địa chỉ: Khu phố 6, phường Linh Trung, thành phố Thủ Đức, thành phố Hồ Chí Minh (làng đại học, cạnh nhà
-              điều hành ĐHQG).
+              Địa chỉ: Khu phố 6, phường Linh Trung, thành phố Thủ Đức, thành
+              phố Hồ Chí Minh (làng đại học, cạnh nhà điều hành ĐHQG).
             </p>
           </div>
           <div id="fee">
             <h3 className={styles.sectionTitle}>Lệ phí thi</h3>
             <p>
-              <strong>Gói A:</strong> 600.000đ (giảm giá sinh viên còn 550.000đ).
+              <strong>Gói A:</strong> 600.000đ (giảm giá sinh viên còn
+              550.000đ).
             </p>
             <p>
-              Thí sinh tự chuẩn bị: 4 ảnh thẻ 3x4, giấy khám sức khỏe tại các bệnh viện tuyến huyện trở lên, 2 bản photo
-              chứng minh nhân dân/căn cước công dân không cần công chứng. Đăng ký trực tiếp tại nhà khách ĐHQG, đóng lệ
-              phí trực tiếp hoặc chuyển khoản.
+              Thí sinh tự chuẩn bị: 4 ảnh thẻ 3x4, giấy khám sức khỏe tại các
+              bệnh viện tuyến huyện trở lên, 2 bản photo chứng minh nhân dân/căn
+              cước công dân không cần công chứng. Đăng ký trực tiếp tại nhà
+              khách ĐHQG, đóng lệ phí trực tiếp hoặc chuyển khoản.
             </p>
             <p>
-              <strong>Gói B:</strong> 650.000đ (giảm giá sinh viên còn 590.000đ).
+              <strong>Gói B:</strong> 650.000đ (giảm giá sinh viên còn
+              590.000đ).
             </p>
             <p>
-              Trung tâm hỗ trợ làm hồ sơ và khám sức khỏe cùng ngày dự thi. Đăng ký hoàn toàn online, có thể đóng lệ phí
-              trực tiếp hoặc chuyển khoản.
+              Trung tâm hỗ trợ làm hồ sơ và khám sức khỏe cùng ngày dự thi. Đăng
+              ký hoàn toàn online, có thể đóng lệ phí trực tiếp hoặc chuyển
+              khoản.
             </p>
           </div>
           <div id="date">
             <h3 className={styles.sectionTitle}>Ngày thi</h3>
-            <p>Thí sinh chọn ngày dự thi căn cứ theo lịch thi mỗi tháng như sau:</p>
+            <p>
+              Thí sinh chọn ngày dự thi căn cứ theo lịch thi mỗi tháng như sau:
+            </p>
             <ul>
               {dateList &&
-                dateList.map(child => {
-                  return <li key={child._id}>{child.description}</li>
+                dateList.map((child) => {
+                  return <li key={child._id}>{child.description}</li>;
                 })}
             </ul>
           </div>
@@ -140,10 +151,14 @@ export default function DrivingInstructionPage(props) {
             <p>1. Quan tâm Zalo Official Account để nhận hướng dẫn dự thi</p>
             <ul>
               <li>
-                Truy cập vào Zalo OA tại{' '}
-                <a href="http://zalo.me/4013961016678131109?src=qr" target="_blank" rel="noreferrer">
+                Truy cập vào Zalo OA tại{" "}
+                <a
+                  href="http://zalo.me/4013961016678131109?src=qr"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Trung tâm dịch vụ sinh viên iStudent
-                </a>{' '}
+                </a>{" "}
               </li>
               <li>Chọn "Quan tâm" (quan trọng)</li>
             </ul>
@@ -153,15 +168,24 @@ export default function DrivingInstructionPage(props) {
               <li>Số điện thoại liên hệ của bạn.</li>
               <li>Ảnh chụp 2 mặt chứng minh nhân dân/Căn cước công dân.</li>
               <li>
-                Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (ảnh tự chụp bằng điện thoại, không quá 3 tháng,
-                không chụp ảnh thẻ): Tóc không quá trán, vén tóc ra sau mang tai, LẤY ĐỦ 2 VAI, LẤY TỪ THẮT LƯNG TRỞ LÊN
-                QUA ĐẦU, không đeo kính, trang phục lịch sự, lấy nền tường. Vui lòng không sử dụng filter hay chỉnh sửa
-                làm mất đặc điểm nhận dạng. Xem ảnh mẫu{' '}
-                <a href="https://i.imgur.com/pfjgD5m.jpg" target="_blank" rel="noopener noreferrer">
+                Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (ảnh tự chụp
+                bằng điện thoại, không quá 3 tháng, không chụp ảnh thẻ): Tóc
+                không quá trán, vén tóc ra sau mang tai, LẤY ĐỦ 2 VAI, LẤY TỪ
+                THẮT LƯNG TRỞ LÊN QUA ĐẦU, không đeo kính, trang phục lịch sự,
+                lấy nền tường. Vui lòng không sử dụng filter hay chỉnh sửa làm
+                mất đặc điểm nhận dạng. Xem ảnh mẫu{" "}
+                <a
+                  href="https://i.imgur.com/pfjgD5m.jpg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   tại đây.
                 </a>
               </li>
-              <li>Ảnh chụp chân dung không đúng chuẩn sẽ làm chậm quá trình xử lý hồ sơ của bạn.</li>
+              <li>
+                Ảnh chụp chân dung không đúng chuẩn sẽ làm chậm quá trình xử lý
+                hồ sơ của bạn.
+              </li>
             </ul>
             <p>3. Thanh toán lệ phí</p>
             <ul>
@@ -172,51 +196,67 @@ export default function DrivingInstructionPage(props) {
                 <br />- Số tài khoản: 0877876877
                 <br />- Nội dung: Họ tên_SĐT_Bang A1_Ngày dự thi
                 <br />- Số tiền: 590.000 đồng
-                <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã chuyển khoản.
-                <br />- Gửi lại ảnh chụp biên lai tại Zalo Official Account:{' '}
-                <a href="https://zalo.me/4013961016678131109?src=qr" target="_blank" rel="noopener noreferrer">
+                <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã
+                chuyển khoản.
+                <br />- Gửi lại ảnh chụp biên lai tại Zalo Official Account:{" "}
+                <a
+                  href="https://zalo.me/4013961016678131109?src=qr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Trung tâm dịch vụ sinh viên iStudent
-                </a>{' '}
+                </a>{" "}
                 nếu đóng sau khi đăng ký.
               </li>
               <li>
                 Đóng trực tiếp: Tại văn phòng iSinhvien
-                <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương (Tầng trệt Nhà khách ĐHQG)
+                <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
+                (Tầng trệt Nhà khách ĐHQG)
                 <br /> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
                 <br /> - Mang theo CMND/CCCD để làm thủ tục.
                 <br /> - Hotline: 0877.876.877
-                <br /> - Google maps:{' '}
-                <a href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8" target="_blank" rel="noreferrer">
+                <br /> - Google maps:{" "}
+                <a
+                  href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   https://goo.gl/maps/mNj1KKJuJXFHLRsw8
                 </a>
               </li>
               <li>Hoàn thành lệ phí thi trước ngày dự thi 16 ngày.</li>
             </ul>
-            <p style={{ color: 'var(--primary)' }}>
-              <strong>Cảnh báo:</strong> Thí sinh cảnh giác trước các hình thức mời chào làm hồ sơ tận nơi, giá rẻ hay
-              mạo danh trung tâm yêu cầu chuyển tiền. Trung tâm không chịu trách nhiệm.
+            <p style={{ color: "var(--primary)" }}>
+              <strong>Cảnh báo:</strong> Thí sinh cảnh giác trước các hình thức
+              mời chào làm hồ sơ tận nơi, giá rẻ hay mạo danh trung tâm yêu cầu
+              chuyển tiền. Trung tâm không chịu trách nhiệm.
             </p>
             <p>4. Chờ duyệt hồ sơ:</p>
             <ul>
               <li>
-                Sau khi đăng ký, trung tâm sẽ xác nhận lại trong vòng 1 ngày làm việc, mọi thủ tục cần hoàn tất trước
-                ngày thi 16 ngày.
+                Sau khi đăng ký, trung tâm sẽ xác nhận lại trong vòng 1 ngày làm
+                việc, mọi thủ tục cần hoàn tất trước ngày thi 16 ngày.
               </li>
               <li>
-                Nếu bạn không nhận được thông báo, vui lòng liên hệ di động/Zalo:{' '}
-                <ZaloLink tel={DRIVING_LICENSE_NUMBER}>{convertPhoneNumber(DRIVING_LICENSE_NUMBER, '.')}</ZaloLink> để
-                được hỗ trợ.
+                Nếu bạn không nhận được thông báo, vui lòng liên hệ di
+                động/Zalo:{" "}
+                <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
+                  {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
+                </ZaloLink>{" "}
+                để được hỗ trợ.
               </li>
               <li>Khung giờ phản hồi: 6h30-8h30, 18h30-20h30.</li>
             </ul>
             <p>5. Đi thi</p>
             <ul>
               <li>
-                Danh sách dự thi và hướng dẫn dự thi sẽ được gửi đến thí sinh thông qua nhóm Zalo . Thi sinh vui lòng
-                theo dõi để cập nhật thông tin sớm nhất.
+                Danh sách dự thi và hướng dẫn dự thi sẽ được gửi đến thí sinh
+                thông qua nhóm Zalo . Thi sinh vui lòng theo dõi để cập nhật
+                thông tin sớm nhất.
               </li>
               <li>
-                Khi đi thi thí sinh cần mang theo chứng minh nhân dân hoặc căn cước công dân bản gốc để đối chiếu.
+                Khi đi thi thí sinh cần mang theo chứng minh nhân dân hoặc căn
+                cước công dân bản gốc để đối chiếu.
               </li>
             </ul>
           </div>
@@ -225,20 +265,30 @@ export default function DrivingInstructionPage(props) {
             <ul>
               <li>
                 Địa điểm: Tại văn phòng iSinhvien
-                <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương (Tầng trệt Nhà khách ĐHQG)
+                <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
+                (Tầng trệt Nhà khách ĐHQG)
                 <br /> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
                 <br /> - Mang theo CMND/CCCD để làm thủ tục.
                 <br /> - Hotline: 0877.876.877
-                <br /> - Google maps:{' '}
-                <a href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8" target="_blank" rel="noreferrer">
+                <br /> - Google maps:{" "}
+                <a
+                  href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   https://goo.gl/maps/mNj1KKJuJXFHLRsw8
                 </a>
               </li>
-              <li>Khi đăng ký trực tiếp, bạn vẫn cần phải đăng ký thông tin như hướng dẫn ở trên.</li>
+              <li>
+                Khi đăng ký trực tiếp, bạn vẫn cần phải đăng ký thông tin như
+                hướng dẫn ở trên.
+              </li>
             </ul>
           </div>
           <div id="mocktest">
-            <h3 className={styles.sectionTitle}>{'Thi thử thực hành & Tài liệu lý thuyết'}</h3>
+            <h3 className={styles.sectionTitle}>
+              {"Thi thử thực hành & Tài liệu lý thuyết"}
+            </h3>
             <p>Thực hành:</p>
             <ul>
               <li>Trước 6h30 đối với ngày thi sáng.</li>
@@ -246,7 +296,7 @@ export default function DrivingInstructionPage(props) {
               <li>Ngày thi thử: cùng ngày với lịch thi chính thức.</li>
             </ul>
             <p>
-              Lý thuyết: Thí sinh tải tài liệu học lý thuyết{' '}
+              Lý thuyết: Thí sinh tải tài liệu học lý thuyết{" "}
               <a
                 target="_blank"
                 rel="noopener noreferrer"
@@ -262,13 +312,24 @@ export default function DrivingInstructionPage(props) {
           <h3 className={styles.sectionTitle}>Các câu hỏi thường gặp</h3>
           <dl className={styles.faqContainer}>
             <dt>Hỏi: Thời gian nhận bằng là bao lâu?</dt>
-            <dd>Trả lời: 22 ngày làm việc kể từ ngày thi đậu, không bao gồm thứ 7, chủ nhật và ngày lễ.</dd>
+            <dd>
+              Trả lời: 22 ngày làm việc kể từ ngày thi đậu, không bao gồm thứ 7,
+              chủ nhật và ngày lễ.
+            </dd>
             <dt>Hỏi: Học phí thanh toán ở đâu?</dt>
-            <dd>Trả lời: Thanh toán online hoặc trực tiếp tại nhà khách ĐHQG.</dd>
+            <dd>
+              Trả lời: Thanh toán online hoặc trực tiếp tại nhà khách ĐHQG.
+            </dd>
             <dt>Hỏi: Có được lái thử trước khi thi không?</dt>
-            <dd>Trả lời: Được lái thử với xe của trung tâm với phí 10k/vòng, địa điểm và thời gian được nêu ở trên.</dd>
+            <dd>
+              Trả lời: Được lái thử với xe của trung tâm với phí 10k/vòng, địa
+              điểm và thời gian được nêu ở trên.
+            </dd>
             <dt>Hỏi: Mình muốn tập vòng số 8 có thể tập ở đâu?</dt>
-            <dd>Trả lời: Cổng sau Trung tâm quốc phòng ĐHQG (miễn phí, bên ngoài, không vào trong trung tâm).</dd>
+            <dd>
+              Trả lời: Cổng sau Trung tâm quốc phòng ĐHQG (miễn phí, bên ngoài,
+              không vào trong trung tâm).
+            </dd>
 
             <dt>Hỏi: Điểm đậu lý thuyết là bao nhiêu?</dt>
             <dd>Trả lời: 21/25 câu hỏi và không được sai câu điểm liệt.</dd>
@@ -276,14 +337,14 @@ export default function DrivingInstructionPage(props) {
         </div>
         <div className={styles.footer}>
           <p id="contact">
-            Để được hỗ trợ thêm, vui lòng liên hệ Zalo:{' '}
+            Để được hỗ trợ thêm, vui lòng liên hệ Zalo:{" "}
             <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
-              {convertPhoneNumber(DRIVING_LICENSE_NUMBER, '.')}
+              {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
               <span> (Mr. Trung)</span>
             </ZaloLink>
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }
