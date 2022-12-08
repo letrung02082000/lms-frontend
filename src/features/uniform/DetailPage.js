@@ -34,10 +34,8 @@ export default function DetailPage(props) {
   useEffect(() => {
     UniformApi.getUniformById(id)
       .then((res) => {
-        if (res.status === 200) {
-          console.log(res.data.data);
-          setData(res.data.data);
-        }
+        console.log(res.data);
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, []);
@@ -64,7 +62,7 @@ export default function DetailPage(props) {
         },
       })
         .then((res) => {
-          setDocumentId(res.data.data.documentId);
+          setDocumentId(res.documentId);
           setUploadPercent(100);
           setUploading(false);
         })
@@ -123,11 +121,11 @@ export default function DetailPage(props) {
     const formAddress = document.getElementById("formAddress").value;
     const formDocumentLink = document.getElementById("formDocumentLink").value;
 
-    if (!user.data.name) {
+    if (!user.name) {
       return alert("Vui lòng nhập tên của bạn");
     }
 
-    if (!user.data.tel) {
+    if (!user.tel) {
       return alert("Vui lòng nhập số điện thoại liên hệ của bạn");
     }
 
@@ -137,9 +135,9 @@ export default function DetailPage(props) {
 
     setIsLoading(true);
     let formData = new FormData();
-    formData.append("name", user.data.name);
-    formData.append("tel", user.data.tel);
-    formData.append("zalo", user.data.zalo || "");
+    formData.append("name", user.name);
+    formData.append("tel", user.tel);
+    formData.append("zalo", user.zalo || "");
     formData.append("address", formAddress);
     formData.append("note", formNote);
     formData.append("uniform", id);
@@ -251,7 +249,7 @@ export default function DetailPage(props) {
             </label>
             <input
               className={styles.formInput}
-              value={user.data.name}
+              value={user.name}
               id="formName"
               type="text"
               placeholder="Nhập đầy đủ họ tên, có dấu"
@@ -265,7 +263,7 @@ export default function DetailPage(props) {
             </label>
             <input
               className={styles.formInput}
-              value={user.data.tel}
+              value={user.tel}
               id="formDocument"
               type="text"
               placeholder="Nhập số điện thoại liên hệ của bạn"
@@ -278,7 +276,7 @@ export default function DetailPage(props) {
             </label>
             <input
               className={styles.formInput}
-              value={user.data.zalo}
+              value={user.zalo}
               id="formZalo"
               type="text"
               placeholder="Nhập số điện thoại zalo của bạn"
@@ -291,7 +289,7 @@ export default function DetailPage(props) {
             </label>
             <input
               className={styles.formInput}
-              value={user.data.address}
+              value={user.address}
               id="formAddress"
               type="text"
               placeholder="Bỏ trống nếu lấy tại cửa hàng"

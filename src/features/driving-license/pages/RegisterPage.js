@@ -121,23 +121,18 @@ export default function DrivingRegisterPage() {
 
     drivingApi.addDriving(formData)
       .then((res) => {
-        if (res.status === 200) {
-          toastWrapper(
-            `Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: ${DRIVING_LICENSE_NUMBER} (Mr. Trung) để được xử lý.`,
-            "success",
-            { autoClose: 10000 }
-          );
+        toastWrapper(
+          `Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: ${DRIVING_LICENSE_NUMBER} (Mr. Trung) để được xử lý.`,
+          "success",
+          { autoClose: 10000 }
+        );
 
-          document.getElementById("formName").value = "";
-          document.getElementById("formTel").value = "";
-          document.getElementById("formZalo").value = "";
-          document.getElementById("formFeedback").value = "";
+        document.getElementById("formName").value = "";
+        document.getElementById("formTel").value = "";
+        document.getElementById("formZalo").value = "";
+        document.getElementById("formFeedback").value = "";
 
-          setIsLoading(false);
-        } else {
-          toastWrapper(`${res.data.message}`, "error");
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       })
       .catch((error) => {
         toastWrapper(`${error.toString()}`, "error");
@@ -203,7 +198,7 @@ export default function DrivingRegisterPage() {
       e.preventDefault();
       drivingApi.searchDriving(searchValue)
         .then((res) => {
-          const data = res.data.data;
+          const data = res.data;
 
           if (data.length === 0) {
             toastWrapper(

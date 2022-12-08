@@ -15,19 +15,19 @@ function Registration() {
   useEffect(() => {
     GuesthouseApi.getListUser()
       .then((res) => {
-        setData(res.data.data);
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
 
     GuesthouseApi.getCategories()
       .then((res) => {
-        setCategory(res.data.data);
+        setCategory(res.data);
       })
       .catch((err) => alert(err.toString()));
 
     GuesthouseApi.getRooms()
       .then((res) => {
-        setRooms(res.data.data);
+        setRooms(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, []);
@@ -35,13 +35,11 @@ function Registration() {
   const updateState = (id, state) => {
     GuesthouseApi.patchUser(id, { state })
       .then((res) => {
-        if (res.status === 200) {
-          GuesthouseApi.getListUser()
-            .then((res) => {
-              setData(res.data.data);
-            })
-            .catch((err) => alert(err.toString()));
-        }
+        GuesthouseApi.getListUser()
+          .then((res) => {
+            setData(res.data);
+          })
+          .catch((err) => alert(err.toString()));
       })
       .catch((err) => alert(err.toString()));
   };
@@ -53,9 +51,7 @@ function Registration() {
 
     GuesthouseApi.patchUser(id, { name, tel, feedback })
       .then((res) => {
-        if (res.status === 200) {
-          return alert("Đã cập nhật thông tin thành công!");
-        }
+        return alert("Đã cập nhật thông tin thành công!");
       })
       .catch((err) => alert(err.toString()));
   };
@@ -73,14 +69,12 @@ function Registration() {
         .then((res) => {
           GuesthouseApi.patchUser(id, { state: 3 })
             .then((res) => {
-              if (res.status === 200) {
-                GuesthouseApi.getListUser()
-                  .then((res) => {
-                    setData(res.data.data);
-                    alert("Đã nhận phòng thành công!");
-                  })
-                  .catch((err) => alert(err.toString()));
-              }
+              GuesthouseApi.getListUser()
+                .then((res) => {
+                  setData(res.data);
+                  alert("Đã nhận phòng thành công!");
+                })
+                .catch((err) => alert(err.toString()));
             })
             .catch((err) => alert(err.toString()));
         })
@@ -95,7 +89,7 @@ function Registration() {
       GuesthouseApi.getListUser(page - 1, limit)
         .then((res) => {
           setPage(page - 1);
-          setData(res.data.data);
+          setData(res.data);
         })
         .catch((err) => alert(err.toString()));
     }
@@ -105,7 +99,7 @@ function Registration() {
     GuesthouseApi.getListUser(page + 1, limit)
       .then((res) => {
         setPage(page + 1);
-        setData(res.data.data);
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
   };
@@ -113,13 +107,11 @@ function Registration() {
   const handleRoomChange = (id, roomId) => {
     GuesthouseApi.patchUser(id, { guestHouse: roomId })
       .then((res) => {
-        if (res.status === 200) {
-          GuesthouseApi.getListUser()
-            .then((res) => {
-              setData(res.data.data);
-            })
-            .catch((err) => alert(err.toString()));
-        }
+        GuesthouseApi.getListUser()
+          .then((res) => {
+            setData(res.data);
+          })
+          .catch((err) => alert(err.toString()));
       })
       .catch((err) => alert(err.toString()));
   };

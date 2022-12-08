@@ -9,7 +9,7 @@ function Creation() {
   useEffect(() => {
     GuesthouseApi.getCategories()
       .then((res) => {
-        setCategory(res.data.data);
+        setCategory(res.data);
       })
       .catch((err) => alert(err.toString));
   }, []);

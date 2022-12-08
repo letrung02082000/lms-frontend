@@ -63,10 +63,9 @@ function Driving(props) {
 
     DrivingApi.updateDrivingDate(_id, tmpDate)
       .then((res) => {
-        if (res.data.data) {
+        if (res.data) {
           alert(
-            "Đã cập nhật ngày thành " +
-              new Date(res.data.data.date).toLocaleDateString()
+            "Đã cập nhật ngày thành " + new Date(res.date).toLocaleDateString()
           );
         } else {
           alert("Không thể cập nhật ngày. Id không hợp lệ");
@@ -80,10 +79,10 @@ function Driving(props) {
 
     DrivingApi.updateDrivingFeedback(_id, feedback)
       .then((res) => {
-        if (res.data.data) {
+        if (res.data) {
           alert("Đã lưu ghi chú ");
         } else {
-          alert(res.data.message);
+          alert(res.message);
         }
       })
       .catch((e) => alert("Không thể cập nhật. Lỗi: " + e.toString()));
@@ -102,7 +101,7 @@ function Driving(props) {
     setLoading(true);
     DrivingApi.updateProcessState(props.id, state)
       .then((res) => {
-        setProcessState(res.data.data.processState);
+        setProcessState(res.processState);
         setLoading(false);
       })
       .catch((error) => {
@@ -119,7 +118,7 @@ function Driving(props) {
 
     DrivingApi.getImage(name)
       .then(async (res) => {
-        showImage(`data:${fileType};base64, ${res.data.data}`);
+        showImage(`data:${fileType};base64, ${res.data}`);
       })
       .catch((error) => {
         console.log(error);
@@ -129,8 +128,8 @@ function Driving(props) {
   const handleMessageSent = () => {
     DrivingApi.updateDriving(props.id, !sent)
       .then((res) => {
-        setSent(res.data.data.messageSent);
-        setProcessState(res.data.data.processState);
+        setSent(res.messageSent);
+        setProcessState(res.processState);
       })
       .catch((error) => {
         console.log(error);

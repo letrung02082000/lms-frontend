@@ -12,7 +12,7 @@ function VoucherListVertical(props) {
   useEffect(() => {
     CouponApi.getCouponUser()
       .then((res) => {
-        setData(res.data.data);
+        setData(res.data);
       })
       .catch((e) => {
         console.log(e);

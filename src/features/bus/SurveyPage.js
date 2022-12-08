@@ -126,15 +126,10 @@ export function BusSurveyPage() {
 
     BusApi.postSurvey(formData)
       .then((res) => {
-        if (res.status === 200) {
-          alert(
-            "Cảm ơn bạn đã hoàn thành khảo sát. Chúng tôi sẽ gửi thông báo quà tặng đến địa chỉ email bạn đăng ký sau khi kết thúc đợt khảo sát này (dự kiến: 30/5/2022)"
-          );
-          setIsLoading(false);
-        } else {
-          alert("Lỗi: " + res.data.message);
-          setIsLoading(false);
-        }
+        alert(
+          "Cảm ơn bạn đã hoàn thành khảo sát. Chúng tôi sẽ gửi thông báo quà tặng đến địa chỉ email bạn đăng ký sau khi kết thúc đợt khảo sát này (dự kiến: 30/5/2022)"
+        );
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -276,7 +271,7 @@ export function BusSurveyPage() {
             id="formName"
             type="text"
             placeholder="Nhập họ tên đầy đủ, có dấu"
-            value={user.data.name}
+            value={user.name}
             onChange={handleNameChange}
           />
         </div>
@@ -288,7 +283,7 @@ export function BusSurveyPage() {
             type="text"
             placeholder="Nhập số điện thoại của bạn"
             onChange={handleTelChange}
-            value={user.data.tel}
+            value={user.tel}
           />
         </div>
 
@@ -302,7 +297,7 @@ export function BusSurveyPage() {
             type="text"
             placeholder="Nhập địa chỉ email để nhận voucher"
             onChange={handleEmailChange}
-            value={user.data.email}
+            value={user.email}
           />
         </div>
 

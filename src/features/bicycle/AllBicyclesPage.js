@@ -24,8 +24,8 @@
 //     axios
 //       .get('/api/bike-user', authHeader())
 //       .then(res => {
-//         if (res.data.data.length > 0) {
-//           let bikeUserInfo = res.data.data[0]
+//         if (res.data.length > 0) {
+//           let bikeUserInfo = res.data[0]
 //           bikeUserInfo.inTime = new Date(bikeUserInfo.inTime)
 
 //           if (bikeUserInfo.outTime == null) {
@@ -70,7 +70,7 @@
 //     axios
 //       .get('/api/bike')
 //       .then(res => {
-//         setBicycleList(res.data.data)
+//         setBicycleList(res.data)
 //       })
 //       .catch(err => alert(err.toString()))
 //   }, [])
@@ -104,7 +104,7 @@
 //         .patch('/api/bike-user', { bikeToken: data }, authHeader())
 //         .then(res => {
 //           if (res.status === 200) {
-//             console.log(res.data.data)
+//             console.log(res.data)
 //             alert('Bạn đã trả xe thành công!')
 //             navigate(0)
 //           }

@@ -13,10 +13,10 @@ export default function GuestHouseReportPage() {
   useEffect(() => {
     GuesthouseApi.getRooms()
       .then((res) => {
-        setData(res.data.data);
+        setData(res.data);
 
-        if (res.data.data[0]) {
-          setRoomSelected(res.data.data[0]);
+        if (res.data[0]) {
+          setRoomSelected(res.data[0]);
         }
       })
       .catch((err) => {
@@ -46,10 +46,8 @@ export default function GuestHouseReportPage() {
       note,
     })
       .then((res) => {
-        if (res.status === 200) {
-          setLoading(false);
-          alert("Bạn đã gửi yêu cầu sửa chữa thành công!");
-        }
+        setLoading(false);
+        alert("Bạn đã gửi yêu cầu sửa chữa thành công!");
       })
       .catch((err) => {
         setLoading(false);

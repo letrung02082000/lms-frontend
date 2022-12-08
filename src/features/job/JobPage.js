@@ -14,7 +14,7 @@ function JobPage() {
     axios
       .get('/api/job')
       .then(res => {
-        setData(res.data.data)
+        setData(res.data)
         setLoading(false)
       })
       .catch(error => {

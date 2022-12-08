@@ -10,13 +10,11 @@ function BikeUserInfo() {
   useEffect(() => {
     AccountApi.getUserCard()
       .then((res) => {
-        if (res.status === 200) {
-          var image = new Image();
-          image.src = `data:image/png;base64,${res.data.data}`;
-          document
-            .getElementsByClassName("id-card-container")[0]
-            .appendChild(image);
-        }
+        var image = new Image();
+        image.src = `data:image/png;base64,${res.data}`;
+        document
+          .getElementsByClassName("id-card-container")[0]
+          .appendChild(image);
         setLoading(false);
       })
       .catch((err) => {

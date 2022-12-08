@@ -18,7 +18,7 @@ function PhotocopyPage() {
     PhotocopyApi.getPhotocopyList(limit, page)
       .then((res) => {
         if (res.data) {
-          setPhotocopyList(res.data.data);
+          setPhotocopyList(res.data);
         }
       })
       .catch((err) => {
@@ -40,7 +40,7 @@ function PhotocopyPage() {
 
       PhotocopyApi.queryPhotocopy({ tel: searchValue })
         .then((res) => {
-          const data = res.data.data;
+          const data = res.data;
 
           if (data.length === 0) {
             alert(

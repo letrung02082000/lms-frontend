@@ -27,28 +27,28 @@ const SignUpPage = () => {
     };
 
     try {
-      const response = AccountApi.signupUser(user);
+      const response = await AccountApi.signupUser(user);
 
       if (response.status === 201) {
         setErrorMsg("Đăng ký thành công! Đang đăng nhập lại...");
 
-        const loginResponse = AccountApi.loginUser(user);
+        const loginResponse = await AccountApi.loginUser(user);
 
         if (loginResponse.status === 200) {
           const result = loginResponse.data;
           const userInfo = {
-            id: result.data.id,
-            email: result.data.email,
+            id: result.id,
+            email: result.email,
           };
 
           localStorage.setItem("user-info", JSON.stringify(userInfo));
           localStorage.setItem(
             "user-jwt-tk",
-            JSON.stringify(result.data.accessToken)
+            JSON.stringify(result.accessToken)
           );
           localStorage.setItem(
             "user-jwt-rftk",
-            JSON.stringify(result.data.refreshToken)
+            JSON.stringify(result.refreshToken)
           );
 
           dispatch(

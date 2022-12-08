@@ -54,14 +54,9 @@ export default function TicketForm(props) {
     poolApi
       .postPoolTicket(formData)
       .then((res) => {
-        if (res.status === 200) {
-          setIsLoading(false);
-          setOrder(res.data.data);
-          console.log(res.data.data);
-        } else {
-          alert("Lỗi: " + res.data.message);
-          setIsLoading(false);
-        }
+        setIsLoading(false);
+        setOrder(res.data);
+        console.log(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -210,7 +205,7 @@ export default function TicketForm(props) {
               type="text"
               placeholder="Nhập họ tên đầy đủ, có dấu"
               required
-              value={userInfo.data.name}
+              value={userInfo.name}
               onChange={handleNameChange}
             />
           </div>
@@ -222,7 +217,7 @@ export default function TicketForm(props) {
               type="text"
               placeholder="Nhập số điện thoại của bạn"
               required
-              value={userInfo.data.tel}
+              value={userInfo.tel}
               onChange={handleTelChange}
             />
           </div>
@@ -234,7 +229,7 @@ export default function TicketForm(props) {
               type="text"
               placeholder="Nhập số điện thoại Zalo của bạn"
               required
-              value={userInfo.data.zalo}
+              value={userInfo.zalo}
               onChange={handleZaloChange}
             />
           </div>

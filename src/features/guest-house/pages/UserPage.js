@@ -25,18 +25,14 @@ export default function GuestHouseUserPage() {
   useEffect(() => {
     GuesthouseApi.getVisibleCategories()
       .then((res) => {
-        if (res.status === 200) {
-          setCategoryList(res.data.data);
-          setCurrentCategory(res.data.data[0]);
-        }
+        setCategoryList(res.data);
+        setCurrentCategory(res.data[0]);
       })
       .catch((err) => alert(err.toString()));
 
     GuesthouseApi.getVisibleRooms()
       .then((res) => {
-        if (res.status === 200) {
-          setData(res.data.data);
-        }
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, []);
@@ -52,10 +48,8 @@ export default function GuestHouseUserPage() {
   const handleCategoryChange = (e) => {
     GuesthouseApi.getCategoryVisibleById(e.target.value)
       .then((res) => {
-        if (res.status === 200) {
-          setRoomSelected(null);
-          setCurrentCategory(res.data.data);
-        }
+        setRoomSelected(null);
+        setCurrentCategory(res.data);
       })
       .catch((err) => alert(err.toString()));
   };
@@ -162,7 +156,7 @@ export default function GuestHouseUserPage() {
               id="formName"
               type="text"
               placeholder="Nhập họ tên đầy đủ, có dấu"
-              defaultValue={user?.data.name}
+              defaultValue={user?.name}
             />
           </div>
           <div className={styles.formGroup}>
@@ -172,7 +166,7 @@ export default function GuestHouseUserPage() {
               id="formTel"
               type="text"
               placeholder="Nhập số điện thoại của bạn"
-              defaultValue={user?.data.tel}
+              defaultValue={user?.tel}
             />
           </div>
           {/* <div className={styles.formGroup}>

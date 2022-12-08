@@ -18,8 +18,8 @@ function JobDetailPage(props) {
     axios
       .get(`/api/job/${id}`)
       .then(res => {
-        if (res.data.data) {
-          setData(res.data.data)
+        if (res.data) {
+          setData(res.data)
         }
       })
       .catch(error => alert('Xin lỗi, không tìm thấy công việc này hoặc công việc đã bị gỡ bỏ!'))

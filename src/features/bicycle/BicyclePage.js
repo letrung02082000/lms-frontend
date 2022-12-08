@@ -26,7 +26,7 @@
 //     axios
 //       .get(`/api/bike/${id}`)
 //       .then(res => {
-//         setData(res.data.data)
+//         setData(res.data)
 //       })
 //       .catch(err => alert('Không thể tải thông tin về xe mà bạn yêu cầu.'))
 //   }, [user.isLoggedIn])
@@ -57,7 +57,7 @@
 //         .post('/api/bike-user', { bike: id, bikeToken: data }, authHeader())
 //         .then(res => {
 //           if (res.status === 200) {
-//             console.log(res.data.data)
+//             console.log(res.data)
 //             alert('Đăng ký thuê xe thành công!')
 //             navigate.push('/bicycles')
 //           }

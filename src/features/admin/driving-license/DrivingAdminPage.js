@@ -47,6 +47,8 @@ function DrivingAdminPage() {
       user.data.role === 12 ||
       user.data.role === 13)
   ) {
+    console.log("Test");
+
     return (
       <DrivingAdminLayout onNavigate={onNavigate} onLogout={handleLogout}>
         {navigation === "/a1" ? <A1Driving /> : null}

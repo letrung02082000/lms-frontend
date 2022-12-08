@@ -35,7 +35,7 @@ function ExplorePage() {
   useEffect(() => {
     CouponApi.getCouponAvailable()
       .then((res) => {
-        setCouponList(res.data.data);
+        setCouponList(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -43,7 +43,7 @@ function ExplorePage() {
 
     CouponApi.getCouponWhiteList()
       .then((res) => {
-        setWhiteList(res.data.data);
+        setWhiteList(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -53,8 +53,8 @@ function ExplorePage() {
     if (user.isLoggedIn) {
       CouponApi.getMyCoupon()
         .then((res) => {
-          if (res.data.data) {
-            setMyCouponList(res.data.data);
+          if (res.data) {
+            setMyCouponList(res.data);
           }
         })
         .catch((error) => {

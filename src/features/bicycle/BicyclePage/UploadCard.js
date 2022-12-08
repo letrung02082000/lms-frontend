@@ -31,12 +31,10 @@ function UploadCard() {
 
           AccountApi.postUserUpdateCard(formData)
             .then((res) => {
-              if (res.status === 200) {
-                setUploading(false);
-                dispatch(updateCard(res.data.data.card));
-                alert("Cập nhật thông tin thành công!");
-                navigate(0);
-              }
+              setUploading(false);
+              dispatch(updateCard(res.card));
+              alert("Cập nhật thông tin thành công!");
+              navigate(0);
             })
             .catch((err) => {
               setUploading(false);

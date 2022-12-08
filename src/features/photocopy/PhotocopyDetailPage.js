@@ -29,9 +29,7 @@ function PhotocopyDetail(props) {
   useEffect(() => {
     PhotocopyApi.getPhotocopy(id)
       .then((res) => {
-        if (res.status == 200) {
-          setData(res.data.data);
-        }
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, []);
@@ -58,7 +56,7 @@ function PhotocopyDetail(props) {
         },
       })
         .then((res) => {
-          setDocumentId(res.data.data.documentId);
+          setDocumentId(res.documentId);
           setUploadPercent(100);
           setUploading(false);
         })
@@ -117,11 +115,11 @@ function PhotocopyDetail(props) {
     const formAddress = document.getElementById("formAddress").value;
     const formDocumentLink = document.getElementById("formDocumentLink").value;
     console.log(user.name);
-    if (!user.data.name) {
+    if (!user.name) {
       return alert("Vui lòng nhập tên của bạn");
     }
 
-    if (!user.data.tel) {
+    if (!user.tel) {
       return alert("Vui lòng nhập số điện thoại liên hệ của bạn");
     }
 
@@ -132,9 +130,9 @@ function PhotocopyDetail(props) {
     if (formDocumentLink || documentId) {
       setIsLoading(true);
       let formData = new FormData();
-      formData.append("name", user.data.name);
-      formData.append("tel", user.data.tel);
-      formData.append("zalo", user.data.zalo || "");
+      formData.append("name", user.name);
+      formData.append("tel", user.tel);
+      formData.append("zalo", user.zalo || "");
       formData.append("address", formAddress);
       formData.append("note", formNote);
       formData.append("photocopyInfo", id);
@@ -247,7 +245,7 @@ function PhotocopyDetail(props) {
             </label>
             <input
               className={styles.formInput}
-              value={user.data.name}
+              value={user.name}
               id="formName"
               type="text"
               placeholder="Nhập đầy đủ họ tên, có dấu"
@@ -261,7 +259,7 @@ function PhotocopyDetail(props) {
             </label>
             <input
               className={styles.formInput}
-              value={user.data.tel}
+              value={user.tel}
               id="formDocument"
               type="text"
               placeholder="Nhập số điện thoại liên hệ của bạn"
@@ -274,7 +272,7 @@ function PhotocopyDetail(props) {
             </label>
             <input
               className={styles.formInput}
-              value={user.data.zalo}
+              value={user.zalo}
               id="formZalo"
               type="text"
               placeholder="Nhập số điện thoại zalo của bạn"
@@ -287,7 +285,7 @@ function PhotocopyDetail(props) {
             </label>
             <input
               className={styles.formInput}
-              value={user.data.address}
+              value={user.address}
               id="formAddress"
               type="text"
               placeholder="Bỏ trống nếu lấy tại cửa hàng"

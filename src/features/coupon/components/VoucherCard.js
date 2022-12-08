@@ -29,7 +29,7 @@ function VoucherCard(props) {
   const handleSaveClick = () => {
     CouponApi.postCouponUserSave({ coupon: coupon._id })
       .then((res) => {
-        props.setMyCouponList([...props.myCouponList, res.data.data]);
+        props.setMyCouponList([...props.myCouponList, res.data]);
         setRefresh(!refresh);
       })
       .catch((err) => {
