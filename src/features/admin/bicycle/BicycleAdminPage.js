@@ -33,29 +33,27 @@ function BicycleAdminPage() {
   const handleLoginButton = () => {
     BikeApi.handleLogin(email, password)
       .then((res) => {
-        if (res.status === 200) {
-          const data = res.data;
-          const userInfo = {
-            id: data?.id,
-            email: data?.email,
-            avatarUrl: data?.avatarUrl || "avatar-default.png",
-            name: data?.name,
-            role: data?.role,
-          };
+        const data = res.data;
+        const userInfo = {
+          id: data?.id,
+          email: data?.email,
+          avatarUrl: data?.avatarUrl || "avatar-default.png",
+          name: data?.name,
+          role: data?.role,
+        };
 
-          localStorage.setItem("user-info", JSON.stringify(userInfo));
-          localStorage.setItem("user-jwt-tk", data.accessToken);
-          localStorage.setItem("user-jwt-rftk", data.refreshToken);
+        localStorage.setItem("user-info", JSON.stringify(userInfo));
+        localStorage.setItem("user-jwt-tk", data.accessToken);
+        localStorage.setItem("user-jwt-rftk", data.refreshToken);
 
-          setToken(data.accessToken);
+        setToken(data.accessToken);
 
-          dispatch(
-            updateUser({
-              isLoggedIn: true,
-              data: userInfo,
-            })
-          );
-        }
+        dispatch(
+          updateUser({
+            isLoggedIn: true,
+            data: userInfo,
+          })
+        );
       })
       .catch((err) => alert(err.toString()));
   };
@@ -64,11 +62,9 @@ function BicycleAdminPage() {
     setRefreshing(true);
     BikeApi.handleRenew(refreshToken)
       .then((res) => {
-        if (res.status === 200) {
-          localStorage.setItem("user-jwt-tk", res.accessToken);
-          setToken(res.accessToken);
-          setRefreshing(false);
-        }
+        localStorage.setItem("user-jwt-tk", res.accessToken);
+        setToken(res.accessToken);
+        setRefreshing(false);
       })
       .catch((err) => {
         setRefreshing(false);
@@ -99,13 +95,11 @@ function BicycleAdminPage() {
   const handleUpdateBicycle = (info) => {
     BikeApi.handleUpdateBike(info)
       .then((res) => {
-        if (res.status === 200) {
-          BikeApi.getBike()
-            .then((res) => {
-              setBicycleList(res.data);
-            })
-            .catch((err) => alert(err.toString()));
-        }
+        BikeApi.getBike()
+          .then((res) => {
+            setBicycleList(res.data);
+          })
+          .catch((err) => alert(err.toString()));
       })
       .catch((err) => alert(err.toString()));
   };

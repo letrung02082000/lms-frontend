@@ -11,7 +11,6 @@ function A2Driving() {
     DrivingApi.getDrivingByType(1)
       .then((res) => {
         setData(res.data);
-
         setLoading(false);
       })
       .catch((err) => {

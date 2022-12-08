@@ -46,10 +46,8 @@ export default function GuestHouseReportPage() {
       note,
     })
       .then((res) => {
-        if (res.status === 200) {
-          setLoading(false);
-          alert("Bạn đã gửi yêu cầu sửa chữa thành công!");
-        }
+        setLoading(false);
+        alert("Bạn đã gửi yêu cầu sửa chữa thành công!");
       })
       .catch((err) => {
         setLoading(false);

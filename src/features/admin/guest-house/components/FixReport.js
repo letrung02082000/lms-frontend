@@ -22,15 +22,13 @@ function FixReport() {
   const updateState = (id, state) => {
     GuesthouseApi.patchReport(id, { state })
       .then((res) => {
-        if (res.status === 200) {
-          GuesthouseApi.getListReport(limit, page)
-            .then((res) => {
-              setData(res.data);
-            })
-            .catch((err) => {
-              return alert(err.toString());
-            });
-        }
+        GuesthouseApi.getListReport(limit, page)
+          .then((res) => {
+            setData(res.data);
+          })
+          .catch((err) => {
+            return alert(err.toString());
+          });
       })
       .catch((err) => {
         return alert(err.toString());

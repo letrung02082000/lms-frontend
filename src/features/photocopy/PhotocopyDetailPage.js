@@ -29,9 +29,7 @@ function PhotocopyDetail(props) {
   useEffect(() => {
     PhotocopyApi.getPhotocopy(id)
       .then((res) => {
-        if (res.status == 200) {
-          setData(res.data);
-        }
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, []);

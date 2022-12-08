@@ -34,10 +34,8 @@ export default function DetailPage(props) {
   useEffect(() => {
     UniformApi.getUniformById(id)
       .then((res) => {
-        if (res.status === 200) {
-          console.log(res.data);
-          setData(res.data);
-        }
+        console.log(res.data);
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, []);

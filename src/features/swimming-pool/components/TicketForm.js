@@ -54,14 +54,9 @@ export default function TicketForm(props) {
     poolApi
       .postPoolTicket(formData)
       .then((res) => {
-        if (res.status === 200) {
-          setIsLoading(false);
-          setOrder(res.data);
-          console.log(res.data);
-        } else {
-          alert("Lỗi: " + res.message);
-          setIsLoading(false);
-        }
+        setIsLoading(false);
+        setOrder(res.data);
+        console.log(res.data);
       })
       .catch((error) => {
         console.log(error);

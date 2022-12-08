@@ -25,18 +25,14 @@ export default function GuestHouseUserPage() {
   useEffect(() => {
     GuesthouseApi.getVisibleCategories()
       .then((res) => {
-        if (res.status === 200) {
-          setCategoryList(res.data);
-          setCurrentCategory(res.data[0]);
-        }
+        setCategoryList(res.data);
+        setCurrentCategory(res.data[0]);
       })
       .catch((err) => alert(err.toString()));
 
     GuesthouseApi.getVisibleRooms()
       .then((res) => {
-        if (res.status === 200) {
-          setData(res.data);
-        }
+        setData(res.data);
       })
       .catch((err) => alert(err.toString()));
   }, []);
@@ -52,10 +48,8 @@ export default function GuestHouseUserPage() {
   const handleCategoryChange = (e) => {
     GuesthouseApi.getCategoryVisibleById(e.target.value)
       .then((res) => {
-        if (res.status === 200) {
-          setRoomSelected(null);
-          setCurrentCategory(res.data);
-        }
+        setRoomSelected(null);
+        setCurrentCategory(res.data);
       })
       .catch((err) => alert(err.toString()));
   };

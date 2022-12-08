@@ -11,9 +11,7 @@ function Category() {
     if (selected === 0) {
       GuesthouseApi.getCategories(0, 25)
         .then((res) => {
-          if (res.status === 200) {
-            setData(res.data);
-          }
+          setData(res.data);
         })
         .catch((err) => console.log(err));
     }
@@ -55,10 +53,8 @@ function Category() {
       .then(() => {
         GuesthouseApi.getCategories(0, 25)
           .then((res) => {
-            if (res.status === 200) {
-              console.log(res.data);
-              setData(res.data);
-            }
+            console.log(res.data);
+            setData(res.data);
           })
           .catch((err) => console.log(err));
         return alert("Cập nhật thành công!");

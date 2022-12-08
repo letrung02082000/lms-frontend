@@ -53,24 +53,18 @@ export function CouponListPage(props) {
   useEffect(() => {
     if (type == 99) {
       CouponApi.getCouponAvailable(limit).then((res) => {
-        if (res.status === 200) {
-          console.log(res.data);
-          setData(res.data);
-        }
+        console.log(res.data);
+        setData(res.data);
       });
     } else if (type == 100) {
       CouponApi.getCouponWhiteList(limit).then((res) => {
-        if (res.status === 200) {
-          console.log(res.data);
-          setData(res.data);
-        }
+        console.log(res.data);
+        setData(res.data);
       });
     } else {
       CouponApi.getCouponByType(type, limit).then((res) => {
-        if (res.status === 200) {
-          console.log(res.data);
-          setData(res.data);
-        }
+        console.log(res.data);
+        setData(res.data);
       });
     }
   }, [type]);

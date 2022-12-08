@@ -126,15 +126,10 @@ export function BusSurveyPage() {
 
     BusApi.postSurvey(formData)
       .then((res) => {
-        if (res.status === 200) {
-          alert(
-            "Cảm ơn bạn đã hoàn thành khảo sát. Chúng tôi sẽ gửi thông báo quà tặng đến địa chỉ email bạn đăng ký sau khi kết thúc đợt khảo sát này (dự kiến: 30/5/2022)"
-          );
-          setIsLoading(false);
-        } else {
-          alert("Lỗi: " + res.message);
-          setIsLoading(false);
-        }
+        alert(
+          "Cảm ơn bạn đã hoàn thành khảo sát. Chúng tôi sẽ gửi thông báo quà tặng đến địa chỉ email bạn đăng ký sau khi kết thúc đợt khảo sát này (dự kiến: 30/5/2022)"
+        );
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);

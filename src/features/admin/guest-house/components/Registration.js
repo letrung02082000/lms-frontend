@@ -35,13 +35,11 @@ function Registration() {
   const updateState = (id, state) => {
     GuesthouseApi.patchUser(id, { state })
       .then((res) => {
-        if (res.status === 200) {
-          GuesthouseApi.getListUser()
-            .then((res) => {
-              setData(res.data);
-            })
-            .catch((err) => alert(err.toString()));
-        }
+        GuesthouseApi.getListUser()
+          .then((res) => {
+            setData(res.data);
+          })
+          .catch((err) => alert(err.toString()));
       })
       .catch((err) => alert(err.toString()));
   };
@@ -53,9 +51,7 @@ function Registration() {
 
     GuesthouseApi.patchUser(id, { name, tel, feedback })
       .then((res) => {
-        if (res.status === 200) {
-          return alert("Đã cập nhật thông tin thành công!");
-        }
+        return alert("Đã cập nhật thông tin thành công!");
       })
       .catch((err) => alert(err.toString()));
   };
@@ -73,14 +69,12 @@ function Registration() {
         .then((res) => {
           GuesthouseApi.patchUser(id, { state: 3 })
             .then((res) => {
-              if (res.status === 200) {
-                GuesthouseApi.getListUser()
-                  .then((res) => {
-                    setData(res.data);
-                    alert("Đã nhận phòng thành công!");
-                  })
-                  .catch((err) => alert(err.toString()));
-              }
+              GuesthouseApi.getListUser()
+                .then((res) => {
+                  setData(res.data);
+                  alert("Đã nhận phòng thành công!");
+                })
+                .catch((err) => alert(err.toString()));
             })
             .catch((err) => alert(err.toString()));
         })
@@ -113,13 +107,11 @@ function Registration() {
   const handleRoomChange = (id, roomId) => {
     GuesthouseApi.patchUser(id, { guestHouse: roomId })
       .then((res) => {
-        if (res.status === 200) {
-          GuesthouseApi.getListUser()
-            .then((res) => {
-              setData(res.data);
-            })
-            .catch((err) => alert(err.toString()));
-        }
+        GuesthouseApi.getListUser()
+          .then((res) => {
+            setData(res.data);
+          })
+          .catch((err) => alert(err.toString()));
       })
       .catch((err) => alert(err.toString()));
   };

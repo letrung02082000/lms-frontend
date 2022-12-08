@@ -13,11 +13,7 @@ export function CouponScannedPage(props) {
   const handleConfirmButton = () => {
     CouponApi.getCouponUserUse(user, coupon)
       .then((res) => {
-        if (res.status === 200) {
-          setMsg("Sử dụng mã ưu đãi thành công <3");
-        } else {
-          setMsg("Không thể sử dụng mã ưu đãi này");
-        }
+        setMsg("Sử dụng mã ưu đãi thành công <3");
       })
       .catch((error) => {
         console.log(error);

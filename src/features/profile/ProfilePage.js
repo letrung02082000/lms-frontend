@@ -150,10 +150,7 @@ export function ProfilePage() {
 
     AccountApi.postUserUpdatePsw(formData)
       .then((res) => {
-        console.log(res.status);
-        if (res.status === 200) {
-          setConfirmPswMsg("Mật khẩu đã được cập nhật.");
-        }
+        setConfirmPswMsg("Mật khẩu đã được cập nhật.");
       })
       .catch((err) => {
         setConfirmPswMsg("Mật khẩu cũ không chính xác.");

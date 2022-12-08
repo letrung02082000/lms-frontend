@@ -15,35 +15,27 @@ function checkLogin() {
   if (token && refreshToken) {
     AccountApi.getProlfile(token)
       .then((res) => {
-        if (res.status === 200) {
-          const data = JSON.parse(userInfo);
-          store.dispatch(updateUser({ isLoggedIn: true, data }));
-        }
+        const data = JSON.parse(userInfo);
+        store.dispatch(updateUser({ isLoggedIn: true, data }));
       })
       .catch((error) => {
-        const res = error.response;
-
-        if (res.status === 401) {
-          AccountApi.refreshToken(refreshToken)
-            .then((refreshRes) => {
-              if (refreshRes.status === 200) {
-                localStorage.setItem("user-jwt-tk", refreshRes.accessToken);
-                const data = JSON.parse(userInfo);
-                store.dispatch(updateUser({ isLoggedIn: true, data }));
-              }
-            })
-            .catch((error) => {
-              store.dispatch(
-                updateUser({
-                  isLoggedIn: false,
-                  data: { name: "", tel: "", zalo: "" },
-                })
-              );
-              localStorage.removeItem("user-info");
-              localStorage.removeItem("user-jwt-tk");
-              localStorage.removeItem("user-jwt-rftk");
-            });
-        }
+        AccountApi.refreshToken(refreshToken)
+          .then((refreshRes) => {
+            localStorage.setItem("user-jwt-tk", refreshRes.accessToken);
+            const data = JSON.parse(userInfo);
+            store.dispatch(updateUser({ isLoggedIn: true, data }));
+          })
+          .catch((error) => {
+            store.dispatch(
+              updateUser({
+                isLoggedIn: false,
+                data: { name: "", tel: "", zalo: "" },
+              })
+            );
+            localStorage.removeItem("user-info");
+            localStorage.removeItem("user-jwt-tk");
+            localStorage.removeItem("user-jwt-rftk");
+          });
       });
   } else {
     return false;

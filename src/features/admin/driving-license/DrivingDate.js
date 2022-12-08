@@ -31,21 +31,19 @@ function DrivingByDate() {
   const handleVisibleButton = (_id, date, isVisible, formVisible = false) => {
     DrivingApi.handleVisibleButton(_id, date, isVisible, formVisible)
       .then((res) => {
-        if (res.status === 200) {
-          DrivingApi.getAllDrivingsDate()
-            .then((res) => {
-              const temp = res.data;
+        DrivingApi.getAllDrivingsDate()
+          .then((res) => {
+            const temp = res.data;
 
-              for (let e of temp) {
-                e.date = new Date(e.date);
-              }
+            for (let e of temp) {
+              e.date = new Date(e.date);
+            }
 
-              setDates(temp);
-            })
-            .catch((error) => {
-              alert(error);
-            });
-        }
+            setDates(temp);
+          })
+          .catch((error) => {
+            alert(error);
+          });
       })
       .catch((error) => {
         alert("Vui lòng liên hệ quản trị để cập nhật");
@@ -89,22 +87,20 @@ function DrivingByDate() {
 
     DrivingApi.handleAddDateButton(drivingDate, true, description)
       .then((res) => {
-        if (res.status === 200) {
-          DrivingApi.getAllDrivingsDate()
-            .then((res) => {
-              const temp = res.data;
+        DrivingApi.getAllDrivingsDate()
+          .then((res) => {
+            const temp = res.data;
 
-              for (let e of temp) {
-                e.date = new Date(e.date);
-              }
+            for (let e of temp) {
+              e.date = new Date(e.date);
+            }
 
-              setDates(temp);
-              alert("Thêm ngày thành công");
-            })
-            .catch((error) => {
-              alert(error);
-            });
-        }
+            setDates(temp);
+            alert("Thêm ngày thành công");
+          })
+          .catch((error) => {
+            alert(error);
+          });
       })
       .catch((error) => {
         alert("Vui lòng liên hệ quản trị để thêm ngày");

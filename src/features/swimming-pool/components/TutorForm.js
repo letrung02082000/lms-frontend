@@ -26,15 +26,10 @@ export default function TutorForm(props) {
 
     PoolApi.registerPoolTutor({ name, tel, zalo, feedback })
       .then((res) => {
-        if (res.status === 200) {
-          alert(
-            "Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo để được xử lý."
-          );
-          setIsLoading(false);
-        } else {
-          alert("Lỗi: " + res.message);
-          setIsLoading(false);
-        }
+        alert(
+          "Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo để được xử lý."
+        );
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
