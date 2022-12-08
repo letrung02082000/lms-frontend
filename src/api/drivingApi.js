@@ -133,10 +133,10 @@ class DrivingApi {
     });
   };
 
-  searchDriving = async (category) => {
+  searchDriving = async (tel) => {
     const url = `${API_PATH}/search`;
     return axiosClient.get(url, {
-      params: { category },
+      params: { tel },
       ...authHeader(),
     });
   };

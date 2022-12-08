@@ -11,7 +11,7 @@ import { DRIVING_LICENSE_NUMBER } from "shared/constants/contact";
 import { convertPhoneNumber } from "utils";
 import ZaloLink from "shared/components/link/ZaloLink";
 
-import DrivingApi from "api/drivingApi";
+import drivingApi from "api/drivingApi";
 
 export default function DrivingRegisterPage() {
   const { search } = useLocation();
@@ -44,8 +44,8 @@ export default function DrivingRegisterPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = DrivingApi.getFormVisible();
-        let data = response.data.data;
+        const response = await drivingApi.getFormVisible();
+        let data = response.data;
 
         if (data.length > 0) {
           data = data.map((child) => {
@@ -119,7 +119,7 @@ export default function DrivingRegisterPage() {
       formData.append("date", dateList[date].date.getTime());
     }
 
-    DrivingApi.addDriving(formData)
+    drivingApi.addDriving(formData)
       .then((res) => {
         if (res.status === 200) {
           toastWrapper(
@@ -201,7 +201,7 @@ export default function DrivingRegisterPage() {
   const handleSearchPress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      DrivingApi.searchDriving({ tel: searchValue })
+      drivingApi.searchDriving(searchValue)
         .then((res) => {
           const data = res.data.data;
 
