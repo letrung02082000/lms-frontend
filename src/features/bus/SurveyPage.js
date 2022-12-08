@@ -132,7 +132,7 @@ export function BusSurveyPage() {
           );
           setIsLoading(false);
         } else {
-          alert("Lỗi: " + res.data.message);
+          alert("Lỗi: " + res.message);
           setIsLoading(false);
         }
       })
@@ -276,7 +276,7 @@ export function BusSurveyPage() {
             id="formName"
             type="text"
             placeholder="Nhập họ tên đầy đủ, có dấu"
-            value={user.data.name}
+            value={user.name}
             onChange={handleNameChange}
           />
         </div>
@@ -288,7 +288,7 @@ export function BusSurveyPage() {
             type="text"
             placeholder="Nhập số điện thoại của bạn"
             onChange={handleTelChange}
-            value={user.data.tel}
+            value={user.tel}
           />
         </div>
 
@@ -302,7 +302,7 @@ export function BusSurveyPage() {
             type="text"
             placeholder="Nhập địa chỉ email để nhận voucher"
             onChange={handleEmailChange}
-            value={user.data.email}
+            value={user.email}
           />
         </div>
 

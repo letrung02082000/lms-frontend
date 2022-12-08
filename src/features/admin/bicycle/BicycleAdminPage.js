@@ -65,8 +65,8 @@ function BicycleAdminPage() {
     BikeApi.handleRenew(refreshToken)
       .then((res) => {
         if (res.status === 200) {
-          localStorage.setItem("user-jwt-tk", res.data.accessToken);
-          setToken(res.data.accessToken);
+          localStorage.setItem("user-jwt-tk", res.accessToken);
+          setToken(res.accessToken);
           setRefreshing(false);
         }
       })

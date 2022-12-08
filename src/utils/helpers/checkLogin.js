@@ -27,10 +27,7 @@ function checkLogin() {
           AccountApi.refreshToken(refreshToken)
             .then((refreshRes) => {
               if (refreshRes.status === 200) {
-                localStorage.setItem(
-                  "user-jwt-tk",
-                  refreshRes.data.accessToken
-                );
+                localStorage.setItem("user-jwt-tk", refreshRes.accessToken);
                 const data = JSON.parse(userInfo);
                 store.dispatch(updateUser({ isLoggedIn: true, data }));
               }

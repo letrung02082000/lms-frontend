@@ -33,7 +33,7 @@ function UploadCard() {
             .then((res) => {
               if (res.status === 200) {
                 setUploading(false);
-                dispatch(updateCard(res.data.card));
+                dispatch(updateCard(res.card));
                 alert("Cập nhật thông tin thành công!");
                 navigate(0);
               }

@@ -31,24 +31,26 @@ export default function LoginPage(props) {
   const responseSuccessGoogle = (response) => {
     AccountApi.loginViaGoogle(response.tokenId)
       .then((response) => {
-        if (response.status === 200) {
+        console.log(response);
+
+        if (response) {
           setIsLoggedIn(true);
           setIsLogging(false);
 
-          const result = response.data;
+          const result = response;
           const userInfo = {
-            id: result.data.id,
-            email: result.data.email,
-            avatarUrl: result.data.avatarUrl || "avatar-default.png",
-            name: result.data.name,
+            id: result.id,
+            email: result.email,
+            avatarUrl: result.avatarUrl || "avatar-default.png",
+            name: result.name,
           };
 
           console.log(result);
 
           localStorage.setItem("user-info", JSON.stringify(userInfo));
-          localStorage.setItem("user-jwt-tk", result.data.accessToken);
-          localStorage.setItem("user-jwt-rftk", result.data.refreshToken);
-          localStorage.setItem("user-role", result.data.role);
+          localStorage.setItem("user-jwt-tk", result.accessToken);
+          localStorage.setItem("user-jwt-rftk", result.refreshToken);
+          localStorage.setItem("user-role", result.role);
 
           dispatch(
             updateUser({

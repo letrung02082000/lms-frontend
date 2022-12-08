@@ -22,7 +22,7 @@ export function CouponScannedPage(props) {
       .catch((error) => {
         console.log(error);
         setMsg(
-          "Không thể sử dụng mã ưu đãi này. Lỗi: " + error.response.data.message
+          "Không thể sử dụng mã ưu đãi này. Lỗi: " + error.response.message
         );
       });
   };

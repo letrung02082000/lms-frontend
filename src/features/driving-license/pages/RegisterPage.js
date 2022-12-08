@@ -135,7 +135,7 @@ export default function DrivingRegisterPage() {
 
           setIsLoading(false);
         } else {
-          toastWrapper(`${res.data.message}`, "error");
+          toastWrapper(`${res.message}`, "error");
           setIsLoading(false);
         }
       })

@@ -32,7 +32,7 @@ export default function TutorForm(props) {
           );
           setIsLoading(false);
         } else {
-          alert("Lỗi: " + res.data.message);
+          alert("Lỗi: " + res.message);
           setIsLoading(false);
         }
       })
@@ -95,7 +95,7 @@ export default function TutorForm(props) {
           type="text"
           placeholder="Nhập họ tên đầy đủ, có dấu"
           required
-          value={userInfo.data.name}
+          value={userInfo.name}
           onChange={handleNameChange}
         />
       </div>
@@ -107,7 +107,7 @@ export default function TutorForm(props) {
           type="text"
           placeholder="Nhập số điện thoại của bạn"
           required
-          value={userInfo.data.tel}
+          value={userInfo.tel}
           onChange={handleTelChange}
         />
       </div>
@@ -119,7 +119,7 @@ export default function TutorForm(props) {
           type="text"
           placeholder="Nhập số điện thoại Zalo của bạn"
           required
-          value={userInfo.data.zalo}
+          value={userInfo.zalo}
           onChange={handleZaloChange}
         />
       </div>

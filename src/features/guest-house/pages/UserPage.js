@@ -162,7 +162,7 @@ export default function GuestHouseUserPage() {
               id="formName"
               type="text"
               placeholder="Nhập họ tên đầy đủ, có dấu"
-              defaultValue={user?.data.name}
+              defaultValue={user?.name}
             />
           </div>
           <div className={styles.formGroup}>
@@ -172,7 +172,7 @@ export default function GuestHouseUserPage() {
               id="formTel"
               type="text"
               placeholder="Nhập số điện thoại của bạn"
-              defaultValue={user?.data.tel}
+              defaultValue={user?.tel}
             />
           </div>
           {/* <div className={styles.formGroup}>

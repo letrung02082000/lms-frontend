@@ -109,7 +109,7 @@ export function CouponPage(props) {
 
             <QRCode
               id="qrcode"
-              value={`https://isinhvien.vn/coupon-scanned?user=${user.data.id}&coupon=${couponId}`}
+              value={`https://isinhvien.vn/coupon-scanned?user=${user.id}&coupon=${couponId}`}
               size={290}
               level={"H"}
               includeMargin={true}

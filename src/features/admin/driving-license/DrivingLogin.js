@@ -51,7 +51,7 @@ const DrivingLogin = (props) => {
     }
   };
 
-  const handleLoginClick = async (event) => {
+  const handleLoginClick = async () => {
     setIsLogging(true);
 
     const user = {
@@ -62,40 +62,39 @@ const DrivingLogin = (props) => {
     try {
       const response = await AccountApi.loginAdminDriving(user);
 
-      if (response.status === 200) {
-        console.log(response.data);
+      setIsLoggedIn(true);
+      setIsLogging(false);
 
-        setIsLoggedIn(true);
-        setIsLogging(false);
+      const result = response.data;
+      const userInfo = {
+        id: result.id,
+        email: result.email,
+        avatarUrl: result.avatarUrl || "avatar-default.png",
+        name: result.name,
+        role: result.role,
+      };
 
-        const result = response.data;
-        const userInfo = {
-          id: result.data.id,
-          email: result.data.email,
-          avatarUrl: result.data.avatarUrl || "avatar-default.png",
-          name: result.data.name,
-          role: result.data.role,
-        };
+      localStorage.setItem("user-info", JSON.stringify(userInfo));
+      localStorage.setItem("user-jwt-tk", result.accessToken);
+      localStorage.setItem("user-jwt-rftk", result.refreshToken);
+      
+      dispatch(
+        updateUser({
+          isLoggedIn: true,
+          data: userInfo,
+        })
+      );
 
-        localStorage.setItem("user-info", JSON.stringify(userInfo));
-        localStorage.setItem("user-jwt-tk", result.data.accessToken);
-        localStorage.setItem("user-jwt-rftk", result.data.refreshToken);
-        dispatch(
-          updateUser({
-            isLoggedIn: true,
-            data: userInfo,
-          })
-        );
-
-        navigate("/driving-admin");
-      }
+      navigate("/driving-admin");
     } catch (error) {
+      console.log(error);
+
       if (
-        error.response &&
-        (error.response.status === 400 ||
-          error.response.status === 401 ||
-          error.response.status === 404 ||
-          error.response.status === 403)
+        error &&
+        (error.status === 400 ||
+          error.status === 401 ||
+          error.status === 404 ||
+          error.status === 403)
       ) {
         setErrorMsg("Email hoặc mật khẩu không đúng");
       } else {

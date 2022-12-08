@@ -65,8 +65,7 @@ function Driving(props) {
       .then((res) => {
         if (res.data) {
           alert(
-            "Đã cập nhật ngày thành " +
-              new Date(res.data.date).toLocaleDateString()
+            "Đã cập nhật ngày thành " + new Date(res.date).toLocaleDateString()
           );
         } else {
           alert("Không thể cập nhật ngày. Id không hợp lệ");
@@ -83,7 +82,7 @@ function Driving(props) {
         if (res.data) {
           alert("Đã lưu ghi chú ");
         } else {
-          alert(res.data.message);
+          alert(res.message);
         }
       })
       .catch((e) => alert("Không thể cập nhật. Lỗi: " + e.toString()));
@@ -102,7 +101,7 @@ function Driving(props) {
     setLoading(true);
     DrivingApi.updateProcessState(props.id, state)
       .then((res) => {
-        setProcessState(res.data.processState);
+        setProcessState(res.processState);
         setLoading(false);
       })
       .catch((error) => {
@@ -129,8 +128,8 @@ function Driving(props) {
   const handleMessageSent = () => {
     DrivingApi.updateDriving(props.id, !sent)
       .then((res) => {
-        setSent(res.data.messageSent);
-        setProcessState(res.data.processState);
+        setSent(res.messageSent);
+        setProcessState(res.processState);
       })
       .catch((error) => {
         console.log(error);

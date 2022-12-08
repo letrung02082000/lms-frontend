@@ -40,7 +40,7 @@ export function ProfilePage() {
 
   useEffect(() => {
     AccountApi.getProlfile().then((res) => {
-      const userProfile = res.data.user.user;
+      const userProfile = res.user.user;
       setAvatarUrl(userProfile.avatarUrl || "avatar-default.png");
       setName(userProfile.name || "");
       setTel(`0${userProfile.tel}` || "");
@@ -93,7 +93,7 @@ export function ProfilePage() {
           `https://api.imgbb.com/1/upload?key=${imgbbKey}`,
           formDataImgbb
         );
-        formData.avatarUrl = respone.data.data.url;
+        formData.avatarUrl = respone.data.url;
       } catch (err) {
         console.log(err);
       }
@@ -107,7 +107,7 @@ export function ProfilePage() {
 
     AccountApi.postUserUpdateProfile(formData).then((res) => {
       console.log(res.data);
-      if (res.data.message === "success") {
+      if (res.message === "success") {
         dispatch(
           updateUser({
             isLoggedIn: true,
