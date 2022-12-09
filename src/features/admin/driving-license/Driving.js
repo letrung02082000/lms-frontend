@@ -59,7 +59,6 @@ function Driving(props) {
 
   const updateDate = () => {
     const tmpDate = new Date(selectedDate);
-    console.log(tmpDate);
 
     DrivingApi.updateDrivingDate(_id, tmpDate)
       .then((res) => {
@@ -101,7 +100,7 @@ function Driving(props) {
     setLoading(true);
     DrivingApi.updateProcessState(props.id, state)
       .then((res) => {
-        setProcessState(res.processState);
+        setProcessState(res.data.processState);
         setLoading(false);
       })
       .catch((error) => {
