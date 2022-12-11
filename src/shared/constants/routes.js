@@ -26,3 +26,9 @@ export const HEALTH_ADMIN = 'health-admin'
 export const HEALTH_ADMIN_CREATION = 'creation'
 export const HEALTH_ADMIN_UPDATE = 'update'
 export const HEALTH_ADMIN_ALL = 'all'
+
+
+//Admin uniform
+export const UNIFORM_ROOT = 'uniform'
+export const UNIFORM_ORDER = 'order'
+
