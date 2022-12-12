@@ -5,6 +5,7 @@ import { useTable } from 'react-table';
 import uniformApi from 'api/uniformApi';
 import { useState } from 'react';
 import { Table } from 'react-bootstrap';
+import { convertToDateTime } from 'utils/commonUtils';
 
 function OrderPage() {
   const [page, setPage] = useState([]);
@@ -12,6 +13,13 @@ function OrderPage() {
 
   const columns = useMemo(
     () => [
+      {
+        Header: 'Ngày tạo',
+        accessor: 'createdAt',
+        Cell: ({row}) => {
+          return <span>{convertToDateTime(row.values['createdAt'], true)}</span>
+        }
+      },
       {
         Header: 'Khách hàng',
         accessor: 'name',
@@ -69,7 +77,7 @@ function OrderPage() {
           prepareRow(row);
           return (
             <tr {...row.getRowProps()}>
-                <td>{idx}</td>
+                <td>{idx + 1}</td>
             {row.cells.map((cell) => {
               return (
                 <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
