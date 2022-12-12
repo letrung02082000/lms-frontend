@@ -77,7 +77,7 @@ const DrivingLogin = (props) => {
       localStorage.setItem("user-info", JSON.stringify(userInfo));
       localStorage.setItem("user-jwt-tk", result.accessToken);
       localStorage.setItem("user-jwt-rftk", result.refreshToken);
-      
+
       dispatch(
         updateUser({
           isLoggedIn: true,
@@ -87,23 +87,17 @@ const DrivingLogin = (props) => {
 
       navigate("/driving-admin");
     } catch (error) {
-      console.log(error);
+      const { status } = error.response;
 
-      if (
-        error &&
-        (error.status === 400 ||
-          error.status === 401 ||
-          error.status === 404 ||
-          error.status === 403)
-      ) {
+      if (status === 400 || status === 401 || status === 403) {
         setErrorMsg("Email hoặc mật khẩu không đúng");
       } else {
         setErrorMsg("Không thể kết nối đến máy chủ. Vui lòng thử lại sau!");
       }
-
-      setIsLoggedIn(false);
-      setIsLogging(false);
     }
+
+    setIsLoggedIn(false);
+    setIsLogging(false);
   };
 
   return (
