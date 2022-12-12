@@ -131,13 +131,9 @@ export default function LoginPage(props) {
       );
       navigate(-1);
     } catch (error) {
-      console.log(error);
-      if (
-        error.response &&
-        (error.response.status === 400 ||
-          error.response.status === 401 ||
-          error.response.status === 404)
-      ) {
+      const { status } = error.response;
+
+      if (status === 400 || status === 401 || status === 403) {
         setErrorMsg("Email hoặc mật khẩu không đúng");
       } else {
         setErrorMsg("Không thể kết nối đến máy chủ. Vui lòng thử lại sau!");
@@ -190,12 +186,9 @@ export default function LoginPage(props) {
         }
       } catch (error) {
         console.log(error);
-        if (
-          error.response &&
-          (error.response.status === 400 ||
-            error.response.status === 401 ||
-            error.response.status === 404)
-        ) {
+        const { status } = error.response;
+
+        if (status === 400 || status === 401 || status === 403) {
           setErrorMsg("Email hoặc mật khẩu không đúng");
         } else {
           setErrorMsg("Không thể kết nối đến máy chủ. Vui lòng thử lại sau!");

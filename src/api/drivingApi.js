@@ -70,17 +70,17 @@ class DrivingApi {
     return axiosClient.put(url, { _id, state }, authHeader());
   };
 
+  updateMessageSent = async (_id, messageSent) => {
+    const url = `${API_PATH}/sent`;
+    return axiosClient.put(url, { _id, messageSent }, authHeader());
+  };
+
   getImage = async (name) => {
     const url = `${API_PATH}/image`;
     return axiosClient.get(url, {
       params: { name },
       ...authHeader(),
     });
-  };
-
-  handleMessageSent = async (_id, messageSent) => {
-    const url = `${API_PATH}/sent`;
-    return axiosClient.put(url, { _id, messageSent }, authHeader());
   };
 
   getAllDrivingsDate = async () => {

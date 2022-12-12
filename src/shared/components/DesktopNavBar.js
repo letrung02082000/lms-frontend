@@ -62,7 +62,7 @@ function DesktopNavBar(props) {
             <Nav.Link
               eventKey="/"
               className={`${styles.navItem} ${
-                activeKey === "/" ? styles.selectedNav : null
+                activeKey === "/" ? styles.selectedNav : styles.unSelectedNav
               }`}
               onClick={handleHomeClick}
             >
@@ -77,7 +77,7 @@ function DesktopNavBar(props) {
                   style={{ backgroundColor: "transparent", borderWidth: "0" }}
                 >
                   <img
-                    src={user.avatarUrl}
+                    src={user.data.avatarUrl || "/common/avatar.png"}
                     alt="avt"
                     style={{
                       width: "2rem",
@@ -85,7 +85,7 @@ function DesktopNavBar(props) {
                       borderRadius: "50px",
                     }}
                   />
-                  <span>{user.email}</span>
+                  <span>{user.data.email}</span>
                 </button>
                 <div className={styles.dropDown}>
                   <Tool title="Đăng xuất" handle={handleLogoutClick} />

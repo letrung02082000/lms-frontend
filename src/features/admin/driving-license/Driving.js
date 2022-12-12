@@ -125,10 +125,10 @@ function Driving(props) {
   };
 
   const handleMessageSent = () => {
-    DrivingApi.updateDriving(props.id, !sent)
+    DrivingApi.updateMessageSent(props.id, !sent)
       .then((res) => {
-        setSent(res.messageSent);
-        setProcessState(res.processState);
+        setSent(res.data.messageSent);
+        setProcessState(res.data.processState);
       })
       .catch((error) => {
         console.log(error);

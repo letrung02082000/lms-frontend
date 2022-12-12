@@ -16,7 +16,6 @@ function AccountPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
-  const [randomImageUrl, setRandomImageUrl] = useState();
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -24,14 +23,6 @@ function AccountPage() {
 
   const handleSignUpClick = () => {
     navigate("/login");
-  };
-
-  const getRandomImage = () => {
-    fetch("https://cataas.com/c?wi=200")
-      .then((response) => response.blob())
-      .then((imageBlob) => {
-        setRandomImageUrl(URL.createObjectURL(imageBlob));
-      });
   };
 
   const handleLogout = () => {
@@ -54,11 +45,8 @@ function AccountPage() {
       <MainLayout>
         {user.isLoggedIn ? (
           <>
-            <ProfileImage src={randomImageUrl} />
-            <button className="btn w-100" onClick={getRandomImage}>
-              Xin chào {user?.data?.name}!
-            </button>
-
+            <ProfileImage src={user.data.avatarUrl || "/common/avatar.png"} />
+            <div style={{display: "flex", justifyContent: "center"}}>Xin chào {user?.data?.name}!</div>
             <Item path="/support">Hỗ trợ</Item>
             <Item onClick={handleLogout}>Đăng xuất</Item>
           </>
