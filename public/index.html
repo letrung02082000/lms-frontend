@@ -25,9 +25,18 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Trang dành cho sinh viên</title>
+    <style>
+      .zalo-chat-widget {
+        bottom: 5rem !important;
+        right: 1rem !important;
+      }
+    </style>
   </head>
   <body>
     <noscript>Vui lòng bật javascript trên trình duyệt/</noscript>
+    <script src="https://sp.zalo.me/plugins/sdk.js"></script>
+    <div class="zalo-chat-widget" data-oaid="4013961016678131109" data-welcome-message="Đặt câu hỏi để nhận được hỗ trợ ngay" data-autopopup="0" data-width="300" data-height="300"></div>
     <div id="root"></div>
   </body>
+  
 </html>
