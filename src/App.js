@@ -61,7 +61,6 @@ const App = () => {
 
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
-    console.log("REACT_APP_GA_TRACKING_ID is", GA_TRACKING_ID);
   }, []);
 
   return (
