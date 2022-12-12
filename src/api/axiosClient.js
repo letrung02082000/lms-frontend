@@ -3,10 +3,13 @@ import axios from 'axios'
 console.log(process.env.NODE_ENV)
 
 const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/'
+const token = localStorage.getItem("user-jwt-tk");
 
 const axiosClient = axios.create({
   baseURL,
-  headers: {}
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
 })
 
 const handleResponse = res => {

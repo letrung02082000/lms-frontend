@@ -8,9 +8,9 @@ class UniformApi {
     return axiosClient.post(url, data);
   };
 
-  getUniformList = async (limit = 10, page = 0) => {
+  getUniformList = async (page = 0) => {
     const url = `${API_PATH}`;
-    return axiosClient.get(url, { params: { limit, page } });
+    return axiosClient.get(url, { params: { page } });
   };
 
   getUniformByTel = async (tel) => {
