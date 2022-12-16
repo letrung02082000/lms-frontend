@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUser, selectUser } from "store/userSlice";
 
 import AccountApi from "api/accountApi";
+import { toastWrapper } from "utils";
 
 export default function LoginPage(props) {
   const navigate = useNavigate();
@@ -130,14 +131,9 @@ export default function LoginPage(props) {
         })
       );
       navigate(-1);
-    } catch (error) {
-      const { status } = error.response;
-
-      if (status === 400 || status === 401 || status === 403) {
-        setErrorMsg("Email hoặc mật khẩu không đúng");
-      } else {
-        setErrorMsg("Không thể kết nối đến máy chủ. Vui lòng thử lại sau!");
-      }
+    } catch (e) {
+      console.log(e)
+      toastWrapper(e?.response?.data?.message || 'Đăng nhập thất bại', 'error')
       setIsLoggedIn(false);
       setIsLogging(false);
     }

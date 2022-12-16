@@ -52,6 +52,7 @@ import {
   SupportPage,
   B2InfoPage,
 } from "features";
+import YenSharePage from "features/yenshare/pages/YenSharePage";
 
 const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
 ReactGA.initialize(GA_TRACKING_ID);
@@ -240,6 +241,15 @@ const App = () => {
           element={
             <ServiceLayout pageTitle="Thuê xe" navigationTo="/bicycles">
               <MaintainPage />
+            </ServiceLayout>
+          }
+        />
+
+        <Route
+          path="/yenshare"
+          element={
+            <ServiceLayout pageTitle="YÊN SHARE - Chia sẻ yên sau" navigationTo="/yenshare">
+              <YenSharePage />
             </ServiceLayout>
           }
         />

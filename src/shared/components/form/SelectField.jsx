@@ -29,7 +29,7 @@ function SelectField({ name, control, rules, defaultValue, ...props }) {
   return (
     <Styles>
       <Form.Group className="mb-3">
-        <Form.Label>{props?.label || props?.children || ''}</Form.Label>
+        {props?.label && <Form.Label>{props?.label || props?.children || ''}</Form.Label>}
         <Select
           styles={customStyles}
           options={props?.options || []}
