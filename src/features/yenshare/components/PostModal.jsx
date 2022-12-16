@@ -5,16 +5,27 @@ import { Button, Col, Modal, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import RadioField from 'shared/components/form/RadioField';
 import ReactDatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
+import { toastWrapper } from 'utils';
+import { convertToDateTime } from 'utils/commonUtils';
+import { useMemo } from 'react';
+import motobikeApi from 'api/motobikeApi';
 
 function PostModal({ show, setShow }) {
   const [time1, setTime1] = useState(Date.now());
   const [time2, setTime2] = useState(Date.now());
-  const { handleSubmit, control, setValue, watch, register } = useForm({
+  const [posting, setPosting] = useState(false);
+
+  const beforeTime = useMemo(() => {
+    let retDate = new Date(time1);
+    return retDate.setDate(retDate.getDate() - 3);
+  }, [time1]);
+
+  const { handleSubmit, control, setValue, watch, setFocus } = useForm({
     mode: 'onBlur',
     reValidateMode: 'onChange',
     defaultValues: {
-      filter: 'isDriver=both',
+      note: '',
     },
     resolver: undefined,
     context: undefined,
@@ -25,17 +36,17 @@ function PostModal({ show, setShow }) {
     delayError: undefined,
   });
 
-  const [isDriver, setIsDriver] = useState('isDriver=false');
+  const [isDriver, setIsDriver] = useState('back');
   const [wayType, setWayType] = useState('oneWay');
 
   const driverOptions = [
     {
       label: 'Tài xế',
-      value: 'isDriver=false',
+      value: 'back',
     },
     {
       label: 'Yên sau',
-      value: 'isDriver=true',
+      value: 'front',
     },
   ];
 
@@ -49,6 +60,62 @@ function PostModal({ show, setShow }) {
       value: 'twoWay',
     },
   ];
+
+  const onSubmit = async () => {
+    await handleSubmit((formData) => {
+      const data = {
+        ...formData,
+        time1,
+        time2,
+        twoWay: wayType === 'twoWay',
+        isDriver: isDriver === 'front',
+      };
+
+      if (time1 <= Date.now()) {
+        return toastWrapper(
+          'Thời gian đi phải lớn hơn thời gian hiện tại',
+          'error',
+          {
+            autoClose: 25000,
+          }
+        );
+      }
+
+      if (data?.twoWay && time2 <= time1) {
+        return toastWrapper('Thời gian về phải lớn hơn thời gian đi', 'error', {
+          autoClose: 25000,
+        });
+      }
+
+      setPosting(true);
+      motobikeApi
+        .createMotobikeRequest(data)
+        .then((res) => {
+          setPosting(false);
+          toastWrapper(
+            `Lên lịch thành công! Tin sẽ xuất hiện từ ngày ${convertToDateTime(
+              beforeTime,
+              true,
+              ' lúc '
+            )} đến ngày
+          ${convertToDateTime(time1, true, ' lúc ')}`,
+            'success',
+            { autoClose: 15000 }
+          );
+          setPosting(false);
+          setShow(false);
+        })
+        .catch((e) => {
+          toastWrapper(e?.response?.data?.message, 'error');
+          setPosting(false);
+        });
+    })();
+  };
+
+  const handleClearButton = (name) => {
+    setValue(name, '');
+    setFocus(name);
+  };
 
   return (
     <Modal
@@ -88,28 +155,52 @@ function PostModal({ show, setShow }) {
         <Row>
           <InputField
             name='from'
-            register={register}
             label='Điểm đi'
             placeholder='Nhập điểm đi của bạn'
+            control={control}
+            onClear={handleClearButton}
+            rules={{
+              maxLength: {
+                value: 50,
+                message: 'Độ dài tối đa 50 ký tự',
+              },
+              required: 'Vui lòng nhập trường này',
+            }}
           />
         </Row>
         <Row>
           <InputField
             name='to'
-            register={register}
             label='Điểm đến'
             placeholder='Nhập điểm đến của bạn'
+            control={control}
+            onClear={handleClearButton}
+            rules={{
+              maxLength: {
+                value: 50,
+                message: 'Độ dài tối đa 50 ký tự',
+              },
+              required: 'Vui lòng nhập trường này',
+            }}
           />
         </Row>
         <Row>
           <InputField
             name='tip'
-            register={register}
             label='Chia tiền xăng'
             placeholder='5000đ'
+            control={control}
+            onClear={handleClearButton}
+            rules={{
+              maxLength: {
+                value: 50,
+                message: 'Độ dài tối đa 50 ký tự',
+              },
+              required: 'Vui lòng nhập trường này',
+            }}
           />
         </Row>
-        <Row className='mb-3'>
+        <Row className='my-3'>
           <Col md={6}>
             <p className='form-label fw-bold mb-2'>Giờ đi</p>
             <ReactDatePicker
@@ -136,19 +227,77 @@ function PostModal({ show, setShow }) {
           )}
         </Row>
         <Row>
+          <Col>
+            <InputField
+              name='tel'
+              label='Di động'
+              placeholder='Nhập SĐT liên hệ'
+              control={control}
+              onClear={handleClearButton}
+              rules={{
+                maxLength: {
+                  value: 50,
+                  message: 'Độ dài tối đa 50 ký tự',
+                },
+                required: 'Vui lòng nhập trường này',
+              }}
+            />
+          </Col>
+          <Col>
+            <InputField
+              name='zalo'
+              label='Zalo (Không bắt buộc)'
+              placeholder='Nhập SĐT Zalo'
+              control={control}
+              onClear={handleClearButton}
+              rules={{
+                maxLength: {
+                  value: 50,
+                  message: 'Độ dài tối đa 50 ký tự',
+                },
+                required: false
+              }}
+            />
+          </Col>
+        </Row>
+        <Row>
           <InputField
             as='textarea'
             name='note'
-            register={register}
             label='Ghi chú'
             placeholder='Cảm ơn bạn nhé'
+            control={control}
+            onClear={handleClearButton}
+            rules={{
+              maxLength: {
+                value: 100,
+                message: 'Độ dài tối đa 100 ký tự',
+              },
+              required: true,
+            }}
           />
         </Row>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant='secondary' onClick={() => setShow(false)}>
-          Đóng
-        </Button>
+        <p>
+          Tin của bạn sẽ xuất hiện từ ngày{' '}
+          <span className='text-success fw-bold'>
+            {convertToDateTime(beforeTime, true, ' lúc ')}
+          </span>{' '}
+          đến ngày{' '}
+          <span className='text-success fw-bold'>
+            {convertToDateTime(time1, true, ' lúc ')}
+          </span>
+        </p>
+        {posting ? (
+          <Button variant='primary' type='button'>
+            Đang lên lịch...
+          </Button>
+        ) : (
+          <Button variant='primary' type='button' onClick={onSubmit}>
+            Lên lịch
+          </Button>
+        )}
       </Modal.Footer>
     </Modal>
   );

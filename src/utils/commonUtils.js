@@ -3,4 +3,8 @@ const convertToDateTime = (_date, hasTime, hyphen = ' ', format = 'en-GB') => {
     return `${date?.toLocaleDateString('en-GB')}${hasTime ? `${hyphen}${date?.toLocaleTimeString(format)}` : ''}`
 }
 
-export { convertToDateTime }
+const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-GB').format(value || 0);
+}
+
+export { convertToDateTime, formatCurrency }

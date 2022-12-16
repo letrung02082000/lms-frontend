@@ -9,13 +9,15 @@ import Pagination from 'shared/components/footer/Pagination';
 import { Button, Col, Row } from 'react-bootstrap';
 import SelectField from 'shared/components/form/SelectField';
 import { useForm } from 'react-hook-form';
-import { BsFilter, BsPencilSquare } from 'react-icons/bs';
+import { BsCardList, BsPencilSquare } from 'react-icons/bs';
 import PostModal from '../components/PostModal';
+import ListModal from '../components/ListModal';
 
 function YenSharePage() {
   const [page, setPage] = useState(0);
   const [data, setData] = useState([]);
   const [showPostModal, setShowPostModal] = useState(false);
+  const [showListModal, setShowListModal] = useState(false);
   const token = localStorage.getItem('user-jwt-tk');
   const { handleSubmit, control, setValue, watch } = useForm({
     mode: "onBlur",
@@ -41,7 +43,7 @@ function YenSharePage() {
       .catch((e) => {
         toastWrapper(e?.response?.data?.message || 'Đã có lỗi xảy ra', 'error');
       });
-  }, [page]);
+  }, [page, showPostModal, showListModal]);
 
   const handlePageChange = (value) => {
     if(value < 0) return;
@@ -64,11 +66,23 @@ function YenSharePage() {
 
   return (
     <Styles>
-      <Row className='mt-3'>
+      <Row className='mt-5'>
+        <Col className='d-flex justify-content-center'>
+          <Button onClick={() => setShowPostModal(true)} className='px-3 py-2 mx-2'>
+            <BsPencilSquare /> Đăng tin
+          </Button>
+          <Button onClick={() => setShowListModal(true)} className='px-3 py-2 mx-2'>
+            <BsCardList /> Tin của bạn
+          </Button>
+        </Col>
+      </Row>
+
+      {/* <Row className='mt-3'>
         <div className='form-label'>Lọc theo</div>
       </Row>
+
       <Row>
-        <Col md={6}>
+        <Col xs={7}>
           <SelectField
             options={filterOptions}
             control={control}
@@ -76,19 +90,15 @@ function YenSharePage() {
           />
         </Col>
         <Col>
-          <Button variant='outline-primary'>
+          <Button variant='outline-primary w-100'>
             <BsFilter /> Áp dụng
           </Button>
         </Col>
-        <Col className='d-flex justify-content-end align-items-start'>
-          <Button onClick={() => setShowPostModal(true)}>
-            <BsPencilSquare /> Đăng tin
-          </Button>
-        </Col>
-      </Row>
+      </Row> */}
+
       {data.length > 0 ? (
         data.map((item) => {
-          return <MotobikeItem {...item} key={item?._id}/>;
+          return <MotobikeItem {...item} key={item?._id} hasInfoButton/>;
         })
       ) : (
         <div>
@@ -103,6 +113,7 @@ function YenSharePage() {
         />
       </div>
       <PostModal show={showPostModal} setShow={setShowPostModal} />
+      <ListModal show={showListModal} setShow={setShowListModal} />
     </Styles>
   );
 }
