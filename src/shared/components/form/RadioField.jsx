@@ -10,7 +10,10 @@ function RadioField(props) {
         name={props?.name}
         type={option?.type || 'radio'}
         key={`${option?.label}_${index}`}
-        onChange={e => props.onChange(e.target.value)}
+        id={`${option?.label}_${index}`}
+        onChange={e => {
+          props.onChange(e.target.value)
+        }}
         label={option?.label}
         value={option?.value}
         checked={option?.value === props?.checkValue}
@@ -20,7 +23,7 @@ function RadioField(props) {
 
   return (
     <Styles>
-      <Form.Label className="mb-3">{props?.label}</Form.Label>
+      {props?.label && <Form.Label className="mb-3 fw-bold">{props?.label}</Form.Label>}
       <Form.Group className="ms-3">{generateCheck}</Form.Group>
     </Styles>
   )
