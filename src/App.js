@@ -249,9 +249,7 @@ const App = () => {
           path="/yenshare"
           element={
             <ServiceLayout pageTitle="YÊN SHARE - Chia sẻ yên sau" navigationTo="/yenshare">
-                <YenSharePage />
-              {/* <RequireAuth>
-              </RequireAuth> */}
+              <YenSharePage />
             </ServiceLayout>
           }
         />

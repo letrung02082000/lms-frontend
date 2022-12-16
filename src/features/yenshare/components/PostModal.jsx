@@ -6,15 +6,25 @@ import { useForm } from 'react-hook-form';
 import RadioField from 'shared/components/form/RadioField';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { toastWrapper } from 'utils';
+import { checkLogin, toastWrapper } from 'utils';
 import { convertToDateTime } from 'utils/commonUtils';
 import { useMemo } from 'react';
 import motobikeApi from 'api/motobikeApi';
+import { selectUser } from 'store/userSlice';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function PostModal({ show, setShow }) {
   const [time1, setTime1] = useState(Date.now());
   const [time2, setTime2] = useState(Date.now());
   const [posting, setPosting] = useState(false);
+  const user = useSelector(selectUser)
+  const navigate = useNavigate();
+
+  useEffect(()=> {
+    checkLogin();
+  }, [show])
 
   const beforeTime = useMemo(() => {
     let retDate = new Date(time1);
@@ -116,6 +126,12 @@ function PostModal({ show, setShow }) {
     setValue(name, '');
     setFocus(name);
   };
+  
+  if(!user?.isLoggedIn && show) {
+    return <Navigate to='/login'/>
+  }
+
+  console.log(user)
 
   return (
     <Modal

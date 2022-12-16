@@ -3,11 +3,20 @@ import { Button, Modal } from 'react-bootstrap';
 import 'react-datepicker/dist/react-datepicker.css';
 import { convertToDateTime } from 'utils/commonUtils';
 import motobikeApi from 'api/motobikeApi';
-import { toastWrapper } from 'utils';
+import { checkLogin, toastWrapper } from 'utils';
 import MotobikeItem from './MotobikeItem';
+import { useSelector } from 'react-redux';
+import { selectUser } from 'store/userSlice';
+import { Navigate } from 'react-router-dom';
 
 function ListModal({ show, setShow }) {
   const [data, setData] = useState(false);
+  const user = useSelector(selectUser)
+
+  useEffect(()=> {
+    checkLogin();
+  }, [show])
+
   useEffect(() => {
     motobikeApi
       .getMotobikeListByUser()
@@ -18,6 +27,10 @@ function ListModal({ show, setShow }) {
         return toastWrapper(e?.response?.data?.message);
       });
   }, [show]);
+
+  if(!user?.isLoggedIn && show) {
+    return <Navigate to='/login'/>
+  }
 
   return (
     <Modal
