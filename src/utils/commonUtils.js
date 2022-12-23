@@ -7,4 +7,9 @@ const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-GB').format(value || 0);
 }
 
-export { convertToDateTime, formatCurrency }
+const copyText = (value) => {
+    return navigator.clipboard.writeText(value);
+};
+
+
+export { convertToDateTime, formatCurrency, copyText }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import SearchBar from "shared/components/SearchBar";
 import styles from "./registerPage.module.css";
@@ -12,12 +12,23 @@ import { convertPhoneNumber } from "utils";
 import ZaloLink from "shared/components/link/ZaloLink";
 
 import drivingApi from "api/drivingApi";
+import { Button, Row } from "react-bootstrap";
+import AccountModal from "../components/AccountModal";
+import { BsFillCheckCircleFill } from "react-icons/bs";
 
 export default function DrivingRegisterPage() {
+  const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
+
+  const drivingDate = useMemo(()=>{
+    if(drivingInfo?.date) {
+      return new Date(drivingInfo?.date).toLocaleDateString('en-GB')
+    } else return null;
+  }, [drivingInfo?.date]);
   const { search } = useLocation();
   const source = new URLSearchParams(search).get("s") || 0;
 
   const [frontsideName, setFrontsideName] = useState(null);
+  const [accountShow, setAccountShow] = useState(false);
   const [frontsideFile, setFrontsideFile] = useState(null);
   const [backsideName, setBacksideName] = useState(null);
   const [backsideFile, setBacksideFile] = useState(null);
@@ -86,10 +97,10 @@ export default function DrivingRegisterPage() {
       );
     }
 
-    const fullname = document.getElementById("formName").value;
-    const tel = document.getElementById("formTel").value;
-    const zalo = document.getElementById("formZalo").value;
-    const feedback = document.getElementById("formFeedback").value;
+    const fullname = document.getElementById("formName").value?.trim();
+    const tel = document.getElementById("formTel").value?.trim();
+    const zalo = document.getElementById("formZalo").value.trim();
+    const feedback = document.getElementById("formFeedback").value.trim();
     let paidState = isPaid === 0;
 
     if (!fullname || !tel || !zalo) {
@@ -121,6 +132,8 @@ export default function DrivingRegisterPage() {
 
     drivingApi.addDriving(formData)
       .then((res) => {
+        console.log(res)
+        localStorage.setItem('driving-info', JSON.stringify(res?.data));
         toastWrapper(
           `Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: ${DRIVING_LICENSE_NUMBER} (Mr. Trung) để được xử lý.`,
           "success",
@@ -138,10 +151,6 @@ export default function DrivingRegisterPage() {
         toastWrapper(`${error.toString()}`, "error");
         setIsLoading(false);
       });
-  };
-
-  const handleIsPaidChange = (value) => {
-    setIsPaid(value);
   };
 
   const handlePaymentMethodChange = (value) => {
@@ -180,14 +189,6 @@ export default function DrivingRegisterPage() {
       setPortraitName("Lỗi: Tệp tải lên không phải là tệp hình ảnh");
     }
   };
-  const uploadReceipt = (e) => {
-    if (imageExtensions.includes(e.target.files[0].type)) {
-      setReceiptFile(e.target.files[0]);
-      setReceiptName(e.target.files[0].name);
-    } else {
-      setReceiptName("Lỗi: Tệp tải lên không phải là tệp hình ảnh");
-    }
-  };
 
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
@@ -221,6 +222,7 @@ export default function DrivingRegisterPage() {
   return (
     <Styles className={styles.drivingRegisterContainer}>
       <SearchBar
+        style={{ border: '1px solid' }}
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
         onChange={handleSearchChange}
@@ -251,22 +253,20 @@ export default function DrivingRegisterPage() {
               <p>Họ tên: {child.name}</p>
               <p>
                 Ngày dự thi:
-                {` ${date.getDate()}/${
-                  date.getMonth() + 1
-                }/${date.getFullYear()}`}
+                {` ${date.getDate()}/${date.getMonth() + 1
+                  }/${date.getFullYear()}`}
               </p>
               <p>Trạng thái: {state}</p>
               <p>
                 Hồ sơ của bạn sẽ được xử lý vào ngày:
-                {` ${processDate.getDate()}/${
-                  processDate.getMonth() + 1
-                }/${processDate.getFullYear()}`}
+                {` ${processDate.getDate()}/${processDate.getMonth() + 1
+                  }/${processDate.getFullYear()}`}
               </p>
               <p>
-                Vui lòng liên hệ{" "}
+                Vui lòng liên hệ Zalo{" "}
                 <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
                   {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
-                </ZaloLink>
+                </ZaloLink>{" "}
                 để được hỗ trợ trong trường hợp hồ sơ của bạn chưa được xử lý.
               </p>
             </div>
@@ -276,7 +276,7 @@ export default function DrivingRegisterPage() {
       <div className="portrait-rules">
         <LazyImage src={PortraitBanner} />
       </div>
-      <form className={styles.drivingFormContainer}>
+      <div className="info-area d-flex flex-column align-items-center">
         <ul className="px-2">
           <li style={{ margin: 0 }}>
             Xem hướng dẫn đăng ký dự thi{" "}
@@ -285,47 +285,37 @@ export default function DrivingRegisterPage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              tại đây.
+              tại đây
             </a>
           </li>
-          <li>
-            Thông tin chuyển khoản:
-            <br />- Chủ tài khoản: Nguyễn Ngọc Huân
-            <br />- Ngân hàng: MB Bank (Ngân hàng Quân đội)
-            <br />- Số tài khoản: 0877876877
-            <br />- Nội dung: Họ tên_SĐT_Bang A1_Ngày dự thi
-            <br />- Số tiền: 590.000 đồng đối với bằng A1, 2.000.000 đồng đối
-            với bằng A2
-            <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã chuyển
-            khoản.
-            <br />- Gửi lại ảnh chụp biên lai tại{" "}
-            <a
-              href="http://zalo.me/4013961016678131109?src=qr"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Zalo OA
-            </a>{" "}
-            nếu đóng sau khi đăng ký.
-          </li>
-          <li>
-            Truy cập Zalo Official Account{" "}
-            <a
-              href="http://zalo.me/4013961016678131109?src=qr"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Trung tâm dịch vụ sinh viên iStudent
-            </a>{" "}
-            và nhấn "Quan tâm" để trung tâm có thể liên hệ với bạn (Quan trọng)
-          </li>
-
-          <li>Hoàn thành lệ phí thi trước ngày dự thi 16 ngày.</li>
         </ul>
+        <Button className="mb-3 ms-2" variant='outline-primary' onClick={() => setAccountShow(true)}>Xem hướng dẫn chuyển khoản</Button>
+      </div>
+
+      {drivingInfo?._id ? <div className="success-container d-flex flex-column align-items-center">
+        <Row>
+          <BsFillCheckCircleFill color='#019f91' size={45} />
+        </Row>
+        <h4 className='text-center mt-2 mb-3 text-uppercase'>
+          Đăng ký thành công
+        </h4>
+        <p>Bạn vui lòng hoàn thành lệ phí thi trước ngày dự thi 15 ngày</p>
+        <p>Xác nhận đăng ký thành công sẽ được gửi qua Zalo trong vòng 1 ngày</p>
+        <Button className="mb-3 ms-2" variant='outline-primary' onClick={() => {
+          localStorage.removeItem('driving-info');
+          window.location.reload();
+        }}>Đăng ký hồ sơ mới</Button>
+        <p>
+            Zalo hỗ trợ:{' '}
+            <ZaloLink tel='4013961016678131109'>
+              Trung tâm dịch vụ sinh viên iStudent
+            </ZaloLink>
+          </p>
+      </div> : <form className={styles.drivingFormContainer}>
         <p style={{ margin: 0, color: " #ff0000 " }}>* bắt buộc</p>
 
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Tên của bạn*</label>
+          <label className={styles.formLabel}> Tên của bạn*</label>
           <input
             className={styles.formInput}
             id="formName"
@@ -456,7 +446,7 @@ export default function DrivingRegisterPage() {
         {drivingType === 0 ? (
           <div className={styles.formGroup}>
             <label className={styles.formLabel}>
-              Chọn ngày thi (có thể thay đổi giữa 2 buổi theo lịch của sở GTVT)*
+              Chọn ngày thi*
             </label>
 
             {dateList.map((child, index) => {
@@ -487,7 +477,7 @@ export default function DrivingRegisterPage() {
               checked={paymentMethod === 0}
             />
             <p onClick={() => handlePaymentMethodChange(0)}>
-              Đóng trực tiếp tại nhà khách ĐHQG
+              Đóng trực tiếp tại nhà khách Đại Học Quốc Gia
             </p>
           </div>
           <div className={styles.selectContainer}>
@@ -502,48 +492,7 @@ export default function DrivingRegisterPage() {
             </p>
           </div>
         </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Bạn đã đóng lệ phí chưa?*</label>
-          <div className={styles.selectContainer}>
-            <input
-              className={styles.formInput}
-              type="radio"
-              onChange={() => handleIsPaidChange(0)}
-              checked={isPaid === 0}
-            />
-            <p onClick={() => handleIsPaidChange(0)}>Đã thanh toán</p>
-          </div>
 
-          <div className={styles.selectContainer}>
-            <input
-              className={styles.formInput}
-              type="radio"
-              onChange={() => handleIsPaidChange(1)}
-              checked={isPaid === 1}
-            />
-            <p onClick={() => handleIsPaidChange(1)}>Mình sẽ đóng lệ phí sau</p>
-          </div>
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>
-            Ảnh chụp biên lai (nếu đã đóng lệ phí)
-          </label>
-          <label className={styles.formUploadButton}>
-            <input
-              className={styles.formInput}
-              type="file"
-              accept="image/*"
-              id="receipt"
-              name="receipt"
-              onChange={uploadReceipt}
-            />
-            Tải tệp lên
-          </label>
-
-          {receiptName ? (
-            <p className={styles.formFilename}>{receiptName}</p>
-          ) : null}
-        </div>
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>Thắc mắc/Góp ý</label>
           <textarea className={styles.formFeedbackInput} id="formFeedback" />
@@ -575,7 +524,9 @@ export default function DrivingRegisterPage() {
           </a>{" "}
           để được hỗ trợ nhanh nhất.
         </p>
-      </form>
+      </form>}
+
+      <AccountModal bankCode='970422' show={accountShow} setShow={setAccountShow} amount={590000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'} ${drivingDate || '<Ngày dự thi>'}`} />
     </Styles>
   );
 }
@@ -591,5 +542,26 @@ const Styles = styled.div`
   .filename {
     margin: 1rem 0 0;
     font-weight: bold;
+  }
+
+  .info-area {
+    background-color: white;
+    margin: 1rem auto;
+    padding: 1rem 0;
+    width: 95%;
+    border-radius: 15px;
+  }
+
+  .info-area ul {
+    list-style: none;
+  }
+
+  .success-container {
+    background-color: white;
+    margin: 1rem auto;
+    padding: 1rem 0;
+    width: 95%;
+    border-radius: 15px;
+
   }
 `;
