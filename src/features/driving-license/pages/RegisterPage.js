@@ -18,10 +18,9 @@ import { BsFillCheckCircleFill } from "react-icons/bs";
 
 export default function DrivingRegisterPage() {
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
-
   const drivingDate = useMemo(()=>{
     if(drivingInfo?.date) {
-      return new Date(drivingInfo?.date).toLocaleDateString('en-GB')
+      return new Date(drivingInfo?.date).toLocaleDateString('en-GB').split("/").join("");
     } else return null;
   }, [drivingInfo?.date]);
   const { search } = useLocation();
@@ -526,7 +525,7 @@ export default function DrivingRegisterPage() {
         </p>
       </form>}
 
-      <AccountModal bankCode='970422' show={accountShow} setShow={setAccountShow} amount={590000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'} ${drivingDate || '<Ngày dự thi>'}`} />
+      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={590000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'} ${drivingDate || '<Ngày dự thi>'}`} />
     </Styles>
   );
 }
@@ -559,7 +558,7 @@ const Styles = styled.div`
   .success-container {
     background-color: white;
     margin: 1rem auto;
-    padding: 1rem 0;
+    padding: 1rem;
     width: 95%;
     border-radius: 15px;
 
