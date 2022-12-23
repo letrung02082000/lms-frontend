@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { BiSearch } from 'react-icons/bi'
 import styles from './searchBar.module.css'
 
-function SearchBar({ placeholder, onChange, focusText, onKeyPress, value }) {
+function SearchBar({ placeholder, onChange, focusText, onKeyPress, value, ...props }) {
   const [placeholderText, setPlaceholderText] = useState(placeholder)
 
   const handleFocus = () => {
@@ -11,7 +11,7 @@ function SearchBar({ placeholder, onChange, focusText, onKeyPress, value }) {
     }
   }
   return (
-    <div className={styles.searchInput}>
+    <div className={styles.searchInput} {...props}>
       <div className={styles.searchIcon}>
         <BiSearch size={25} />
       </div>

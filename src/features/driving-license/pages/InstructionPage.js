@@ -8,6 +8,9 @@ import ZaloLink from "shared/components/link/ZaloLink";
 import { convertPhoneNumber } from "utils";
 
 import DrivingApi from "api/drivingApi";
+import AccountModal from "../components/AccountModal";
+import { useMemo } from "react";
+import { Button } from "react-bootstrap";
 
 export default function DrivingInstructionPage(props) {
   const location = useLocation();
@@ -15,6 +18,14 @@ export default function DrivingInstructionPage(props) {
   const source = search.get("s");
   const navigate = useNavigate();
   const [dateList, setDateList] = useState([]);
+  const [accountShow, setAccountShow] = useState(false);
+  const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
+
+  const drivingDate = useMemo(()=>{
+    if(drivingInfo?.date) {
+      return new Date(drivingInfo?.date).toLocaleDateString('en-GB')
+    } else return null;
+  }, [drivingInfo?.date]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -148,21 +159,7 @@ export default function DrivingInstructionPage(props) {
           </div>
           <div id="online">
             <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký online</h3>
-            <p>1. Quan tâm Zalo Official Account để nhận hướng dẫn dự thi</p>
-            <ul>
-              <li>
-                Truy cập vào Zalo OA tại{" "}
-                <a
-                  href="http://zalo.me/4013961016678131109?src=qr"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Trung tâm dịch vụ sinh viên iStudent
-                </a>{" "}
-              </li>
-              <li>Chọn "Quan tâm" (quan trọng)</li>
-            </ul>
-            <p>2. Hoàn thành mẫu đơn đăng ký online bao gồm:</p>
+            <p>1. Hoàn thành mẫu đơn đăng ký online bao gồm:</p>
             <ul>
               <li>Họ tên đầy đủ, có dấu.</li>
               <li>Số điện thoại liên hệ của bạn.</li>
@@ -170,7 +167,7 @@ export default function DrivingInstructionPage(props) {
               <li>
                 Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (ảnh tự chụp
                 bằng điện thoại, không quá 3 tháng, không chụp ảnh thẻ): Tóc
-                không quá trán, vén tóc ra sau mang tai, LẤY ĐỦ 2 VAI, LẤY TỪ
+                không che trán, vén tóc ra sau mang tai, LẤY ĐỦ 2 VAI, LẤY TỪ
                 THẮT LƯNG TRỞ LÊN QUA ĐẦU, không đeo kính, trang phục lịch sự,
                 lấy nền tường. Vui lòng không sử dụng filter hay chỉnh sửa làm
                 mất đặc điểm nhận dạng. Xem ảnh mẫu{" "}
@@ -189,25 +186,9 @@ export default function DrivingInstructionPage(props) {
             </ul>
             <p>3. Thanh toán lệ phí</p>
             <ul>
-              <li>
-                Thông tin chuyển khoản:
-                <br />- Chủ tài khoản: Nguyễn Ngọc Huân
-                <br />- Ngân hàng: MB Bank (Ngân hàng Quân đội)
-                <br />- Số tài khoản: 0877876877
-                <br />- Nội dung: Họ tên_SĐT_Bang A1_Ngày dự thi
-                <br />- Số tiền: 590.000 đồng
-                <br />- Gửi lại ảnh chụp biên lai trong form đăng ký nếu đã
-                chuyển khoản.
-                <br />- Gửi lại ảnh chụp biên lai tại Zalo Official Account:{" "}
-                <a
-                  href="https://zalo.me/4013961016678131109?src=qr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Trung tâm dịch vụ sinh viên iStudent
-                </a>{" "}
-                nếu đóng sau khi đăng ký.
-              </li>
+              <li>Chuyển khoản ngân hàng</li>
+              <Button className="my-3" variant='outline-primary' onClick={() => setAccountShow(true)}>Xem hướng dẫn chuyển khoản</Button>
+
               <li>
                 Đóng trực tiếp: Tại văn phòng iSinhvien
                 <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
@@ -224,7 +205,7 @@ export default function DrivingInstructionPage(props) {
                   https://goo.gl/maps/mNj1KKJuJXFHLRsw8
                 </a>
               </li>
-              <li>Hoàn thành lệ phí thi trước ngày dự thi 16 ngày.</li>
+              <li>Hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</li>
             </ul>
             <p style={{ color: "var(--primary)" }}>
               <strong>Cảnh báo:</strong> Thí sinh cảnh giác trước các hình thức
@@ -235,7 +216,7 @@ export default function DrivingInstructionPage(props) {
             <ul>
               <li>
                 Sau khi đăng ký, trung tâm sẽ xác nhận lại trong vòng 1 ngày làm
-                việc, mọi thủ tục cần hoàn tất trước ngày thi 16 ngày.
+                việc, mọi thủ tục cần hoàn tất trước ngày thi 15 ngày.
               </li>
               <li>
                 Nếu bạn không nhận được thông báo, vui lòng liên hệ di
@@ -245,7 +226,7 @@ export default function DrivingInstructionPage(props) {
                 </ZaloLink>{" "}
                 để được hỗ trợ.
               </li>
-              <li>Khung giờ phản hồi: 6h30-8h30, 18h30-20h30.</li>
+              <li>Khung giờ phản hồi: 8h30-11h30, 13h30-17h30.</li>
             </ul>
             <p>5. Đi thi</p>
             <ul>
@@ -291,8 +272,8 @@ export default function DrivingInstructionPage(props) {
             </h3>
             <p>Thực hành:</p>
             <ul>
-              <li>Trước 6h30 đối với ngày thi sáng.</li>
-              <li>11h30 - 12h30 đối với ngày thi chiều.</li>
+              <li>6h30 - 7h30 đối với ngày thi sáng.</li>
+              <li>10h30 - 12h30 đối với ngày thi chiều.</li>
               <li>Ngày thi thử: cùng ngày với lịch thi chính thức.</li>
             </ul>
             <p>
@@ -345,6 +326,8 @@ export default function DrivingInstructionPage(props) {
           </p>
         </div>
       </div>
+    <AccountModal bankCode='970422' show={accountShow} setShow={setAccountShow} amount={590000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'} ${drivingDate || '<Ngày dự thi>'}`} />
     </div>
+
   );
 }
