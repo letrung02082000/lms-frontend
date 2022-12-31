@@ -1,12 +1,12 @@
 import MainLayout from 'shared/layouts/MainLayout'
 import { BiSearchAlt } from 'react-icons/bi'
 import useMediaQuery from 'hooks/useMediaQuery'
-import HomeSlider from './components/HomeSlider'
-import Logo from '../../shared/components/Logo'
-import CategorySlider from './components/CategorySlider'
-import HotSlider from './components/HotSlider'
-import MainServices from './components/MainServices'
-import Footer from '../../shared/components/Footer'
+import HomeSlider from '../components/HomeSlider'
+import Logo from '../../../shared/components/Logo'
+import CategorySlider from '../components/CategorySlider'
+import HotSlider from '../components/HotSlider'
+import MainServices from '../components/MainServices'
+import Footer from '../../../shared/components/Footer'
 
 import styled from 'styled-components'
 import useScrollDirection from 'hooks/useScrollDirection'
@@ -21,12 +21,12 @@ const HomePage = () => {
         {!isDesktop ? (
           <div className="logoContainer">
             <Logo />
-            <div
+            {/* <div
               className="searchIcon"
               onClick={() => alert('Xin lỗi, tính năng này đang được phát triển. Vui lòng quay lại sau!')}
             >
               <BiSearchAlt size={25} />
-            </div>
+            </div> */}
           </div>
         ) : null}
         <div className="mainLayout">
@@ -73,6 +73,7 @@ const Styles = styled.div`
 
   .logoContainer {
     display: flex;
+    padding: 0.5rem 0;
     align-items: center;
     justify-content: center;
     background-color: white;
@@ -80,7 +81,7 @@ const Styles = styled.div`
     z-index: 2000;
     top: ${props => (props.status === 'down' ? '-150px' : '0px')};
     transition: all;
-    transition-duration: 0.25s;
+    /* transition-duration: 0.25s; */
   }
 
   .homeSliderContainer {

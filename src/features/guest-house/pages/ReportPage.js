@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import styles from "./reportPage.module.css";
 
-import GuesthouseApi from "api/guesthouseApi";
+import guesthouseApi from "api/guesthouseApi";
 
 export default function GuestHouseReportPage() {
   const [data, setData] = useState([]);
@@ -11,10 +11,9 @@ export default function GuestHouseReportPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    GuesthouseApi.getRooms()
+    guesthouseApi.getRooms()
       .then((res) => {
         setData(res.data);
-
         if (res.data[0]) {
           setRoomSelected(res.data[0]);
         }
@@ -41,7 +40,7 @@ export default function GuestHouseReportPage() {
 
     setLoading(true);
 
-    GuesthouseApi.postReportRoom({
+    guesthouseApi.postReportRoom({
       guestHouse: roomSelected,
       note,
     })
