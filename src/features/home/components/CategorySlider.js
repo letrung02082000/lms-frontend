@@ -18,11 +18,6 @@ import useMediaQuery from '../../../hooks/useMediaQuery'
 
 function CategorySlider() {
   const navigate = useNavigate()
-  const isMobile = useMediaQuery('(max-width: 767px)')
-
-  const navigateTo = url => {
-    navigate(url)
-  }
 
   return (
     <div>
@@ -34,56 +29,33 @@ function CategorySlider() {
         spaceBetween={15}
         className="mySwiper"
       >
-        <SwiperSlide>
-          <div className={styles.itemContainer} onClick={() => navigateTo('/pool-info')}>
-            <MdOutlinePool />
-            <p>Hồ bơi</p>
-          </div>
-        </SwiperSlide>
-
-        {/* <SwiperSlide>
-          <div
-            className={styles.itemContainer}
-            onClick={() => navigateTo('/guest-house-info')}
-          >
-            <MdBusiness />
-            <p>Nhà khách</p>
-          </div>
-        </SwiperSlide> */}
-        <SwiperSlide>
-          <div className={styles.itemContainer} onClick={() => navigateTo('/bicycles')}>
-            <IoIosBicycle />
-            <p>Xe đạp</p>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className={styles.itemContainer} onClick={() => navigateTo('/photocopy')}>
-            <RiPrinterCloudLine />
-            <p>In ấn</p>
-          </div>
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <div className={styles.itemContainer} onClick={() => navigateTo('/driving-test')}>
+        <SwiperSlide onClick={() => navigate('/driving-test')}>
+          <div className={styles.itemContainer}>
             <FaMotorcycle />
             <p>Sát hạch</p>
           </div>
         </SwiperSlide>
 
-        {/* <SwiperSlide>
+        <SwiperSlide onClick={() => navigate('/photocopy')}>
           <div className={styles.itemContainer}>
-            <HiOutlineLocationMarker />
-            <p>Cắm trại</p>
+            <RiPrinterCloudLine />
+            <p>In ấn</p>
           </div>
         </SwiperSlide>
 
-        <SwiperSlide>
+        <SwiperSlide onClick={() => navigate('/bicycles')}>
           <div className={styles.itemContainer}>
-            <FaBusAlt />
-            <p>Xe buýt</p>
+            <IoIosBicycle />
+            <p>Xe đạp</p>
           </div>
-        </SwiperSlide> */}
+        </SwiperSlide>
+
+        <SwiperSlide onClick={() => navigate('/pool-info')}>
+          <div className={styles.itemContainer}>
+            <MdOutlinePool />
+            <p>Hồ bơi</p>
+          </div>
+        </SwiperSlide>
       </Swiper>
     </div>
   )

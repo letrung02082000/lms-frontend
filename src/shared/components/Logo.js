@@ -7,7 +7,7 @@ const Logo = () => {
 
   return (
     <Styles isDesktop={isDesktop}>
-      <img className="logo" src="/logo3.png" alt="logo" />
+      <img className="logo" src="/logo5.png" alt="logo" />
     </Styles>
   )
 }

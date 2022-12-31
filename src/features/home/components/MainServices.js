@@ -95,7 +95,7 @@ function MainServices(props) {
         <p>Thiện nguyện</p>
       </a>
 
-      <div className={styles.itemContainer} onClick={() => navigateTo('/bus-registration')}>
+      <div className={styles.itemContainer} onClick={() => navigateTo('/maintain')}>
         <div>
           <img src="/main-icon/bus-service.png" alt="pool" className={styles.mainIcon} />
         </div>
