@@ -5,7 +5,7 @@ const API_PATH = "/guest-house";
 class GuesthouseApi {
   // GET
 
-  getRooms = async (page = 0, limit = 50) => {
+  getRooms = async (page = 0, limit = 100) => {
     const url = `${API_PATH}/room`;
     return axiosClient.get(url, {
       params: {
