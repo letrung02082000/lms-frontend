@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import InputField from 'shared/components/form/InputField';
 
 function GuestRoomModal({ show, setShow, data }) {
-  console.log(data?.name)
 
   const { control, setValue, handleSubmit, setError, formState: {isSubmitting}, watch, setFocus } = useForm({
     mode: 'onBlur',
