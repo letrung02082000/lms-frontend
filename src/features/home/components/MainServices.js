@@ -30,7 +30,7 @@ function MainServices(props) {
         </div>
         <p>Thi sát hạch lái xe</p>
       </div>
-      <div className={styles.itemContainer} onClick={() => navigateTo('/jobs')}>
+      <div className={styles.itemContainer} onClick={() => navigateTo('/maintain')}>
         <div>
           <img src="/main-icon/job.png" alt="pool" className={styles.mainIcon} />
         </div>
