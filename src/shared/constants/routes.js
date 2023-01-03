@@ -1,5 +1,5 @@
 //Guest house
-export const GUEST_HOUSE_ROOT = 'guest-houses'
+export const GUEST_HOUSE_ROOT = 'guest-house'
 export const GUEST_HOUSE_ROOMS = 'rooms'
 export const GUEST_HOUSE_CREATION = 'create'
 export const GUEST_HOUSE_USERS = 'users'

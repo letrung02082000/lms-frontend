@@ -13,6 +13,7 @@ export default function GuestHouseReportPage() {
   useEffect(() => {
     guesthouseApi.getRooms()
       .then((res) => {
+        console.log(res.data)
         setData(res.data);
         if (res.data[0]) {
           setRoomSelected(res.data[0]);

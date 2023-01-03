@@ -4,20 +4,20 @@
 
   &:hover {
       border-color: var(--primary);
-      color: var(--primary);
-      background-color: white;
+      color: white;
+      background-color: #007066;
   }
 
   &:focus {
       border-color: var(--primary);
-      color: var(--primary);
-      background-color: white;
+      color: white;
+      background-color: #007066;
   }
 
   &:click {
       border-color: var(--primary);
-      color: var(--primary);
-      background-color: white;
+      color: white;
+      background-color: #007066;
   }
 }
 

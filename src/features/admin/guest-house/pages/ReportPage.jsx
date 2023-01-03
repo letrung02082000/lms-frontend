@@ -9,7 +9,7 @@ import { convertToDateTime } from 'utils/commonUtils';
 import guesthouseApi from 'api/guesthouseApi';
 import GuestRoomModal from '../components/GuestRoomModal';
 
-function RoomListPage() {
+function ReportPage() {
   const [page, setPage] = useState(0);
   const [roomSelected, setRoomSelected] = useState(false);
   const [roomList, setRoomList] = useState([]);
@@ -94,7 +94,7 @@ function RoomListPage() {
                   );
                 })}
                 <td>
-                  <Button variant='primary' onClick={() => setRoomSelected(row?.original)}>
+                  <Button variant='success' onClick={() => setRoomSelected(row?.original)}>
                     Cập nhật
                   </Button>
                 </td>
@@ -108,4 +108,4 @@ function RoomListPage() {
   );
 }
 
-export default RoomListPage;
+export default ReportPage;

@@ -1,26 +1,20 @@
 import React from 'react';
+import { useMemo } from 'react';
+import { useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import InputField from 'shared/components/form/InputField';
 
 function GuestRoomModal({ show, setShow, data }) {
-
   const { control, setValue, handleSubmit, setError, formState: {isSubmitting}, watch, setFocus } = useForm({
-    mode: 'onBlur',
+    mode: 'onChange',
     reValidateMode: 'onChange',
-    defaultValues: {
-      name: data?.name || '',
-      tel: data?.tel || '',
-      dailyPrice: data?.dailyPrice || '',
-      monthlyPrice: data?.monthlyPrice || '',
-    },
     resolver: undefined,
     context: undefined,
-    criteriaMode: 'firstError',
     shouldFocusError: true,
     shouldUnregister: true,
     shouldUseNativeValidation: false,
-    delayError: undefined,
+    delayError: false,
   });
 
   const handleClearButton = (name) => {
@@ -31,7 +25,8 @@ function GuestRoomModal({ show, setShow, data }) {
   return (
     <Modal
       backdrop='static'
-      fullscreen={true}
+      fullscreen='md'
+      size='lg'
       show={show}
       onHide={() => setShow(false)}
     >
