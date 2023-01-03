@@ -4,6 +4,7 @@ import { GUIDE_ROOT, GUEST_HOUSE_ROOT, UNIFORM_ROOT } from 'shared/constants/rou
 import GuideRoutes from './guide/Routes'
 import GuestHouseRoutes from './guest-house/Routes'
 import UniformRoutes from './uniform/Routes'
+import { NotFoundPage } from 'features/404'
 
 function AdminRoutes() {
   return (
@@ -11,6 +12,7 @@ function AdminRoutes() {
       <Route path={`${GUIDE_ROOT}/*`} element={<GuideRoutes />} />
       <Route path={`${GUEST_HOUSE_ROOT}/*`} element={<GuestHouseRoutes />} />
       <Route path={`${UNIFORM_ROOT}/*`} element={<UniformRoutes />} />
+      <Route path='*' element={<NotFoundPage />} />
     </Routes>
   )
 }
