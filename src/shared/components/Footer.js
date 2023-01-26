@@ -6,6 +6,7 @@ import { Scrollbar, Autoplay } from "swiper";
 import useMediaQuery from "hooks/useMediaQuery";
 import partnershipLogos from "assets/images/partnership";
 import { footerIcons } from "assets/images/svg";
+import { Col, Row } from "react-bootstrap";
 
 function Footer() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -17,18 +18,19 @@ function Footer() {
           <span>Được tin tưởng và hợp tác bởi các đơn vị</span>
           <PartnershipSwiper />
         </div>
-        <div className="sectionFooter">
-          <div className="sectionInfo">
+        <Row className="sectionFooter">
+          <Col className="sectionInfo">
             <img className="logo" src="/logo5.png" alt="logo" />
             <span className="isinhvien">
               <span className="i">i</span>
-              <span className="sinhvien">Sinhvien</span> - Hệ thống dịch vụ hỗ
-              trợ cộng đồng sinh viên tại làng ĐHQG - TP. HCM
+              <span className="sinhvien">Sinhvien</span> - Tổ hợp dịch vụ sinh viên tại Khu đô thị ĐHQG - TP.HCM
             </span>
             <ContactLogos />
-          </div>
-          <EmbedMap />
-        </div>
+          </Col>
+          <Col>
+            <EmbedMap />
+          </Col>
+        </Row>
         <FooterLink />
       </div>
     </Styles>
@@ -151,14 +153,15 @@ function EmbedMap() {
   const PLACE_ID = "ChIJrVS3IPzZdDER3pyOf1yOHgA";
 
   return (
-    <iframe
-      style={{ display: "block", width: "100%" }}
-      title="Văn phòng iSinhvien"
-      loading="lazy"
-      allowFullScreen
-      referrerPolicy="no-referrer-when-downgrade"
-      src={`https://www.google.com/maps/embed/v1/place?key=${API_KEY}&q=place_id:${PLACE_ID}`}
-    ></iframe>
+    // <iframe
+    //   style={{ display: "block", width: "100%" }}
+    //   title="Văn phòng iSinhvien"
+    //   loading="lazy"
+    //   allowFullScreen
+    //   referrerPolicy="no-referrer-when-downgrade"
+    //   src={`https://www.google.com/maps/embed/v1/place?key=${API_KEY}&q=place_id:${PLACE_ID}`}
+    // ></iframe>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.097506824859!2d106.79310266531661!3d10.880188010243808!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3174d9fc20b754ad%3A0x1e8e5c7f8e9cde!2zVOG7lSBo4bujcCBk4buLY2ggduG7pSBpc2luaHZpZW4!5e0!3m2!1svi!2s!4v1674695876304!5m2!1svi!2s" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   );
 }
 
