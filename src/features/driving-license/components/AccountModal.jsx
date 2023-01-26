@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Button, Col, Modal, Row } from 'react-bootstrap';
 import { BiCopy } from 'react-icons/bi';
+import CopyButton from 'shared/components/button/CopyButton';
 import styled from 'styled-components';
 import { copyText, formatCurrency } from 'utils/commonUtils';
 
@@ -34,17 +35,15 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
           <Row>
             <Col md={7}>
               <img
-                src={
-                  `https://img.vietqr.io/image/${bankCode || '970415'}-${accountNumber}-e59ZziA.jpg?accountName=${accountName}&amount=${amount}&addInfo=${desc}`
-                }
+                src={`https://img.vietqr.io/image/${
+                  bankCode || '970415'
+                }-${accountNumber}-e59ZziA.jpg?accountName=${accountName}&amount=${amount}&addInfo=${desc}`}
                 alt='vietqr'
                 className='w-100 mb-2'
               />
             </Col>
             <Col>
-              <div className='text-uppercase fw-bold mb-3'>
-                {bankName}
-              </div>
+              <div className='text-uppercase fw-bold mb-3'>{bankName}</div>
               <div className='mb-2'>
                 Chủ tài khoản
                 <br />
@@ -65,8 +64,7 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
                     }}
                     variant='outline-primary'
                   >
-                    <BiCopy/>{' '}
-                    {copied ? 'Đã chép' : 'Sao chép'}
+                    <BiCopy /> {copied ? 'Đã chép' : 'Sao chép'}
                   </Button>
                 </Col>
               </Row>
@@ -78,6 +76,9 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
                 </Col>
 
                 <Col>
+                  <CopyButton className='btn btn-outline-primary copy-btn'>
+                    <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
+                  </CopyButton>
                   <Button
                     className='copy-btn'
                     onClick={() => {
@@ -86,8 +87,7 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
                     }}
                     variant='outline-primary'
                   >
-                    <BiCopy/>{' '}
-                    {contentCopied ? 'Đã chép' : 'Sao chép'}
+                    <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
                   </Button>
                 </Col>
               </Row>
@@ -107,8 +107,7 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
                     }}
                     variant='outline-primary'
                   >
-                    <BiCopy/>{' '}
-                    {amountCopied ? 'Đã chép' : 'Sao chép'}
+                    <BiCopy /> {amountCopied ? 'Đã chép' : 'Sao chép'}
                   </Button>
                 </Col>
               </Row>

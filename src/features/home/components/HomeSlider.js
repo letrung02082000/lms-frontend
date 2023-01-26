@@ -1,16 +1,15 @@
 import React from 'react'
-
 //swiper
 import { Pagination, Autoplay } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
 import 'swiper/swiper-bundle.min.css'
 import 'swiper/swiper.min.css'
-
 //styles
 import './homeSlider.css'
-
 //media query
 import useMediaQuery from '../../../hooks/useMediaQuery'
+//banner images
+import BusBanner from 'assets/images/bus/bus-banner.jpg'
 
 function HomeSlider() {
   const isMobile = useMediaQuery('(max-width: 767px)')
@@ -41,7 +40,7 @@ function HomeSlider() {
         </SwiperSlide>
         
         <SwiperSlide>
-          <img src="/home-banner/04.jpg" alt="Banner Xe dịch vụ" />
+          <img src={BusBanner} alt="Banner Xe dịch vụ" />
         </SwiperSlide>
       </Swiper>
     </>

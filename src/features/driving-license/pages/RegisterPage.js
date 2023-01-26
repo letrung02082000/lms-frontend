@@ -15,6 +15,7 @@ import drivingApi from "api/drivingApi";
 import { Button, Row } from "react-bootstrap";
 import AccountModal from "../components/AccountModal";
 import { BsFillCheckCircleFill } from "react-icons/bs";
+import Asterisk from "shared/components/form/Asterisk";
 
 export default function DrivingRegisterPage() {
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
@@ -288,7 +289,7 @@ export default function DrivingRegisterPage() {
             </a>
           </li>
         </ul>
-        <Button className="mb-3 ms-2" variant='outline-primary' onClick={() => setAccountShow(true)}>Xem hướng dẫn chuyển khoản</Button>
+        <button className="mb-3 ms-2 btn btn-outline-primary" onClick={() => setAccountShow(true)}>Xem hướng dẫn chuyển khoản</button>
       </div>
 
       {drivingInfo?._id ? <div className="success-container d-flex flex-column align-items-center">
@@ -314,7 +315,7 @@ export default function DrivingRegisterPage() {
         <p style={{ margin: 0, color: " #ff0000 " }}>* bắt buộc</p>
 
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}> Tên của bạn*</label>
+          <label className={styles.formLabel}> Tên của bạn<Asterisk/></label>
           <input
             className={styles.formInput}
             id="formName"
@@ -324,7 +325,7 @@ export default function DrivingRegisterPage() {
           />
         </div>
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Số điện thoại liên hệ*</label>
+          <label className={styles.formLabel}>Số điện thoại liên hệ<Asterisk/></label>
           <input
             className={styles.formInput}
             id="formTel"
@@ -334,7 +335,7 @@ export default function DrivingRegisterPage() {
           />
         </div>
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Số điện thoại Zalo*</label>
+          <label className={styles.formLabel}>Số điện thoại Zalo<Asterisk/></label>
           <input
             className={styles.formInput}
             id="formZalo"
@@ -344,7 +345,7 @@ export default function DrivingRegisterPage() {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Mặt trước CMND/CCCD*</label>
+          <label className={styles.formLabel}>Mặt trước CMND/CCCD<Asterisk/></label>
           <label className={styles.formUploadButton}>
             <input
               className={styles.formInput}
@@ -360,7 +361,7 @@ export default function DrivingRegisterPage() {
           {frontsideName ? <p className="filename">{frontsideName}</p> : null}
         </div>
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Mặt sau CMND/CCCD*</label>
+          <label className={styles.formLabel}>Mặt sau CMND/CCCD<Asterisk/></label>
           <label className={styles.formUploadButton}>
             <input
               className={styles.formInput}
@@ -377,7 +378,7 @@ export default function DrivingRegisterPage() {
         </div>
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>
-            Ảnh chụp chân dung* (không chụp ảnh thẻ, xem ảnh mẫu trong hướng dẫn{" "}
+            Ảnh chụp chân dung<Asterisk/> (không chụp ảnh thẻ, xem ảnh mẫu trong hướng dẫn{" "}
             <a
               href="/driving-instruction#online"
               target="_blank"
@@ -403,7 +404,7 @@ export default function DrivingRegisterPage() {
         </div>
 
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Chọn loại bằng lái*</label>
+          <label className={styles.formLabel}>Chọn loại bằng lái<Asterisk/></label>
           <div className={styles.selectContainer}>
             <input
               className={styles.formInput}
@@ -445,7 +446,7 @@ export default function DrivingRegisterPage() {
         {drivingType === 0 ? (
           <div className={styles.formGroup}>
             <label className={styles.formLabel}>
-              Chọn ngày thi*
+              Chọn ngày thi<Asterisk/>
             </label>
 
             {dateList.map((child, index) => {
@@ -467,7 +468,7 @@ export default function DrivingRegisterPage() {
         ) : null}
 
         <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Hình thức đóng lệ phí*</label>
+          <label className={styles.formLabel}>Hình thức đóng lệ phí<Asterisk/></label>
           <div className={styles.selectContainer}>
             <input
               className={styles.formInput}
@@ -511,18 +512,12 @@ export default function DrivingRegisterPage() {
             Đăng ký
           </button>
         )}
-        <p style={{ margin: "1rem 0" }}>
-          Trong quá trình đăng ký, nếu xảy ra lỗi hệ thống, vui lòng chụp màn
-          hình lỗi gửi về Zalo:{" "}
-          <a
-            href="https://zalo.me/0797324886"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            0797324886
-          </a>{" "}
-          để được hỗ trợ nhanh nhất.
-        </p>
+          <p style={{ margin: "1rem 0" }}>
+            Trong quá trình đăng ký, nếu xảy ra lỗi hệ thống, vui lòng chụp màn
+            hình lỗi gửi về Zalo OA:{" "}
+            <ZaloLink tel='4013961016678131109'>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>{' '}
+            để được hỗ trợ nhanh nhất.
+          </p>
       </form>}
 
       <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={590000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'} ${drivingDate || '<Ngày dự thi>'}`} />
