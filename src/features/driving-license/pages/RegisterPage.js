@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import SearchBar from "shared/components/SearchBar";
 import styles from "./registerPage.module.css";
 import LazyImage from "shared/components/LazyImage";
-import PortraitBanner from "assets/images/portrait.jpg";
+import PortraitBanner from "assets/images/driving-license/portrait.jpg";
 import styled from "styled-components";
 import { toastWrapper } from "utils";
 

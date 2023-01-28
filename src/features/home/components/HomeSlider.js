@@ -9,7 +9,8 @@ import './homeSlider.css'
 //media query
 import useMediaQuery from '../../../hooks/useMediaQuery'
 //banner images
-import BusBanner from 'assets/images/bus/bus-banner.jpg'
+import { BusBanner, UniformBanner, PhotocopyBanner} from 'assets/images'
+import LazyImage from 'shared/components/LazyImage'
 
 function HomeSlider() {
   const isMobile = useMediaQuery('(max-width: 767px)')
@@ -32,11 +33,11 @@ function HomeSlider() {
         className="mySwiper"
       >
         <SwiperSlide>
-          <img src="/home-banner/03.jpg" alt="Banner In ấn" />
+          <img src={PhotocopyBanner} alt="Banner In ấn" />
         </SwiperSlide>
 
         <SwiperSlide>
-          <img src="/home-banner/02.jpg" alt="Banner Đồng phục" />
+          <img src={UniformBanner} alt="Banner Đồng phục" />
         </SwiperSlide>
         
         <SwiperSlide>
