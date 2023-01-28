@@ -32,3 +32,7 @@ export const HEALTH_ADMIN_ALL = 'all'
 export const UNIFORM_ROOT = 'uniform'
 export const UNIFORM_ORDER = 'order'
 
+//Admin swimming pool
+export const POOL_ROOT = 'pool'
+export const POOL_TICKET_USER = 'users/ticket'
+export const POOL_LESSON_USER = 'users/lesson'

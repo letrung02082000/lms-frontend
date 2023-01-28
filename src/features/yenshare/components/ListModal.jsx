@@ -24,7 +24,9 @@ function ListModal({ show, setShow }) {
         setData(res?.data);
       })
       .catch((e) => {
-        return toastWrapper(e?.response?.data?.message);
+        const errMsg = e?.response?.data?.message || 'Đã có lỗi xảy ra';
+        console.log(errMsg)
+        // toastWrapper(errMsg, 'error');
       });
   }, [show]);
 

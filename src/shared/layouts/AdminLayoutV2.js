@@ -37,7 +37,7 @@ const AdminLayout = ({ menu, children, title, root }) => {
     <Styles className="d-flex flex-row">
       <ProSidebar className="side-bar" collapsed={collapsed}>
         <SidebarHeader className="header d-flex justify-content-center">
-          <div className="mt-3 fs-4">{title}</div>
+          <div className="mt-3 fs-4">{!collapsed ? title : null}</div>
         </SidebarHeader>
         <SidebarContent className="nav-bar-left">
           <Menu iconShape="circle">

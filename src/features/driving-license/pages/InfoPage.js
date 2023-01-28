@@ -53,10 +53,7 @@ function DrivingTestPage() {
         </div>
         <div>
           <div className="d-flex flex-column align-items-center p-3 text-center">
-            <p>Đăng ký dự thi B2 nhận ưu đãi dành cho sinh viên</p>
-            <button className="btn btn-outline-primary fw-bold" onClick={() => navigate('/driving-license/b2')}>
-              Xem tại đây
-            </button>
+            <p>Đăng ký dự thi B2 nhận ưu đãi dành cho sinh viên <a href='/driving-license/b2' target='_blank' rel='noopener noreferrer'>tại đây</a></p>
           </div>
         </div>
         <div>

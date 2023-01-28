@@ -1,16 +1,16 @@
 import React from 'react'
-
 //swiper
 import { Pagination, Autoplay } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
 import 'swiper/swiper-bundle.min.css'
 import 'swiper/swiper.min.css'
-
 //styles
 import './homeSlider.css'
-
 //media query
 import useMediaQuery from '../../../hooks/useMediaQuery'
+//banner images
+import { BusBanner, UniformBanner, PhotocopyBanner} from 'assets/images'
+import LazyImage from 'shared/components/LazyImage'
 
 function HomeSlider() {
   const isMobile = useMediaQuery('(max-width: 767px)')
@@ -33,15 +33,15 @@ function HomeSlider() {
         className="mySwiper"
       >
         <SwiperSlide>
-          <img src="/home-banner/03.jpg" alt="Banner In ấn" />
+          <img src={PhotocopyBanner} alt="Banner In ấn" />
         </SwiperSlide>
 
         <SwiperSlide>
-          <img src="/home-banner/02.jpg" alt="Banner Đồng phục" />
+          <img src={UniformBanner} alt="Banner Đồng phục" />
         </SwiperSlide>
         
         <SwiperSlide>
-          <img src="/home-banner/04.jpg" alt="Banner Xe dịch vụ" />
+          <img src={BusBanner} alt="Banner Xe dịch vụ" />
         </SwiperSlide>
       </Swiper>
     </>

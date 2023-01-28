@@ -41,7 +41,9 @@ function YenSharePage() {
         setData(res?.data);
       })
       .catch((e) => {
-        toastWrapper(e?.response?.data?.message || 'Đã có lỗi xảy ra', 'error');
+        const errMsg = e?.response?.data?.message || 'Đã có lỗi xảy ra';
+        console.log(errMsg)
+        // toastWrapper(errMsg, 'error');
       });
   }, [page, showPostModal, showListModal]);
 
