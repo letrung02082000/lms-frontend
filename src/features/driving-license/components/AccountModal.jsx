@@ -74,21 +74,10 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
                   <br />
                   <b>{desc}</b>
                 </Col>
-
                 <Col>
-                  <CopyButton className='btn btn-outline-primary copy-btn'>
+                  <CopyButton className='btn btn-outline-primary copy-btn' text={desc} copied={contentCopied} setCopied={setContentCopied}>
                     <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
                   </CopyButton>
-                  <Button
-                    className='copy-btn'
-                    onClick={() => {
-                      copyText(desc);
-                      setContentCopied(true);
-                    }}
-                    variant='outline-primary'
-                  >
-                    <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
-                  </Button>
                 </Col>
               </Row>
               <Row>
