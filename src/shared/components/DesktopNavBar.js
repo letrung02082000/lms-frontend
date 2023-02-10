@@ -12,7 +12,7 @@ function DesktopNavBar(props) {
   const user = useSelector(selectUser);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const [activeKey, setActiveKey] = useState("/");
+  const [activeKey, setActiveKey] = useState(window.location.pathname || "/");
 
   const handleSelectedKeyChange = (selectedKey) => {
     setActiveKey(selectedKey);
@@ -67,6 +67,21 @@ function DesktopNavBar(props) {
               onClick={handleHomeClick}
             >
               Trang chủ
+            </Nav.Link>
+
+            <Nav.Link
+              eventKey="/explore"
+              className={`${styles.navItem} ${styles.navItemBadge} ${
+                activeKey === "/explore"
+                  ? styles.selectedNav
+                  : styles.unSelectedNav
+              } `}
+              onClick={() => {
+                setActiveKey("/explore");
+                navigate("/explore");
+              }}
+            >
+              Ưu đãi
             </Nav.Link>
           </Nav>
           <div className={`d-flex flex-row ${styles.dropDownMenu}`}>

@@ -23,9 +23,6 @@ import {
   // BicyclesPage,
   BusRegistrationPage,
   BusSurveyPage,
-  CouponListPage,
-  CouponPage,
-  CouponScannedPage,
   DrivingInstructionPage,
   DrivingRegisterPage,
   DrivingInfoPage,
@@ -52,7 +49,11 @@ import {
   SupportPage,
   B2InfoPage,
 } from "features";
+
 import YenSharePage from "features/yenshare/pages/YenSharePage";
+
+import CouponAdminPage from "features/coupon/pages/CouponAdmin";
+import CouponDemoNavigate from "features/coupon/pages/CouponDemoNavigate";
 
 const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
 ReactGA.initialize(GA_TRACKING_ID);
@@ -220,11 +221,6 @@ const App = () => {
             </ServiceLayout>
           }
         />
-
-        <Route path="/coupon-list" element={<CouponListPage />} />
-        <Route path="/coupon" element={<CouponPage />} />
-        <Route path="/coupon-scanned" element={<CouponScannedPage />} />
-
         <Route
           path="/bicycles"
           element={
@@ -331,6 +327,9 @@ const App = () => {
             </ServiceLayout>
           }
         />
+
+        <Route path="/coupon-admin" element={<CouponAdminPage />} />
+        <Route path="/demo-navigate" element={<CouponDemoNavigate />} />
 
         <Route path="/driving-admin" element={<AdminDrivingPage />} />
         <Route

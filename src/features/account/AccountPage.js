@@ -1,14 +1,11 @@
 import { useNavigate } from "react-router-dom";
-
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, logoutUser } from "store/userSlice";
-import Tool from "shared/components/Tool";
 import styled from "styled-components";
 import MainLayout from "shared/layouts/MainLayout";
 import Item from "./components/Item";
 import ProfileImage from "./components/ProfileImage";
-import { useState } from "react";
 
 import AccountApi from "api/accountApi";
 
@@ -46,7 +43,9 @@ function AccountPage() {
         {user.isLoggedIn ? (
           <>
             <ProfileImage src={user.data.avatarUrl || "/common/avatar.png"} />
-            <div style={{display: "flex", justifyContent: "center"}}>Xin chào {user?.data?.name}!</div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              Xin chào {user?.data?.name || "bạn"}!
+            </div>
             <Item path="/support">Hỗ trợ</Item>
             <Item onClick={handleLogout}>Đăng xuất</Item>
           </>
@@ -70,7 +69,6 @@ function AccountPage() {
     </Styles>
   );
 }
-
 export default AccountPage;
 
 const Styles = styled.div`
