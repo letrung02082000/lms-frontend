@@ -426,7 +426,7 @@ export default function DrivingRegisterPage() {
             />
             <p onClick={() => handleDrivingTypeChange(1)}>
               Bằng A2 (Mô tô 2 bánh không giới hạn dung tích xi lanh, lệ phí thi
-              2.000.000 đồng, trung tâm liên hệ hướng dẫn qua điện thoại)
+              1.490.000 đồng, trung tâm liên hệ hướng dẫn qua điện thoại)
             </p>
           </div>
           <div className={styles.selectContainer}>
@@ -437,7 +437,7 @@ export default function DrivingRegisterPage() {
               checked={drivingType === 2}
             />
             <p onClick={() => handleDrivingTypeChange(2)}>
-              Bằng B2 (Bằng lái xe ô tô, trung tâm liên hệ hướng dẫn qua điện
+              Bằng B1/B2 (Bằng lái xe ô tô, trung tâm liên hệ hướng dẫn qua điện
               thoại)
             </p>
           </div>
