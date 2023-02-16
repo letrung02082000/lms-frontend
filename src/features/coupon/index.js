@@ -1,4 +1,1 @@
-export * from './CouponListPage'
-export * from './CouponPage'
-export * from './CouponScannedPage'
-export { default as ExplorePage } from './ExplorePage'
+export { default as ExplorePage } from "./pages/ExplorePage";
