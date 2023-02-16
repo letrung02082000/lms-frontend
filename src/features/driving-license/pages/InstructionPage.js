@@ -66,8 +66,8 @@ export default function DrivingInstructionPage(props) {
           <button
             className={styles.contactButtonTop}
             onClick={() => {
-              if (source == 2) {
-                navigate("/driving-registration?s=2");
+              if (source) {
+                navigate(`/driving-registration?s=${source}`);
               } else {
                 navigate("/driving-registration");
               }
@@ -120,13 +120,13 @@ export default function DrivingInstructionPage(props) {
             <p>Trường đại học thể dục thể thao TP.HCM.</p>
             <p>
               Địa chỉ: Khu phố 6, phường Linh Trung, thành phố Thủ Đức, thành
-              phố Hồ Chí Minh (làng đại học, cạnh nhà điều hành ĐHQG).
+              phố Hồ Chí Minh (Làng đại học, cạnh nhà điều hành ĐHQG).
             </p>
           </div>
           <div id="fee">
             <h3 className={styles.sectionTitle}>Lệ phí thi</h3>
             <p>
-              <strong>Gói A:</strong> 600.000đ (giảm giá sinh viên còn
+              <strong>Gói A:</strong> 600.000đ (Đối với sinh viên giảm còn
               550.000đ).
             </p>
             <p>
@@ -136,7 +136,7 @@ export default function DrivingInstructionPage(props) {
               khách ĐHQG, đóng lệ phí trực tiếp hoặc chuyển khoản.
             </p>
             <p>
-              <strong>Gói B:</strong> 650.000đ (giảm giá sinh viên còn
+              <strong>Gói B:</strong> 650.000đ (Đối với sinh viên giảm còn
               590.000đ).
             </p>
             <p>
@@ -232,7 +232,7 @@ export default function DrivingInstructionPage(props) {
             <ul>
               <li>
                 Danh sách dự thi và hướng dẫn dự thi sẽ được gửi đến thí sinh
-                thông qua nhóm Zalo . Thi sinh vui lòng theo dõi để cập nhật
+                thông qua nhóm Zalo . Thí sinh vui lòng theo dõi để cập nhật
                 thông tin sớm nhất.
               </li>
               <li>
@@ -274,7 +274,7 @@ export default function DrivingInstructionPage(props) {
             <ul>
               <li>6h30 - 7h30 đối với ngày thi sáng.</li>
               <li>10h30 - 12h30 đối với ngày thi chiều.</li>
-              <li>Ngày thi thử: cùng ngày với lịch thi chính thức.</li>
+              <li>Ngày thi thử: cùng ngày với ngày thi chính thức.</li>
             </ul>
             <p>
               Lý thuyết: Thí sinh tải tài liệu học lý thuyết{" "}
@@ -303,7 +303,7 @@ export default function DrivingInstructionPage(props) {
             </dd>
             <dt>Hỏi: Có được lái thử trước khi thi không?</dt>
             <dd>
-              Trả lời: Được lái thử với xe của trung tâm với phí 10k/vòng, địa
+              Trả lời: Được lái thử với xe của trung tâm có gắn chip với phí 10k/vòng, địa
               điểm và thời gian được nêu ở trên.
             </dd>
             <dt>Hỏi: Mình muốn tập vòng số 8 có thể tập ở đâu?</dt>

@@ -43,7 +43,7 @@ function Driving(props) {
     date = null;
   }
 
-  let sourceText = "";
+  let sourceText = "Không có";
 
   if (source === 1) {
     sourceText = "Langf";
@@ -51,8 +51,10 @@ function Driving(props) {
     sourceText = "UEL";
   } else if (source === 3) {
     sourceText = "Anh Long";
-  } else {
-    sourceText = "Không có";
+  } else if (source === 4) {
+    sourceText = "Thư quán UEL";
+  } else if (source === 5) {
+    sourceText = "5";
   }
 
   const [selectedDate, setSelectedDate] = useState(date);
