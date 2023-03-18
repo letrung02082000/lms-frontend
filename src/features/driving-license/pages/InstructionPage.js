@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 
 export default function DrivingInstructionPage(props) {
+  const MAP_URL ='https://goo.gl/maps/okR9fkx6bgPvVHmn9';
   const location = useLocation();
   const search = new URLSearchParams(location.search);
   const source = search.get("s");
@@ -198,11 +199,11 @@ export default function DrivingInstructionPage(props) {
                 <br /> - Hotline: 0877.876.877
                 <br /> - Google maps:{" "}
                 <a
-                  href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8"
+                  href={MAP_URL}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  https://goo.gl/maps/mNj1KKJuJXFHLRsw8
+                  Văn phòng iSinhvien
                 </a>
               </li>
               <li>Hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</li>
@@ -253,11 +254,11 @@ export default function DrivingInstructionPage(props) {
                 <br /> - Hotline: 0877.876.877
                 <br /> - Google maps:{" "}
                 <a
-                  href="https://goo.gl/maps/mNj1KKJuJXFHLRsw8"
+                  href={MAP_URL}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  https://goo.gl/maps/mNj1KKJuJXFHLRsw8
+                  Văn phòng iSinhvien
                 </a>
               </li>
               <li>
