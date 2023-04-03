@@ -19,6 +19,7 @@ import Asterisk from "shared/components/form/Asterisk";
 
 export default function DrivingRegisterPage() {
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
+  const drivingLink = localStorage.getItem("driving-link") || '';
   const drivingDate = useMemo(()=>{
     if(drivingInfo?.date) {
       return new Date(drivingInfo?.date).toLocaleDateString('en-GB').split("/").join("");
@@ -128,6 +129,7 @@ export default function DrivingRegisterPage() {
 
     if (drivingType === 0) {
       formData.append("date", dateList[date].date.getTime());
+      localStorage.setItem('driving-link', dateList[date]?.link || '');
     }
 
     drivingApi.addDriving(formData)
@@ -299,14 +301,15 @@ export default function DrivingRegisterPage() {
         <h4 className='text-center mt-2 mb-3 text-uppercase'>
           Đăng ký thành công
         </h4>
-        <p>Bạn vui lòng hoàn thành lệ phí thi trước ngày dự thi 15 ngày</p>
-        <p>Xác nhận đăng ký thành công sẽ được gửi qua Zalo trong vòng 1 ngày</p>
+        <p className="text-center">Bạn vui lòng hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</p>
+        <p className="text-center">Xác nhận đăng ký thành công sẽ được gửi qua nhóm thi trên Zalo.</p>
+        <p className="text-center">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <Button className="mb-3 ms-2" variant='outline-primary' onClick={() => {
           localStorage.removeItem('driving-info');
           window.location.reload();
         }}>Đăng ký hồ sơ mới</Button>
-        <p>
-            Zalo hỗ trợ:{' '}
+        <p className="text-center">
+            Zalo hỗ trợ:<br/>
             <ZaloLink tel='4013961016678131109'>
               Trung tâm dịch vụ sinh viên iStudent
             </ZaloLink>
