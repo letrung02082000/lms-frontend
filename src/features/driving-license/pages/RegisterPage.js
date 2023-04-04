@@ -299,11 +299,10 @@ export default function DrivingRegisterPage() {
           <BsFillCheckCircleFill color='#019f91' size={45} />
         </Row>
         <h4 className='text-center mt-2 mb-3 text-uppercase'>
-          Đăng ký thành công
+          Đăng ký hồ sơ thành công
         </h4>
+        <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <p className="text-center">Bạn vui lòng hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</p>
-        <p className="text-center">Xác nhận đăng ký thành công sẽ được gửi qua nhóm thi trên Zalo.</p>
-        <p className="text-center">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <Button className="mb-3 ms-2" variant='outline-primary' onClick={() => {
           localStorage.removeItem('driving-info');
           window.location.reload();
