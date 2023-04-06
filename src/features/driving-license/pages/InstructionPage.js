@@ -127,8 +127,7 @@ export default function DrivingInstructionPage(props) {
           <div id="fee">
             <h3 className={styles.sectionTitle}>Lệ phí thi</h3>
             <p>
-              <strong>Gói A:</strong> 600.000đ (Đối với sinh viên giảm còn
-              550.000đ).
+              <strong>Gói A:</strong> 550.000đ
             </p>
             <p>
               Thí sinh tự chuẩn bị: 4 ảnh thẻ 3x4, giấy khám sức khỏe tại các
@@ -137,11 +136,10 @@ export default function DrivingInstructionPage(props) {
               khách ĐHQG, đóng lệ phí trực tiếp hoặc chuyển khoản.
             </p>
             <p>
-              <strong>Gói B:</strong> 650.000đ (Đối với sinh viên giảm còn
-              590.000đ).
+              <strong>Gói B:</strong> 590.000đ
             </p>
             <p>
-              Trung tâm hỗ trợ làm hồ sơ và khám sức khỏe cùng ngày dự thi. Đăng
+              Trung tâm hỗ trợ làm hồ sơ và khám sức khỏe tại trung tâm. Đăng
               ký hoàn toàn online, có thể đóng lệ phí trực tiếp hoặc chuyển
               khoản.
             </p>
