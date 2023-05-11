@@ -8,7 +8,7 @@ function DrivingLicenseRoutes() {
   return (
     <Routes>
       <Route index element={
-        <ServiceLayout pageTitle={'Giấy phép lái xe'}>
+        <ServiceLayout pageTitle={'Sát hạch lái xe'}>
           <InfoPage />
         </ServiceLayout>
       } />

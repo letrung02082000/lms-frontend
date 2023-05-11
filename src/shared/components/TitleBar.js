@@ -1,13 +1,10 @@
 import { MdArrowBack } from 'react-icons/md'
 import { useNavigate, useLocation } from 'react-router-dom'
-import styles from './titleBar.module.css'
-
-import useMediaQuery from 'hooks/useMediaQuery'
 import styled from 'styled-components'
 
 function TitleBar(props) {
   const navigate = useNavigate()
-  const isTablet = useMediaQuery('(max-width: 768px)')
+  // const isTablet = useMediaQuery('(max-width: 768px)')
   const bcolor = props?.backgroundColor || '#019f91'
 
   const goBack = () => {
@@ -23,19 +20,32 @@ function TitleBar(props) {
   }
 
   return (
-    <div className={styles.titleBar} style={{ backgroundColor: bcolor }}>
-      {/* <TitleBarStyled isTablet={isTablet}> */}
-      <button onClick={goBack} className={styles.goBackButton}>
-        <MdArrowBack size={25} color="#fff" />
-      </button>
-      {/* </TitleBarStyled> */}
-      <p className={styles.pageTitle}>{props?.title || props?.children || ''}</p>
-    </div>
+    <Wrapper>
+      <BackButton size={25} onClick={goBack}/>
+      <Title>{props?.title || props?.children || ''}</Title>
+    </Wrapper>
   )
 }
 
 export default TitleBar
 
-// const TitleBarStyled = styled.div`
-//   margin: ${props => (props.isTablet === true ? '0 0%' : '0 15%')};
-// `
+const Wrapper = styled.div`
+  background-color: ${({theme}) => theme.color.background};
+  width: 100%;
+  padding: 1rem 0;
+`
+
+const BackButton = styled(MdArrowBack)`
+  color: ${({theme}) => theme.color.button.text};
+  cursor: pointer;
+  position: absolute;
+  margin: 0 1rem;
+`
+
+const Title = styled.p`
+  color:  ${({theme}) => theme.color.text};
+  font-weight: bold;
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+`
