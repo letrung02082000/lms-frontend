@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, logoutUser } from "store/userSlice";
 import styled from "styled-components";
-import MainLayout from "shared/layouts/MainLayout";
+import MainLayout from "components/layouts/MainLayout";
 import Item from "./components/Item";
 import ProfileImage from "./components/ProfileImage";
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './infoPage.module.css'
-import { DRIVING_LICENSE_NUMBER } from 'shared/constants/contact'
-import ZaloLink from 'shared/components/link/ZaloLink'
+import { DRIVING_LICENSE_NUMBER } from 'constants/contact'
+import ZaloLink from 'components/link/ZaloLink'
 
 import { convertPhoneNumber } from 'utils'
 import { useNavigate } from 'react-router-dom'

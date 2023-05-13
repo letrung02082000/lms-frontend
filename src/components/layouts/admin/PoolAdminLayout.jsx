@@ -1,7 +1,7 @@
 import React from 'react'
 import { useMemo } from 'react'
 import { FaList } from 'react-icons/fa'
-import { POOL_LESSON_USER, POOL_TICKET_USER } from 'shared/constants/routes'
+import { POOL_LESSON_USER, POOL_TICKET_USER } from 'constants/routes'
 import AdminLayout from '../AdminLayoutV2'
 
 function PoolAdminLayout() {

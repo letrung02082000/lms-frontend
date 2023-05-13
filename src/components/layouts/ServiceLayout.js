@@ -1,6 +1,6 @@
 import useMediaQuery from 'hooks/useMediaQuery'
 import styled from 'styled-components'
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 import useScrollDirection from 'hooks/useScrollDirection'
 
 function ServiceLayout({ pageTitle, navigationTo, navbarColor, children, noTitle }) {
@@ -19,6 +19,10 @@ function ServiceLayout({ pageTitle, navigationTo, navbarColor, children, noTitle
 
 const LayoutStyled = styled.div`
   margin: ${props => (props.isTablet === true ? '0 0%' : '0 15%')};
+  background-color: ${({theme}) => (theme.color.background)};
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
 `
 
 const NavStyled = styled.div`

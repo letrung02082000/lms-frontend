@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import styles from "./instructionPage.module.css";
 
-import { DRIVING_LICENSE_NUMBER } from "shared/constants/contact";
-import ZaloLink from "shared/components/link/ZaloLink";
+import { DRIVING_LICENSE_NUMBER } from "constants/contact";
+import ZaloLink from "components/link/ZaloLink";
 import { convertPhoneNumber } from "utils";
 
 import DrivingApi from "api/drivingApi";

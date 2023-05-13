@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./uploadCard.module.css";
 
-import Loading from "shared/components/Loading";
+import Loading from "components/Loading";
 import { useDispatch } from "react-redux";
 import { updateCard } from "store/userSlice";
 

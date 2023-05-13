@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Button, Col, Modal, Row } from 'react-bootstrap';
 import { BiCopy } from 'react-icons/bi';
-import CopyButton from 'shared/components/button/CopyButton';
+import CopyButton from 'components/button/CopyButton';
 import styled from 'styled-components';
 import { copyText, formatCurrency } from 'utils/commonUtils';
 
@@ -47,7 +47,7 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
               <div className='mb-2'>
                 Chủ tài khoản
                 <br />
-                <b>{accountName}</b>
+                <b>{accountName?.toUpperCase()}</b>
               </div>
               <Row className='mb-2'>
                 <Col xs={12}>

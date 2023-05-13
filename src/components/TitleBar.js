@@ -30,7 +30,7 @@ function TitleBar(props) {
 export default TitleBar
 
 const Wrapper = styled.div`
-  background-color: ${({theme}) => theme.color.background};
+  background-color: ${({theme}) => theme.color.header};
   width: 100%;
   padding: 1rem 0;
 `

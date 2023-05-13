@@ -1,4 +1,4 @@
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 
 function PhotocopyInfoPage() {
   return (

@@ -3,8 +3,9 @@ import { Form } from 'react-bootstrap'
 import { useController } from 'react-hook-form'
 import Select from 'react-select'
 import styled from 'styled-components'
+import Asterisk from './Asterisk'
 
-function SelectField({ name, control, rules, defaultValue, ...props }) {
+function SelectField({ name, control, rules, defaultValue, hasAsterisk, ...props }) {
   const {
     field: { ref, ...controlProps },
     fieldState: { invalid, isTouched, isDirty, error }
@@ -28,8 +29,8 @@ function SelectField({ name, control, rules, defaultValue, ...props }) {
 
   return (
     <Styles>
-      <Form.Group className="mb-3">
-        {props?.label && <Form.Label>{props?.label || props?.children || ''}</Form.Label>}
+      <Form.Group className="mb-3 mt-3">
+        {props?.label && <Form.Label>{props?.label || props?.children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>}
         <Select
           styles={customStyles}
           options={props?.options || []}

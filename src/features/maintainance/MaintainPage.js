@@ -1,6 +1,6 @@
 import React from 'react'
 import Maintained from './Maintained'
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 
 function MaintainPage() {
   return (

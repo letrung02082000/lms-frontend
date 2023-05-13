@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { POOL_LESSON_USER, POOL_TICKET_USER } from 'shared/constants/routes'
-import { PoolAdminLayout } from 'shared/layouts'
+import { POOL_LESSON_USER, POOL_TICKET_USER } from 'constants/routes'
+import { PoolAdminLayout } from 'components/layouts'
 import PoolTicketPage from './pages/PoolTicketPage'
 
 function PoolAdminRoutes() {

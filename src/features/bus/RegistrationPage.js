@@ -1,5 +1,5 @@
 import busApi from 'api/busApi'
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 import { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'

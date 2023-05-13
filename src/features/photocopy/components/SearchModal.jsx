@@ -2,7 +2,7 @@ import photocopyApi from 'api/photocopyApi'
 import React from 'react'
 import { useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
-import LazyImage from 'shared/components/LazyImage'
+import LazyImage from 'components/LazyImage'
 import styled from 'styled-components'
 import SearchOrder from './SearchOrder'
 

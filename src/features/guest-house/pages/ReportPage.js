@@ -1,4 +1,4 @@
-import TitleBar from "shared/components/TitleBar";
+import TitleBar from "components/TitleBar";
 import { useEffect, useState } from "react";
 
 import styles from "./reportPage.module.css";

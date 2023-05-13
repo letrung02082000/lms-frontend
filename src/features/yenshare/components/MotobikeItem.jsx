@@ -9,7 +9,7 @@ import {
   BsArrowRight,
   BsFillChatLeftTextFill,
 } from 'react-icons/bs';
-import ZaloLink from 'shared/components/link/ZaloLink';
+import ZaloLink from 'components/link/ZaloLink';
 import styled from 'styled-components';
 import { toastWrapper } from 'utils';
 import { convertToDateTime } from 'utils/commonUtils';

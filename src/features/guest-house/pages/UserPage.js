@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import TitleBar from "shared/components/TitleBar";
+import TitleBar from "components/TitleBar";
 import styles from "./userPage.module.css";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../store/userSlice";

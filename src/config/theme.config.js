@@ -1,8 +1,9 @@
 export const light = {
-  id: "T_001",
+  id: "T001",
   name: "theme-light",
   color: {
-    background: "teal",
+    header: "teal",
+    background: "white",
     text: "white",
     button: {
       text: "white",
@@ -12,5 +13,5 @@ export const light = {
       text: "teal",
       opacity: 1
     }
-  },
+  }
 }

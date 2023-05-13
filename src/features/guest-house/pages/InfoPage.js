@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 import styles from './infoPage.module.css'
 
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 
 function GuestHouseInfoPage() {
   const navigate = useNavigate()

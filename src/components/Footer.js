@@ -7,7 +7,7 @@ import { Col, Row } from "react-bootstrap";
 import useMediaQuery from "hooks/useMediaQuery";
 import partnershipLogos from "assets/images/partnership";
 import { footerIcons } from "assets/images/svg";
-import ZaloLink from "shared/components/link/ZaloLink";
+import ZaloLink from "components/link/ZaloLink";
 
 function Footer() {
   const isDesktop = useMediaQuery("(min-width: 768px)");

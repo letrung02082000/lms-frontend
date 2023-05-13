@@ -3,10 +3,11 @@ import { useDropzone } from 'react-dropzone'
 import { toastWrapper } from 'utils'
 import { BsCloudUpload } from 'react-icons/bs'
 import styled from 'styled-components'
-import { Form } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
 import axiosClient from 'api/axiosClient'
+import Asterisk from './Asterisk'
 
-function FileUploader({ className, ...props }) {
+function FileUploader({ className, hasAsterisk, ...props }) {
   const FILE_MAX_SIZE = 50 * 1024 * 1024
   const [uploadPercent, setUploadPercent] = useState(false)
 
@@ -60,18 +61,19 @@ function FileUploader({ className, ...props }) {
     validator: fileSizeValidator
   })
   return (
-    <Styles className={className}>
-      <Form.Label className="mb-3">{props?.label || props?.children || ''}</Form.Label>
-      <button
-        type="button"
+    <>
+      <Form.Label className="mt-3 d-block">{props?.label || props?.children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>
+      <Form.Text className="mb-3 d-block">{props?.subLabel}</Form.Text>
+      <Button
+      variant='outline-primary'
+        className='d-block mt-3 mb-3'
         {...getRootProps()}
-        className="btn d-flex flex-column align-items-center"
         disabled={props?.uploading}
       >
         <input {...getInputProps()} />
-        <div className={`upload-button d-flex align-items-center justify-content-center px-3 py-2 btn btn-primary`}>
+        <div>
           <BsCloudUpload size={25}/>
-          <p className='ms-2'>{props?.text || 'Thêm tệp'}</p>
+          <span className='ms-2'>{props?.text || 'Tải tệp lên'}</span>
         </div>
         {props?.uploading && <p className="form-text my-2 text-center">Đang tải {uploadPercent}%</p>}
         {fileRejections?.[0]?.errors?.map(error => {
@@ -81,26 +83,9 @@ function FileUploader({ className, ...props }) {
             </p>
           )
         })}
-      </button>
-    </Styles>
+      </Button>
+    </>
   )
 }
 
 export default FileUploader
-
-const Styles = styled.div`
-  margin: 1rem 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  .upload-button {
-    width: fit-content;
-    margin: 0 auto;
-
-    p {
-      margin: 0;
-    }
-  }
-`

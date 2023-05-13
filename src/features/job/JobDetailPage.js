@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 // import { useParams } from 'react-router-dom';
 import axios from 'axios'
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 
 import { MdOutlineContentCopy } from 'react-icons/md'
 import styles from './jobDetailPage.module.css'

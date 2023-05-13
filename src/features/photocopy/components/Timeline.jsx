@@ -1,4 +1,4 @@
-import { ORDER } from 'shared/constants/orderState';
+import { ORDER } from 'constants/orderState';
 import React from 'react';
 import styled from 'styled-components';
 import { FaAngleDoubleRight } from 'react-icons/fa';

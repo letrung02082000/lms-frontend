@@ -8,11 +8,11 @@ import {
 import { ToastContainer } from "react-toastify";
 import ReactGA from "react-ga";
 import { checkLogin } from "utils";
-import RedirectURL from "shared/components/RedirectURL";
+import RedirectURL from "components/RedirectURL";
 import AdminRoutes from "features/admin/AdminRoutes";
 // import PhotocopyRoutes from "features/photocopy/Routes";
 import DrivingRoutes from "features/driving-license-v2/Routes";
-import ServiceLayout from "shared/layouts/ServiceLayout";
+import ServiceLayout from "components/layouts/ServiceLayout";
 import {
   AccountPage,
   AdminBicyclePage,

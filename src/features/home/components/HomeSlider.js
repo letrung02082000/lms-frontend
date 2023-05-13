@@ -10,7 +10,7 @@ import './homeSlider.css'
 import useMediaQuery from '../../../hooks/useMediaQuery'
 //banner images
 import { BusBanner, UniformBanner, PhotocopyBanner} from 'assets/images'
-import LazyImage from 'shared/components/LazyImage'
+import LazyImage from 'components/LazyImage'
 
 function HomeSlider() {
   const isMobile = useMediaQuery('(max-width: 767px)')

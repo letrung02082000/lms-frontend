@@ -10,7 +10,7 @@ import CouponApi from "api/couponApi";
 import Coupon from "./components/Coupon";
 import { services } from "../../shared/constant";
 import useMediaQuery from "hooks/useMediaQuery";
-import MainLayout from "shared/layouts/MainLayout";
+import MainLayout from "components/layouts/MainLayout";
 import CouponDetailModal from "./components/CouponDetailModal";
 
 // TODO:

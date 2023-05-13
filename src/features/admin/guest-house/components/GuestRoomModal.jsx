@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
-import InputField from 'shared/components/form/InputField';
+import InputField from 'components/form/InputField';
 
 function GuestRoomModal({ show, setShow, data }) {
   const { control, setValue, handleSubmit, setError, formState: {isSubmitting}, watch, setFocus } = useForm({

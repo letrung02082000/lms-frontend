@@ -1,4 +1,4 @@
-import TitleBar from "shared/components/TitleBar";
+import TitleBar from "components/TitleBar";
 import { useState } from "react";
 import Autosuggest from "react-autosuggest";
 import { useDispatch, useSelector } from "react-redux";
