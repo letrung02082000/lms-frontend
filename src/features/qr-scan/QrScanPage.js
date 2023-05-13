@@ -7,7 +7,7 @@ import { updateShow } from 'store/navSlice'
 
 import styles from './qrScanPage.module.css'
 
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 
 function QrScanPage() {
   const user = useSelector(selectUser)

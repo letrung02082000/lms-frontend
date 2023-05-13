@@ -3,7 +3,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Button, Col, Modal, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
-import RadioField from 'shared/components/form/RadioField';
+import RadioField from 'components/form/RadioField';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { checkLogin, toastWrapper } from 'utils';

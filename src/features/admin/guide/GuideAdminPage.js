@@ -1,4 +1,4 @@
-import AdminLayout from 'shared/layouts/AdminLayout'
+import AdminLayout from 'components/layouts/AdminLayout'
 import { useLocation } from 'react-router-dom'
 import AllGuides from './components/AllGuides'
 import Creation from './components/Creation'

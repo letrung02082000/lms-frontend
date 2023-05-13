@@ -1,5 +1,5 @@
-import SearchBar from "shared/components/SearchBar";
-import TitleBar from "shared/components/TitleBar";
+import SearchBar from "components/SearchBar";
+import TitleBar from "components/TitleBar";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./photocopyPage.module.css";

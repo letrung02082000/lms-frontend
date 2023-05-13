@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { GUIDE_ROOT, GUEST_HOUSE_ROOT, UNIFORM_ROOT, POOL_ROOT } from 'shared/constants/routes'
+import { GUIDE_ROOT, GUEST_HOUSE_ROOT, UNIFORM_ROOT, POOL_ROOT } from 'constants/routes'
 import GuideRoutes from './guide/Routes'
 import GuestHouseRoutes from './guest-house/Routes'
 import UniformRoutes from './uniform/Routes'

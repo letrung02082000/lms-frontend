@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
-import InputField from '../../../shared/components/form/InputField'
+import InputField from '../../../components/form/InputField'
 import uniformApi from 'api/uniformApi'
 import { toastWrapper } from 'utils'
 import { useForm } from 'react-hook-form'

@@ -1,8 +1,8 @@
 import React from 'react'
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 import styled from 'styled-components'
 import RegistrationForm from '../components/RegistrationForm'
-import LazyImage from 'shared/components/LazyImage'
+import LazyImage from 'components/LazyImage'
 
 function PhotocopyPage() {
   return (

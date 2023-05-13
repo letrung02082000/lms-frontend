@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import TitleBar from "shared/components/TitleBar";
+import TitleBar from "components/TitleBar";
 import styles from "./detailPage.module.css";
 
 import { useDispatch, useSelector } from "react-redux";

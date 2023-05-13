@@ -1,8 +1,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { AdminUniformLayout } from 'shared/layouts';
+import { AdminUniformLayout } from 'components/layouts';
 import OrderPage from './pages/OrderPage';
-import { UNIFORM_ORDER } from 'shared/constants/routes'
+import { UNIFORM_ORDER } from 'constants/routes'
 
 
 function AdminGuideRoutes() {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 import styles from './bankPage.module.css'
 import { MdOutlineContentCopy } from 'react-icons/md'
 

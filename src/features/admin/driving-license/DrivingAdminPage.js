@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import DrivingAdminLayout from "shared/layouts/DrivingAdminLayout";
+import DrivingAdminLayout from "components/layouts/DrivingAdminLayout";
 import A1Driving from "./A1Driving";
 import DrivingDate from "./DrivingDate";
 import DrivingLogin from "./DrivingLogin";

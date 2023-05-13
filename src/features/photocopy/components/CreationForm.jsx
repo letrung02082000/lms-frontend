@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
-import FileUploader from "shared/components/form/FileUploader";
-import InputField from "shared/components/form/InputField";
-import SelectField from "shared/components/form/SelectField";
+import FileUploader from "components/form/FileUploader";
+import InputField from "components/form/InputField";
+import SelectField from "components/form/SelectField";
 import photocopyApi from "api/photocopyApi";
 import { toastWrapper } from "utils";
-import RadioField from "shared/components/form/RadioField";
+import RadioField from "components/form/RadioField";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { AiOutlineDelete } from "react-icons/ai";
 import OrderInfo from "./OrderInfo";
 import { useModal } from "react-modal-hook";
-import ConfirmModal from "shared/components/modal/ConfirmModal";
+import ConfirmModal from "components/modal/ConfirmModal";
 
 function CreationForm() {
   const [deleteIndex, setDeleteIndex] = useState();

@@ -1,4 +1,4 @@
-import Loading from "shared/components/Loading";
+import Loading from "components/Loading";
 import { useEffect, useState } from "react";
 import "./bikeUserInfo.css";
 

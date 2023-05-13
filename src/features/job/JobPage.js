@@ -1,6 +1,6 @@
 import axios from 'axios'
-import Loading from 'shared/components/Loading'
-import TitleBar from 'shared/components/TitleBar'
+import Loading from 'components/Loading'
+import TitleBar from 'components/TitleBar'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 

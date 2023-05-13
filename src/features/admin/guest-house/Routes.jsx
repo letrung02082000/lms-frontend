@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { AdminGuestHouseLayout } from 'shared/layouts'
+import { AdminGuestHouseLayout } from 'components/layouts'
 import AllRooms from './components/AllRooms'
 import Category from './components/Category'
 import Creation from './components/Creation'

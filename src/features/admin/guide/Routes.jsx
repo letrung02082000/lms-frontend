@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import CreateGuide from './components/Creation'
-import { AdminGuidesLayout } from 'shared/layouts'
+import { AdminGuidesLayout } from 'components/layouts'
 import AllGuides from './components/AllGuides'
 import UpdateGuide from './components/Update'
 

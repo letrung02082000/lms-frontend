@@ -1,12 +1,12 @@
-import MainLayout from "shared/layouts/MainLayout";
+import MainLayout from "components/layouts/MainLayout";
 import { BiSearchAlt } from "react-icons/bi";
 import useMediaQuery from "hooks/useMediaQuery";
 import HomeSlider from "../components/HomeSlider";
-import Logo from "../../../shared/components/Logo";
+import Logo from "../../../components/Logo";
 import CategorySlider from "../components/CategorySlider";
 import HotSlider from "../components/HotSlider";
 import MainServices from "../components/MainServices";
-import Footer from "../../../shared/components/Footer";
+import Footer from "../../../components/Footer";
 
 import styled from "styled-components";
 import useScrollDirection from "hooks/useScrollDirection";

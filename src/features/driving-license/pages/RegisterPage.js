@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import SearchBar from "shared/components/SearchBar";
+import SearchBar from "components/SearchBar";
 import styles from "./registerPage.module.css";
-import LazyImage from "shared/components/LazyImage";
+import LazyImage from "components/LazyImage";
 import PortraitBanner from "assets/images/driving-license/portrait.jpg";
 import styled from "styled-components";
 import { toastWrapper } from "utils";
 
-import { DRIVING_LICENSE_NUMBER } from "shared/constants/contact";
+import { DRIVING_LICENSE_NUMBER } from "constants/contact";
 import { convertPhoneNumber } from "utils";
-import ZaloLink from "shared/components/link/ZaloLink";
+import ZaloLink from "components/link/ZaloLink";
 
 import drivingApi from "api/drivingApi";
 import { Button, Row } from "react-bootstrap";
 import AccountModal from "../components/AccountModal";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import Asterisk from "shared/components/form/Asterisk";
+import Asterisk from "components/form/Asterisk";
 
 export default function DrivingRegisterPage() {
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');

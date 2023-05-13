@@ -3,8 +3,9 @@ import { Form } from 'react-bootstrap'
 import { useController } from 'react-hook-form'
 import styled from 'styled-components'
 import { AiFillCloseCircle } from 'react-icons/ai';
+import Asterisk from './Asterisk';
 
-function InputField({ noLabel, label, children, control, name, rules, defaultValue, noClear, ...props }) {
+function InputField({ noLabel, label, children, control, name, rules, defaultValue, hasAsterisk, noClear, ...props }) {
   const {
     field: { ref, ...controlProps },
     fieldState: { invalid, isTouched, isDirty, error },
@@ -19,7 +20,7 @@ function InputField({ noLabel, label, children, control, name, rules, defaultVal
     <Styles>
       <Form.Group>
         {!noLabel && (
-          <Form.Label className='mb-3'>{label || children || ''}</Form.Label>
+          <Form.Label className='mb-3 mt-3'>{label || children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>
         )}
         <div>{props?.subLabel}</div>
         <div className='input-wrapper'>

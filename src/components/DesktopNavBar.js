@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logoutUser, selectUser } from "../../store/userSlice";
+import { logoutUser, selectUser } from "../store/userSlice";
 import styles from "./desktopNavBar.module.css";
 import Logo from "./Logo";
 import Tool from "./Tool";

@@ -1,6 +1,6 @@
 import React from 'react'
-import ZaloLink from 'shared/components/link/ZaloLink'
-import { DRIVING_LICENSE_NUMBER } from 'shared/constants/contact'
+import ZaloLink from 'components/link/ZaloLink'
+import { DRIVING_LICENSE_NUMBER } from 'constants/contact'
 import { convertPhoneNumber } from 'utils'
 import styled from 'styled-components'
 

@@ -3,7 +3,7 @@ import QRCode from "qrcode.react";
 import LoginForm from "../common/LoginForm";
 import { updateUser, selectUser } from "store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import Loading from "shared/components/Loading";
+import Loading from "components/Loading";
 
 import styles from "./bicycleAdminPage.module.css";
 import BikeApi from "api/bikeApi";

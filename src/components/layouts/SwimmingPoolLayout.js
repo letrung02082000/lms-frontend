@@ -1,4 +1,4 @@
-import TitleBar from 'shared/components/TitleBar'
+import TitleBar from 'components/TitleBar'
 import { useNavigate } from 'react-router-dom'
 import styles from './swimmingPoolLayout.module.css'
 
