@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import styles from "./instructionPage.module.css";
 
-import { DRIVING_LICENSE_NUMBER } from "constants/contact";
+import { ZALO_OA_NUMBER } from "constants/contact";
 import ZaloLink from "components/link/ZaloLink";
 import { convertPhoneNumber } from "utils";
 
@@ -79,11 +79,11 @@ export default function DrivingInstructionPage(props) {
 
           <a
             className={styles.contactButtonTop}
-            href={`https://zalo.me/${DRIVING_LICENSE_NUMBER}`}
+            href={`https://zalo.me/${ZALO_OA_NUMBER}`}
             target="_blank"
             rel="noreferer noreferrer"
           >
-            Hỗ trợ
+            Zalo OA hỗ trợ
           </a>
         </div>
       </div>
@@ -130,10 +130,9 @@ export default function DrivingInstructionPage(props) {
               <strong>Gói A:</strong> 550.000đ
             </p>
             <p>
-              Thí sinh tự chuẩn bị: 4 ảnh thẻ 3x4, giấy khám sức khỏe tại các
-              bệnh viện tuyến huyện trở lên, 2 bản photo chứng minh nhân dân/căn
-              cước công dân không cần công chứng. Đăng ký trực tiếp tại nhà
-              khách ĐHQG, đóng lệ phí trực tiếp hoặc chuyển khoản.
+              Thí sinh tự chuẩn bị: Giấy khám sức khỏe tại các
+              bệnh viện tuyến huyện trở lên. Thời gian có hiệu lực của giấy khám sức khỏe là 06 tháng. Đăng ký trực tiếp tại nhà
+              khách ĐHQG-HCM, học viên có thể đóng lệ phí trực tiếp hoặc chuyển khoản. Vui lòng xem hướng dẫn đăng ký trực tiếp tại mục ĐĂNG KÝ TRỰC TIẾP bên dưới.
             </p>
             <p>
               <strong>Gói B:</strong> 590.000đ
@@ -155,6 +154,7 @@ export default function DrivingInstructionPage(props) {
                   return <li key={child._id}>{child.description}</li>;
                 })}
             </ul>
+            <p>Thí sinh được phép thay đổi ngày dự thi trước ngày thi chính thức 15 ngày.</p>
           </div>
           <div id="online">
             <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký online</h3>
@@ -166,8 +166,8 @@ export default function DrivingInstructionPage(props) {
               <li>
                 Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (ảnh tự chụp
                 bằng điện thoại, không quá 3 tháng, không chụp ảnh thẻ): Tóc
-                không che trán, vén tóc ra sau mang tai, LẤY ĐỦ 2 VAI, LẤY TỪ
-                THẮT LƯNG TRỞ LÊN QUA ĐẦU, không đeo kính, trang phục lịch sự,
+                không che trán, vén tóc ra sau mang tai, <b>LẤY ĐỦ 2 VAI, LẤY TỪ
+                THẮT LƯNG TRỞ LÊN QUA ĐẦU</b>, không đeo kính, trang phục lịch sự,
                 lấy nền tường. Vui lòng không sử dụng filter hay chỉnh sửa làm
                 mất đặc điểm nhận dạng. Xem ảnh mẫu{" "}
                 <a
@@ -192,9 +192,10 @@ export default function DrivingInstructionPage(props) {
                 Đóng trực tiếp: Tại văn phòng iSinhvien
                 <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
                 (Tầng trệt Nhà khách ĐHQG)
-                <br /> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
+                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h00).
                 <br /> - Mang theo CMND/CCCD để làm thủ tục.
-                <br /> - Hotline: 0877.876.877
+                <br /> - Hotline: 0876.877.789
+                <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>
                 <br /> - Google maps:{" "}
                 <a
                   href={MAP_URL}
@@ -214,14 +215,12 @@ export default function DrivingInstructionPage(props) {
             <p>4. Chờ duyệt hồ sơ:</p>
             <ul>
               <li>
-                Sau khi đăng ký, trung tâm sẽ xác nhận lại trong vòng 1 ngày làm
-                việc, mọi thủ tục cần hoàn tất trước ngày thi 15 ngày.
+                Sau khi đăng ký thành công, học viên sẽ nhận được đường link tham gia nhóm thi Zalo tại màn hình hoàn tất. Mọi thủ tục đăng ký dự thi cần hoàn tất trước ngày thi 15 ngày.
               </li>
               <li>
-                Nếu bạn không nhận được thông báo, vui lòng liên hệ di
-                động/Zalo:{" "}
-                <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
-                  {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
+                Nếu không nhận được đường link tham gia nhóm thi Zalo, học viên vui lòng liên hệ Zalo OA:{" "}
+                <ZaloLink tel={ZALO_OA_NUMBER}>
+                  Trung tâm dịch vụ sinh viên iStudent
                 </ZaloLink>{" "}
                 để được hỗ trợ.
               </li>
@@ -231,12 +230,15 @@ export default function DrivingInstructionPage(props) {
             <ul>
               <li>
                 Danh sách dự thi và hướng dẫn dự thi sẽ được gửi đến thí sinh
-                thông qua nhóm Zalo . Thí sinh vui lòng theo dõi để cập nhật
-                thông tin sớm nhất.
+                thông qua nhóm Zalo. Thí sinh vui lòng theo dõi để cập nhật
+                thông tin mới nhất.
               </li>
               <li>
                 Khi đi thi thí sinh cần mang theo chứng minh nhân dân hoặc căn
                 cước công dân bản gốc để đối chiếu.
+              </li>
+              <li>
+                Thí sinh được phép thay đổi ngày dự thi trước ngày thi chinh thức 15 ngày.
               </li>
             </ul>
           </div>
@@ -249,7 +251,8 @@ export default function DrivingInstructionPage(props) {
                 (Tầng trệt Nhà khách ĐHQG)
                 <br /> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
                 <br /> - Mang theo CMND/CCCD để làm thủ tục.
-                <br /> - Hotline: 0877.876.877
+                <br /> - Hotline: 0876.877.789
+                <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>
                 <br /> - Google maps:{" "}
                 <a
                   href={MAP_URL}
@@ -260,7 +263,7 @@ export default function DrivingInstructionPage(props) {
                 </a>
               </li>
               <li>
-                Khi đăng ký trực tiếp, bạn vẫn cần phải đăng ký thông tin như
+                Khi đến đăng ký trực tiếp, học viên cần phải đăng ký thông tin online theo
                 hướng dẫn ở trên.
               </li>
             </ul>
@@ -307,8 +310,7 @@ export default function DrivingInstructionPage(props) {
             </dd>
             <dt>Hỏi: Mình muốn tập vòng số 8 có thể tập ở đâu?</dt>
             <dd>
-              Trả lời: Cổng sau Trung tâm quốc phòng ĐHQG (miễn phí, bên ngoài,
-              không vào trong trung tâm).
+              Trả lời: Học viên có thể tập vòng số 8 tại cửa trước văn phòng iSinhvien - Nhà khách ĐHQG-HCM (ra vào tự do, không giới hạn khung giờ).
             </dd>
 
             <dt>Hỏi: Điểm đậu lý thuyết là bao nhiêu?</dt>
@@ -317,10 +319,9 @@ export default function DrivingInstructionPage(props) {
         </div>
         <div className={styles.footer}>
           <p id="contact">
-            Để được hỗ trợ thêm, vui lòng liên hệ Zalo:{" "}
-            <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
-              {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
-              <span> (Mr. Trung)</span>
+            Để được hỗ trợ thêm, vui lòng liên hệ Zalo OA:{" "}
+            <ZaloLink tel={ZALO_OA_NUMBER}>
+              Trung tâm dịch vụ sinh viên iStudent
             </ZaloLink>
           </p>
         </div>
