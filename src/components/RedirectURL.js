@@ -16,7 +16,7 @@ export default function RedirectURL(props) {
         justifyContent: "center",
       }}
     >
-      Đang chuyển trang...
+      Vui lòng chờ..
     </h3>
   );
 }
