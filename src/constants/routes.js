@@ -36,3 +36,6 @@ export const UNIFORM_ORDER = 'order'
 export const POOL_ROOT = 'pool'
 export const POOL_TICKET_USER = 'users/ticket'
 export const POOL_LESSON_USER = 'users/lesson'
+
+//external urls
+export const GUEST_HOUSE_URL = 'https://nhakhach.isinhvien.vn'
