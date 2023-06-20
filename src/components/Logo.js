@@ -1,13 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import useMediaQuery from "hooks/useMediaQuery";
+import LogoImage from "assets/logo.png";
 
 const Logo = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
     <Styles isDesktop={isDesktop}>
-      <img className="logo" src="/logo5.png" alt="logo" />
+      <img className="logo" src={LogoImage} alt="logo" />
     </Styles>
   );
 };

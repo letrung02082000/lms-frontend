@@ -12,7 +12,7 @@ function SupportPage() {
         <h3>Thông tin hỗ trợ</h3>
         <div className="body d-flex flex-column">
           <div>
-            <span>Hotline tư vấn, phản ánh/góp ý: </span>
+            <span>Hotline tư vấn, phản ánh, góp ý: </span>
             <ZaloLink tel="0877876877">0877.876.877</ZaloLink>
           </div>
           <div>
@@ -20,7 +20,8 @@ function SupportPage() {
             <ZaloLink tel={DRIVING_LICENSE_NUMBER}>{convertPhoneNumber(DRIVING_LICENSE_NUMBER, '.')}</ZaloLink>
           </div>
           <div>
-            <span>Zalo hỗ trợ kỹ thuật: </span> <ZaloLink tel="0797324886">0797.324.886</ZaloLink>
+            <span>Zalo hỗ trợ kỹ thuật: </span>
+            <ZaloLink tel={DRIVING_LICENSE_NUMBER}>{convertPhoneNumber(DRIVING_LICENSE_NUMBER, '.')}</ZaloLink>
           </div>
         </div>
       </Styles>

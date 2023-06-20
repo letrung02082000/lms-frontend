@@ -1,5 +1,4 @@
 import MainLayout from "components/layouts/MainLayout";
-import { BiSearchAlt } from "react-icons/bi";
 import useMediaQuery from "hooks/useMediaQuery";
 import HomeSlider from "../components/HomeSlider";
 import Logo from "../../../components/Logo";
@@ -22,12 +21,6 @@ const HomePage = () => {
           {!isDesktop ? (
             <div className="logoContainer">
               <Logo />
-              {/* <div
-              className="searchIcon"
-              onClick={() => alert('Xin lỗi, tính năng này đang được phát triển. Vui lòng quay lại sau!')}
-            >
-              <BiSearchAlt size={25} />
-            </div> */}
             </div>
           ) : null}
           <div className="mainLayout">

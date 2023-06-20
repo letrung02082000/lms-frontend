@@ -10,7 +10,6 @@ import ReactGA from "react-ga";
 import { checkLogin } from "utils";
 import RedirectURL from "components/RedirectURL";
 import AdminRoutes from "features/admin/AdminRoutes";
-// import PhotocopyRoutes from "features/photocopy/Routes";
 import DrivingRoutes from "features/driving-license-v2/Routes";
 import ServiceLayout from "components/layouts/ServiceLayout";
 import {
@@ -19,8 +18,6 @@ import {
   AdminDrivingPage,
   AdminGuestHousePage,
   BankPage,
-  // BicyclePage,
-  // BicyclesPage,
   BusRegistrationPage,
   BusSurveyPage,
   DrivingInstructionPage,
@@ -55,6 +52,7 @@ import CouponAdminPage from "features/coupon/pages/CouponAdmin";
 import CouponDemoNavigate from "features/coupon/pages/CouponDemoNavigate";
 import { ThemeProvider } from "styled-components";
 import { light } from "config/theme.config";
+import { GUIDE_URL, JOB_URL, PRINT_NOW_URL, UNIFORM_URL } from "constants/routes";
 
 const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
 ReactGA.initialize(GA_TRACKING_ID);
@@ -147,7 +145,7 @@ const App = () => {
             path="/driving-test"
             element={
               <ServiceLayout
-                pageTitle="Đăng ký thi sát hạch lái xe"
+                pageTitle="Sát hạch lái xe"
                 navigationTo="/driving-test"
               >
                 <DrivingInfoPage />
@@ -181,9 +179,7 @@ const App = () => {
           <Route
             path="/jobs"
             element={
-              <ServiceLayout pageTitle="Việc làm sinh viên" navigationTo="/jobs">
-                <JobPage />
-              </ServiceLayout>
+              <RedirectURL url={JOB_URL}/>
             }
           />
           <Route
@@ -235,28 +231,13 @@ const App = () => {
           <Route
             path="/uniform"
             element={
-              <ServiceLayout pageTitle="Đặt đồng phục" navigationTo="/uniform">
-                <UniformRegistrationPage />
-              </ServiceLayout>
+              <RedirectURL url={UNIFORM_URL}/>
             }
           />
           <Route
             path="/guides"
             element={
-              <ServiceLayout
-                pageTitle="Cẩm nang sinh viên"
-                navigationTo="/guides"
-              >
-                <GuidePage />
-              </ServiceLayout>
-            }
-          />
-          <Route
-            path="/guide"
-            element={
-              <ServiceLayout pageTitle="Bài viết" navigationTo="/guides">
-                <GuideDetailPage />
-              </ServiceLayout>
+              <RedirectURL url={GUIDE_URL}/>
             }
           />
 
@@ -280,8 +261,8 @@ const App = () => {
             }
           />
           <Route
-            path="/photocopy/*"
-            element={<RedirectURL url="https://in.isinhvien.vn" />}
+            path="/photocopy"
+            element={<RedirectURL url={PRINT_NOW_URL} />}
           />
 
           <Route
