@@ -7,7 +7,7 @@ import PortraitBanner from "assets/images/driving-license/portrait.jpg";
 import styled from "styled-components";
 import { toastWrapper } from "utils";
 
-import { DRIVING_LICENSE_NUMBER } from "constants/contact";
+import { DRIVING_LICENSE_NUMBER, ZALO_OA_NUMBER } from "constants/contact";
 import { convertPhoneNumber } from "utils";
 import ZaloLink from "components/link/ZaloLink";
 
@@ -265,9 +265,9 @@ export default function DrivingRegisterPage() {
                   }/${processDate.getFullYear()}`}
               </p>
               <p>
-                Vui lòng liên hệ Zalo{" "}
-                <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
-                  {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
+                Vui lòng liên hệ Zalo OA{" "}
+                <ZaloLink tel={ZALO_OA_NUMBER}>
+                  {convertPhoneNumber(ZALO_OA_NUMBER, ".")}
                 </ZaloLink>{" "}
                 để được hỗ trợ trong trường hợp hồ sơ của bạn chưa được xử lý.
               </p>
@@ -479,7 +479,7 @@ export default function DrivingRegisterPage() {
               checked={paymentMethod === 0}
             />
             <p onClick={() => handlePaymentMethodChange(0)}>
-              Đóng trực tiếp tại nhà khách Đại Học Quốc Gia
+              Đóng trực tiếp tại nhà khách ĐHQG-HCM
             </p>
           </div>
           <div className={styles.selectContainer}>
@@ -503,7 +503,7 @@ export default function DrivingRegisterPage() {
         {isLoading ? (
           <>
             <p>Hệ thống đang xử lý, vui lòng chờ trong ít nhất 15 giây</p>
-            <p className={styles.formSubmitButton}>Đang đăng ký...</p>
+            <p className={styles.formSubmitButton}>Đang đăng ký</p>
           </>
         ) : (
           <button

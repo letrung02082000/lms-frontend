@@ -5,6 +5,7 @@ import ZaloLink from 'components/link/ZaloLink'
 
 import { convertPhoneNumber } from 'utils'
 import { useNavigate } from 'react-router-dom'
+import { B12_FORM_URL } from 'constants/routes'
 
 function DrivingTestPage() {
   const navigate = useNavigate()
@@ -53,7 +54,7 @@ function DrivingTestPage() {
         </div>
         <div>
           <div className="d-flex flex-column align-items-center p-3 text-center">
-            <p>Đăng ký dự thi B2 nhận ưu đãi dành cho sinh viên <a href='/driving-license/b2' target='_blank' rel='noopener noreferrer'>tại đây</a></p>
+            <p>Đăng ký dự thi B1, B2 nhận ngay ưu đãi dành cho sinh viên <a href={B12_FORM_URL} target='_blank' rel='noopener noreferrer'>tại đây</a></p>
           </div>
         </div>
         <div>

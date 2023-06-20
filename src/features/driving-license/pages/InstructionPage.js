@@ -83,7 +83,7 @@ export default function DrivingInstructionPage(props) {
             target="_blank"
             rel="noreferer noreferrer"
           >
-            Zalo OA hỗ trợ
+            Zalo OA
           </a>
         </div>
       </div>
@@ -121,7 +121,7 @@ export default function DrivingInstructionPage(props) {
             <p>Trường đại học thể dục thể thao TP.HCM.</p>
             <p>
               Địa chỉ: Khu phố 6, phường Linh Trung, thành phố Thủ Đức, thành
-              phố Hồ Chí Minh (Làng đại học, cạnh nhà điều hành ĐHQG).
+              phố Hồ Chí Minh (Làng đại học, cạnh nhà điều hành ĐHQG-HCM).
             </p>
           </div>
           <div id="fee">
@@ -207,11 +207,6 @@ export default function DrivingInstructionPage(props) {
               </li>
               <li>Hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</li>
             </ul>
-            <p style={{ color: "var(--primary)" }}>
-              <strong>Cảnh báo:</strong> Thí sinh cảnh giác trước các hình thức
-              mời chào làm hồ sơ tận nơi, giá rẻ hay mạo danh trung tâm yêu cầu
-              chuyển tiền. Trung tâm không chịu trách nhiệm.
-            </p>
             <p>4. Chờ duyệt hồ sơ:</p>
             <ul>
               <li>

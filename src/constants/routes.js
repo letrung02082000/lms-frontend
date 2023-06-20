@@ -39,3 +39,8 @@ export const POOL_LESSON_USER = 'users/lesson'
 
 //external urls
 export const GUEST_HOUSE_URL = 'https://nhakhach.isinhvien.vn'
+export const UNIFORM_URL = 'https://dongphuc.edu.vn'
+export const PRINT_NOW_URL = 'https://inngay.isinhvien.vn'
+export const GUIDE_URL = 'https://camnang.isinhvien.vn'
+export const B12_FORM_URL = 'https://forms.gle/fea15E2ewcbdnZ369'
+export const JOB_URL = 'https://camnang.isinhvien.vn/category/viec-lam/'

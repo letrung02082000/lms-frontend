@@ -14,23 +14,20 @@ function MainServices(props) {
 
   return (
     <div className={styles.itemsContainer}>
-      <div className={styles.itemContainer} onClick={() => navigateTo('/pool-ticket')}>
-        <div>
-          <img src="/main-icon/pool.png" alt="pool" className={styles.mainIcon} />
-        </div>
-        <p>
-          Dịch vụ
-          <br />
-          hồ bơi
-        </p>
-      </div>
+      
       <div className={styles.itemContainer} onClick={() => navigateTo('/driving-test')}>
         <div>
           <img src="/main-icon/motorbike.png" alt="pool" className={styles.mainIcon} />
         </div>
-        <p>Thi sát hạch lái xe</p>
+        <p>Sát hạch<br/>lái xe</p>
       </div>
-      <div className={styles.itemContainer} onClick={() => navigateTo('/maintain')}>
+      <div className={styles.itemContainer} onClick={() => navigateTo('/uniform')}>
+        <div>
+          <img src="/main-icon/uniform.png" alt="pool" className={styles.mainIcon} />
+        </div>
+        <p>Đặt đồng phục</p>
+      </div>
+      <div className={styles.itemContainer} onClick={() => navigateTo('/jobs')}>
         <div>
           <img src="/main-icon/job.png" alt="pool" className={styles.mainIcon} />
         </div>
@@ -41,22 +38,25 @@ function MainServices(props) {
       <ServiceItem path="photocopy" iconSrc="/main-icon/photocopy.png" alt="photo">
         Gửi in ấn
       </ServiceItem>
-      <div className={styles.itemContainer} onClick={() => navigateTo('/bicycles')}>
+      <div className={styles.itemContainer} onClick={() => navigateTo('/yenshare')}>
         <div>
           <img src="/main-icon/bicycle.png" alt="bicycle" className={styles.mainIcon} />
         </div>
         <p>
-          Xe đạp
-          <br />
-          công cộng
+          Yên share
         </p>
       </div>
-      <div className={styles.itemContainer} onClick={() => navigateTo('/uniform')}>
+      <div className={styles.itemContainer} onClick={() => navigateTo('/pool-ticket')}>
         <div>
-          <img src="/main-icon/uniform.png" alt="pool" className={styles.mainIcon} />
+          <img src="/main-icon/pool.png" alt="pool" className={styles.mainIcon} />
         </div>
-        <p>Đặt đồng phục</p>
+        <p>
+          Dịch vụ
+          <br />
+          hồ bơi
+        </p>
       </div>
+      
 
       <div className={styles.itemContainer} onClick={() => navigateTo('/guides')}>
         <div>

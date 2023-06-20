@@ -13,9 +13,6 @@ import { FaMotorcycle } from 'react-icons/fa'
 import { RiPrinterCloudLine } from 'react-icons/ri'
 import { IoIosBicycle } from 'react-icons/io'
 
-//media query
-import useMediaQuery from '../../../hooks/useMediaQuery'
-
 function CategorySlider() {
   const navigate = useNavigate()
 
@@ -29,28 +26,28 @@ function CategorySlider() {
         spaceBetween={15}
         className="mySwiper"
       >
-        <SwiperSlide onClick={() => navigate('/driving-test')}>
+        <SwiperSlide onClick={() => navigate('/driving-test')} style={{cursor: 'pointer'}}>
           <div className={styles.itemContainer}>
             <FaMotorcycle />
             <p>Sát hạch</p>
           </div>
         </SwiperSlide>
 
-        <SwiperSlide onClick={() => navigate('/photocopy')}>
+        <SwiperSlide onClick={() => navigate('/photocopy')} style={{cursor: 'pointer'}}>
           <div className={styles.itemContainer}>
             <RiPrinterCloudLine />
             <p>In ấn</p>
           </div>
         </SwiperSlide>
 
-        <SwiperSlide onClick={() => navigate('/bicycles')}>
+        <SwiperSlide onClick={() => navigate('/bicycles')} style={{cursor: 'pointer'}}>
           <div className={styles.itemContainer}>
             <IoIosBicycle />
             <p>Xe đạp</p>
           </div>
         </SwiperSlide>
 
-        <SwiperSlide onClick={() => navigate('/pool-info')}>
+        <SwiperSlide onClick={() => navigate('/pool-info')} style={{cursor: 'pointer'}}>
           <div className={styles.itemContainer}>
             <MdOutlinePool />
             <p>Hồ bơi</p>
