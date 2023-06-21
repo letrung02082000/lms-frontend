@@ -52,7 +52,7 @@ import CouponAdminPage from "features/coupon/pages/CouponAdmin";
 import CouponDemoNavigate from "features/coupon/pages/CouponDemoNavigate";
 import { ThemeProvider } from "styled-components";
 import { light } from "config/theme.config";
-import { GUEST_HOUSE_URL, GUIDE_URL, JOB_URL, PRINT_NOW_URL, UNIFORM_URL } from "constants/routes";
+import { GUEST_HOUSE_URL, GUIDE_URL, JOB_URL, PRINT_NOW_URL, SWIMMING_POOL_URL, UNIFORM_URL } from "constants/routes";
 
 const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
 ReactGA.initialize(GA_TRACKING_ID);
@@ -96,9 +96,7 @@ const App = () => {
           <Route
             path="/pool-info"
             element={
-              <ServiceLayout pageTitle="Hồ bơi" navigationTo="/pool-info">
-                <PoolInfoPage />
-              </ServiceLayout>
+              <RedirectURL url={SWIMMING_POOL_URL} />
             }
           />
           <Route
