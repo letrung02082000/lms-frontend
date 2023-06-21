@@ -31,8 +31,9 @@ function GuestHouseInfoPage() {
           <br />
           0981.190.069 ( Ms.Ngọc)
         </p>
-        <div className={styles.signupButtonContainer}>
-          <button onClick={handleSignupButton}>Đặt phòng ngay</button>
+        <div className='d-flex flex-column align-items-center'>
+          <a className='btn btn-outline-primary mb-3' href={GUEST_HOUSE_URL} rel='noopener' target='_blank'>Trang thông tin</a>
+          <button className='btn btn-primary' onClick={handleSignupButton}>Đặt phòng ngay</button>
         </div>
       </div>
       <div className={styles.body}>
