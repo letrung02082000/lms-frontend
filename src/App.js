@@ -79,7 +79,7 @@ const App = () => {
           <Route
             path="/guest-house"
             element={
-              <RedirectURL url={GUEST_HOUSE_URL}/>
+              <GuestHouseInfoPage/>
             }
           />
           <Route path="/guest-house-user" element={<GuestHouseUserPage />} />
