@@ -49,9 +49,11 @@ export default function GuestHouseUserPage() {
       .catch((err) => alert(err.toString()));
   };
 
-  const handleRoomSelected = (id) => {
-    setRoomSelected(id);
-  };
+  console.log(currentCategory);
+
+  // const handleRoomSelected = (id) => {
+  //   setRoomSelected(id);
+  // };
 
   const handleSubmitButton = () => {
     const name = document.getElementById("formName").value;
@@ -62,21 +64,25 @@ export default function GuestHouseUserPage() {
       return toastWrapper("Vui lòng nhập tên của bạn!", 'error');
     }
 
-    if (!roomSelected) {
-      return toastWrapper("Vui lòng chọn phòng bạn muốn thuê!", 'error');
-    }
+    // if (!roomSelected) {
+    //   return toastWrapper("Vui lòng chọn phòng bạn muốn thuê!", 'error');
+    // }
 
     setLoading(true);
 
     GuesthouseApi.postUser({
+      inDate,
       name,
       tel,
-      guestHouse: roomSelected,
+      guestHouseCategory: currentCategory.name,
       feedback,
-      inDate,
     })
       .then((res) => {
         setLoading(false);
+        document.getElementById("formName").value = '';
+        document.getElementById("formTel").value = '';
+        document.getElementById("formFeedback").value = '';
+
         return toastWrapper(
           "Thông tin đăng ký của bạn đã được ghi nhận, nhân viên nhà khách ĐHQG sẽ liên hệ với bạn để hoàn tất thủ tục đăng ký", 'success'
         );
@@ -110,7 +116,7 @@ export default function GuestHouseUserPage() {
           <br />
           {currentCategory?.description}
         </p>
-        {roomList.length === 0 ? (
+        {/* {roomList.length === 0 ? (
           <span className="text-danger">Hiện không còn phòng trên hệ thống</span>
         ) : (
           <>
@@ -141,7 +147,7 @@ export default function GuestHouseUserPage() {
               })}
             </div>
           </>
-        )}
+        )} */}
 
         <div className={styles.formInfo}>
           <div className={styles.formGroup}>
