@@ -39,6 +39,7 @@
   font-weight: bold;
   color: var(--primary);
   margin: 0.5rem 1rem;
+  cursor: pointer;
 }
 
 .formSubmitButton {

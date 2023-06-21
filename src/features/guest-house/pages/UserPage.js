@@ -7,6 +7,7 @@ import Datetime from "react-datetime";
 import "moment/locale/vi";
 
 import GuesthouseApi from "api/guesthouseApi";
+import { toastWrapper } from "utils";
 
 // import vi from 'date-fns/locale/vi';
 // registerLocale('vi', vi);
@@ -15,7 +16,7 @@ export default function GuestHouseUserPage() {
   const [categoryList, setCategoryList] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [data, setData] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
+  const [roomList, setRoomList] = useState([]);
   const [roomSelected, setRoomSelected] = useState(null);
   const [loading, setLoading] = useState(false);
   const [inDate, setInDate] = useState(new Date());
@@ -28,22 +29,16 @@ export default function GuestHouseUserPage() {
         setCategoryList(res.data);
         setCurrentCategory(res.data[0]);
       })
-      .catch((err) => alert(err.toString()));
-
-    GuesthouseApi.getVisibleRooms()
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((err) => alert(err.toString()));
+      .catch((err) => toastWrapper(err.toString()));
   }, []);
 
   useEffect(() => {
-    const result = data?.filter((child) => {
-      return child.category._id === currentCategory._id;
-    });
-
-    setCategoryData(result);
-  }, [currentCategory, data]);
+    GuesthouseApi.getRoomByCategoryId(currentCategory?._id)
+      .then((res) => {
+        setRoomList(res.data)
+      })
+      .catch(() => toastWrapper('Lỗi khi lấy danh sách phòng!'));
+  }, [currentCategory]);
 
   const handleCategoryChange = (e) => {
     GuesthouseApi.getCategoryVisibleById(e.target.value)
@@ -64,11 +59,11 @@ export default function GuestHouseUserPage() {
     const feedback = document.getElementById("formFeedback").value;
 
     if (!name || !tel) {
-      return alert("Vui lòng nhập tên của bạn!");
+      return toastWrapper("Vui lòng nhập tên của bạn!", 'error');
     }
 
     if (!roomSelected) {
-      return alert("Vui lòng chọn phòng bạn muốn thuê!");
+      return toastWrapper("Vui lòng chọn phòng bạn muốn thuê!", 'error');
     }
 
     setLoading(true);
@@ -82,13 +77,13 @@ export default function GuestHouseUserPage() {
     })
       .then((res) => {
         setLoading(false);
-        return alert(
-          "Thông tin đăng ký của bạn đã được ghi nhận, nhân viên nhà khách ĐHQG sẽ liên hệ với bạn để hoàn tất thủ tục đăng ký. Mọi thắc mắc, vui lòng liên hệ 0877.876.877 (Mr. Huân) để được hỗ trợ. Xin cảm ơn!"
+        return toastWrapper(
+          "Thông tin đăng ký của bạn đã được ghi nhận, nhân viên nhà khách ĐHQG sẽ liên hệ với bạn để hoàn tất thủ tục đăng ký", 'success'
         );
       })
       .catch((err) => {
         setLoading(false);
-        return alert(err.toString());
+        return toastWrapper(err.toString(), 'error');
       });
   };
 
@@ -115,8 +110,8 @@ export default function GuestHouseUserPage() {
           <br />
           {currentCategory?.description}
         </p>
-        {categoryData.length === 0 ? (
-          <span>Xin lỗi, hiện không còn phòng trên hệ thống</span>
+        {roomList.length === 0 ? (
+          <span className="text-danger">Hiện không còn phòng trên hệ thống</span>
         ) : (
           <>
             <p className={styles.title}>Chọn phòng</p>
@@ -128,7 +123,7 @@ export default function GuestHouseUserPage() {
                 justifyContent: "center",
               }}
             >
-              {categoryData.map((child) => {
+              {roomList.map((child) => {
                 return (
                   <div
                     key={child._id}
@@ -204,18 +199,6 @@ export default function GuestHouseUserPage() {
               </button>
             )}
           </div>
-          <p style={{ margin: "1rem 0" }}>
-            Trong quá trình đăng ký, nếu xảy ra lỗi hệ thống, vui lòng chụp màn
-            hình lỗi gửi về Zalo:{" "}
-            <a
-              href="https://zalo.me/0797324886"
-              target="_blank"
-              rel="noopenner noreferrer"
-            >
-              0797324886
-            </a>{" "}
-            để được hỗ trợ nhanh nhất. Xin cảm ơn.
-          </p>
         </div>
       </div>
     </>
