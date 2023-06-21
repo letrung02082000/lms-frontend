@@ -46,7 +46,7 @@ function MainServices(props) {
           Yên share
         </p>
       </div>
-      <div className={styles.itemContainer} onClick={() => navigateTo('/pool-ticket')}>
+      <div className={styles.itemContainer} onClick={() => navigateTo('/pool-info')}>
         <div>
           <img src="/main-icon/pool.png" alt="pool" className={styles.mainIcon} />
         </div>
