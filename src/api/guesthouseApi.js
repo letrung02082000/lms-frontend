@@ -34,13 +34,13 @@ class GuesthouseApi {
     });
   };
 
-  getVisibleRooms = async () => {
+  getRoomByCategoryId = async (id) => {
     const url = `${API_PATH}/room`;
     return axiosClient.get(url, {
       params: {
-        search: { isVisible: true },
-      },
-    });
+        category: id,
+      }
+    })
   };
 
   getCategoryVisibleById = async (id) => {
