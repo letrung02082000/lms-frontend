@@ -44,9 +44,9 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         ChanDung: `https://drive.google.com/file/d/${child.portraitId}/view`,
         MatTruoc: `https://drive.google.com/file/d/${child.frontsideId}/view`,
         MatSau: `https://drive.google.com/file/d/${child.backsideId}/view`,
-        BienLai: `https://drive.google.com/file/d/${child.receiptId}/view`,
         PhuongThucThanhToan,
-        TrangThai
+        TrangThai,
+        GhiChu: child?.feedback || '',
       }
     })
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
