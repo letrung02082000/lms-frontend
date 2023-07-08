@@ -79,7 +79,9 @@ const App = () => {
           <Route
             path="/guest-house"
             element={
+              <ServiceLayout pageTitle="Nhà khách" navigationTo="/guest-house">
               <GuestHouseInfoPage/>
+            </ServiceLayout>
             }
           />
           <Route path="/guest-house-user" element={<GuestHouseUserPage />} />
