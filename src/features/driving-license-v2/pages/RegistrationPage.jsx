@@ -225,7 +225,7 @@ function RegistrationPage() {
         bankCode='MBBank'
         accountName='Nguyen Ngoc Huan'
         accountNumber='7899996886'
-        amount={590000}
+        amount={650000}
         desc={`GPLX ${drivingData?.tel || '<Số điện thoại>'} ${
           drivingData?.date || '<Ngày dự thi>'
         }`}
