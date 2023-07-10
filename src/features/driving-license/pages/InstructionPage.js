@@ -127,7 +127,7 @@ export default function DrivingInstructionPage(props) {
           <div id="fee">
             <h3 className={styles.sectionTitle}>Lệ phí thi</h3>
             <p>
-              <strong>Gói A:</strong> 550.000đ
+              <strong>Gói A:</strong> 600.000đ
             </p>
             <p>
               Thí sinh tự chuẩn bị: Giấy khám sức khỏe tại các
@@ -135,7 +135,7 @@ export default function DrivingInstructionPage(props) {
               khách ĐHQG-HCM, học viên có thể đóng lệ phí trực tiếp hoặc chuyển khoản. Vui lòng xem hướng dẫn đăng ký trực tiếp tại mục ĐĂNG KÝ TRỰC TIẾP bên dưới.
             </p>
             <p>
-              <strong>Gói B:</strong> 590.000đ
+              <strong>Gói B:</strong> 650.000đ
             </p>
             <p>
               Trung tâm hỗ trợ làm hồ sơ và khám sức khỏe tại trung tâm. Đăng
