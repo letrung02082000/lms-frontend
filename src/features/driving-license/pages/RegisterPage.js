@@ -427,8 +427,7 @@ export default function DrivingRegisterPage() {
               checked={drivingType === 1}
             />
             <p onClick={() => handleDrivingTypeChange(1)}>
-              Bằng A2 (Mô tô 2 bánh không giới hạn dung tích xi lanh, lệ phí thi
-              1.490.000 đồng, trung tâm liên hệ hướng dẫn qua điện thoại)
+              Bằng A2 (Mô tô 2 bánh không giới hạn dung tích xi lanh, trung tâm liên hệ hướng dẫn qua điện thoại)
             </p>
           </div>
           <div className={styles.selectContainer}>
