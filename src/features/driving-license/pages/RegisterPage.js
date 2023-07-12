@@ -380,7 +380,7 @@ export default function DrivingRegisterPage() {
         </div>
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>
-            Ảnh chụp chân dung<Asterisk/> (không chụp ảnh thẻ, xem ảnh mẫu trong hướng dẫn{" "}
+            Ảnh chụp chân dung<Asterisk/> (LẤY ĐỦ 2 VAI, TỪ THẮT LƯNG, xem hướng dẫn chi tiết{" "}
             <a
               href="/driving-instruction#online"
               target="_blank"
