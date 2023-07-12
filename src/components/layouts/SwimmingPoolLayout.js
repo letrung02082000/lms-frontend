@@ -1,6 +1,8 @@
 import TitleBar from 'components/TitleBar'
 import { useNavigate } from 'react-router-dom'
 import styles from './swimmingPoolLayout.module.css'
+import { Button } from 'react-bootstrap'
+import { SWIMMING_POOL_URL } from 'constants/routes'
 
 function SwimmingPoolTutorPage({ children, route }) {
   const navigate = useNavigate()
@@ -15,40 +17,21 @@ function SwimmingPoolTutorPage({ children, route }) {
         <div className={styles.headerContainer}>
           <img src="/poolbanner.jpg" alt="banner" />
           <div className={styles.seeMoreButtonContainer}>
-            <button
-              className={styles.seeMoreButton}
-              onClick={() => {
-                navigate('/pool-info')
-              }}
-            >
-              Thông tin hồ bơi
-            </button>
+            <a className='btn btn-outline-primary' href={SWIMMING_POOL_URL} target='_blank' rel='noopener noreferrer'>
+              Trang thông tin
+            </a>
             <a
-              className={styles.seeMoreButton}
+              className='btn btn-primary ms-5'
               target="_blank"
               rel="noopenner noreferrer"
               href="https://zalo.me/g/fpjnye186"
             >
-              Tham gia nhóm
+              Nhóm học bơi Zalo
             </a>
           </div>
         </div>
 
         <div className={styles.ticketFormContainer}>
-          <div className={styles.navigationContainer}>
-            <button
-              className={`${styles.navigationButton} ${route == '/ticket' ? styles.ticketButton : null}`}
-              onClick={() => onNavigate('/pool-ticket', 0)}
-            >
-              Mua vé tháng
-            </button>
-            <button
-              className={`${styles.navigationButton} ${route == '/tutor' ? styles.tutorButton : null}`}
-              onClick={() => onNavigate('/pool-tutor', 1)}
-            >
-              Đăng ký học bơi
-            </button>
-          </div>
           {children}
         </div>
       </div>

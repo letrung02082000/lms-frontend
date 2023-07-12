@@ -1,6 +1,6 @@
 .container {
   background-color: white;
-  padding-bottom: 10rem;
+  padding-bottom: 3rem;
   background-color: white;
 }
 .header {
@@ -117,7 +117,6 @@
 }
 
 .payText {
-  margin: 1.5rem 0 0 0;
   padding: 0;
   text-align: center;
   font-weight: bold;

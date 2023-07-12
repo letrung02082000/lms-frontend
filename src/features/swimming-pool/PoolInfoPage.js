@@ -10,6 +10,7 @@ import { Pagination } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
 import 'swiper/swiper-bundle.min.css'
 import 'swiper/swiper.min.css'
+import { SWIMMING_POOL_URL } from 'constants/routes'
 
 function SwimmingPoolInfoPage() {
   const navigate = useNavigate()
@@ -36,13 +37,22 @@ function SwimmingPoolInfoPage() {
           <img src="/poolbanner.jpg" alt="banner" style={{ borderRadius: '0' }} />
         </SwiperSlide>
       </Swiper>
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <button className={styles.signupButton} onClick={() => navigate('/pool-ticket')}>
-          Mua vé tháng
-        </button>
+      {/* <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <a className={styles.signupButton} href={SWIMMING_POOL_URL} target='_blank' rel='noopener noreferrer'>
+          Trang thông tin
+        </a>
         <button className={styles.signupButton} onClick={() => navigate('/pool-tutor')}>
           Đăng ký học bơi
         </button>
+      </div> */}
+      <div className='mt-5'>
+        <h2 className='h4 text-center fw-bold text-uppercase'>Thông tin chung</h2>
+        <p className='text-center'>Hồ bơi Nhà Khách ĐHQG-HCM</p>
+        <p className='text-center'>Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương</p>
+        <p className='text-center'>
+          Liên hệ hỗ trợ/đăng ký học bơi: 
+          0981.190.069 ( Ms.Ngọc)
+        </p>
       </div>
       <div className={styles.bodyContainer}>
         <h3>
@@ -98,34 +108,26 @@ function SwimmingPoolInfoPage() {
         </div>
         <h5>Giá cả phải chăng</h5>
         <div className={styles.iconContainer}>
-          <p className={styles.payText}>20.000đ/lượt</p>
-          <p className={styles.payText}>Vé tháng siêu tiết kiệm</p>
+          <p className={styles.payText}>25.000đ/lượt</p>
+          <p className={styles.payText}>Vé tháng tiết kiệm</p>
           <img className={styles.payIcon} src="/savemoney.png" alt="pay-icon" />
 
-          <p className={styles.payText}>500.000đ/2 tháng/30 lượt</p>
+          <p className={styles.payText}>600.000đ/tháng/30 lượt</p>
           <p className={styles.payText}>+1 lượt bơi miễn phí</p>
         </div>
 
-        <div>
-          <img className={styles.numberIcon} src="/four.png" alt="img" />
-        </div>
-        <h5>Nhiều ưu đãi tích điểm đổi voucher</h5>
-        <div className={styles.iconContainer}>
-          <img className={styles.payIcon} src="/voucher2.png" alt="pay-icon" />
-        </div>
-        <p className={styles.helpText}>Liên hệ hỗ trợ</p>
-        <div className={styles.introContainer}>
-          <a className={styles.contactButton} href="tel:+84797324886" target="_blank" rel="noreferer noreferrer">
-            Gọi ngay
+        <div className='mt-3'>
+          <a className='btn btn-primary' href={SWIMMING_POOL_URL} target='_blank' rel='noopener noreferrer'>
+            Trang thông tin
           </a>
           <a
-            className={styles.contactButton}
-            href="https://zalo.me/0797324886"
-            target="_blank"
-            rel="noreferer noreferrer"
-          >
-            Zalo
-          </a>
+              className='btn btn-primary ms-5'
+              target="_blank"
+              rel="noopenner noreferrer"
+              href="https://zalo.me/g/fpjnye186"
+            >
+              Nhóm học bơi Zalo
+            </a>
         </div>
       </div>
     </div>

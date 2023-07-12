@@ -98,7 +98,9 @@ const App = () => {
           <Route
             path="/pool-info"
             element={
-              <RedirectURL url={SWIMMING_POOL_URL} />
+              <ServiceLayout pageTitle="Hồ bơi" navigationTo="/pool-info">
+              <PoolInfoPage/>
+            </ServiceLayout>
             }
           />
           <Route
