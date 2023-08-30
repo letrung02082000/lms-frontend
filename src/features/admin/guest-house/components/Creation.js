@@ -1,124 +1,74 @@
-import React, { useEffect, useState } from "react";
-import styles from "./creation.module.css";
-
-import GuesthouseApi from "api/guesthouseApi";
+import InputField from 'components/form/InputField'
+import React from 'react'
+import { Col, Row } from 'react-bootstrap'
+import { useForm } from 'react-hook-form';
 
 function Creation() {
-  const [category, setCategory] = useState([]);
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    setError,
+    formState: { isSubmitting, errors },
+    watch,
+    setFocus,
+  } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    defaultValues: {},
+    resolver: undefined,
+    context: undefined,
+    shouldFocusError: true,
+    shouldUnregister: true,
+    shouldUseNativeValidation: false,
+    delayError: false,
+  });
 
-  useEffect(() => {
-    GuesthouseApi.getCategories()
-      .then((res) => {
-        setCategory(res.data);
-      })
-      .catch((err) => alert(err.toString));
-  }, []);
-
-  const handleSubmitButton = () => {
-    const number = document.getElementById("formNumber").value;
-    const description = document.getElementById("formDesc").value;
-    const category = document.getElementById("formCategory").value;
-    const dailyPrice = document.getElementById("formDailyPrice").value;
-    const monthlyPrice = document.getElementById("formMonthlyPrice").value;
-    const minQuantity = document.getElementById("formMinQuantity").value;
-    const maxQuantity = document.getElementById("formMaxQuantity").value;
-
-    if (
-      !number ||
-      !description ||
-      !category ||
-      !dailyPrice ||
-      !monthlyPrice ||
-      !minQuantity ||
-      !maxQuantity
-    ) {
-      return alert("Vui lòng nhập đầy đủ các trường!");
-    }
-
-    if (isNaN(number)) {
-      return alert("Số phòng không hợp lệ");
-    }
-
-    if (isNaN(dailyPrice)) {
-      return alert("Giá ngày không hợp lệ");
-    }
-
-    if (isNaN(monthlyPrice)) {
-      return alert("Giá tháng không hợp lệ");
-    }
-
-    if (isNaN(minQuantity)) {
-      return alert("Số lượng tối thiểu không hợp lệ");
-    }
-
-    if (isNaN(maxQuantity)) {
-      return alert("Số lượng tối đa không hợp lệ");
-    }
-
-    const confirmed = window.confirm(
-      `Bạn có chắc chắn tạo phòng ${number} với các thông tin đã cung cấp không?`
-    );
-
-    if (confirmed) {
-      GuesthouseApi.postRoom({
-        number,
-        description,
-        category,
-        dailyPrice,
-        monthlyPrice,
-        minQuantity,
-        maxQuantity,
-      })
-
-        .then((res) => {
-          return alert("Tạo phòng thành công!");
-        })
-        .catch((err) => {
-          console.log(err);
-          return alert(err.toString());
-        });
-    }
-  };
+  const handleClearButton = (name) => {
+    setValue(name, '');
+    setFocus(name);
+  }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formGroup}>
-        <label className={styles.formLabel}>Số phòng</label>
-        <input className={styles.formInput} type="text" id="formNumber" />
-      </div>
-      <div className={styles.formGroup}>
-        <label className={styles.formLabel}>Mô tả</label>
-        <textarea className={styles.formInput} id="formDesc"></textarea>
-      </div>
-      <div className={styles.formGroup}>
-        <label className={styles.formLabel}>Loại phòng</label>
-        <select id="formCategory">
-          {category.map((child) => {
-            return <option value={child._id}>{child.name}</option>;
-          })}
-        </select>
-      </div>
-      <div className={styles.formGroup}>
-        <label className={styles.formLabel}>Giá ngày</label>
-        <input className={styles.formInput} type="text" id="formDailyPrice" />
-      </div>
-      <div className={styles.formGroup}>
-        <label className={styles.formLabel}>Giá tháng</label>
-        <input className={styles.formInput} type="text" id="formMonthlyPrice" />
-      </div>
-      <div className={styles.formGroup}>
-        <label className={styles.formLabel}>Số lượng tối thiểu</label>
-        <input className={styles.formInput} type="text" id="formMinQuantity" />
-      </div>
-      <div className={styles.formGroup}>
-        <label className={styles.formLabel}>Số lượng tối đa</label>
-        <input className={styles.formInput} type="text" id="formMaxQuantity" />
-      </div>
-      <button className={styles.formButton} onClick={handleSubmitButton}>
-        Tạo phòng
-      </button>
+    <div>
+      <h1 className='text-center my-2'>Tạo phòng</h1>
+      <Row className='justify-content-center'>
+        <Col xs={12} md={6} lg={4}>
+          <InputField
+            label='Mã phòng'
+            placeholder='Nhập mã phòng'
+            control={control}
+            name='room-number'
+            type='number'
+            rules={{
+              maxLength: {
+                value: 50,
+                message: 'Độ dài tối đa <= 50 ký tự',
+              },
+              required: 'Vui lòng nhập trường này',
+            }}
+            onClear={handleClearButton}
+          />
+        </Col>
+        <Col xs={12} md={6} lg={4}>
+          <InputField
+            label='Khách hàng'
+            placeholder='Nhập họ tên khách hàng'
+            control={control}
+            name='name'
+            rules={{
+              maxLength: {
+                value: 50,
+                message: 'Độ dài tối đa <= 50 ký tự',
+              },
+              required: 'Vui lòng nhập trường này',
+            }}
+            onClear={handleClearButton}
+          />
+        </Col>
+      </Row>
     </div>
-  );
+  )
 }
 
-export default Creation;
+export default Creation

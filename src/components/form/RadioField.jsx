@@ -9,14 +9,13 @@ function RadioField(props) {
         className="mb-2"
         name={props?.name}
         type={option?.type || 'radio'}
-        key={`${option?.label}_${index}`}
-        id={`${option?.label}_${index}`}
+        key={`${props?.name}_${index}`}
+        id={`${props?.name}_${index}`}
         onChange={e => {
           props.onChange(e.target.value)
         }}
         label={option?.label}
         value={option?.value}
-        checked={option?.value === props?.checkValue}
       />
     )
   })

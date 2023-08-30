@@ -4,10 +4,11 @@ import { useMemo } from 'react';
 import { useTable } from 'react-table';
 import uniformApi from 'api/uniformApi';
 import { useState } from 'react';
-import { Button, Table } from 'react-bootstrap';
+import { Button, Pagination, Table } from 'react-bootstrap';
 import { convertToDateTime } from 'utils/commonUtils';
 import guesthouseApi from 'api/guesthouseApi';
 import GuestRoomModal from '../components/GuestRoomModal';
+import { toastWrapper } from 'utils';
 
 function ReportPage() {
   const [page, setPage] = useState(0);
@@ -18,50 +19,33 @@ function ReportPage() {
   const columns = useMemo(
     () => [
       {
+        Header: 'Ngày tạo',
+        accessor: 'createdAt',
+        Cell: ({ row }) => {
+          return <span>{convertToDateTime(row.values?.createdAt)}</span>;
+        },
+      },
+      {
         Header: 'Số phòng',
-        accessor: 'number',
-      },
-      {
-        Header: 'Khách hàng',
-        accessor: 'name',
-      },
-      {
-        Header: 'Di động',
-        accessor: 'tel',
-      },
-      {
-        Header: 'Loại phòng',
-        accessor: 'category',
+        accessor: 'guestHouse',
         Cell: ({ row }) => {
-          return <span>{row.values?.category?.name}</span>;
+          return <span>{row.values?.guestHouse?.number}</span>;
         },
       },
       {
-        Header: 'Tình trạng',
-        accessor: 'isAvailable',
-        Cell: ({ row }) => {
-          return (
-            <>
-              {row.values?.isAvailable ? (
-                <span className='text-success fw-bold'>Còn trống</span>
-              ) : (
-                'Đã đặt'
-              )}
-            </>
-          );
-        },
+        Header: 'Ghi chú',
+        accessor: 'note',
       },
     ],
     []
   );
 
   useEffect(() => {
-    guesthouseApi
-      .getRooms(page, PER_PAGE)
-      .then((res) => {
-        setRoomList(res.data);
-      })
-      .catch((err) => alert(err.toString()));
+    guesthouseApi.getListReport(page).then((res) => {
+      setRoomList(res.data);
+    }).catch((err) => {
+      toastWrapper('Lấy danh sách phòng thất bại', 'error')
+    });
   }, [page]);
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -69,6 +53,25 @@ function ReportPage() {
       columns,
       data: roomList,
     });
+
+  const handleStateButton = (id, state) => {
+    guesthouseApi
+      .patchReport(id, { state })
+      .then((res) => {
+        toastWrapper('Cập nhật trạng thái thành công', 'success');
+        guesthouseApi
+          .getListReport(page)
+          .then((res) => {
+            setRoomList(res.data);
+          })
+          .catch((err) => {
+            toastWrapper('Lấy danh sách phòng thất bại', 'error')
+          });
+      })
+      .catch((err) => {
+        toastWrapper('Cập nhật trạng thái thất bại', 'error');
+      });
+  };
 
   return (
     <>
@@ -86,6 +89,8 @@ function ReportPage() {
         <tbody {...getTableBodyProps()}>
           {rows.map((row) => {
             prepareRow(row);
+            const {state, _id} = row.original;
+
             return (
               <tr {...row.getRowProps()}>
                 {row.cells.map((cell) => {
@@ -94,8 +99,14 @@ function ReportPage() {
                   );
                 })}
                 <td>
-                  <Button variant='success' onClick={() => setRoomSelected(row?.original)}>
-                    Cập nhật
+                  <Button variant={state === 0 ? 'secondary' : 'outline-secondary'} className='mb-2' onClick={() => handleStateButton(_id, 0)}>
+                    Vừa tạo
+                  </Button>
+                  <Button variant={state === 1 ? 'success' : 'outline-success'} className='mb-2' onClick={() => handleStateButton(_id, 1)}>
+                    Đã sửa
+                  </Button>
+                  <Button variant={state === 2 ? 'danger' : 'outline-danger'} className='mb-2' onClick={() => handleStateButton(_id, 2)}>
+                    Đã huỷ
                   </Button>
                 </td>
               </tr>
@@ -103,7 +114,18 @@ function ReportPage() {
           })}
         </tbody>
       </Table>
-      <GuestRoomModal show={!!roomSelected} setShow={setRoomSelected} data={roomSelected}/>
+      <div className='d-flex justify-content-center'>
+        <Pagination>
+          <Pagination.First onClick={() => setPage(0)} />
+          <Pagination.Prev onClick={() => {
+            if (page > 0) {
+              setPage(page - 1);
+            }
+          }} />
+          <Pagination.Item active>{page + 1}</Pagination.Item>
+          <Pagination.Next onClick={() => setPage(page + 1)} />
+        </Pagination>
+      </div>
     </>
   );
 }

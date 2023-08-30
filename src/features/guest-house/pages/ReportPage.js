@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./reportPage.module.css";
 
 import guesthouseApi from "api/guesthouseApi";
+import { toastWrapper } from "utils";
 
 export default function GuestHouseReportPage() {
   const [data, setData] = useState([]);
@@ -13,14 +14,13 @@ export default function GuestHouseReportPage() {
   useEffect(() => {
     guesthouseApi.getRooms()
       .then((res) => {
-        console.log(res.data)
         setData(res.data);
         if (res.data[0]) {
           setRoomSelected(res.data[0]);
         }
       })
       .catch((err) => {
-        alert(err.toString());
+        toastWrapper('Không thể lấy danh sách phòng', 'error')
       });
   }, []);
 
@@ -32,11 +32,11 @@ export default function GuestHouseReportPage() {
     const note = document.getElementById("formNote")?.value;
 
     if (!roomSelected) {
-      return alert("Vui lòng chọn phòng của bạn!");
+      return toastWrapper('Vui lòng chọn phòng của bạn', 'error')
     }
 
     if (!note) {
-      return alert("Vui lòng nhập nội dung yêu cầu sửa chữa của bạn!");
+      return toastWrapper('Vui lòng nhập nội dung yêu cầu sửa chữa', 'error')
     }
 
     setLoading(true);
@@ -47,11 +47,15 @@ export default function GuestHouseReportPage() {
     })
       .then((res) => {
         setLoading(false);
-        alert("Bạn đã gửi yêu cầu sửa chữa thành công!");
+        toastWrapper('Gửi yêu cầu thành công', 'success')
+        document.getElementById("formNote").value = '';
+
       })
       .catch((err) => {
         setLoading(false);
-        alert(err.toString());
+        toastWrapper('Gửi yêu cầu thất bại', 'error')
+        document.getElementById("formNote").value = '';
+
       });
   };
 
