@@ -1,10 +1,11 @@
 //Guest house
 export const GUEST_HOUSE_ROOT = 'guest-house'
-export const GUEST_HOUSE_ROOMS = 'rooms'
+export const GUEST_HOUSE_ROOM = 'room'
 export const GUEST_HOUSE_CREATION = 'create'
-export const GUEST_HOUSE_USERS = 'users'
-export const GUEST_HOUSE_REPORTS = 'reports'
-export const GUEST_HOUSE_CATEGORIES = 'categories'
+export const GUEST_HOUSE_USER = 'user'
+export const GUEST_HOUSE_REPORT = 'report'
+export const GUEST_HOUSE_CATEGORY = 'category'
+export const GUEST_HOUSE_REGISTER = 'register'
 
 //Admin driving-admin
 export const DRIVING_ADMIN = 'driving-admin'

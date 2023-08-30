@@ -16,22 +16,22 @@ function GuestHouseLayout() {
       },
       {
         label: 'Tạo phòng',
-        path: 'creation',
+        path: 'create',
         icon: <IoIosAdd />
       },
       {
         label: 'Quản lý đăng ký',
-        path: 'registrations',
+        path: 'register',
         icon: <IoIosCreate />
       },
       {
         label: 'Báo hỏng',
-        path: 'reports',
+        path: 'report',
         icon: <GoReport />
       },
       {
         label: 'Quản lý loại phòng',
-        path: 'categories',
+        path: 'category',
         icon: <BiCategory />
       }
     ]

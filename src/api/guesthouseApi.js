@@ -15,12 +15,11 @@ class GuesthouseApi {
     });
   };
 
-  getCategories = async (page = 0, limit = 25) => {
+  getCategories = async (page = 0) => {
     const url = `${API_PATH}/category`;
     return axiosClient.get(url, {
       params: {
         page,
-        limit,
       },
     });
   };
@@ -52,9 +51,9 @@ class GuesthouseApi {
     });
   };
 
-  getListReport = (limit = 25, page = 0) => {
+  getListReport = (page) => {
     const url = `${API_PATH}/report`;
-    return axiosClient.get(url, { params: { limit, page } });
+    return axiosClient.get(url, { params: { page } });
   };
 
   getListUser = (limit = 25, page = 0) => {
