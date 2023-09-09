@@ -416,7 +416,7 @@ export default function DrivingRegisterPage() {
             />
             <p onClick={() => handleDrivingTypeChange(0)}>
               Bằng A1 (Mô tô 2 bánh có dung tích xi lanh từ 50cc cho đến dưới
-              175cc, lệ phí thi 650.000 đồng, chọn ngày thi ở mục bên dưới)
+              175cc, lệ phí thi 690.000 đồng, chọn ngày thi ở mục bên dưới)
             </p>
           </div>
           <div className={styles.selectContainer}>
