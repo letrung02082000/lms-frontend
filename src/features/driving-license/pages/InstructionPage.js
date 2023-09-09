@@ -127,7 +127,7 @@ export default function DrivingInstructionPage(props) {
           <div id="fee">
             <h3 className={styles.sectionTitle}>Lệ phí thi</h3>
             <p>
-              <strong>Gói A:</strong> 600.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 650.000đ.
+              <strong>Gói A:</strong> 650.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 690.000đ.
             </p>
             <p>
               Thí sinh tự chuẩn bị: Giấy khám sức khỏe tại các
@@ -135,7 +135,7 @@ export default function DrivingInstructionPage(props) {
               khách ĐHQG-HCM, học viên có thể đóng lệ phí trực tiếp hoặc chuyển khoản. Vui lòng xem hướng dẫn đăng ký trực tiếp tại mục ĐĂNG KÝ TRỰC TIẾP bên dưới.
             </p>
             <p>
-              <strong>Gói B:</strong> 650.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 720.000đ.
+              <strong>Gói B:</strong> 690.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 720.000đ.
             </p>
             <p>
               Trung tâm hỗ trợ làm hồ sơ và khám sức khỏe tại trung tâm. Đăng
@@ -321,7 +321,7 @@ export default function DrivingInstructionPage(props) {
           </p>
         </div>
       </div>
-    <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={650000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'} ${drivingDate || '<Ngày dự thi>'}`} />
+    <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'} ${drivingDate || '<Ngày dự thi>'}`} />
     </div>
 
   );

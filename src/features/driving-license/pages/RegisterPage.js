@@ -416,7 +416,7 @@ export default function DrivingRegisterPage() {
             />
             <p onClick={() => handleDrivingTypeChange(0)}>
               Bằng A1 (Mô tô 2 bánh có dung tích xi lanh từ 50cc cho đến dưới
-              175cc, lệ phí thi 650.000 đồng, chọn ngày thi ở mục bên dưới)
+              175cc, lệ phí thi 690.000 đồng, chọn ngày thi ở mục bên dưới)
             </p>
           </div>
           <div className={styles.selectContainer}>
@@ -521,7 +521,7 @@ export default function DrivingRegisterPage() {
           </p>
       </form>}
 
-      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={650000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'} ${drivingDate || '<Ngày dự thi>'}`} />
+      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'} ${drivingDate || '<Ngày dự thi>'}`} />
     </Styles>
   );
 }
