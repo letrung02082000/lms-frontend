@@ -45,7 +45,8 @@ function DrivingAdminPage() {
       user.data.role === 10 ||
       user.data.role === 11 ||
       user.data.role === 12 ||
-      user.data.role === 13)
+      user.data.role === 13 ||
+      user.data.role === 19)
   ) {
     return (
       <DrivingAdminLayout onNavigate={onNavigate} onLogout={handleLogout}>
