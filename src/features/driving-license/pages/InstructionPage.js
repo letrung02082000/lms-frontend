@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import styles from "./instructionPage.module.css";
 
-import { ZALO_OA_NUMBER } from "constants/contact";
+import { DRIVING_LICENSE_NUMBER, ZALO_OA_NUMBER } from "constants/contact";
 import ZaloLink from "components/link/ZaloLink";
 import { convertPhoneNumber } from "utils";
 
@@ -13,7 +13,7 @@ import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 
 export default function DrivingInstructionPage(props) {
-  const MAP_URL ='https://goo.gl/maps/okR9fkx6bgPvVHmn9';
+  const MAP_URL ='https://maps.app.goo.gl/kyq58xK5b8p4rEi1A';
   const location = useLocation();
   const search = new URLSearchParams(location.search);
   const source = search.get("s");
@@ -83,7 +83,7 @@ export default function DrivingInstructionPage(props) {
             target="_blank"
             rel="noreferer noreferrer"
           >
-            Zalo OA
+            Zalo
           </a>
         </div>
       </div>
@@ -118,10 +118,24 @@ export default function DrivingInstructionPage(props) {
         <div className={styles.body}>
           <div id="address">
             <h3 className={styles.sectionTitle}>Địa điểm dự thi</h3>
-            <p>Trường đại học thể dục thể thao TP.HCM.</p>
+            <p>Thí sinh được chọn địa điểm thi khi điền link đăng ký.</p>
+            <p className="my-2"><strong>Trường Đại học Thể dục Thể thao TP HCM</strong></p>
+            <li>
+              Địa chỉ: KP 6, P Linh Trung, TP Thủ Đức, TP HCM.
+            </li>
+            <li>Khám sức khoẻ tập trung tại Trường Đại học Thể dục Thể thao TP.HCM.</li>
+            <li>Tập xe cảm biến trước ngày thi. Phí tập xe: 20.000đ/2 vòng.</li>
+            <li>Tập vòng số 8 tại Nhà khách ĐHQG-HCM.</li>
+            <li>Cách ký túc xá Khu B 4.1 km, ký túc xá Khu A 3.8 km.</li>
+            <li>Xem bản đồ: <a href="https://maps.app.goo.gl/t3MdSZzysRQyA3fR9" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
+            <p className="my-2"><strong>Trung Tâm Kỹ Năng Thực Hành Cơ Giới GTVT Thuận An</strong></p>
             <p>
-              Địa chỉ: Khu phố 6, phường Linh Trung, thành phố Thủ Đức, thành
-              phố Hồ Chí Minh (Làng đại học, cạnh nhà điều hành ĐHQG-HCM).
+              <li>Địa chỉ: ĐT743A, P Bình Thắng, TP Dĩ An, Bình Dương.</li>
+              <li>Khám sức khoẻ tập trung tại Nhà khách ĐHQG-HCM.</li>
+              <li>Tập xe cảm biến trước ngày thi miễn phí.</li>
+              <li>Tập vòng số 8 tại Nhà khách ĐHQG-HCM. Mượn xe số miễn phí.</li>
+              <li>Cách ký túc xá khu B 3.8 km, ký túc xá Khu A 4.2 km. Có xe đưa rước tại Kí túc xá Khu B.</li>
+              <li>Xem bản đồ: <a href="https://maps.app.goo.gl/t3MdSZzysRQyA3fR9" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
             </p>
           </div>
           <div id="fee">
@@ -179,8 +193,7 @@ export default function DrivingInstructionPage(props) {
                 </a>
               </li>
               <li>
-                Ảnh chụp chân dung không đúng chuẩn sẽ làm chậm quá trình xử lý
-                hồ sơ của bạn.
+                Ảnh chụp chân dung không đúng chuẩn sẽ làm ảnh hưởng đến quá trình xử lý hồ sơ của bạn.
               </li>
             </ul>
             <p>3. Thanh toán lệ phí</p>
@@ -194,7 +207,7 @@ export default function DrivingInstructionPage(props) {
                 (Tầng trệt Nhà khách ĐHQG)
                 <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h00).
                 <br /> - Mang theo CMND/CCCD để làm thủ tục.
-                <br /> - Hotline: 0876.877.789
+                <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0876 877 789</ZaloLink>
                 <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>
                 <br /> - Google maps:{" "}
                 <a
@@ -219,7 +232,7 @@ export default function DrivingInstructionPage(props) {
                 </ZaloLink>{" "}
                 để được hỗ trợ.
               </li>
-              <li>Khung giờ phản hồi: 8h30-11h30, 13h30-17h30.</li>
+              <li>Khung giờ phản hồi: 8h30-11h30, 13h30-17h00.</li>
             </ul>
             <p>5. Đi thi</p>
             <ul>
@@ -233,7 +246,7 @@ export default function DrivingInstructionPage(props) {
                 cước công dân bản gốc để đối chiếu.
               </li>
               <li>
-                Thí sinh được phép thay đổi ngày dự thi trước ngày thi chinh thức 15 ngày.
+                Thí sinh được phép thay đổi ngày dự thi trước ngày thi chính thức 15 ngày.
               </li>
             </ul>
           </div>
@@ -244,9 +257,9 @@ export default function DrivingInstructionPage(props) {
                 Địa điểm: Tại văn phòng iSinhvien
                 <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
                 (Tầng trệt Nhà khách ĐHQG)
-                <br /> - Giờ làm việc: Từ thứ 2 - thứ 6 (14h00-17h00).
+                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h00).
                 <br /> - Mang theo CMND/CCCD để làm thủ tục.
-                <br /> - Hotline: 0876.877.789
+                <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0876 877 789</ZaloLink>
                 <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>
                 <br /> - Google maps:{" "}
                 <a
@@ -270,7 +283,7 @@ export default function DrivingInstructionPage(props) {
             <p>Thực hành:</p>
             <ul>
               <li>6h30 - 7h30 đối với ngày thi sáng.</li>
-              <li>10h30 - 12h30 đối với ngày thi chiều.</li>
+              <li>10h30 - 12h00 đối với ngày thi chiều.</li>
               <li>Ngày thi thử: cùng ngày với ngày thi chính thức.</li>
             </ul>
             <p>
@@ -296,16 +309,21 @@ export default function DrivingInstructionPage(props) {
             </dd>
             <dt>Hỏi: Học phí thanh toán ở đâu?</dt>
             <dd>
-              Trả lời: Thanh toán online hoặc trực tiếp tại nhà khách ĐHQG.
+              Trả lời: Thanh toán online hoặc trực tiếp tại nhà khách ĐHQG-HCM.
             </dd>
-            <dt>Hỏi: Có được lái thử trước khi thi không?</dt>
+            <dt>Hỏi: Có được tập xe cảm biến trước khi thi không?</dt>
             <dd>
-              Trả lời: Được lái thử với xe của trung tâm có gắn chip với phí 10k/vòng, địa
-              điểm và thời gian được nêu ở trên.
+              Trả lời: Được tập xe cảm biến giống với thi thật trước khi thi. Phí tập xe cảm biến do điểm thi quy định.
             </dd>
             <dt>Hỏi: Mình muốn tập vòng số 8 có thể tập ở đâu?</dt>
             <dd>
-              Trả lời: Học viên có thể tập vòng số 8 tại cửa trước văn phòng iSinhvien - Nhà khách ĐHQG-HCM (ra vào tự do, không giới hạn khung giờ).
+              Trả lời: Học viên có thể tập vòng số 8 tại cửa trước <a
+                  href={MAP_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Văn phòng iSinhvien
+                </a> - Nhà khách ĐHQG-HCM, ra vào tự do, không giới hạn khung giờ.
             </dd>
 
             <dt>Hỏi: Điểm đậu lý thuyết là bao nhiêu?</dt>
@@ -318,6 +336,9 @@ export default function DrivingInstructionPage(props) {
             <ZaloLink tel={ZALO_OA_NUMBER}>
               Trung tâm dịch vụ sinh viên iStudent
             </ZaloLink>
+            {' '}hoặc hotline <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
+              0876 877 789
+            </ZaloLink> (Zalo/Di động).
           </p>
         </div>
       </div>
