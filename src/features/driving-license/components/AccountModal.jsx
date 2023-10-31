@@ -108,7 +108,7 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
       <Modal.Footer>
         {!isPaid ? (
           <Button variant='secondary' onClick={handlePayment}>
-            Tôi đã chuyển khoản
+            Đóng
           </Button>
         ) : (
           <Button variant='secondary'>Đang xử lý...</Button>
