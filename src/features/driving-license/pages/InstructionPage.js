@@ -124,16 +124,14 @@ export default function DrivingInstructionPage(props) {
               Địa chỉ: KP 6, P Linh Trung, TP Thủ Đức, TP HCM.
             </li>
             <li>Khám sức khoẻ tập trung tại Trường Đại học Thể dục Thể thao TP.HCM.</li>
-            <li>Tập xe cảm biến trước ngày thi. Phí tập xe: 20.000đ/2 vòng.</li>
-            <li>Tập vòng số 8 tại Nhà khách ĐHQG-HCM.</li>
+            <li>Tập xe cảm biến trước ngày thi.</li>
             <li>Cách ký túc xá Khu B 4.1 km, ký túc xá Khu A 3.8 km.</li>
             <li>Xem bản đồ: <a href="https://maps.app.goo.gl/t3MdSZzysRQyA3fR9" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
             <p className="my-2"><strong>Trung Tâm Kỹ Năng Thực Hành Cơ Giới GTVT Thuận An</strong></p>
             <p>
               <li>Địa chỉ: ĐT743A, P Bình Thắng, TP Dĩ An, Bình Dương.</li>
               <li>Khám sức khoẻ tập trung tại Nhà khách ĐHQG-HCM.</li>
-              <li>Tập xe cảm biến trước ngày thi miễn phí.</li>
-              <li>Tập vòng số 8 tại Nhà khách ĐHQG-HCM. Mượn xe số miễn phí.</li>
+              <li>Mượn xe số tập vòng số 8 và tập xe cảm biến trước ngày thi miễn phí.</li>
               <li>Cách ký túc xá khu B 3.8 km, ký túc xá Khu A 4.2 km. Có xe đưa rước tại Kí túc xá Khu B.</li>
               <li>Xem bản đồ: <a href="https://maps.app.goo.gl/t3MdSZzysRQyA3fR9" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
             </p>
