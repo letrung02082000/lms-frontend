@@ -133,7 +133,7 @@ export default function DrivingInstructionPage(props) {
               <li>Khám sức khoẻ tập trung tại Nhà khách ĐHQG-HCM.</li>
               <li>Mượn xe số tập vòng số 8 và tập xe cảm biến trước ngày thi miễn phí.</li>
               <li>Cách ký túc xá khu B 3.8 km, ký túc xá Khu A 4.2 km. Có xe đưa rước tại Kí túc xá Khu B.</li>
-              <li>Xem bản đồ: <a href="https://maps.app.goo.gl/t3MdSZzysRQyA3fR9" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
+              <li>Xem bản đồ: <a href="https://maps.app.goo.gl/fqtCLDRyLKf6Eo3u7" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
             </p>
           </div>
           <div id="fee">
