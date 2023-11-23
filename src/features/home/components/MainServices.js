@@ -10,7 +10,7 @@ import useMediaQuery from 'hooks/useMediaQuery'
 function MainServices(props) {
   const navigate = useNavigate()
   const user = useSelector(selectUser)
-  const [collapsed, setCollapsed] = React.useState(window.innerWidth < 768);
+  const [collapsed, setCollapsed] = React.useState(true);
 
   const navigateTo = (url, state) => {
     navigate(url, state)
