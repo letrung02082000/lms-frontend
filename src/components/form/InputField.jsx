@@ -20,12 +20,16 @@ function InputField({ noLabel, label, children, control, name, rules, defaultVal
     <Styles>
       <Form.Group>
         {!noLabel && (
-          <Form.Label className='mb-3 mt-3'>{label || children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>
+          <Form.Label className='d-block'>
+            {label || children || ''}
+            {hasAsterisk && <Asterisk />}
+          </Form.Label>
         )}
-        <div>{props?.subLabel}</div>
+        <Form.Text className='d-block mb-2'>{props?.subLabel}</Form.Text>
         <div className='input-wrapper'>
           {!error && !noClear && (
             <button
+              type='button'
               className='btn clear-btn'
               onClick={() => props?.onClear(name)}
             >

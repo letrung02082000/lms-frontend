@@ -29,9 +29,7 @@ function FileUploader({ className, hasAsterisk, ...props }) {
         }
       })
       .then(res => {
-        console.log(res)
-        props?.setFileId(res?.data?.fileId)
-        props?.setFileName(files?.[0]?.name)
+        props?.onResponse(res)
         setUploadPercent(100)
         props?.setUploading(false)
       })
@@ -62,11 +60,11 @@ function FileUploader({ className, hasAsterisk, ...props }) {
   })
   return (
     <>
-      <Form.Label className="mt-3 d-block">{props?.label || props?.children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>
-      <Form.Text className="mb-3 d-block">{props?.subLabel}</Form.Text>
+      <Form.Label className="d-block">{props?.label || props?.children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>
+      <Form.Text className="d-block mb-2">{props?.subLabel}</Form.Text>
       <Button
       variant='outline-primary'
-        className='d-block mt-3 mb-3'
+        className='d-block'
         {...getRootProps()}
         disabled={props?.uploading}
       >

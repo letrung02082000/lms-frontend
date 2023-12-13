@@ -29,8 +29,8 @@ function SelectField({ name, control, rules, defaultValue, hasAsterisk, ...props
 
   return (
     <Styles>
-      <Form.Group className="mb-3 mt-3">
-        {props?.label && <Form.Label>{props?.label || props?.children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>}
+      <Form.Group>
+        {props?.label && <Form.Label className='mb-2'>{props?.label || props?.children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>}
         <Select
           styles={customStyles}
           options={props?.options || []}
