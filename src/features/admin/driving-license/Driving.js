@@ -4,6 +4,7 @@ import styles from "./driving.module.css";
 import mime from "mime-types";
 
 import DrivingApi from "api/drivingApi";
+import { formatCurrency } from "utils/commonUtils";
 
 function Driving(props) {
   let {
@@ -27,6 +28,7 @@ function Driving(props) {
     source,
     dup,
     _id,
+    cash
   } = props.info;
 
   const showImage = props.showImage;
@@ -314,32 +316,16 @@ function Driving(props) {
             </a>
           </div>
 
-          {receiptId ? (
-            <div className={styles.buttonContainer}>
-              <button
-                className={styles.button}
-                onClick={() => handleImageButton(receipt)}
-              >
-                Biên lai
-              </button>
-              <a
-                className={styles.button}
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`https://drive.google.com/file/d/${receiptId}/view`}
-              >
-                <img
-                  src="/driveicon.png"
-                  className={styles.driveIcon}
-                  alt="drive-icon"
-                />
-              </a>
-            </div>
-          ) : (
-            <p className={styles.button} style={{ color: "#808080" }}>
-              Chưa có biên lai
-            </p>
-          )}
+          <div className={styles.buttonContainer}>
+            <button
+              className={styles.button}
+              onClick={() => handleImageButton(receipt)}
+            >
+              Thanh toán
+            </button>
+            <p className='text-center fw-bold'>{formatCurrency(cash)} VNĐ</p>
+          </div>
+
         </div>
       </div>
       <div className={styles.processState}>
