@@ -5,6 +5,7 @@ import mime from "mime-types";
 
 import DrivingApi from "api/drivingApi";
 import { formatCurrency } from "utils/commonUtils";
+import { toastWrapper } from "utils";
 
 function Driving(props) {
   let {
@@ -69,14 +70,12 @@ function Driving(props) {
     DrivingApi.updateDrivingDate(_id, tmpDate)
       .then((res) => {
         if (res.data) {
-          alert(
-            "Đã cập nhật ngày thành " + new Date(res.date).toLocaleDateString()
-          );
+          toastWrapper("Đã cập nhật ngày thành " + new Date(res?.data?.date).toLocaleDateString(), "success")
         } else {
-          alert("Không thể cập nhật ngày. Id không hợp lệ");
+          toastWrapper("Không thể cập nhật ngày. Id không hợp lệ", 'error')
         }
       })
-      .catch((e) => alert("Không thể cập nhật. Lỗi: " + e));
+      .catch((e) => toastWrapper("Không thể cập nhật. Lỗi: " + e, 'error'));
   };
 
   const updateFeedback = () => {
