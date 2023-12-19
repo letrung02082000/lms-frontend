@@ -88,7 +88,7 @@ export default function DrivingRegisterPage() {
   const [accountShow, setAccountShow] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(1);
   const [drivingType, setDrivingType] = useState(0);
-  const [date, setDate] = useState(0);
+  const [date, setDate] = useState(false);
   const [dateList, setDateList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -111,105 +111,90 @@ export default function DrivingRegisterPage() {
     drivingApi.getFormVisible().then((res) => {
       let dates = res?.data || [];
       dates = dates.map((child) => {
-        return { label: child?.description, value: child };
+        return { label: child?.description, value: child?._id, link: child?.link, date: new Date(child?.date) };
       });
 
       setDateList(dates);
     }).catch((e) => {
-      console.log(e)
+      toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
     });  
   }, []);
 
   const handleSubmitButton = async () => {
-    await handleSubmit((data) => {
-      console.log(data)
+    await handleSubmit((formData) => {
+      setIsLoading(true);
+
+    if(!frontData) {
+      toastWrapper('Vui lòng tải lên mặt trước CCCD/CMND', 'error');
+      setIsLoading(false);
+      return;
+    }
+
+    if(!backData) {
+      toastWrapper('Vui lòng tải lên mặt sau CCCD/CMND', 'error');
+      setIsLoading(false);
+      return;
+    }
+
+    if(!portraitData) {
+      toastWrapper('Vui lòng tải lên ảnh chân dung', 'error');
+      setIsLoading(false);
+      return;
+    }
+
+    if(drivingType === 0 && !date) {
+      toastWrapper('Vui lòng chọn ngày dự thi', 'error');
+      setIsLoading(false);
+      return;
+    }
+
+
+    if(drivingType === 0) {
+      const dateObj = dateList.filter((child) => child.value == date)[0];
+      const drivingLink = dateObj?.link;
+      localStorage.setItem('driving-link', drivingLink || '');
+      formData.date = dateObj?.date?.getTime();
+    } else {
+      localStorage.setItem('driving-link', '');
+    }
+
+    const data = {
+      ...formData,
+      frontUrl: frontData?.data?.url,
+      backUrl: backData?.data?.url,
+      portraitUrl: portraitData?.data?.url,
+      isPaid: false,
+      paymentMethod: paymentMethod,
+      drivingType: drivingType,
+      source: source,
+    }
+
+    drivingApi.addDriving(data)
+    .then((res) => {
+      localStorage.setItem('driving-info', JSON.stringify(res?.data));
+      toastWrapper(
+        `Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo OA để được xử lý.`,
+        "success",
+        { autoClose: 10000 }
+      );
+    })
+    .catch((error) => {
+      toastWrapper(`${error.toString()}`, "error");
+    }).finally(() => {
+      setIsLoading(false);
+    }
+    );
     })();
-    // setIsLoading(true);
-    // if (!frontsideFile) {
-    //   setIsLoading(false);
-
-    //   return toastWrapper("Lỗi: Vui lòng tải lên mặt trước cmnd/cccd", "error");
-    // }
-    // if (!backsideFile) {
-    //   setIsLoading(false);
-    //   return toastWrapper("Lỗi: Vui lòng tải lên mặt sau cmnd/cccd", "error");
-    // }
-    // if (!portraitFile) {
-    //   setIsLoading(false);
-    //   return toastWrapper(
-    //     "Lỗi: Vui lòng tải lên ảnh chân dung của bạn",
-    //     "error"
-    //   );
-    // }
-
-    // const fullname = document.getElementById("formName").value?.trim();
-    // const tel = document.getElementById("formTel").value?.trim();
-    // const zalo = document.getElementById("formZalo").value.trim();
-    // const feedback = document.getElementById("formFeedback").value.trim();
-    // let paidState = isPaid === 0;
-
-    // if (!fullname || !tel || !zalo) {
-    //   setIsLoading(false);
-    //   return toastWrapper(
-    //     "Vui lòng nhập đầy đủ: họ tên, số điện thoại và  zalo của bạn",
-    //     "error"
-    //   );
-    // }
-
-    // const formData = new FormData();
-
-    // formData.append("name", fullname);
-    // formData.append("tel", tel);
-    // formData.append("zalo", zalo);
-    // formData.append("frontside", frontsideFile);
-    // formData.append("backside", backsideFile);
-    // formData.append("portrait", portraitFile);
-    // formData.append("receipt", receiptFile);
-    // formData.append("isPaid", paidState);
-    // formData.append("paymentMethod", paymentMethod);
-    // formData.append("feedback", feedback);
-    // formData.append("drivingType", drivingType);
-    // formData.append("source", source);
-
-    // if (drivingType === 0) {
-    //   formData.append("date", dateList[date].date.getTime());
-    //   localStorage.setItem('driving-link', dateList[date]?.link || '');
-    // }
-
-    // drivingApi.addDriving(formData)
-    //   .then((res) => {
-    //     console.log(res)
-    //     localStorage.setItem('driving-info', JSON.stringify(res?.data));
-    //     toastWrapper(
-    //       `Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: ${DRIVING_LICENSE_NUMBER} (Mr. Trung) để được xử lý.`,
-    //       "success",
-    //       { autoClose: 10000 }
-    //     );
-
-    //     document.getElementById("formName").value = "";
-    //     document.getElementById("formTel").value = "";
-    //     document.getElementById("formZalo").value = "";
-    //     document.getElementById("formFeedback").value = "";
-
-    //     setIsLoading(false);
-    //   })
-    //   .catch((error) => {
-    //     toastWrapper(`${error.toString()}`, "error");
-    //     setIsLoading(false);
-    //   });
   };
 
   const handleDrivingTypeChange = (value) => {
+    setDate(false);
     setDrivingType(value);
   };
 
   const handleDateChange = (value) => {
     setDate(value);
   };
-
-  const handlePaymentMethodChange = (value) => {
-    console.log(value)
-  }
 
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
@@ -242,8 +227,8 @@ export default function DrivingRegisterPage() {
 
   return (
     <Styles className={styles.drivingRegisterContainer}>
-      {/* <SearchBar
-        style={{ border: '1px solid' }}
+      <SearchBar
+        style={{marginBottom: '1rem'}}
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
         onChange={handleSearchChange}
@@ -292,7 +277,7 @@ export default function DrivingRegisterPage() {
               </p>
             </div>
           );
-        })} */}
+        })}
 
       <Row>
         <Col>
@@ -384,19 +369,19 @@ export default function DrivingRegisterPage() {
 
         <Row className="mb-3">
             <Col>
-              <FileUploader onResponse={setFrontData} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+              <FileUploader fileName={frontData?.data?.originalName} onResponse={setFrontData} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
             </Col>
         </Row>
 
         <Row className="mb-3">
             <Col>
-              <FileUploader onResponse={setBackData} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+              <FileUploader fileName={backData?.data?.originalName} onResponse={setBackData} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
             </Col>
         </Row>
 
         <Row className="mb-3">
             <Col>
-              <FileUploader onResponse={setPortraitData} url={FILE_UPLOAD_URL} name='file' uploading={portraitUploading} setUploading={setPortraitUploading} label='Ảnh chân dung' hasAsterisk={true} subLabel='Lấy đủ 2 vai từ thắt lưng, không đeo kính, tóc không che trán, nhìn rõ và không quá 3 tháng' />
+              <FileUploader fileName={portraitData?.data?.originalName} onResponse={setPortraitData} url={FILE_UPLOAD_URL} name='file' uploading={portraitUploading} setUploading={setPortraitUploading} label='Ảnh chân dung' hasAsterisk={true} subLabel='Lấy đủ 2 vai từ thắt lưng, không đeo kính, tóc không che trán, nhìn rõ và không quá 3 tháng' />
             </Col>
         </Row>
 

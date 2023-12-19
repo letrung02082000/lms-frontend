@@ -58,6 +58,7 @@ function FileUploader({ className, hasAsterisk, ...props }) {
     multiple: false,
     validator: fileSizeValidator
   })
+
   return (
     <>
       <Form.Label className="d-block">{props?.label || props?.children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>
@@ -73,7 +74,9 @@ function FileUploader({ className, hasAsterisk, ...props }) {
           <BsCloudUpload size={25}/>
           <span className='ms-2'>{props?.text || 'Tải tệp lên'}</span>
         </div>
-        {props?.uploading && <p className="form-text my-2 text-center">Đang tải {uploadPercent}%</p>}
+      </Button>
+      <Form.Text>
+      {props?.uploading && <p>Đang tải {uploadPercent}%</p>}
         {fileRejections?.[0]?.errors?.map(error => {
           return (
             <p key={error?.code} className="my-2 text-center text-danger">
@@ -81,7 +84,9 @@ function FileUploader({ className, hasAsterisk, ...props }) {
             </p>
           )
         })}
-      </Button>
+      </Form.Text>
+      <span className="d-block fw-bold my-2">{props?.fileName}</span>
+
     </>
   )
 }
