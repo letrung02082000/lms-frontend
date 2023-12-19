@@ -6,6 +6,9 @@ import mime from "mime-types";
 import DrivingApi from "api/drivingApi";
 import { formatCurrency } from "utils/commonUtils";
 import { toastWrapper } from "utils";
+import { toast } from 'react-toastify'
+import CopyToClipboardButton from "components/button/CopyToClipboardButton";
+import { SiZalo } from "react-icons/si";
 
 function Driving(props) {
   let {
@@ -79,17 +82,11 @@ function Driving(props) {
   };
 
   const updateFeedback = () => {
-    console.log(feedback);
-
     DrivingApi.updateDrivingFeedback(_id, feedback)
       .then((res) => {
-        if (res.data) {
-          alert("Đã lưu ghi chú ");
-        } else {
-          alert(res.message);
-        }
+        toastWrapper("Đã cập nhật ghi chú", "success")
       })
-      .catch((e) => alert("Không thể cập nhật. Lỗi: " + e.toString()));
+      .catch((e) => toastWrapper("Không thể cập nhật. Lỗi: " + e.toString(), 'error'));
   };
 
   const handleFeedbackChange = (e) => {
@@ -109,7 +106,6 @@ function Driving(props) {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
         alert(error);
       });
@@ -179,36 +175,15 @@ function Driving(props) {
           ) : null}
           <p className={styles.date}>{createdAt.toLocaleDateString("en-GB")}</p>
           <p className={styles.name}>{name}</p>
-          <p className={styles.tel}>
-            {tel}
-            <br />
-            {copied ? (
-              <button className={styles.copyButton} onClick={handleTelCopy}>
-                Đã chép
-              </button>
-            ) : (
-              <button className={styles.copyButton} onClick={handleTelCopy}>
-                Sao chép
-              </button>
-            )}
-            <br />
-            {zalo}
-            <br />
-            <a
-              className={styles.zalo}
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`https://zalo.me/${zalo}`}
-            >
-              Mở Zalo
-            </a>
-          </p>
-          <p className={styles.payment}>
-            {paymentMethod ? "Thanh toán trực tiếp" : "Chuyển khoản"}
-          </p>
-          <p className={styles.paid}>
-            {isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
-          </p>
+          <div>
+            <div className="mb-2 d-flex justify-content-between">
+              <span><b>Di động:</b> {tel}</span>
+              <CopyToClipboardButton value={tel} className='btn-outline-primary ms-2' /></div>
+            <div className="mb-2 d-flex justify-content-between">
+              <span><b>Zalo:</b> {zalo}</span>
+              <CopyToClipboardButton value={zalo} className='btn-outline-primary ms-2' />
+            </div>
+          </div>
         </div>
         <div className={styles.thirdRow}>
           {drivingType === 0 ? (
