@@ -178,10 +178,10 @@ function Driving(props) {
           <div>
             <div className="mb-2 d-flex justify-content-between">
               <span><b>Di động:</b> {tel}</span>
-              <CopyToClipboardButton value={tel} className='btn-outline-primary ms-2' /></div>
+              <CopyToClipboardButton value={tel} className='btn btn-outline-primary ms-2' /></div>
             <div className="mb-2 d-flex justify-content-between">
               <span><b>Zalo:</b> {zalo}</span>
-              <CopyToClipboardButton value={zalo} className='btn-outline-primary ms-2' />
+              <CopyToClipboardButton value={zalo} className='btn btn-outline-primary ms-2' />
             </div>
           </div>
         </div>

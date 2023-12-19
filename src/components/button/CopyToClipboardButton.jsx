@@ -6,7 +6,7 @@ function CopyToClipboardButton({ value, children, ...props }) {
   const [copied, setCopied] = React.useState(false);
 
   return (
-    <Button
+    <button
       onClick={() => {
         navigator.clipboard.writeText(value);
         setCopied(true);
@@ -15,7 +15,7 @@ function CopyToClipboardButton({ value, children, ...props }) {
       {...props}
     >
       {children || copied ? <FaCopy /> : <FaRegCopy />}
-    </Button>
+    </button>
   );
 }
 
