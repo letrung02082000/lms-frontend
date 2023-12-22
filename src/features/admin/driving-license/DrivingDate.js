@@ -2,11 +2,16 @@ import React, { useState, useEffect } from "react";
 import styles from "./drivingDate.module.css";
 
 import DrivingApi from "api/drivingApi";
+import { Button, FormControl } from "react-bootstrap";
+import { toastWrapper } from "utils";
+import { toast } from "react-toastify";
 
 function DrivingByDate() {
   const [dates, setDates] = useState([]);
   const [drivingDate, setDrivingDate] = useState(null);
   const [drivingTime, setDrivingTime] = useState("buổi sáng");
+  const [description, setDescription] = useState("");
+  console.log(description)
 
   useEffect(() => {
     let today = new Date();
@@ -51,40 +56,6 @@ function DrivingByDate() {
   };
 
   const handleAddDateButton = () => {
-    const date = new Date(drivingDate);
-    let dateStr = "";
-
-    switch (date.getDay()) {
-      case 0:
-        dateStr = "thứ Hai";
-        break;
-      case 1:
-        dateStr = "thứ Ba";
-        break;
-      case 2:
-        dateStr = "thứ Tư";
-        break;
-      case 3:
-        dateStr = "thứ Năm";
-        break;
-      case 4:
-        dateStr = "thứ Sáu";
-        break;
-      case 5:
-        dateStr = "thứ Bảy";
-        break;
-      case 5:
-        dateStr = "Chủ Nhật";
-        break;
-
-      default:
-        break;
-    }
-
-    let description = `Ngày ${date.toLocaleDateString(
-      "en-GB"
-    )} ${dateStr} ${drivingTime}.`;
-
     DrivingApi.handleAddDateButton(drivingDate, true, description)
       .then((res) => {
         DrivingApi.getAllDrivingsDate()
@@ -96,10 +67,10 @@ function DrivingByDate() {
             }
 
             setDates(temp);
-            alert("Thêm ngày thành công");
+            toastWrapper("Thêm ngày thành công", "success");
           })
           .catch((error) => {
-            alert(error);
+            toastWrapper(error, "error");
           });
       })
       .catch((error) => {
@@ -119,29 +90,23 @@ function DrivingByDate() {
 
   return (
     <div>
-      <div className={styles.addDate}>
-        <input
+      <div className='d-flex flex-column align-items-center m-5'>
+        <FormControl
+          className="mb-3"
           type="date"
           id="start"
           name="trip-start"
           defaultValue={drivingDate}
           onChange={handleDateChange}
         />
-        <select onChange={handleTimeChange} defaultValue={drivingTime}>
-          <option value="buổi sáng">Buổi sáng</option>
-          <option value="buổi chiều">Buổi chiều</option>
-        </select>
-        <button
+        <FormControl className="mb-3" as='textarea' placeholder="Mô tả" onChange={(e) => setDescription(e.target.value)} />
+        <Button
+          variant="outline-primary"
           onClick={() => handleAddDateButton()}
-          className={styles.dateButton}
         >
           Thêm ngày
-        </button>
+        </Button>
       </div>
-      <p style={{ textAlign: "center" }}>
-        Chỉ có thể thêm và ẩn, không thể xóa. Mặc định sau khi thêm, ngày sẽ bị
-        ẩn.
-      </p>
       <div>
         {dates.map((child, index) => {
           return (
