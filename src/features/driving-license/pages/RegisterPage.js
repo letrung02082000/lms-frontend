@@ -339,8 +339,12 @@ export default function DrivingRegisterPage() {
                 type='number'
                 rules={{
                   maxLength: {
-                    value: 50,
-                    message: 'Độ dài tối đa <= 50 ký tự',
+                    value: 10,
+                    message: 'Số điện thoại phải có 10 chữ số',
+                  },
+                  minLength: {
+                    value: 10,
+                    message: 'Số điện thoại phải có 10 chữ số',
                   },
                   required: 'Vui lòng nhập trường này',
                 }}
@@ -359,8 +363,12 @@ export default function DrivingRegisterPage() {
                 type='number'
                 rules={{
                   maxLength: {
-                    value: 50,
-                    message: 'Độ dài tối đa <= 50 ký tự',
+                    value: 10,
+                    message: 'Số điện thoại Zalo phải có 10 chữ số',
+                  },
+                  minLength: {
+                    value: 10,
+                    message: 'Số điện thoại Zalo phải có 10 chữ số',
                   },
                   required: 'Vui lòng nhập trường này',
                 }}
