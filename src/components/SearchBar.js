@@ -12,7 +12,7 @@ function SearchBar({ placeholder, onChange, focusText, onKeyPress, value, ...pro
   }
   return (
     <div className='d-flex border rounded' {...props}>
-      <div className='m-3'>
+      <div className='m-2'>
         <BiSearch size={25} />
       </div>
       <div className={styles.searchBox}>

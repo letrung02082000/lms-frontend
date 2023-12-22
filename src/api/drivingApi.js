@@ -14,6 +14,11 @@ class DrivingApi {
     });
   };
 
+  updateDriving = async (_id, data) => {
+    const url = `${API_PATH}/${_id}`;
+    return axiosClient.patch(url, data, authHeader());
+  };
+
   getDateVisible = async () => {
     const url = `${API_PATH}/date`;
     return axiosClient.get(url, {
@@ -137,6 +142,14 @@ class DrivingApi {
     const url = `${API_PATH}/search`;
     return axiosClient.get(url, {
       params: { tel },
+      ...authHeader(),
+    });
+  };
+
+  getFile = async (name) => {
+    console.log(name)
+    const url = `/upload/${name}`;
+    return axiosClient.get(url, {
       ...authHeader(),
     });
   };

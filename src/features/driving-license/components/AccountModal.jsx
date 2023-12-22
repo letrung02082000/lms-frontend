@@ -6,17 +6,24 @@ import CopyButton from 'components/button/CopyButton';
 import styled from 'styled-components';
 import { copyText, formatCurrency } from 'utils/commonUtils';
 
-function AccountModal({ show, setShow, amount, accountNumber, desc, accountName, bankName, bankCode }) {
+function AccountModal({
+  show,
+  setShow,
+  amount,
+  accountNumber,
+  desc,
+  accountName,
+  bankName,
+  bankCode,
+}) {
   const [copied, setCopied] = useState(false);
   const [contentCopied, setContentCopied] = useState(false);
   const [amountCopied, setAmountCopied] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
 
-  const handlePayment = () => {
+  const handleClose = () => {
     setIsPaid(true);
-    setTimeout(()=> {
-      window.location.reload();
-    }, 2000)
+    setShow(false);
   };
 
   return (
@@ -56,16 +63,14 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
                   <b>{accountNumber}</b>
                 </Col>
                 <Col>
-                  <Button
-                    className='copy-btn'
-                    onClick={() => {
-                      copyText(accountNumber);
-                      setCopied(true);
-                    }}
-                    variant='outline-primary'
+                  <CopyButton
+                    className='btn btn-outline-primary copy-btn'
+                    text={accountNumber}
+                    copied={copied}
+                    setCopied={setCopied}
                   >
                     <BiCopy /> {copied ? 'Đã chép' : 'Sao chép'}
-                  </Button>
+                  </CopyButton>
                 </Col>
               </Row>
               <Row className='mb-2'>
@@ -75,7 +80,12 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
                   <b>{desc}</b>
                 </Col>
                 <Col>
-                  <CopyButton className='btn btn-outline-primary copy-btn' text={desc} copied={contentCopied} setCopied={setContentCopied}>
+                  <CopyButton
+                    className='btn btn-outline-primary copy-btn'
+                    text={desc}
+                    copied={contentCopied}
+                    setCopied={setContentCopied}
+                  >
                     <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
                   </CopyButton>
                 </Col>
@@ -88,16 +98,14 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
                 </Col>
 
                 <Col>
-                  <Button
-                    className='copy-btn'
-                    onClick={() => {
-                      copyText(amount);
-                      setAmountCopied(true);
-                    }}
-                    variant='outline-primary'
+                  <CopyButton
+                    className='btn btn-outline-primary copy-btn'
+                    text={amount}
+                    copied={amountCopied}
+                    setCopied={setAmountCopied}
                   >
                     <BiCopy /> {amountCopied ? 'Đã chép' : 'Sao chép'}
-                  </Button>
+                  </CopyButton>
                 </Col>
               </Row>
             </Col>
@@ -106,13 +114,9 @@ function AccountModal({ show, setShow, amount, accountNumber, desc, accountName,
       </Modal.Body>
 
       <Modal.Footer>
-        {!isPaid ? (
-          <Button variant='secondary' onClick={handlePayment}>
-            Đóng
-          </Button>
-        ) : (
-          <Button variant='secondary'>Đang xử lý...</Button>
-        )}
+        <Button variant='secondary' onClick={handleClose}>
+          Đóng
+        </Button>
       </Modal.Footer>
     </Modal>
   );
@@ -125,9 +129,5 @@ const ModalStyles = styled.div`
     font-size: 1rem;
     font-weight: 500;
     margin: 0.5rem 0 0;
-  }
-
-  .copy-btn {
-    font-size: 0.8rem;
   }
 `;

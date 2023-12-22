@@ -5,18 +5,17 @@ import mime from "mime-types";
 
 import DrivingApi from "api/drivingApi";
 import { formatCurrency } from "utils/commonUtils";
+import { Button } from "react-bootstrap";
+import FileUploader from "components/form/FileUploader";
+import { FILE_UPLOAD_URL } from "constants/endpoints";
+import { toastWrapper } from "utils";
 
 function Driving(props) {
   let {
     name,
-    portrait,
     portraitId,
     frontsideId,
-    frontside,
     backsideId,
-    backside,
-    receiptId,
-    receipt,
     paymentMethod,
     isPaid,
     date,
@@ -28,7 +27,10 @@ function Driving(props) {
     source,
     dup,
     _id,
-    cash
+    cash,
+    portraitUrl,
+    frontUrl,
+    backUrl,
   } = props.info;
 
   const showImage = props.showImage;
@@ -37,6 +39,9 @@ function Driving(props) {
   const [sent, setSent] = useState(messageSent);
   const [feedback, setFeedback] = useState(props.info.feedback || "");
   const [processState, setProcessState] = useState(props.info.processState);
+  const [frontUploading, setFrontUploading] = useState(false);
+  const [backUploading, setBackUploading] = useState(false);
+  const [portraitUploading, setPortraitUploading] = useState(false);
   createdAt = new Date(createdAt);
 
   if (date) {
@@ -80,8 +85,6 @@ function Driving(props) {
   };
 
   const updateFeedback = () => {
-    console.log(feedback);
-
     DrivingApi.updateDrivingFeedback(_id, feedback)
       .then((res) => {
         if (res.data) {
@@ -116,20 +119,6 @@ function Driving(props) {
       });
   };
 
-  const handleImageButton = (filename) => {
-    let name = filename.split("-");
-    name = name[3] + "-" + name[4];
-    const fileType = mime.lookup(name);
-
-    DrivingApi.getImage(name)
-      .then(async (res) => {
-        showImage(`data:${fileType};base64, ${res.data}`);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const handleMessageSent = () => {
     DrivingApi.updateMessageSent(props.id, !sent)
       .then((res) => {
@@ -145,6 +134,14 @@ function Driving(props) {
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
   };
+
+  const handleUpdateButton = (id, data) => {
+    DrivingApi.updateDriving(id, data).then(res => {
+      toastWrapper('Cập nhật thành công', 'success')
+    }).catch(e => {
+      toastWrapper('Cập nhật thất bại', 'error')
+    })
+  }
 
   return (
     <div className={styles.container}>
@@ -254,75 +251,97 @@ function Driving(props) {
             </>
           </p>
         </div>
-        <div className={styles.secondRow}>
-          <div className={styles.buttonContainer}>
-            <button
-              className={styles.button}
-              onClick={() => handleImageButton(portrait)}
-            >
-              Chân dung
-            </button>
-            <a
-              className={styles.button}
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`https://drive.google.com/file/d/${portraitId}/view`}
-            >
-              <img
-                src="/driveicon.png"
-                alt="icon"
-                className={styles.driveIcon}
-              />
-            </a>
+        <div className='d-flex justify-content-between mt-5'>
+          <div>
+            <div className='d-flex align-items-start'>
+              <a
+                className='btn btn-outline-primary w-100 mb-3'
+                href={portraitUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Chân dung
+              </a>
+            </div>
+            <div className="d-flex align-items-start">
+              <a
+                className='btn btn-outline-primary me-2'
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://drive.google.com/file/d/${portraitId}/view`}
+              >
+                <img
+                  src="/driveicon.png"
+                  alt="icon"
+                  className={styles.driveIcon}
+                />
+              </a>
+              <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, {portraitUrl: res?.data?.url})} />
+            </div>
           </div>
-          <div className={styles.buttonContainer}>
-            <button
-              className={styles.button}
-              onClick={() => handleImageButton(frontside)}
-            >
-              Mặt trước
-            </button>
-            <a
-              className={styles.button}
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`https://drive.google.com/file/d/${frontsideId}/view`}
-            >
-              <img
-                src="/driveicon.png"
-                className={styles.driveIcon}
-                alt="drive-cion"
-              />
-            </a>
+
+          <div>
+            <div className='d-flex align-items-start'>
+              <a
+                className='btn btn-outline-primary w-100 mb-3'
+                href={frontUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Mặt trước
+              </a>
+            </div>
+            <div className="d-flex align-items-start">
+              <a
+                className='btn btn-outline-primary me-2'
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://drive.google.com/file/d/${frontsideId}/view`}
+              >
+                <img
+                  src="/driveicon.png"
+                  alt="icon"
+                  className={styles.driveIcon}
+                />
+              </a>
+              <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={frontUploading} setUploading={setFrontUploading} onResponse={res => handleUpdateButton(_id, {frontUrl: res?.data?.url})} />
+            </div>
           </div>
-          <div className={styles.buttonContainer}>
-            <button
-              className={styles.button}
-              onClick={() => handleImageButton(backside)}
-            >
-              Mặt sau
-            </button>
-            <a
-              className={styles.button}
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`https://drive.google.com/file/d/${backsideId}/view`}
-            >
-              <img
-                src="/driveicon.png"
-                className={styles.driveIcon}
-                alt="drive-icon"
-              />
-            </a>
+
+          <div>
+            <div className='d-flex align-items-start'>
+              <a
+                className='btn btn-outline-primary w-100 mb-3'
+                href={backUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Mặt sau
+              </a>
+            </div>
+            <div className="d-flex align-items-start">
+              <a
+                className='btn btn-outline-primary me-2'
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://drive.google.com/file/d/${backsideId}/view`}
+              >
+                <img
+                  src="/driveicon.png"
+                  alt="icon"
+                  className={styles.driveIcon}
+                />
+              </a>
+              <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={backUploading} setUploading={setBackUploading} onResponse={res => handleUpdateButton(_id, {backUrl: res?.data?.url})} />
+            </div>
           </div>
 
           <div className={styles.buttonContainer}>
-            <button
-              className={styles.button}
-              onClick={() => handleImageButton(receipt)}
+          <a
+              className='btn btn-outline-primary mb-3'
             >
               Thanh toán
-            </button>
+            </a>
             <p className='text-center fw-bold'>{formatCurrency(cash)} VNĐ</p>
           </div>
 

@@ -228,7 +228,6 @@ export default function DrivingRegisterPage() {
   return (
     <Styles className={styles.drivingRegisterContainer}>
       <SearchBar
-        style={{marginBottom: '1rem'}}
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
         onChange={handleSearchChange}
@@ -279,11 +278,11 @@ export default function DrivingRegisterPage() {
           );
         })}
 
-      <Row>
+      {/* <Row>
         <Col>
           <LazyImage src={PortraitBanner} className='rounded'/>
         </Col>
-      </Row>
+      </Row> */}
         
       {drivingInfo?._id ? <div className="success-container d-flex flex-column align-items-center">
         <Row>
@@ -294,16 +293,19 @@ export default function DrivingRegisterPage() {
         </h4>
         <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <p className="text-center">Bạn vui lòng hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</p>
-        <Button className="mb-3 ms-2" variant='outline-primary' onClick={() => {
-          localStorage.removeItem('driving-info');
-          window.location.reload();
-        }}>Đăng ký hồ sơ mới</Button>
+        <Button className="mb-3" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán online</Button>
+        <a className="btn btn-outline-primary mb-3" href='driving-instruction#offline' target='_blank' rel="noopener noreferrer">Thanh toán trực tiếp</a>
+        
         <p className="text-center">
             Zalo hỗ trợ:<br/>
             <ZaloLink tel='4013961016678131109'>
               Trung tâm dịch vụ sinh viên iStudent
             </ZaloLink>
           </p>
+          <Button className="mb-3" variant='outline-primary' onClick={() => {
+          localStorage.removeItem('driving-info');
+          window.location.reload();
+        }}>Đăng ký hồ sơ mới</Button>
       </div> : <form className={styles.drivingFormContainer}>
         <p className="my-3 text-danger">* bắt buộc</p>
 

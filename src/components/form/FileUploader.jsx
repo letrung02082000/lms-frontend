@@ -3,11 +3,11 @@ import { useDropzone } from 'react-dropzone'
 import { toastWrapper } from 'utils'
 import { BsCloudUpload } from 'react-icons/bs'
 import styled from 'styled-components'
-import { Button, Form } from 'react-bootstrap'
+import { Button, Form, Row } from 'react-bootstrap'
 import axiosClient from 'api/axiosClient'
 import Asterisk from './Asterisk'
 
-function FileUploader({ className, hasAsterisk, ...props }) {
+function FileUploader({ className, hasAsterisk, hasLabel=true, hasText=true, ...props }) {
   const FILE_MAX_SIZE = 50 * 1024 * 1024
   const [uploadPercent, setUploadPercent] = useState(false)
 
@@ -60,11 +60,19 @@ function FileUploader({ className, hasAsterisk, ...props }) {
   })
 
   return (
-    <>
-      <Form.Label className="d-block">{props?.label || props?.children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>
-      <Form.Text className="d-block mb-2">{props?.subLabel}</Form.Text>
+    <div>
+      {hasLabel && (
+        <>
+          <Form.Label className='d-block'>
+            {props?.label || props?.children}
+            {hasAsterisk && <Asterisk />}
+          </Form.Label>
+          <Form.Text className='d-block mb-2'>{props?.subLabel}</Form.Text>
+        </>
+      )}
+
       <Button
-      variant='outline-primary'
+        variant='outline-primary'
         className='d-block'
         {...getRootProps()}
         disabled={props?.uploading}
@@ -72,23 +80,26 @@ function FileUploader({ className, hasAsterisk, ...props }) {
         <input {...getInputProps()} />
         <div>
           <BsCloudUpload size={25}/>
-          <span className='ms-2'>{props?.text || 'Tải tệp lên'}</span>
+          {hasText && (
+            <span className='ms-2'>{props?.text || 'Tải tệp lên'}</span>
+          )}
         </div>
       </Button>
-      <Form.Text>
-      {props?.uploading && <p>Đang tải {uploadPercent}%</p>}
-        {fileRejections?.[0]?.errors?.map(error => {
-          return (
-            <p key={error?.code} className="my-2 text-center text-danger">
-              {error?.message}
-            </p>
-          )
-        })}
-      </Form.Text>
-      <span className="d-block fw-bold my-2">{props?.fileName}</span>
-
-    </>
-  )
+      <div>
+        <Form.Text>
+          {props?.uploading && <p>Đang tải {uploadPercent}%</p>}
+          {fileRejections?.[0]?.errors?.map((error) => {
+            return (
+              <p key={error?.code} className='my-2 text-center text-danger'>
+                {error?.message}
+              </p>
+            );
+          })}
+        </Form.Text>
+      </div>
+      <div className='d-block fw-bold my-2'>{props?.fileName}</div>
+    </div>
+  );
 }
 
 export default FileUploader
