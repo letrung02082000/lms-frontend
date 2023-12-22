@@ -168,17 +168,6 @@ function AllDriving() {
   return (
     <div>
       {image ? <ImagePad onClose={hideImage} image={image} /> : null}
-      <div className={styles.tableHeader}>
-        <p className={styles.date}>Ngày thi</p>
-        <p className={styles.date}>Ngày tạo</p>
-        <p className={styles.name}>Họ tên</p>
-        <p className={styles.tel}>Liên hệ</p>
-
-        <p className={styles.payment}>Hình thức thanh toán</p>
-        <p className={styles.paid}>Lệ phí</p>
-        <p className={styles.processState}>Trạng thái</p>
-      </div>
-
       <div className={styles.dateFilter}>
         {dates.map((child, index) => {
           return (

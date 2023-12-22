@@ -11,14 +11,13 @@ function SearchBar({ placeholder, onChange, focusText, onKeyPress, value, ...pro
     }
   }
   return (
-    <div className={styles.searchInput} {...props}>
-      <div className={styles.searchIcon}>
+    <div className='d-flex border rounded' {...props}>
+      <div className='m-2'>
         <BiSearch size={25} />
       </div>
       <div className={styles.searchBox}>
         <form>
           <input
-            style={{ fontSize: '1rem' }}
             type="text"
             placeholder={placeholderText || 'Tìm kiếm'}
             onChange={onChange}

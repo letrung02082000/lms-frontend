@@ -12,12 +12,69 @@ import { convertPhoneNumber } from "utils";
 import ZaloLink from "components/link/ZaloLink";
 
 import drivingApi from "api/drivingApi";
-import { Button, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import AccountModal from "../components/AccountModal";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import Asterisk from "components/form/Asterisk";
+import FileUploader from "components/form/FileUploader";
+import InputField from "components/form/InputField";
+import { useForm } from "react-hook-form";
+import RadioField from "components/form/RadioField";
+import { FILE_UPLOAD_URL } from "constants/endpoints";
 
 export default function DrivingRegisterPage() {
+  const categories = [
+    {
+      value: 0,
+      label: "Bằng A1 (Mô tô 2 bánh có dung tích xi lanh từ 50cc cho đến dưới 175cc, chọn ngày thi ở mục bên dưới)",
+    },
+    {
+      value: 1,
+      label: "Bằng A2 (Mô tô 2 bánh không giới hạn dung tích xi lanh, trung tâm liên hệ hướng dẫn qua điện thoại)",
+    },
+    {
+      value: 2,
+      label: "Bằng B1/B2 (Bằng lái xe ô tô, trung tâm liên hệ hướng dẫn qua điện thoại)",
+    }
+  ]
+
+  const paymentMethods = [
+    {
+      value: 0,
+      label: "Đóng trực tiếp tại Nhà khách ĐHQG-HCM",
+    },
+    {
+      value: 1,
+      label: "Chuyển khoản ngân hàng",
+    },
+  ]
+
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    setError,
+    formState: { isSubmitting, errors },
+    watch,
+    setFocus,
+  } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      feedback: '',
+    },
+    resolver: undefined,
+    context: undefined,
+    shouldFocusError: true,
+    shouldUnregister: true,
+    shouldUseNativeValidation: false,
+    delayError: false,
+  });
+
+  const handleClearButton = (name) => {
+    setValue(name, '');
+    setFocus(name);
+  }
+
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
   const drivingLink = localStorage.getItem("driving-link") || '';
   const drivingDate = useMemo(()=>{
@@ -28,23 +85,20 @@ export default function DrivingRegisterPage() {
   const { search } = useLocation();
   const source = new URLSearchParams(search).get("s") || 0;
 
-  const [frontsideName, setFrontsideName] = useState(null);
   const [accountShow, setAccountShow] = useState(false);
-  const [frontsideFile, setFrontsideFile] = useState(null);
-  const [backsideName, setBacksideName] = useState(null);
-  const [backsideFile, setBacksideFile] = useState(null);
-  const [portraitName, setPortraitName] = useState(null);
-  const [portraitFile, setPortraitFile] = useState(null);
-  const [receiptName, setReceiptName] = useState(null);
-  const [receiptFile, setReceiptFile] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(1);
-  const [isPaid, setIsPaid] = useState(1);
   const [drivingType, setDrivingType] = useState(0);
-  const [date, setDate] = useState(0);
+  const [date, setDate] = useState(false);
   const [dateList, setDateList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchData, setSearchData] = useState(null);
+  const[frontUploading, setFrontUploading] = useState(false);
+  const[backUploading, setBackUploading] = useState(false);
+  const[portraitUploading, setPortraitUploading] = useState(false);
+  const [frontData, setFrontData] = useState(null);
+  const [backData, setBackData] = useState(null);
+  const [portraitData, setPortraitData] = useState(null);
 
   const imageExtensions = [
     "image/jpeg",
@@ -54,142 +108,92 @@ export default function DrivingRegisterPage() {
   ];
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await drivingApi.getFormVisible();
-        let data = response.data;
+    drivingApi.getFormVisible().then((res) => {
+      let dates = res?.data || [];
+      dates = dates.map((child) => {
+        return { label: child?.description, value: child?._id, link: child?.link, date: new Date(child?.date) };
+      });
 
-        if (data.length > 0) {
-          data = data.map((child) => {
-            return {
-              ...child,
-              date: new Date(child.date),
-            };
-          });
-
-          setDateList(data);
-        } else {
-          toastWrapper("Chưa có danh sách ngày thi mới", "info");
-        }
-      } catch (e) {
-        toastWrapper("Lỗi khi lấy danh sách ngày thi", "error");
-      }
-    };
-
-    fetchData();
+      setDateList(dates);
+    }).catch((e) => {
+      toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
+    });  
   }, []);
 
-  const handleSubmitButton = (e) => {
-    setIsLoading(true);
-    if (!frontsideFile) {
-      setIsLoading(false);
+  const handleSubmitButton = async () => {
+    await handleSubmit((formData) => {
+      setIsLoading(true);
 
-      return toastWrapper("Lỗi: Vui lòng tải lên mặt trước cmnd/cccd", "error");
-    }
-    if (!backsideFile) {
+    if(!frontData) {
+      toastWrapper('Vui lòng tải lên mặt trước CCCD/CMND', 'error');
       setIsLoading(false);
-      return toastWrapper("Lỗi: Vui lòng tải lên mặt sau cmnd/cccd", "error");
+      return;
     }
-    if (!portraitFile) {
+
+    if(!backData) {
+      toastWrapper('Vui lòng tải lên mặt sau CCCD/CMND', 'error');
       setIsLoading(false);
-      return toastWrapper(
-        "Lỗi: Vui lòng tải lên ảnh chân dung của bạn",
-        "error"
+      return;
+    }
+
+    if(!portraitData) {
+      toastWrapper('Vui lòng tải lên ảnh chân dung', 'error');
+      setIsLoading(false);
+      return;
+    }
+
+    if(drivingType === 0 && !date) {
+      toastWrapper('Vui lòng chọn ngày dự thi', 'error');
+      setIsLoading(false);
+      return;
+    }
+
+
+    if(drivingType === 0) {
+      const dateObj = dateList.filter((child) => child.value == date)[0];
+      const drivingLink = dateObj?.link;
+      localStorage.setItem('driving-link', drivingLink || '');
+      formData.date = dateObj?.date?.getTime();
+    } else {
+      localStorage.setItem('driving-link', '');
+    }
+
+    const data = {
+      ...formData,
+      frontUrl: frontData?.data?.url,
+      backUrl: backData?.data?.url,
+      portraitUrl: portraitData?.data?.url,
+      isPaid: false,
+      paymentMethod: paymentMethod,
+      drivingType: drivingType,
+      source: source,
+    }
+
+    drivingApi.addDriving(data)
+    .then((res) => {
+      localStorage.setItem('driving-info', JSON.stringify(res?.data));
+      toastWrapper(
+        `Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo OA để được xử lý.`,
+        "success",
+        { autoClose: 10000 }
       );
-    }
-
-    const fullname = document.getElementById("formName").value?.trim();
-    const tel = document.getElementById("formTel").value?.trim();
-    const zalo = document.getElementById("formZalo").value.trim();
-    const feedback = document.getElementById("formFeedback").value.trim();
-    let paidState = isPaid === 0;
-
-    if (!fullname || !tel || !zalo) {
+    })
+    .catch((error) => {
+      toastWrapper(`${error.toString()}`, "error");
+    }).finally(() => {
       setIsLoading(false);
-      return toastWrapper(
-        "Vui lòng nhập đầy đủ: họ tên, số điện thoại và  zalo của bạn",
-        "error"
-      );
     }
-
-    const formData = new FormData();
-
-    formData.append("name", fullname);
-    formData.append("tel", tel);
-    formData.append("zalo", zalo);
-    formData.append("frontside", frontsideFile);
-    formData.append("backside", backsideFile);
-    formData.append("portrait", portraitFile);
-    formData.append("receipt", receiptFile);
-    formData.append("isPaid", paidState);
-    formData.append("paymentMethod", paymentMethod);
-    formData.append("feedback", feedback);
-    formData.append("drivingType", drivingType);
-    formData.append("source", source);
-
-    if (drivingType === 0) {
-      formData.append("date", dateList[date].date.getTime());
-      localStorage.setItem('driving-link', dateList[date]?.link || '');
-    }
-
-    drivingApi.addDriving(formData)
-      .then((res) => {
-        console.log(res)
-        localStorage.setItem('driving-info', JSON.stringify(res?.data));
-        toastWrapper(
-          `Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo: ${DRIVING_LICENSE_NUMBER} (Mr. Trung) để được xử lý.`,
-          "success",
-          { autoClose: 10000 }
-        );
-
-        document.getElementById("formName").value = "";
-        document.getElementById("formTel").value = "";
-        document.getElementById("formZalo").value = "";
-        document.getElementById("formFeedback").value = "";
-
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        toastWrapper(`${error.toString()}`, "error");
-        setIsLoading(false);
-      });
-  };
-
-  const handlePaymentMethodChange = (value) => {
-    setPaymentMethod(value);
+    );
+    })();
   };
 
   const handleDrivingTypeChange = (value) => {
+    setDate(false);
     setDrivingType(value);
   };
 
   const handleDateChange = (value) => {
     setDate(value);
-  };
-
-  const uploadFrontside = (e) => {
-    if (imageExtensions.includes(e.target.files[0].type)) {
-      setFrontsideFile(e.target.files[0]);
-      setFrontsideName(e.target.files[0].name);
-    } else {
-      setFrontsideName("Lỗi: Tệp tải lên không phải là tệp hình ảnh");
-    }
-  };
-  const uploadBackside = (e) => {
-    if (imageExtensions.includes(e.target.files[0].type)) {
-      setBacksideFile(e.target.files[0]);
-      setBacksideName(e.target.files[0].name);
-    } else {
-      setBacksideName("Lỗi: Tệp tải lên không phải là tệp hình ảnh");
-    }
-  };
-  const uploadPortrait = (e) => {
-    if (imageExtensions.includes(e.target.files[0].type)) {
-      setPortraitFile(e.target.files[0]);
-      setPortraitName(e.target.files[0].name);
-    } else {
-      setPortraitName("Lỗi: Tệp tải lên không phải là tệp hình ảnh");
-    }
   };
 
   const handleSearchChange = (e) => {
@@ -224,7 +228,6 @@ export default function DrivingRegisterPage() {
   return (
     <Styles className={styles.drivingRegisterContainer}>
       <SearchBar
-        style={{ border: '1px solid' }}
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
         onChange={handleSearchChange}
@@ -275,25 +278,12 @@ export default function DrivingRegisterPage() {
           );
         })}
 
-      <div className="portrait-rules">
-        <LazyImage src={PortraitBanner} />
-      </div>
-      <div className="info-area d-flex flex-column align-items-center">
-        <ul className="px-2">
-          <li style={{ margin: 0 }}>
-            Xem hướng dẫn đăng ký dự thi{" "}
-            <a
-              href="/driving-instruction"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              tại đây
-            </a>
-          </li>
-        </ul>
-        <button className="mb-3 ms-2 btn btn-outline-primary" onClick={() => setAccountShow(true)}>Xem hướng dẫn chuyển khoản</button>
-      </div>
-
+      {/* <Row>
+        <Col>
+          <LazyImage src={PortraitBanner} className='rounded'/>
+        </Col>
+      </Row> */}
+        
       {drivingInfo?._id ? <div className="success-container d-flex flex-column align-items-center">
         <Row>
           <BsFillCheckCircleFill color='#019f91' size={45} />
@@ -303,201 +293,144 @@ export default function DrivingRegisterPage() {
         </h4>
         <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <p className="text-center">Bạn vui lòng hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</p>
-        <Button className="mb-3 ms-2" variant='outline-primary' onClick={() => {
-          localStorage.removeItem('driving-info');
-          window.location.reload();
-        }}>Đăng ký hồ sơ mới</Button>
+        <Button className="mb-3" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán online</Button>
+        <a className="btn btn-outline-primary mb-3" href='driving-instruction#offline' target='_blank' rel="noopener noreferrer">Thanh toán trực tiếp</a>
+        
         <p className="text-center">
             Zalo hỗ trợ:<br/>
             <ZaloLink tel='4013961016678131109'>
               Trung tâm dịch vụ sinh viên iStudent
             </ZaloLink>
           </p>
+          <Button className="mb-3" variant='outline-primary' onClick={() => {
+          localStorage.removeItem('driving-info');
+          window.location.reload();
+        }}>Đăng ký hồ sơ mới</Button>
       </div> : <form className={styles.drivingFormContainer}>
-        <p style={{ margin: 0, color: " #ff0000 " }}>* bắt buộc</p>
+        <p className="my-3 text-danger">* bắt buộc</p>
 
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}> Tên của bạn<Asterisk/></label>
-          <input
-            className={styles.formInput}
-            id="formName"
-            type="text"
-            placeholder="Nhập họ tên đầy đủ, có dấu"
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Số điện thoại liên hệ<Asterisk/></label>
-          <input
-            className={styles.formInput}
-            id="formTel"
-            type="text"
-            placeholder="Nhập số điện thoại của bạn"
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Số điện thoại Zalo<Asterisk/></label>
-          <input
-            className={styles.formInput}
-            id="formZalo"
-            type="text"
-            placeholder="Nhập số điện thoại Zalo của bạn"
-          />
-        </div>
+        <Row className="mb-3">
+          <Col>
+              <InputField
+                hasAsterisk={true}
+                label='Tên của bạn'
+                subLabel='Nhập họ tên đầy đủ, có dấu'
+                control={control}
+                name='name'
+                rules={{
+                  maxLength: {
+                    value: 50,
+                    message: 'Độ dài tối đa <= 50 ký tự',
+                  },
+                  required: 'Vui lòng nhập trường này',
+                }}
+                onClear={handleClearButton}
+              />
+          </Col>
+        </Row>
 
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Mặt trước CMND/CCCD<Asterisk/></label>
-          <label className={styles.formUploadButton}>
-            <input
-              className={styles.formInput}
-              type="file"
-              accept="image/*"
-              id="frontside"
-              name="frontside"
-              onChange={uploadFrontside}
-              required
-            />
-            Tải tệp lên
-          </label>
-          {frontsideName ? <p className="filename">{frontsideName}</p> : null}
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Mặt sau CMND/CCCD<Asterisk/></label>
-          <label className={styles.formUploadButton}>
-            <input
-              className={styles.formInput}
-              type="file"
-              accept="image/*"
-              id="backside"
-              name="backside"
-              onChange={uploadBackside}
-              required
-            />
-            Tải tệp lên
-          </label>
-          {backsideName ? <p className="filename">{backsideName}</p> : null}
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>
-            Ảnh chân dung<Asterisk/> (Vui lòng chụp ảnh chân dung đúng với yêu cầu{" "}
-            <a
-              href="/driving-instruction#online"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              tại đây
-            </a>
-            )
-          </label>
-          <label className={styles.formUploadButton}>
-            <input
-              className={styles.formInput}
-              type="file"
-              accept="image/*"
-              id="portrait"
-              name="portrait"
-              onChange={uploadPortrait}
-              required
-            />
-            Tải tệp lên
-          </label>
-          {portraitName ? <p className="filename">{portraitName}</p> : null}
-        </div>
+        <Row className="mb-3">
+          <Col>
+              <InputField
+                hasAsterisk={true}
+                label='Số điện thoại liên hệ'
+                control={control}
+                name='tel'
+                type='number'
+                rules={{
+                  maxLength: {
+                    value: 50,
+                    message: 'Độ dài tối đa <= 50 ký tự',
+                  },
+                  required: 'Vui lòng nhập trường này',
+                }}
+                onClear={handleClearButton}
+              />
+          </Col>
+        </Row>
 
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Chọn loại bằng lái<Asterisk/></label>
-          <div className={styles.selectContainer}>
-            <input
-              className={styles.formInput}
-              type="radio"
-              onChange={() => handleDrivingTypeChange(0)}
-              checked={drivingType === 0}
-            />
-            <p onClick={() => handleDrivingTypeChange(0)}>
-              Bằng A1 (Mô tô 2 bánh có dung tích xi lanh từ 50cc cho đến dưới
-              175cc, lệ phí thi 690.000 đồng, chọn ngày thi ở mục bên dưới)
-            </p>
-          </div>
-          <div className={styles.selectContainer}>
-            <input
-              className={styles.formInput}
-              type="radio"
-              onChange={() => handleDrivingTypeChange(1)}
-              checked={drivingType === 1}
-            />
-            <p onClick={() => handleDrivingTypeChange(1)}>
-              Bằng A2 (Mô tô 2 bánh không giới hạn dung tích xi lanh, trung tâm liên hệ hướng dẫn qua điện thoại)
-            </p>
-          </div>
-          <div className={styles.selectContainer}>
-            <input
-              className={styles.formInput}
-              type="radio"
-              onChange={() => handleDrivingTypeChange(2)}
-              checked={drivingType === 2}
-            />
-            <p onClick={() => handleDrivingTypeChange(2)}>
-              Bằng B1/B2 (Bằng lái xe ô tô, trung tâm liên hệ hướng dẫn qua điện
-              thoại)
-            </p>
-          </div>
-        </div>
+        <Row className="mb-3">
+          <Col>
+              <InputField
+                hasAsterisk={true}
+                label='Số điện thoại Zalo'
+                control={control}
+                name='zalo'
+                type='number'
+                rules={{
+                  maxLength: {
+                    value: 50,
+                    message: 'Độ dài tối đa <= 50 ký tự',
+                  },
+                  required: 'Vui lòng nhập trường này',
+                }}
+                onClear={handleClearButton}
+              />
+          </Col>
+        </Row>
 
-        {drivingType === 0 ? (
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>
-              Chọn ngày thi<Asterisk/>
-            </label>
+        <Row className="mb-3">
+            <Col>
+              <FileUploader fileName={frontData?.data?.originalName} onResponse={setFrontData} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+            </Col>
+        </Row>
 
-            {dateList.map((child, index) => {
-              return (
-                <div className={styles.selectContainer} key={child._id}>
-                  <input
-                    className={styles.formInput}
-                    type="radio"
-                    onChange={() => handleDateChange(index)}
-                    checked={date === index}
-                  />
-                  <p onClick={() => handleDateChange(index)}>
-                    {child.description || child.date.toLocaleDateString()}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
+        <Row className="mb-3">
+            <Col>
+              <FileUploader fileName={backData?.data?.originalName} onResponse={setBackData} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+            </Col>
+        </Row>
 
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Hình thức đóng lệ phí<Asterisk/></label>
-          <div className={styles.selectContainer}>
-            <input
-              className={styles.formInput}
-              type="radio"
-              onChange={() => handlePaymentMethodChange(0)}
-              checked={paymentMethod === 0}
+        <Row className="mb-3">
+            <Col>
+              <FileUploader fileName={portraitData?.data?.originalName} onResponse={setPortraitData} url={FILE_UPLOAD_URL} name='file' uploading={portraitUploading} setUploading={setPortraitUploading} label='Ảnh chân dung' hasAsterisk={true} subLabel='Lấy đủ 2 vai từ thắt lưng, không đeo kính, tóc không che trán, nhìn rõ và không quá 3 tháng' />
+            </Col>
+        </Row>
+
+        <Row className="mb-3">
+          <Col>
+            <RadioField
+              hasAsterisk={true}
+              options={categories}
+              label='Chọn loại bằng lái'
+              control={control}
+              name='category'
+              onClear={handleClearButton}
+              onChange={handleDrivingTypeChange}
+              defaultChecked={0}
             />
-            <p onClick={() => handlePaymentMethodChange(0)}>
-              Đóng trực tiếp tại nhà khách ĐHQG-HCM
-            </p>
-          </div>
-          <div className={styles.selectContainer}>
-            <input
-              className={styles.formInput}
-              type="radio"
-              onChange={() => handlePaymentMethodChange(1)}
-              checked={paymentMethod === 1}
-            />
-            <p onClick={() => handlePaymentMethodChange(1)}>
-              Chuyển khoản ngân hàng
-            </p>
-          </div>
-        </div>
+          </Col>
+        </Row>
 
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Thắc mắc/Góp ý</label>
-          <textarea className={styles.formFeedbackInput} id="formFeedback" />
-        </div>
+        {drivingType == categories[0]?.value && <Row className="mb-3">
+          <Col>
+            <RadioField
+              hasAsterisk={true}
+              options={dateList}
+              label='Chọn ngày dự thi'
+              control={control}
+              name='date'
+              onClear={handleClearButton}
+              onChange={handleDateChange}
+            />
+          </Col>
+        </Row>}
+
+        <Row className="mb-3">
+          <Col>
+              <InputField
+                label='Bằng lái hạng khác'
+                subLabel='Vui lòng ghi rõ loại bằng lái hạng khác (nếu có)'
+                control={control}
+                name='feedback'
+                as='textarea'
+                rules={{
+                  required: false,
+                }}
+                onClear={handleClearButton}
+              />
+          </Col>
+        </Row>
 
         {isLoading ? (
           <>

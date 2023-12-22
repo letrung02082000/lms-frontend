@@ -6,6 +6,8 @@ import styles from './drivingAdminLayout.module.css'
 //redux
 import { selectDrivingData } from '../../store/drivingAdminSlice'
 import { useSelector } from 'react-redux'
+import drivingApi from 'api/drivingApi'
+import JSZip from 'jszip'
 
 function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   const [visible, setVisible] = useState(true)
@@ -58,6 +60,49 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
     FileSaver.saveAs(data, fileName + fileExtension)
   }
 
+  const zipFile = async (data) => {
+    const portraitZip = new JSZip()
+    const frontZip = new JSZip()
+    const backZip = new JSZip()
+
+    for (let index = 0; index < data.length; index++) {
+      const drivingInfo = data[index];
+
+      if(drivingInfo.portraitUrl) {
+        const fileMimeType = drivingInfo.portraitUrl.split('.').pop();
+        const portraitResponse = await fetch(drivingInfo.portraitUrl);
+        const portraitBlob = await portraitResponse.blob();
+        portraitZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, portraitBlob, { binary: true });
+      }
+
+      if(drivingInfo.frontUrl) {
+        const fileMimeType = drivingInfo.frontUrl.split('.').pop();
+        const frontResponse = await fetch(drivingInfo.frontUrl);
+        const frontBlob = await frontResponse.blob();
+        frontZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, frontBlob, { binary: true });
+      }
+
+      if(drivingInfo.backUrl) {
+        const fileMimeType = drivingInfo.backUrl.split('.').pop();
+        const backResponse = await fetch(drivingInfo.backUrl);
+        const backBlob = await backResponse.blob();
+        backZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, backBlob, { binary: true });
+      }
+    }
+
+    portraitZip.generateAsync({ type: "blob" }).then(function (content) {
+      FileSaver.saveAs(content, "portrait.zip");
+    });
+
+    frontZip.generateAsync({ type: "blob" }).then(function (content) {
+      FileSaver.saveAs(content, "front-source.zip");
+    });
+
+    backZip.generateAsync({ type: "blob" }).then(function (content) {
+      FileSaver.saveAs(content, "back-source.zip");
+    });
+  }
+
   return (
     <div className={styles.container}>
       {visible ? (
@@ -83,6 +128,9 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
               </div>
               <div className={styles.navItem} onClick={() => exportToCSV(data, 'data')}>
                 <p>Tạo File Excel</p>
+              </div>
+              <div className={styles.navItem} onClick={() => zipFile(data)}>
+                <p>Tải xuống</p>
               </div>
               <div className={styles.navItem} onClick={() => setVisible(false)}>
                 <p>Ẩn</p>
