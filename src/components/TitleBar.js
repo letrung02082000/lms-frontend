@@ -8,8 +8,8 @@ function TitleBar(props) {
   const bcolor = props?.backgroundColor || '#019f91'
 
   const goBack = () => {
-    if (props?.path) {
-      return navigate(props?.path)
+    if (props?.backTo) {
+      return navigate(props?.backTo)
     }
 
     if (!window.location.key) {

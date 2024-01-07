@@ -4,6 +4,7 @@ import {
   Navigate,
   Route,
   Routes,
+  RouterProvider,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import ReactGA from "react-ga";
@@ -53,6 +54,10 @@ import CouponDemoNavigate from "features/coupon/pages/CouponDemoNavigate";
 import { ThemeProvider } from "styled-components";
 import { light } from "config/theme.config";
 import { GUEST_HOUSE_URL, GUIDE_URL, JOB_URL, PRINT_NOW_URL, SWIMMING_POOL_URL, UNIFORM_URL } from "constants/routes";
+import { PATH } from "constants/path";
+import DrivingAdminLayout from "components/layouts/admin/DrivingAdminLayout";
+import router from "routes";
+import Loading from "components/Loading";
 
 const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
 ReactGA.initialize(GA_TRACKING_ID);
@@ -67,7 +72,8 @@ const App = () => {
 
   return (
     <ThemeProvider theme={selectedTheme}>
-      <Router>
+      <RouterProvider router={router} fallbackElement={<Loading />} />
+      {/* <Router>
         <ToastContainer
           position="top-right"
           autoClose={5000}
@@ -293,7 +299,8 @@ const App = () => {
           <Route path="/coupon-admin" element={<CouponAdminPage />} />
           <Route path="/demo-navigate" element={<CouponDemoNavigate />} />
 
-          <Route path="/driving-admin" element={<AdminDrivingPage />} />
+          <Route path='driving-admin' element={<AdminDrivingPage />} />
+          <Route path={PATH.ADMIN.DRIVING.ROOT} element={<DrivingAdminLayout />} />
           <Route
             path="/bicycle-admin"
             element={
@@ -338,7 +345,7 @@ const App = () => {
             }
           />
         </Routes>
-      </Router>
+      </Router> */}
     </ThemeProvider>
   );
 };

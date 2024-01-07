@@ -12,6 +12,7 @@ import JSZip from 'jszip'
 function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   const [visible, setVisible] = useState(true)
   const data = useSelector(selectDrivingData)
+  const [zipping, setZipping] = useState(false)
 
   const exportToCSV = (csvData, fileName) => {
     csvData = csvData.map((child, index) => {
@@ -65,6 +66,8 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
     const frontZip = new JSZip()
     const backZip = new JSZip()
 
+    setZipping(true);
+
     for (let index = 0; index < data.length; index++) {
       const drivingInfo = data[index];
 
@@ -92,14 +95,21 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
 
     portraitZip.generateAsync({ type: "blob" }).then(function (content) {
       FileSaver.saveAs(content, "portrait.zip");
+      setZipping(false);
     });
+
+    setZipping(true);
 
     frontZip.generateAsync({ type: "blob" }).then(function (content) {
       FileSaver.saveAs(content, "front-source.zip");
+      setZipping(false);
     });
+
+    setZipping(true);
 
     backZip.generateAsync({ type: "blob" }).then(function (content) {
       FileSaver.saveAs(content, "back-source.zip");
+      setZipping(false);
     });
   }
 
@@ -130,7 +140,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
                 <p>Tạo File Excel</p>
               </div>
               <div className={styles.navItem} onClick={() => zipFile(data)}>
-                <p>Tải xuống</p>
+                {zipping ? <p>Đang nén...</p> : <p>Nén File</p>}
               </div>
               <div className={styles.navItem} onClick={() => setVisible(false)}>
                 <p>Ẩn</p>
