@@ -97,7 +97,7 @@ function FileUploader({ className, hasAsterisk, hasLabel=true, hasText=true, ...
           })}
         </Form.Text>
       </div>
-      <div className='d-block fw-bold my-2'>{props?.fileName}</div>
+      {props?.filename && <div className='d-block fw-bold my-2'>{props?.fileName}</div>}
     </div>
   );
 }

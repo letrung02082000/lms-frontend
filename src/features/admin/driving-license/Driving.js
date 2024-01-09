@@ -1,17 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./driving.module.css";
-
-import mime from "mime-types";
-
 import DrivingApi from "api/drivingApi";
 import { formatCurrency } from "utils/commonUtils";
 import { Button } from "react-bootstrap";
 import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
-import { toast } from 'react-toastify'
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
-import { SiZalo } from "react-icons/si";
+import { MdRotateLeft } from "react-icons/md";
 
 function Driving(props) {
   let {
@@ -45,8 +41,67 @@ function Driving(props) {
   const [frontUploading, setFrontUploading] = useState(false);
   const [backUploading, setBackUploading] = useState(false);
   const [portraitUploading, setPortraitUploading] = useState(false);
+  const [portraitLoading, setPortraitLoading] = useState(false);
+  const [frontLoading, setFrontLoading] = useState(false);
+  const [backLoading, setBackLoading] = useState(false);
+  const [imageVisible, setImageVisible] = useState(false);
   createdAt = new Date(createdAt);
 
+  useEffect(async () => {
+    if (imageVisible) {
+      setFrontLoading(true);
+      setBackLoading(true);
+      setPortraitLoading(true);
+
+      try {
+        const urlCreator = window.URL || window.webkitURL;
+        const portraitResponse = await fetch(portraitUrl);
+        const portraitBlob = await portraitResponse.blob();
+        const portraitImage = urlCreator.createObjectURL(portraitBlob);
+        document.getElementById(`portrait_${_id}`).src = portraitImage;
+        document.getElementById(`portrait_${_id}`).height = 250;
+        document.getElementById(`portrait_${_id}`).style.objectFit = 'contain';
+        setPortraitLoading(false);
+      } catch (error) {
+        setPortraitLoading(false);
+      }
+
+      try {
+        const urlCreator = window.URL || window.webkitURL;
+        const frontResponse = await fetch(frontUrl);
+        const frontBlob = await frontResponse.blob();
+        const frontImage = urlCreator.createObjectURL(frontBlob);
+        document.getElementById(`front_${_id}`).src = frontImage;
+        document.getElementById(`front_${_id}`).height = 250;
+        document.getElementById(`front_${_id}`).style.objectFit = 'contain';
+        setFrontLoading(false);
+      } catch (error) {
+        setFrontLoading(false);
+      }
+
+      try {
+        const urlCreator = window.URL || window.webkitURL;
+        const backResponse = await fetch(backUrl);
+        const backBlob = await backResponse.blob();
+        const backImage = urlCreator.createObjectURL(backBlob);
+        document.getElementById(`back_${_id}`).src = backImage;
+        document.getElementById(`back_${_id}`).height = 250;
+        document.getElementById(`back_${_id}`).style.objectFit = 'contain';
+        setBackLoading(false);
+      } catch (error) {
+        setBackLoading(false);
+      }
+
+    } else {
+      document.getElementById(`front_${_id}`).removeAttribute('src');
+      document.getElementById(`back_${_id}`).removeAttribute('src');
+      document.getElementById(`portrait_${_id}`).removeAttribute('src');
+      document.getElementById(`front_${_id}`).height = 0;
+      document.getElementById(`back_${_id}`).height = 0;
+      document.getElementById(`portrait_${_id}`).height = 0;
+    }
+  }, [imageVisible])
+  
   if (date) {
     date = new Date(date);
   } else {
@@ -139,6 +194,12 @@ function Driving(props) {
     })
   }
 
+  const rotateImage = (id) => {
+    const tmp = document.getElementById(id);
+    tmp.style.transform = `rotate(${(tmp.getAttribute('data-rotate') || 0) - 90}deg)`;
+    tmp.setAttribute('data-rotate', (tmp.getAttribute('data-rotate') || 0) - 90);
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.row}>
@@ -226,19 +287,20 @@ function Driving(props) {
             </>
           </p>
         </div>
-        <div className='d-flex justify-content-between mt-5'>
+          <div className='d-flex justify-content-between mt-5'>
           <div>
             <div className='d-flex align-items-start'>
               <a
-                className='btn btn-outline-primary w-100 mb-3'
+                className='btn btn-outline-primary p-0 mb-2 border-0'
                 href={portraitUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Chân dung
+                {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
+                <img id={`portrait_${_id}`}/>
               </a>
             </div>
-            <div className="d-flex align-items-start">
+            <div className="d-flex">
               <a
                 className='btn btn-outline-primary me-2'
                 target="_blank"
@@ -252,21 +314,24 @@ function Driving(props) {
                 />
               </a>
               <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, {portraitUrl: res?.data?.url})} />
+              <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`portrait_${_id}`)}>
+                <MdRotateLeft />
+              </Button>
             </div>
           </div>
-
           <div>
-            <div className='d-flex align-items-start'>
+            <div className='d-flex'>
               <a
-                className='btn btn-outline-primary w-100 mb-3'
+                className='btn btn-outline-primary p-0 mb-2 border-0'
                 href={frontUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Mặt trước
+                {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
+                <img id={`front_${_id}`}/>
               </a>
             </div>
-            <div className="d-flex align-items-start">
+            <div className="d-flex">
               <a
                 className='btn btn-outline-primary me-2'
                 target="_blank"
@@ -280,21 +345,25 @@ function Driving(props) {
                 />
               </a>
               <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={frontUploading} setUploading={setFrontUploading} onResponse={res => handleUpdateButton(_id, {frontUrl: res?.data?.url})} />
+              <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`front_${_id}`)}>
+                <MdRotateLeft />
+              </Button>
             </div>
           </div>
 
           <div>
-            <div className='d-flex align-items-start'>
+            <div className='d-flex'>
               <a
-                className='btn btn-outline-primary w-100 mb-3'
+                className='btn btn-outline-primary p-0 mb-2 border-0'
                 href={backUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Mặt sau
+                {backLoading && <div className="spinner-border text-primary" role="status"></div>}
+                <img id={`back_${_id}`}/>
               </a>
             </div>
-            <div className="d-flex align-items-start">
+            <div className="d-flex">
               <a
                 className='btn btn-outline-primary me-2'
                 target="_blank"
@@ -308,6 +377,9 @@ function Driving(props) {
                 />
               </a>
               <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={backUploading} setUploading={setBackUploading} onResponse={res => handleUpdateButton(_id, {backUrl: res?.data?.url})} />
+              <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`back_${_id}`)}>
+                <MdRotateLeft />
+              </Button>
             </div>
           </div>
 
@@ -392,6 +464,7 @@ function Driving(props) {
           </p>
         ) : null}
       </div>
+      <Button variant="outline-primary" className="mt-2" onClick={() => setImageVisible(!imageVisible)}>Ẩn/Hiện</Button>
     </div>
   );
 }
