@@ -379,19 +379,19 @@ export default function DrivingRegisterPage() {
 
         <Row className="mb-3">
             <Col>
-              <FileUploader fileName={frontData?.data?.originalName} onResponse={setFrontData} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+              <FileUploader fileName={frontData?.originalName} onResponse={(res) => setFrontData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
             </Col>
         </Row>
 
         <Row className="mb-3">
             <Col>
-              <FileUploader fileName={backData?.data?.originalName} onResponse={setBackData} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+              <FileUploader fileName={backData?.originalName} onResponse={res => setBackData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
             </Col>
         </Row>
 
         <Row className="mb-3">
             <Col>
-              <FileUploader fileName={portraitData?.data?.originalName} onResponse={setPortraitData} url={FILE_UPLOAD_URL} name='file' uploading={portraitUploading} setUploading={setPortraitUploading} label='Ảnh chân dung' hasAsterisk={true} subLabel='Lấy đủ 2 vai từ thắt lưng, không đeo kính, tóc không che trán, nhìn rõ và không quá 3 tháng' />
+              <FileUploader fileName={portraitData?.originalName} onResponse={res => setPortraitData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={portraitUploading} setUploading={setPortraitUploading} label='Ảnh chân dung' hasAsterisk={true} subLabel='Lấy đủ 2 vai từ thắt lưng, không đeo kính, tóc không che trán, nhìn rõ và không quá 3 tháng' />
             </Col>
         </Row>
 
