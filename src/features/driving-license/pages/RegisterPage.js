@@ -160,9 +160,9 @@ export default function DrivingRegisterPage() {
 
     const data = {
       ...formData,
-      frontUrl: frontData?.data?.url,
-      backUrl: backData?.data?.url,
-      portraitUrl: portraitData?.data?.url,
+      frontUrl: frontData?.url,
+      backUrl: backData?.url,
+      portraitUrl: portraitData?.url,
       isPaid: false,
       paymentMethod: paymentMethod,
       drivingType: drivingType,
