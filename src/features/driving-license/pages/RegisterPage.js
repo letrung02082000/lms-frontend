@@ -256,11 +256,6 @@ export default function DrivingRegisterPage() {
           return (
             <div className={styles.orderContainer}>
               <p>Họ tên: {child.name}</p>
-              <p>
-                Ngày dự thi:
-                {` ${date.getDate()}/${date.getMonth() + 1
-                  }/${date.getFullYear()}`}
-              </p>
               <p>Trạng thái: {state}</p>
               <p>
                 Hồ sơ của bạn sẽ được xử lý vào ngày:
