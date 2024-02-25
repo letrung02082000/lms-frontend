@@ -4,6 +4,7 @@ import {
   Navigate,
   Route,
   Routes,
+  RouterProvider,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import ReactGA from "react-ga";
@@ -53,13 +54,14 @@ import CouponDemoNavigate from "features/coupon/pages/CouponDemoNavigate";
 import { ThemeProvider } from "styled-components";
 import { light } from "config/theme.config";
 import { GUEST_HOUSE_URL, GUIDE_URL, JOB_URL, PRINT_NOW_URL, SWIMMING_POOL_URL, UNIFORM_URL } from "constants/routes";
+import Loading from "components/Loading";
+import router from "routes";
 
 const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
 ReactGA.initialize(GA_TRACKING_ID);
 
 const App = () => {
   const [selectedTheme, setSelectedTheme] = useState(light);
-  checkLogin();
 
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
@@ -67,7 +69,9 @@ const App = () => {
 
   return (
     <ThemeProvider theme={selectedTheme}>
-      <Router>
+      <RouterProvider router={router} fallbackElement={<Loading />} />
+      <ToastContainer />
+      {/* <Router>
         <ToastContainer
           position="top-right"
           autoClose={5000}
@@ -338,7 +342,7 @@ const App = () => {
             }
           />
         </Routes>
-      </Router>
+      </Router> */}
     </ThemeProvider>
   );
 };

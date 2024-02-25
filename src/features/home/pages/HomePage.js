@@ -17,38 +17,36 @@ const HomePage = () => {
   return (
     <div>
       <Styles isDesktop={isDesktop} status={scrollDirection}>
-        <MainLayout className="homeContainer">
-          {!isDesktop ? (
-            <div className="logoContainer">
-              <Logo />
-            </div>
-          ) : null}
-          <div className="mainLayout">
-            <div className="homeSliderContainer">
-              <HomeSlider />
-            </div>
-
-            <div className="categorySliderContainer">
-              <p
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                }}
-              >
-                Loại hình
-              </p>
-              <CategorySlider />
-            </div>
-
-            <div className="hotSliderContainer">
-              <HotSlider />
-            </div>
-
-            <div className="categorySliderContainer">
-              <MainServices />
-            </div>
+        {!isDesktop ? (
+          <div className="logoContainer">
+            <Logo />
           </div>
-        </MainLayout>
+        ) : null}
+        <div className="mainLayout">
+          <div className="homeSliderContainer">
+            <HomeSlider />
+          </div>
+
+          <div className="categorySliderContainer">
+            <p
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "bold",
+              }}
+            >
+              Loại hình
+            </p>
+            <CategorySlider />
+          </div>
+
+          <div className="hotSliderContainer">
+            <HotSlider />
+          </div>
+
+          <div className="categorySliderContainer">
+            <MainServices />
+          </div>
+        </div>
       </Styles>
       <Footer />
     </div>

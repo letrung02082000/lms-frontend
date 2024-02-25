@@ -13,6 +13,7 @@ import { updateUser, selectUser } from "store/userSlice";
 
 import AccountApi from "api/accountApi";
 import { toastWrapper } from "utils";
+import { PATH } from "constants/path";
 
 export default function LoginPage(props) {
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ export default function LoginPage(props) {
   };
 
   const goBack = () => {
-    navigate(-1);
+    navigate(PATH.ACCOUNT);
   };
 
   const handleEmailChange = (event) => {

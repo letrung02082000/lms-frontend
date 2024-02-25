@@ -8,6 +8,7 @@ import Item from "./components/Item";
 import ProfileImage from "./components/ProfileImage";
 
 import AccountApi from "api/accountApi";
+import { PATH } from "constants/path";
 
 function AccountPage() {
   const navigate = useNavigate();
@@ -15,11 +16,11 @@ function AccountPage() {
   const user = useSelector(selectUser);
 
   const handleLoginClick = () => {
-    navigate("/login");
+    navigate(PATH.AUTH.SIGNIN);
   };
 
   const handleSignUpClick = () => {
-    navigate("/login");
+    navigate(PATH.AUTH.SIGNIN);
   };
 
   const handleLogout = () => {
