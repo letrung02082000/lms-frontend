@@ -3,12 +3,8 @@ export const PATH = {
     HOME: '/',
     ADMIN: {
         ROOT: '/admin',
-        SIGNIN: '/admin/login',
-        SIGNUP: '/admin/register',
-        CLASS: '/admin/class',
-        USER: '/admin/user',
-        VIDEO_LIST: '/admin/video/list',
     },
+
     AUTH: {
         ROOT: '/auth',
         SIGNIN: '/auth/login',
@@ -34,5 +30,24 @@ export const PATH = {
         ROOT: '/driving-test',
         REGISTRATION: '/driving-registration',
         INSTRUCTION: '/driving-instruction',
-    }
+        ADMIN: {
+            ROOT: '/driving/admin',
+            DATE: '/driving/admin/date',
+        }
+    },
+    UNIFORM: {
+        ROOT: '/uniform',
+    },
+    PHOTOCOPY: {
+        ROOT: '/photocopy',
+    },
+    SWIMMING_POOL: {
+        ROOT: '/pool-info',
+    },
+    GUEST_HOUSE: {
+        ROOT: '/guest-house',
+    },
+    QR_SCAN: {
+        ROOT: '/qr-scan',
+    },
 };

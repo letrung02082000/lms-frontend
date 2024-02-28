@@ -6,6 +6,7 @@ import styles from './mainservices.module.css'
 import ServiceItem from './ServiceItem'
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import useMediaQuery from 'hooks/useMediaQuery'
+import { PATH } from 'constants/path'
 
 function MainServices(props) {
   const navigate = useNavigate()
@@ -45,14 +46,19 @@ function MainServices(props) {
           </p>
         </div>
 
-        <div className={styles.itemContainer} onClick={() => navigateTo('/guides')}>
+        <a
+          className={styles.itemContainer}
+          href="https://www.langf.vn/cam-nang-lang-dai-hoc/"
+          target={'_blank'}
+          rel="noopener noreferrer"
+        >
           <div>
             <img src="/main-icon/instruction.png" alt="pool" className={styles.mainIcon} />
           </div>
           <p>
             Cẩm nang <br /> sinh viên
           </p>
-        </div>
+        </a>
 
         <a
           className={styles.itemContainer}
@@ -68,7 +74,7 @@ function MainServices(props) {
 
         {
            !collapsed && <>
-            <div className={styles.itemContainer} onClick={() => navigateTo('/maintain')}>
+            <div className={styles.itemContainer} onClick={() => navigateTo(PATH.MAINTAIN)}>
               <div>
                 <img src="/main-icon/health.png" alt="pool" className={styles.mainIcon} />
               </div>
@@ -77,30 +83,35 @@ function MainServices(props) {
               </p>
             </div>
 
-            <div className={styles.itemContainer} onClick={() => navigateTo('/maintain')}>
+            <div className={styles.itemContainer} onClick={() => navigateTo(PATH.MAINTAIN)}>
               <div>
                 <img src="/main-icon/course.png" alt="pool" className={styles.mainIcon} />
               </div>
               <p>Khóa học</p>
             </div>
 
-            <div className={styles.itemContainer} onClick={() => navigateTo('/jobs')}>
+            <a
+              className={styles.itemContainer}
+              href="https://www.langf.vn/cam-nang-lang-dai-hoc/category/tuyen-dung/"
+              target={'_blank'}
+              rel="noopener noreferrer"
+            >
               <div>
                 <img src="/main-icon/job.png" alt="pool" className={styles.mainIcon} />
               </div>
               <p>
                 Việc làm <br /> sinh viên
               </p>
-            </div>
+            </a>
 
-            <div className={styles.itemContainer} onClick={() => navigateTo('/maintain')}>
+            <div className={styles.itemContainer} onClick={() => navigateTo(PATH.MAINTAIN)}>
               <div>
                 <img src="/main-icon/bus-service.png" alt="pool" className={styles.mainIcon} />
               </div>
               <p>Xe dịch vụ</p>
             </div>
 
-            <div className={styles.itemContainer} onClick={() => navigateTo('/yenshare')}>
+            <div className={styles.itemContainer} onClick={() => navigateTo(PATH.MAINTAIN)}>
               <div>
                 <img src="/main-icon/bicycle.png" alt="bicycle" className={styles.mainIcon} />
               </div>
@@ -109,7 +120,7 @@ function MainServices(props) {
               </p>
             </div>
 
-            <div className={styles.itemContainer} onClick={() => navigateTo('/maintain')}>
+            <div className={styles.itemContainer} onClick={() => navigateTo(PATH.MAINTAIN)}>
               <div>
                 <img src="/main-icon/application.png" alt="other" className={styles.mainIcon} />
               </div>

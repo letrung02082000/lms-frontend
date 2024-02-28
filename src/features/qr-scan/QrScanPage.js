@@ -22,7 +22,6 @@ function QrScanPage() {
 
   return (
     <>
-      {/* <TitleBar title="Mã QR" /> */}
       <div className={styles.container}>
         <p style={{ margin: '7rem 0 1rem 0' }}>Đưa mã này cho nhân viên để check-in</p>
         <QRCode
@@ -31,16 +30,12 @@ function QrScanPage() {
           size={290}
           level={'H'}
           includeMargin={true}
-          //   imageSettings={{
-          //     src: 'https://i.imgur.com/wG3nKXR.jpg?1',
-          //     excavate: true,
-          //   }}
           style={{
             borderRadius: '5px',
             border: '1px solid rgb(27, 183, 110)'
           }}
         />
-        <p style={{ margin: '7rem 0 1rem 0' }}>Lưu mã QR để sử dụng thuận tiện hơn</p>
+        {/* <p style={{ margin: '7rem 0 1rem 0' }}>Lưu mã QR để sử dụng thuận tiện hơn</p>
         <a
           onClick={downloadQR}
           style={{
@@ -53,7 +48,7 @@ function QrScanPage() {
           }}
         >
           Lưu về máy
-        </a>
+        </a> */}
       </div>
     </>
   )

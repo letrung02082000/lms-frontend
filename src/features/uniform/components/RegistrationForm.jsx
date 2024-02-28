@@ -67,7 +67,7 @@ function RegistrationForm() {
         <InputField label={'Zalo'} control={control} name="zalo" />
         <InputField label={'Số lượng dự kiến'} control={control} name="quantity" />
         <InputField
-          label={'Ghi chú/Góp ý'}
+          label={'Ghi chú'}
           placeholder="Nhập ghi chú hoặc góp ý của bạn"
           as="textarea"
           rows={3}
