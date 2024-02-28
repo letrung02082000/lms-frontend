@@ -24,6 +24,7 @@ function AdminDrivingA1Page() {
     { field: 'feedback', headerName: 'Ghi chú', flex: 1 },
     { field: 'processState', headerName: 'Trạng thái', flex: 1 },
     { field: 'source', headerName: 'Nguồn', flex: 1 },
+    { field: 'drivingType', headerName: 'Loại bằng', flex: 1 },
   ]);
 
   useEffect(() => {
