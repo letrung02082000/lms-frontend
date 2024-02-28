@@ -158,8 +158,6 @@ export default function DrivingRegisterPage() {
       localStorage.setItem('driving-link', '');
     }
 
-    console.log(formData);
-
     const data = {
       ...formData,
       frontUrl: frontData?.data?.url,

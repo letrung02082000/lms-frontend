@@ -4,11 +4,12 @@ import { authHeader } from "utils";
 const API_PATH = "/driving";
 
 class DrivingApi {
-  getDrivings = async (q, page) => {
+  getDrivings = async (query, search, page) => {
     const url = `${API_PATH}`;
     return axiosClient.get(url, {
       params: {
-        q,
+        query,
+        search,
         page
       }
     });
