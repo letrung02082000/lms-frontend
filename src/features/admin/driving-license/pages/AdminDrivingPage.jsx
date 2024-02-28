@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, Modal, Offcanvas, Pagination, Row } from 'react-bootstrap';
-import { MdEdit, MdFilterList, MdSearch } from 'react-icons/md';
+import { MdEdit, MdFilterList, MdRotateLeft, MdSearch } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
+import SelectField from 'components/form/SelectField';
+import FileUploader from 'components/form/FileUploader';
+import { FILE_UPLOAD_URL } from 'constants/endpoints';
 
 function AdminDrivingA1Page() {
   const [query, setQuery] = useState({});
@@ -15,6 +18,10 @@ function AdminDrivingA1Page() {
   const [pagination, setPagination] = useState({});
   const [show, setShow] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [visibleDate, setVisibleDate] = useState([{}]);
+  const [portraitUploading, setPortraitUploading] = useState(false);
+  const [frontUploading, setFrontUploading] = useState(false);
+  const [backUploading, setBackUploading] = useState(false);
 
   const {
     control,
@@ -34,14 +41,16 @@ function AdminDrivingA1Page() {
     shouldUseNativeValidation: false,
     delayError: false,
   });
-
   const ActionButton = (props) => {
     return (
       <div className='w-100 d-flex justify-content-center'>
-        <button className='btn' onClick={() => {
-          setSelectedRow(props.value);
-          setShowEditModal(true);
-        }}>
+        <button
+          className='btn'
+          onClick={() => {
+            setSelectedRow(props.value);
+            setShowEditModal(true);
+          }}
+        >
           <MdEdit />
         </button>
       </div>
@@ -89,11 +98,49 @@ function AdminDrivingA1Page() {
     drivingApi
       .getDateVisible()
       .then((res) => {
+        const date = res.data.map((item) => {
+          return {
+            label: new Date(item.date).toLocaleDateString('en-GB'),
+            value: item.date,
+          };
+        });
+        setVisibleDate(date);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [page, query]);
+
+  useEffect( async() => {
+    setValue('name', selectedRow.name);
+    setValue('tel', selectedRow.tel);
+    setValue('zalo', selectedRow.zalo);
+    console.log(selectedRow)
+
+    if(showEditModal) {
+      const urlCreator = window.URL || window.webkitURL;
+      const portraitResponse = await fetch(selectedRow.portraitUrl);
+      const portraitBlob = await portraitResponse.blob();
+      const portraitImage = urlCreator.createObjectURL(portraitBlob);
+      document.getElementById(`portrait`).src = portraitImage;
+      document.getElementById(`portrait`).height = 350;
+      document.getElementById(`portrait`).style.objectFit = 'contain';
+
+      const frontResponse = await fetch(selectedRow.frontUrl);
+      const frontBlob = await frontResponse.blob();
+      const frontImage = urlCreator.createObjectURL(frontBlob);
+      document.getElementById(`front_card`).src = frontImage;
+      document.getElementById(`front_card`).height = 250;
+      document.getElementById(`front_card`).style.objectFit = 'contain';
+
+      const backResponse = await fetch(selectedRow.backUrl);
+      const backBlob = await backResponse.blob();
+      const backImage = urlCreator.createObjectURL(backBlob);
+      document.getElementById(`back_card`).src = backImage;
+      document.getElementById(`back_card`).height = 250;
+      document.getElementById(`back_card`).style.objectFit = 'contain';
+    }
+  }, [selectedRow, showEditModal]);
 
   const handleClose = () => setShowEditModal(false);
 
@@ -111,6 +158,16 @@ function AdminDrivingA1Page() {
 
   const handleClearButton = (name) => {
     setValue(name, '');
+  }
+
+  const rotateImage = (id) => {
+    const tmp = document.getElementById(id);
+    tmp.style.transform = `rotate(${(tmp.getAttribute('data-rotate') || 0) - 90}deg)`;
+    tmp.setAttribute('data-rotate', (tmp.getAttribute('data-rotate') || 0) - 90);
+  }
+
+  const handleUpdateButton = (id, data) => {
+    console.log(id, data)
   }
 
   return (
@@ -203,7 +260,6 @@ function AdminDrivingA1Page() {
                 <InputField
                   hasAsterisk={true}
                   label='Tên học viên'
-                  subLabel='Nhập họ tên đầy đủ, có dấu'
                   control={control}
                   name='name'
                   rules={{
@@ -217,66 +273,163 @@ function AdminDrivingA1Page() {
                 />
               </Col>
             </Row>
-            
-        <Row className="mb-3">
-          <Col>
-              <InputField
-                hasAsterisk={true}
-                label='Số điện thoại liên hệ'
-                control={control}
-                name='tel'
-                type='number'
-                rules={{
-                  maxLength: {
-                    value: 10,
-                    message: 'Số điện thoại phải có 10 chữ số',
-                  },
-                  minLength: {
-                    value: 10,
-                    message: 'Số điện thoại phải có 10 chữ số',
-                  },
-                  required: 'Vui lòng nhập trường này',
-                }}
-                onClear={handleClearButton}
-              />
-          </Col>
-        </Row>
 
-        <Row className="mb-3">
-          <Col>
-              <InputField
-                hasAsterisk={true}
-                label='Số điện thoại Zalo'
-                control={control}
-                name='zalo'
-                type='number'
-                rules={{
-                  maxLength: {
-                    value: 10,
-                    message: 'Số điện thoại Zalo phải có 10 chữ số',
-                  },
-                  minLength: {
-                    value: 10,
-                    message: 'Số điện thoại Zalo phải có 10 chữ số',
-                  },
-                  required: 'Vui lòng nhập trường này',
-                }}
-                onClear={handleClearButton}
-              />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-          </Col>
-        </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  hasAsterisk={true}
+                  label='Số điện thoại liên hệ'
+                  control={control}
+                  name='tel'
+                  type='number'
+                  rules={{
+                    maxLength: {
+                      value: 10,
+                      message: 'Số điện thoại phải có 10 chữ số',
+                    },
+                    minLength: {
+                      value: 10,
+                      message: 'Số điện thoại phải có 10 chữ số',
+                    },
+                    required: 'Vui lòng nhập trường này',
+                  }}
+                  onClear={handleClearButton}
+                />
+              </Col>
+            </Row>
+
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  hasAsterisk={true}
+                  label='Số điện thoại Zalo'
+                  control={control}
+                  name='zalo'
+                  type='number'
+                  rules={{
+                    maxLength: {
+                      value: 10,
+                      message: 'Số điện thoại Zalo phải có 10 chữ số',
+                    },
+                    minLength: {
+                      value: 10,
+                      message: 'Số điện thoại Zalo phải có 10 chữ số',
+                    },
+                    required: 'Vui lòng nhập trường này',
+                  }}
+                  onClear={handleClearButton}
+                />
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <SelectField
+                  options={visibleDate}
+                  label={`Ngày dự thi hiện tại: ${new Date(
+                    selectedRow.date
+                  ).toLocaleDateString('en-GB')}`}
+                  control={control}
+                  name='date'
+                />
+              </Col>
+            </Row>
+
+            <Row className='mb-5'>
+              <Col>
+                <a href={selectedRow.frontUrl}>
+                  <img id='front_card' alt='front_card' />
+                </a>
+              </Col>
+              <Col>
+                <a href={selectedRow.backUrl}>
+                  <img id='back_card' alt='back_card' />
+                </a>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col>
+                <a href={selectedRow.portraitUrl}>
+                  <img id='portrait' alt='portrait' />
+                </a>
+              </Col>
+              <Col>
+                <Row>
+                  <Col>
+                    {/* <FileUploader
+                      name='file'
+                      text='Cập nhật ảnh chân dung'
+                      url={FILE_UPLOAD_URL}
+                      uploading={portraitUploading}
+                      setUploading={setPortraitUploading}
+                      onResponse={(res) =>
+                        handleUpdateButton(selectedRow._id, {
+                          portraitUrl: res?.data?.url,
+                        })
+                      }
+                    /> */}
+                    <Button
+                      variant='outline-primary'
+                      className='mt-2'
+                      onClick={() => rotateImage('portrait')}
+                    >
+                      <MdRotateLeft /> Xoay ảnh chân dung
+                    </Button>
+                  </Col>
+                </Row>
+                <Row className='mt-3'>
+                  <Col>
+                    {/* <FileUploader
+                      name='file'
+                      text='Cập nhật ảnh mặt trước'
+                      url={FILE_UPLOAD_URL}
+                      uploading={portraitUploading}
+                      setUploading={setPortraitUploading}
+                      onResponse={(res) =>
+                        handleUpdateButton(selectedRow._id, {
+                          portraitUrl: res?.data?.url,
+                        })
+                      }
+                    /> */}
+                    <Button
+                      variant='outline-primary'
+                      className='mt-2'
+                      onClick={() => rotateImage('front_card')}
+                    >
+                      <MdRotateLeft /> Xoay ảnh mặt trước
+                    </Button>
+                  </Col>
+                </Row>
+                <Row className='mt-3'>
+                  <Col>
+                    {/* <FileUploader
+                      name='file'
+                      text='Cập nhật ảnh mặt sau'
+                      url={FILE_UPLOAD_URL}
+                      uploading={portraitUploading}
+                      setUploading={setPortraitUploading}
+                      onResponse={(res) =>
+                        handleUpdateButton(selectedRow._id, {
+                          portraitUrl: res?.data?.url,
+                        })
+                      }
+                    /> */}
+                    <Button
+                      variant='outline-primary'
+                      className='mt-2'
+                      onClick={() => rotateImage('back_card')}
+                    >
+                      <MdRotateLeft /> Xoay ảnh mặt sau
+                    </Button>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant='primary' onClick={handleClose}>
-            Save Changes
+            Đóng
           </Button>
         </Modal.Footer>
       </Modal>
