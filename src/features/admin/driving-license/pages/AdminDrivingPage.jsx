@@ -118,27 +118,44 @@ function AdminDrivingA1Page() {
     console.log(selectedRow)
 
     if(showEditModal) {
-      const urlCreator = window.URL || window.webkitURL;
       const portraitResponse = await fetch(selectedRow.portraitUrl);
       const portraitBlob = await portraitResponse.blob();
-      const portraitImage = urlCreator.createObjectURL(portraitBlob);
-      document.getElementById(`portrait`).src = portraitImage;
-      document.getElementById(`portrait`).height = 350;
-      document.getElementById(`portrait`).style.objectFit = 'contain';
+      const portraitReader = new FileReader();
+      portraitReader.readAsDataURL(portraitBlob);
+      portraitReader.onloadend = () => {
+        const portraitElement = document.getElementById(`portrait`);
+        portraitElement.src = portraitReader.result;
+        portraitElement.style.objectFit = 'contain';
+        document.getElementById('portrait-link').href = portraitReader.result;
+        portraitElement.height = 350;
+        portraitElement.style.objectFit = 'contain';
+      }
 
       const frontResponse = await fetch(selectedRow.frontUrl);
       const frontBlob = await frontResponse.blob();
-      const frontImage = urlCreator.createObjectURL(frontBlob);
-      document.getElementById(`front_card`).src = frontImage;
-      document.getElementById(`front_card`).height = 250;
-      document.getElementById(`front_card`).style.objectFit = 'contain';
+      const frontReader = new FileReader();
+      frontReader.readAsDataURL(frontBlob);
+      frontReader.onloadend = () => {
+        const frontElement = document.getElementById(`front-card`);
+        frontElement.src = frontReader.result;
+        frontElement.style.objectFit = 'contain';
+        document.getElementById('front-link').href = frontReader.result;
+        frontElement.height = 250;
+        frontElement.style.objectFit = 'contain';
+      }
 
       const backResponse = await fetch(selectedRow.backUrl);
       const backBlob = await backResponse.blob();
-      const backImage = urlCreator.createObjectURL(backBlob);
-      document.getElementById(`back_card`).src = backImage;
-      document.getElementById(`back_card`).height = 250;
-      document.getElementById(`back_card`).style.objectFit = 'contain';
+      const backReader = new FileReader();
+      backReader.readAsDataURL(backBlob);
+      backReader.onloadend = () => {
+        const backElement = document.getElementById(`back-card`);
+        backElement.src = backReader.result;
+        backElement.style.objectFit = 'contain';
+        document.getElementById('back-link').href = backReader.result;
+        backElement.height = 250;
+        backElement.style.objectFit = 'contain';
+      }
     }
   }, [selectedRow, showEditModal]);
 
@@ -336,20 +353,20 @@ function AdminDrivingA1Page() {
 
             <Row className='mb-5'>
               <Col>
-                <a href={selectedRow.frontUrl}>
-                  <img id='front_card' alt='front_card' />
+                <a id='front-link' download={`${selectedRow?.name}_front.png`}>
+                  <img id='front-card' alt='front-card' />
                 </a>
               </Col>
               <Col>
-                <a href={selectedRow.backUrl}>
-                  <img id='back_card' alt='back_card' />
+                <a id='back-link' download={`${selectedRow?.name}_back.png`}>
+                  <img id='back-card' alt='back-card' />
                 </a>
               </Col>
             </Row>
 
             <Row>
               <Col>
-                <a href={selectedRow.portraitUrl}>
+                <a id='portrait-link' download={`${selectedRow.name}_portrait.png`}>
                   <img id='portrait' alt='portrait' />
                 </a>
               </Col>
@@ -394,7 +411,7 @@ function AdminDrivingA1Page() {
                     <Button
                       variant='outline-primary'
                       className='mt-2'
-                      onClick={() => rotateImage('front_card')}
+                      onClick={() => rotateImage('front-card')}
                     >
                       <MdRotateLeft /> Xoay ảnh mặt trước
                     </Button>
@@ -417,7 +434,7 @@ function AdminDrivingA1Page() {
                     <Button
                       variant='outline-primary'
                       className='mt-2'
-                      onClick={() => rotateImage('back_card')}
+                      onClick={() => rotateImage('back-card')}
                     >
                       <MdRotateLeft /> Xoay ảnh mặt sau
                     </Button>
