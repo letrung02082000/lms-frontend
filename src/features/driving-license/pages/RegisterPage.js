@@ -100,6 +100,9 @@ export default function DrivingRegisterPage() {
   const [backData, setBackData] = useState(null);
   const [portraitData, setPortraitData] = useState(null);
 
+  console.log(date)
+  console.log(drivingType)
+
   const imageExtensions = [
     "image/jpeg",
     "image/png",
@@ -142,7 +145,7 @@ export default function DrivingRegisterPage() {
       return;
     }
 
-    if(drivingType === 0 && !date) {
+    if(parseInt(drivingType) === 0 && !date) {
       toastWrapper('Vui lòng chọn ngày dự thi', 'error');
       setIsLoading(false);
       return;
