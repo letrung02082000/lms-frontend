@@ -8,6 +8,7 @@ import InputField from 'components/form/InputField';
 import SelectField from 'components/form/SelectField';
 import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
+import { toastWrapper } from 'utils';
 
 function AdminDrivingA1Page() {
   const [query, setQuery] = useState({});
@@ -61,21 +62,126 @@ function AdminDrivingA1Page() {
     return params.data;
   };
 
-  // Column Definitions: Defines the columns to be displayed.
+  const PaymentCheckbox = (props) => {
+    return (
+      <div className='d-flex justify-content-center'>
+        <Form.Check type='switch' defaultChecked={props.data.isPaid} onClick={(e) => {
+          drivingApi
+            .updateDriving(props.data._id, { isPaid: e.target.checked })
+            .then((res) => {
+              toastWrapper('Cập nhật thành công', 'success');
+            })
+            .catch((err) => {
+              toastWrapper(err.response.data.message, 'error');
+            });
+        }}/>
+      </div>
+    );
+  }
+
+  const HealthCheckbox = (props) => {
+    return (
+      <div className='d-flex justify-content-center'>
+        <Form.Check type='switch' defaultChecked={props.data.healthChecked} onClick={(e) => {
+          drivingApi
+            .updateDriving(props.data._id, { healthChecked: e.target.checked })
+            .then((res) => {
+              toastWrapper('Cập nhật thành công', 'success');
+            })
+            .catch((err) => {
+              toastWrapper(err.response.data.message, 'error');
+            });
+        }}/>
+      </div>
+    );
+  }
+
+  const FileCheckbox = (props) => {
+    return (
+      <div className='d-flex justify-content-center'>
+        <Form.Check type='switch' defaultChecked={props.data.hasFile} onClick={(e) => {
+          drivingApi
+            .updateDriving(props.data._id, { hasFile: e.target.checked })
+            .then((res) => {
+              toastWrapper('Cập nhật thành công', 'success');
+            })
+            .catch((err) => {
+              toastWrapper(err.response.data.message, 'error');
+            });
+        }}/>
+      </div>
+    );
+  }
+
+  // const FinishCheckbox = (props) => {
+  //   return (
+  //     <div className='d-flex justify-content-center'>
+  //       <Form.Check type='switch' defaultChecked={props.data.processState == 3} onClick={(e) => {
+  //         drivingApi
+  //         .updateDriving(props.data._id, { processState: e.target.checked ? 3 : 2})
+  //         .then((res) => {
+  //           toastWrapper('Cập nhật thành công', 'success');
+  //         })
+  //         .catch((err) => {
+  //           toastWrapper(err.response.data.message, 'error');
+  //         });
+  //       }}/>
+  //     </div>
+  //   );
+  // }
+
   const [colDefs, setColDefs] = useState([
-    { field: 'createdAt', headerName: 'Ngày tạo', flex: 1 },
-    { field: 'name', headerName: 'Họ và tên', flex: 1 },
-    { field: 'tel', headerName: 'Số điện thoại', flex: 1 },
+    {
+      field: 'createdAt',
+      headerName: 'Ngày tạo',
+      flex: 1,
+      cellRenderer: (data) => {
+        return data.value
+          ? new Date(data.value).toLocaleDateString('en-GB')
+          : '';
+      },
+    },
+    { field: 'name', headerName: 'Họ và tên', flex: 2 },
     { field: 'zalo', headerName: 'Zalo', flex: 1 },
-    { field: 'date', headerName: 'Ngày dự thi', flex: 1 },
-    { field: 'isPaid', headerName: 'Thanh toán', flex: 1 },
+    {
+      field: 'date',
+      headerName: 'Ngày dự thi',
+      flex: 1,
+      cellRenderer: (data) => {
+        return data.value
+          ? new Date(data.value).toLocaleDateString('en-GB')
+          : '';
+      },
+    },
+    {
+      field: 'isPaid',
+      headerName: 'Thanh toán',
+      flex: 1,
+      cellRenderer: PaymentCheckbox,
+      valueGetter: rowDataGetter,
+    },
     { field: 'cash', headerName: 'Chuyển khoản', flex: 1 },
-    { field: 'healthChecked', headerName: 'Đã khám sức khoẻ', flex: 1 },
-    { field: 'finished', headerName: 'Đã có hồ sơ', flex: 1 },
-    { field: 'feedback', headerName: 'Ghi chú', flex: 1 },
-    { field: 'processState', headerName: 'Trạng thái', flex: 1 },
-    { field: 'source', headerName: 'Nguồn', flex: 1 },
-    { field: 'drivingType', headerName: 'Loại bằng', flex: 1 },
+    {
+      field: 'healthChecked',
+      headerName: 'Đã khám sức khoẻ',
+      flex: 1,
+      cellRenderer: HealthCheckbox,
+      valueGetter: rowDataGetter,
+    },
+    {
+      field: 'hasFile',
+      headerName: 'Đã có hồ sơ',
+      flex: 1,
+      cellRenderer: FileCheckbox,
+      valueGetter: rowDataGetter,
+    },
+    // {
+    //   field: 'finished',
+    //   headerName: 'Hoàn tất',
+    //   flex: 1,
+    //   cellRenderer: FinishCheckbox,
+    //   valueGetter: rowDataGetter,
+    // },
     {
       field: 'action',
       headerName: 'Thao tác',
@@ -86,15 +192,7 @@ function AdminDrivingA1Page() {
   ]);
 
   useEffect(() => {
-    drivingApi
-      .getDrivings(query, searchText, page)
-      .then((res) => {
-        setRowData(res.data);
-        setPagination(res.pagination);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    fetchDrivings();
 
     drivingApi
       .getDateVisible()
@@ -111,6 +209,18 @@ function AdminDrivingA1Page() {
         console.log(err);
       });
   }, [page, query]);
+
+  const fetchDrivings = async () => {
+    drivingApi
+      .getDrivings(query, searchText, page)
+      .then((res) => {
+        setRowData(res.data);
+        setPagination(res.pagination);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   useEffect( async() => {
     setValue('name', selectedRow.name);
@@ -162,6 +272,25 @@ function AdminDrivingA1Page() {
 
   const handleClose = () => setShowEditModal(false);
 
+  const handleUpdateDrivingButton = async () => {
+    await handleSubmit(async (data) => {
+      if (data.date === undefined) {
+        delete data.date;
+      } else {
+        data.date = data.date.value;
+      }
+
+      drivingApi.updateDriving(selectedRow._id, data).then((res) => {
+        toastWrapper('Cập nhật thành công', 'success');
+        setShowEditModal(false);
+        fetchDrivings();
+
+      }).catch((err) => {
+        toastWrapper(err.response.data.message, 'error');
+      });
+    })();
+  }
+
   const handleSearchButton = () => {
     drivingApi
       .getDrivings(query, searchText, page)
@@ -182,10 +311,6 @@ function AdminDrivingA1Page() {
     const tmp = document.getElementById(id);
     tmp.style.transform = `rotate(${(tmp.getAttribute('data-rotate') || 0) - 90}deg)`;
     tmp.setAttribute('data-rotate', (tmp.getAttribute('data-rotate') || 0) - 90);
-  }
-
-  const handleUpdateButton = (id, data) => {
-    console.log(id, data)
   }
 
   return (
@@ -342,6 +467,9 @@ function AdminDrivingA1Page() {
             <Row className='mb-3'>
               <Col>
                 <SelectField
+                  rules={{
+                    required: false,
+                  }}
                   options={visibleDate}
                   label={`Ngày dự thi hiện tại: ${new Date(
                     selectedRow.date
@@ -367,7 +495,10 @@ function AdminDrivingA1Page() {
 
             <Row>
               <Col>
-                <a id='portrait-link' download={`${selectedRow.name}_portrait.png`}>
+                <a
+                  id='portrait-link'
+                  download={`${selectedRow.name}_portrait.png`}
+                >
                   <img id='portrait' alt='portrait' />
                 </a>
               </Col>
@@ -446,8 +577,8 @@ function AdminDrivingA1Page() {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='secondary' onClick={handleClose}>
-            Đóng
+          <Button variant='primary' onClick={handleUpdateDrivingButton}>
+            Cập nhật
           </Button>
         </Modal.Footer>
       </Modal>

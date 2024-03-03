@@ -15,6 +15,11 @@ class DrivingApi {
     });
   }
 
+  updateDriving = async (_id, data) => {
+    const url = `${API_PATH}/${_id}`;
+    return axiosClient.patch(url, data);
+  }
+
   getAllDrivings = async (state) => {
     const url = `${API_PATH}/all`;
     return axiosClient.get(url, {
@@ -158,7 +163,6 @@ class DrivingApi {
   };
 
   getFile = async (name) => {
-    console.log(name)
     const url = `/upload/${name}`;
     return axiosClient.get(url, {
       ...authHeader(),
