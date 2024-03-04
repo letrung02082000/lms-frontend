@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
-import { Button, Col, Form, Modal, Offcanvas, Pagination, Row } from 'react-bootstrap';
-import { MdEdit, MdFilterList, MdRotateLeft, MdSearch } from 'react-icons/md';
+import { Button, Col, Form, FormControl, Modal, Offcanvas, Pagination, Row } from 'react-bootstrap';
+import { MdClear, MdEdit, MdFilterList, MdRotateLeft, MdSearch } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
 import SelectField from 'components/form/SelectField';
 import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
 import { toastWrapper } from 'utils';
+import Select from 'react-select';
 
 function AdminDrivingA1Page() {
   const [query, setQuery] = useState({});
@@ -64,7 +65,7 @@ function AdminDrivingA1Page() {
 
   const PaymentCheckbox = (props) => {
     return (
-      <div className='d-flex justify-content-center'>
+      <div className='d-flex justify-content-center pt-2'>
         <Form.Check type='switch' defaultChecked={props.data.isPaid} onClick={(e) => {
           drivingApi
             .updateDriving(props.data._id, { isPaid: e.target.checked })
@@ -81,7 +82,7 @@ function AdminDrivingA1Page() {
 
   const HealthCheckbox = (props) => {
     return (
-      <div className='d-flex justify-content-center'>
+      <div className='d-flex justify-content-center pt-2'>
         <Form.Check type='switch' defaultChecked={props.data.healthChecked} onClick={(e) => {
           drivingApi
             .updateDriving(props.data._id, { healthChecked: e.target.checked })
@@ -98,7 +99,7 @@ function AdminDrivingA1Page() {
 
   const FileCheckbox = (props) => {
     return (
-      <div className='d-flex justify-content-center'>
+      <div className='d-flex justify-content-center pt-2'>
         <Form.Check type='switch' defaultChecked={props.data.hasFile} onClick={(e) => {
           drivingApi
             .updateDriving(props.data._id, { hasFile: e.target.checked })
@@ -112,23 +113,6 @@ function AdminDrivingA1Page() {
       </div>
     );
   }
-
-  // const FinishCheckbox = (props) => {
-  //   return (
-  //     <div className='d-flex justify-content-center'>
-  //       <Form.Check type='switch' defaultChecked={props.data.processState == 3} onClick={(e) => {
-  //         drivingApi
-  //         .updateDriving(props.data._id, { processState: e.target.checked ? 3 : 2})
-  //         .then((res) => {
-  //           toastWrapper('Cập nhật thành công', 'success');
-  //         })
-  //         .catch((err) => {
-  //           toastWrapper(err.response.data.message, 'error');
-  //         });
-  //       }}/>
-  //     </div>
-  //   );
-  // }
 
   const [colDefs, setColDefs] = useState([
     {
@@ -153,6 +137,7 @@ function AdminDrivingA1Page() {
           : '';
       },
     },
+    { field: 'cash', headerName: 'Chuyển khoản', flex: 1 },
     {
       field: 'isPaid',
       headerName: 'Thanh toán',
@@ -160,7 +145,6 @@ function AdminDrivingA1Page() {
       cellRenderer: PaymentCheckbox,
       valueGetter: rowDataGetter,
     },
-    { field: 'cash', headerName: 'Chuyển khoản', flex: 1 },
     {
       field: 'healthChecked',
       headerName: 'Đã khám sức khoẻ',
@@ -175,13 +159,6 @@ function AdminDrivingA1Page() {
       cellRenderer: FileCheckbox,
       valueGetter: rowDataGetter,
     },
-    // {
-    //   field: 'finished',
-    //   headerName: 'Hoàn tất',
-    //   flex: 1,
-    //   cellRenderer: FinishCheckbox,
-    //   valueGetter: rowDataGetter,
-    // },
     {
       field: 'action',
       headerName: 'Thao tác',
@@ -192,7 +169,7 @@ function AdminDrivingA1Page() {
   ]);
 
   useEffect(() => {
-    fetchDrivings();
+    fetchDrivings(query, searchText, page);
 
     drivingApi
       .getDateVisible()
@@ -210,7 +187,7 @@ function AdminDrivingA1Page() {
       });
   }, [page, query]);
 
-  const fetchDrivings = async () => {
+  const fetchDrivings = async (query, searchText, page) => {
     drivingApi
       .getDrivings(query, searchText, page)
       .then((res) => {
@@ -226,7 +203,7 @@ function AdminDrivingA1Page() {
     setValue('name', selectedRow.name);
     setValue('tel', selectedRow.tel);
     setValue('zalo', selectedRow.zalo);
-    console.log(selectedRow)
+    setValue('feedback', selectedRow.feedback);
 
     if(showEditModal) {
       const portraitResponse = await fetch(selectedRow.portraitUrl);
@@ -283,7 +260,7 @@ function AdminDrivingA1Page() {
       drivingApi.updateDriving(selectedRow._id, data).then((res) => {
         toastWrapper('Cập nhật thành công', 'success');
         setShowEditModal(false);
-        fetchDrivings();
+        fetchDrivings(query, searchText, page);
 
       }).catch((err) => {
         toastWrapper(err.response.data.message, 'error');
@@ -292,15 +269,7 @@ function AdminDrivingA1Page() {
   }
 
   const handleSearchButton = () => {
-    drivingApi
-      .getDrivings(query, searchText, page)
-      .then((res) => {
-        setRowData(res.data);
-        setPagination(res.pagination);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+   fetchDrivings(query, searchText, page);
   };
 
   const handleClearButton = (name) => {
@@ -323,22 +292,33 @@ function AdminDrivingA1Page() {
         style={{ height: '9%' }}
         className='d-flex align-items-center ps-3 pe-5'
       >
-        <Form.Control
-          type='text'
-          value={searchText}
-          placeholder='Tìm theo tên hoặc số điện thoại'
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <MdSearch size={25} className='mx-3' onClick={handleSearchButton} />
-        <MdFilterList
-          size={25}
-          className='mx-3'
-          onClick={() => setShow(true)}
-        />
+        <div className='w-100 position-relative'>
+          <Form.Control
+            type='text'
+            value={searchText}
+            placeholder='Tìm theo tên hoặc số điện thoại'
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <button
+            className='btn position-absolute end-0 top-50 translate-middle p-0'
+            onClick={() => {
+              setSearchText('');
+              fetchDrivings(query, '', page);
+            }}
+          >
+            <MdClear />
+          </button>
+        </div>
+        <button className='btn mx-3' onClick={handleSearchButton}>
+          <MdSearch size={25} />
+        </button>
+        <button className='btn' onClick={() => setShow(true)}>
+          <MdFilterList size={25} />
+        </button>
       </div>
       <div
-        className='ag-theme-quartz' // applying the grid theme
-        style={{ height: '85%' }} // the grid will fill the size of the parent container
+        className='ag-theme-quartz'
+        style={{ height: '85%' }}
       >
         <AgGridReact rowData={rowData} columnDefs={colDefs} />
       </div>
@@ -372,19 +352,92 @@ function AdminDrivingA1Page() {
         ></Pagination.Last>
       </Pagination>
       <Offcanvas
-        className='bg-dark'
         show={show}
         onHide={() => setShow(false)}
         placement='end'
         backdrop={false}
         scroll={true}
       >
-        <Offcanvas.Header closeButton closeVariant='white'>
-          <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Lọc theo</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          Some text as placeholder. In real life you can have the elements you
-          have chosen. Like, text, images, lists, etc.
+          <Form>
+            <Form.Group className='mb-3' as={Row}>
+              <Form.Label column sm='10'>
+                Đã thanh toán
+              </Form.Label>
+              <Col sm='2'>
+                <Form.Check
+                  className='pt-2'
+                  type='switch'
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setQuery({ ...query, isPaid: e.target.checked });
+                    } else {
+                      setQuery({ ...query, isPaid: undefined });
+                    }
+                  }}
+                  defaultChecked={query.isPaid}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group className='mb-3' as={Row}>
+              <Form.Label column sm='10'>
+                Đã khám sức khoẻ
+              </Form.Label>
+              <Col sm='2'>
+                <Form.Check
+                  className='pt-2'
+                  type='switch'
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setQuery({ ...query, healthChecked: e.target.checked });
+                    } else {
+                      setQuery({ ...query, healthChecked: undefined });
+                    }
+                  }}
+                  defaultChecked={query.healthChecked}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group className='mb-3' as={Row}>
+              <Form.Label column sm='10'>
+                Đã có hồ sơ
+              </Form.Label>
+              <Col sm='2'>
+                <Form.Check
+                  className='pt-2'
+                  type='switch'
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setQuery({ ...query, hasFile: e.target.checked });
+                    } else {
+                      setQuery({ ...query, hasFile: undefined });
+                    }
+                  }}
+                  defaultChecked={query.hasFile}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group className='mb-3' as={Row}>
+              <Form.Label column sm='4'>
+                Ngày dự thi
+              </Form.Label>
+              <Col sm='8'>
+                <Select
+                  defaultValue={visibleDate.find(
+                    (item) => item.value === query.date
+                  )}
+                  isClearable
+                  options={visibleDate}
+                  onChange={(val) =>
+                    setQuery({ ...query, date: val?.value || undefined })
+                  }
+                />
+              </Col>
+            </Form.Group>
+          </Form>
         </Offcanvas.Body>
       </Offcanvas>
       <Modal
@@ -476,6 +529,21 @@ function AdminDrivingA1Page() {
                   ).toLocaleDateString('en-GB')}`}
                   control={control}
                   name='date'
+                />
+              </Col>
+            </Row>
+
+            <Row className='mb-5'>
+              <Col>
+                <InputField
+                  as='textarea'
+                  label='Ghi chú'
+                  control={control}
+                  name='feedback'
+                  rules={{
+                    required: false,
+                  }}
+                  onClear={handleClearButton}
                 />
               </Col>
             </Row>
