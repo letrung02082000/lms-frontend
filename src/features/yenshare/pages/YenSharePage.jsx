@@ -79,25 +79,6 @@ function YenSharePage() {
         </Col>
       </Row>
 
-      {/* <Row className='mt-3'>
-        <div className='form-label'>Lọc theo</div>
-      </Row>
-
-      <Row>
-        <Col xs={7}>
-          <SelectField
-            options={filterOptions}
-            control={control}
-            name='filter'
-          />
-        </Col>
-        <Col>
-          <Button variant='outline-primary w-100'>
-            <BsFilter /> Áp dụng
-          </Button>
-        </Col>
-      </Row> */}
-
       {data.length > 0 ? (
         data.map((item) => {
           return <MotobikeItem {...item} key={item?._id} hasInfoButton/>;

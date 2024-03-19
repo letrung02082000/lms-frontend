@@ -8,10 +8,11 @@ import ServiceLayout from 'components/layout/ServiceLayout';
 import AdminLayout from 'components/layout/AdminLayout';
 import AdminGuard from 'components/guard/AdminGuard';
 import AdminPage from 'features/admin/pages/AdminPage';
-import AdminDrivingGuard from 'components/guard/AdminDrivingGuard';
 import { ADMIN_DRIVING_MENU } from 'constants/menu';
 import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDrivingDatePage';
 import AdminDrivingA1Page from 'features/admin/driving-license/pages/AdminDrivingPage';
+import DrivingAdminPage from 'features/admin/driving-license/DrivingAdminPage';
+import YenSharePage from 'features/yenshare/pages/YenSharePage';
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,17 @@ const router = createBrowserRouter([
             element: <AdminPage />,
           },
         ],
+      },
+    ],
+  },
+  {
+    path: '',
+    element: <AdminGuard />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        element: <DrivingAdminPage />,
+        path: PATH.DRIVING_ADMIN,
       },
     ],
   },
@@ -148,6 +160,12 @@ const router = createBrowserRouter([
       <QrScanPage />
     </ServiceLayout>
   },
+  {
+    path: PATH.YEN_SHARE.ROOT,
+    element: <ServiceLayout pageTitle="Yên share">
+      <YenSharePage />
+    </ServiceLayout>
+  }
 ]);
 
 export default router;

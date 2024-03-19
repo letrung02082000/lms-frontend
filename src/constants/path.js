@@ -26,6 +26,7 @@ export const PATH = {
     SUPPORT: {
         ROOT: '/support'
     },
+    DRIVING_ADMIN: '/driving-admin',
     DRIVING: {
         ROOT: '/driving-test',
         REGISTRATION: '/driving-registration',
@@ -33,7 +34,7 @@ export const PATH = {
         ADMIN: {
             ROOT: '/driving/admin',
             DATE: '/driving/admin/date',
-        }
+        },
     },
     UNIFORM: {
         ROOT: '/uniform',
@@ -49,5 +50,8 @@ export const PATH = {
     },
     QR_SCAN: {
         ROOT: '/qr-scan',
+    },
+    YEN_SHARE: {
+        ROOT: '/yen-share',
     },
 };
