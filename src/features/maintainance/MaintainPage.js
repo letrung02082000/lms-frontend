@@ -5,7 +5,6 @@ import TitleBar from 'components/TitleBar'
 function MaintainPage() {
   return (
     <div>
-      {/* <TitleBar title="Đang phát triển" /> */}
       <Maintained />
     </div>
   )

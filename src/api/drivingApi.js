@@ -4,6 +4,22 @@ import { authHeader } from "utils";
 const API_PATH = "/driving";
 
 class DrivingApi {
+  getDrivings = async (query, search, page) => {
+    const url = `${API_PATH}`;
+    return axiosClient.get(url, {
+      params: {
+        query,
+        search,
+        page
+      }
+    });
+  }
+
+  updateDriving = async (_id, data) => {
+    const url = `${API_PATH}/${_id}`;
+    return axiosClient.patch(url, data);
+  }
+
   getAllDrivings = async (state) => {
     const url = `${API_PATH}/all`;
     return axiosClient.get(url, {
@@ -147,7 +163,6 @@ class DrivingApi {
   };
 
   getFile = async (name) => {
-    console.log(name)
     const url = `/upload/${name}`;
     return axiosClient.get(url, {
       ...authHeader(),

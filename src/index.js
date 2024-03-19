@@ -5,6 +5,8 @@ import { Provider } from "react-redux";
 import { store } from "./store/index";
 import "react-datetime/css/react-datetime.css";
 import "react-toastify/dist/ReactToastify.css";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 import "assets/styles/global.scss";
 import { ModalProvider } from "react-modal-hook";
 

@@ -4,27 +4,25 @@ import { HiHome, HiOutlineHome } from 'react-icons/hi'
 import { MdAccountCircle, MdOutlineAccountCircle } from 'react-icons/md'
 import { RiCoupon2Line, RiCoupon3Fill } from 'react-icons/ri'
 import { BsDot } from 'react-icons/bs'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import styles from './mobileNavBar.module.css'
+import { PATH } from 'constants/path'
 
 export default function MobileNavBar() {
   const navigate = useNavigate()
-  const [activeKey, setActiveKey] = useState(window.location.pathname)
+  const activeKey = window.location.pathname;
 
   const handleHomeClick = () => {
-    setActiveKey('/')
-    navigate('/')
+    navigate(PATH.HOME)
   }
 
   const handleExploreClick = () => {
-    setActiveKey('/explore')
-    navigate('/explore')
+    navigate(PATH.EXPLORE.ROOT)
   }
 
   const handleAccountClick = () => {
-    setActiveKey('/account')
-    navigate('/account')
+    navigate(PATH.USER.PROFILE)
   }
 
   const BottomNavBar = () => {
@@ -34,7 +32,7 @@ export default function MobileNavBar() {
           <Container fluid className="p-3 container">
             <Nav className="mx-0 p-0 d-flex justify-content-around w-100" activeKey={activeKey}>
               <Nav.Link className="m-0 p-1 position-relative" onClick={handleHomeClick} eventKey="/">
-                {activeKey === '/' ? (
+                {activeKey === PATH.HOME ? (
                   <>
                     <HiHome className={`mx-auto ${styles.navIcon}`} size="25" />
                     <BsDot className="dot" size="25" />
@@ -45,7 +43,7 @@ export default function MobileNavBar() {
                 {/* <p className={('m-0 p-0', styles.navText)}>Trang chủ</p> */}
               </Nav.Link>
               <Nav.Link className="m-0 p-1 position-relative" onClick={handleExploreClick} eventKey="/explore">
-                {activeKey === '/explore' ? (
+                {activeKey === PATH.EXPLORE.ROOT ? (
                   <>
                     <RiCoupon3Fill className={`mx-auto ${styles.navIcon}`} size="25" />
                     <BsDot className="dot" size="25" />
@@ -55,7 +53,7 @@ export default function MobileNavBar() {
                 )}
               </Nav.Link>
               <Nav.Link className="m-0 p-1 position-relative" onClick={handleAccountClick} eventKey="/account">
-                {activeKey === '/account' ? (
+                {activeKey === PATH.ACCOUNT || activeKey === PATH.USER.PROFILE ? (
                   <>
                     <MdAccountCircle className={`mx-auto ${styles.navIcon}`} size="25" />
                     <BsDot className="dot" size="25" />

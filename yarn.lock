@@ -1775,10 +1775,10 @@
     redux-thunk "^2.4.2"
     reselect "^4.1.7"
 
-"@remix-run/router@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.1.0.tgz#b48db8148c8a888e50580a8152b6f68161c49406"
-  integrity sha512-rGl+jH/7x1KBCQScz9p54p0dtPLNeKGb3e0wD2H5/oZj41bwQUnXdzbj2TbUAFhvD7cp9EyEQA4dEgpUFa1O7Q==
+"@remix-run/router@1.15.1":
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.15.1.tgz#221fd31a65186b9bc027b74573485fb3226dff7f"
+  integrity sha512-zcU0gM3z+3iqj8UX45AmWY810l3oUmXM7uH4dt5xtzvMhRtYVhKGOmgOd1877dOPPepfCjUv57w+syamWIYe7w==
 
 "@restart/hooks@^0.4.6", "@restart/hooks@^0.4.7":
   version "0.4.7"
@@ -2684,6 +2684,19 @@ adler-32@~1.3.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/adler-32/-/adler-32-1.3.1.tgz#1dbf0b36dda0012189a32b3679061932df1821e2"
   integrity sha512-ynZ4w/nUUv5rrsR8UUGoe1VC9hZj6V5hU9Qw1HlMDJGEJw5S7TfTErWTjMys6M7vr0YWcPqs3qAr4ss0nDfP+A==
+
+ag-grid-community@31.1.1:
+  version "31.1.1"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-31.1.1.tgz#212fc3e358d4be1865bc4618f6d0d865faaed385"
+  integrity sha512-tiQZ7VQ07yJScTMIQpaYoUMPgiyXMwYDcwTxe4riRrcYGTg0e258XEihoPUZFejR60P1fYWMxdJaR2JUnyhGrg==
+
+ag-grid-react@^31.1.1:
+  version "31.1.1"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-31.1.1.tgz#196c078a89bf977e81d64e3948fa31e23dca46b2"
+  integrity sha512-aaDMSP8MGhoXL5M9c4UmhBClRlc3mEMMC0E0/1mhXU6bdiz0QxXT/xQtDe3DFC62VrtXVda9x20Lpj6p6Bfy8g==
+  dependencies:
+    ag-grid-community "31.1.1"
+    prop-types "^15.8.1"
 
 agent-base@6, agent-base@^6.0.2:
   version "6.0.2"
@@ -10923,20 +10936,20 @@ react-responsive-carousel@^3.2.22:
     prop-types "^15.5.8"
     react-easy-swipe "^0.0.21"
 
-react-router-dom@^6.3.0:
-  version "6.5.0"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.5.0.tgz#3970bdcaa7c710a6e0b478a833ba0b4b8ae61a6f"
-  integrity sha512-/XzRc5fq80gW1ctiIGilyKFZC/j4kfe75uivMsTChFbkvrK4ZrF3P3cGIc1f/SSkQ4JiJozPrf+AwUHHWVehVg==
+react-router-dom@^6.18.0:
+  version "6.22.1"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.22.1.tgz#cfa109d4b6b0a4d00bac179bc0ad2a6469455282"
+  integrity sha512-iwMyyyrbL7zkKY7MRjOVRy+TMnS/OPusaFVxM2P11x9dzSzGmLsebkCvYirGq0DWB9K9hOspHYYtDz33gE5Duw==
   dependencies:
-    "@remix-run/router" "1.1.0"
-    react-router "6.5.0"
+    "@remix-run/router" "1.15.1"
+    react-router "6.22.1"
 
-react-router@6.5.0:
-  version "6.5.0"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.5.0.tgz#b53f15543a60750c925609d2e38037ac5aed6dd3"
-  integrity sha512-fqqUSU0NC0tSX0sZbyuxzuAzvGqbjiZItBQnyicWlOUmzhAU8YuLgRbaCL2hf3sJdtRy4LP/WBrWtARkMvdGPQ==
+react-router@6.22.1:
+  version "6.22.1"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.22.1.tgz#a5ff849bfe709438f7e139421bb28138209662c7"
+  integrity sha512-0pdoRGwLtemnJqn1K0XHUbnKiX0S4X8CgvVVmHGOWmofESj31msHo/1YiqcJWK7Wxfq2a4uvvtS01KAQyWK/CQ==
   dependencies:
-    "@remix-run/router" "1.1.0"
+    "@remix-run/router" "1.15.1"
 
 react-scripts@4.0.3:
   version "4.0.3"

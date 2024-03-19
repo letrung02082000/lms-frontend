@@ -83,9 +83,9 @@ function GuestHouseInfoPage() {
             <br />
             Từ 12g05-15g00, phụ thu 30% giá phòng
             <br />
-            Từ 15h05-18h00, phụ thu 50% giá phòng
+            Từ 15g05-18g00, phụ thu 50% giá phòng
             <br />
-            Từ 18h05, phụ thu 100% giá phòng
+            Từ 18g05, phụ thu 100% giá phòng
           </li>
           <li>Quý khách được miễn phí 1 chai nước/người/ngày và sử dụng miễn phí hồ bơi, phòng tập gym.</li>
         </ul>

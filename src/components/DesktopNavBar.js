@@ -7,6 +7,7 @@ import { logoutUser, selectUser } from "../store/userSlice";
 import styles from "./desktopNavBar.module.css";
 import Logo from "./Logo";
 import Tool from "./Tool";
+import { PATH } from "constants/path";
 
 function DesktopNavBar(props) {
   const user = useSelector(selectUser);
@@ -39,7 +40,7 @@ function DesktopNavBar(props) {
 
   const handleProfileClick = () => {
     setActiveKey(null);
-    navigate("/account");
+    navigate(PATH.USER.PROFILE);
   };
 
   const handleLogoutClick = () => {
