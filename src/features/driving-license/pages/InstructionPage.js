@@ -135,6 +135,13 @@ export default function DrivingInstructionPage(props) {
               <li>Cách ký túc xá khu B 3.8 km, ký túc xá Khu A 4.2 km. Có xe đưa rước tại Kí túc xá Khu B.</li>
               <li>Xem bản đồ: <a href="https://maps.app.goo.gl/fqtCLDRyLKf6Eo3u7" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
             </p>
+            <p className="my-2"><strong>Trung Tâm Sát Hạch Loại 3</strong></p>
+            <p>
+              <li>Địa chỉ: 21 Bis Đường số 9, P Trường Thọ, TP Thủ Đức, TP HCM.</li>
+              <li>Khám sức khoẻ tập trung tại Nhà khách ĐHQG-HCM.</li>
+              <li>Mượn xe số tập vòng số 8 và tập xe cảm biến trước ngày thi.</li>
+              <li>Xem bản đồ: <a href="https://maps.app.goo.gl/eg89QWCSEwH2F8bQA" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
+            </p>
           </div>
           <div id="fee">
             <h3 className={styles.sectionTitle}>Lệ phí thi</h3>
@@ -302,8 +309,8 @@ export default function DrivingInstructionPage(props) {
           <dl className={styles.faqContainer}>
             <dt>Hỏi: Thời gian nhận bằng là bao lâu?</dt>
             <dd>
-              Trả lời: 22 ngày làm việc kể từ ngày thi đậu, không bao gồm thứ 7,
-              chủ nhật và ngày lễ.
+              Trả lời: 22 ngày làm việc kể từ ngày thi đậu, không bao gồm thứ Bảy,
+              Chủ Nhật và ngày lễ.
             </dd>
             <dt>Hỏi: Học phí thanh toán ở đâu?</dt>
             <dd>
