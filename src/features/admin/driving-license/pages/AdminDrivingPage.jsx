@@ -160,6 +160,12 @@ function AdminDrivingA1Page() {
       valueGetter: rowDataGetter,
     },
     {
+      field: 'processState',
+      headerName: 'Trạng thái',
+      flex: 1,
+      // cellRenderer: FileCheckbox,
+    },
+    {
       field: 'action',
       headerName: 'Thao tác',
       cellRenderer: ActionButton,
