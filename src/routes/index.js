@@ -13,6 +13,7 @@ import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDriv
 import AdminDrivingA1Page from 'features/admin/driving-license/pages/AdminDrivingPage';
 import DrivingAdminPage from 'features/admin/driving-license/DrivingAdminPage';
 import YenSharePage from 'features/yenshare/pages/YenSharePage';
+import { AppStorePage, CheckoutPage, StoreDetailPage } from 'features/app';
 
 const router = createBrowserRouter([
   {
@@ -35,7 +36,21 @@ const router = createBrowserRouter([
             path: PATH.ACCOUNT,
             element: <AccountPage/>
           },
+          {
+            path: PATH.APP.ROOT,
+            element: <AppStorePage />
+          }
         ],
+      },
+      {
+        path: PATH.APP.STORE_DETAIL,
+        element: <StoreDetailPage />
+      },
+      {
+        path: PATH.APP.CHECKOUT,
+        element: <ServiceLayout pageTitle="Giỏ hàng">
+          <CheckoutPage />
+        </ServiceLayout>
       },
     ],
   },
@@ -120,13 +135,13 @@ const router = createBrowserRouter([
   },
   {
     path: PATH.DRIVING.INSTRUCTION,
-    element: <ServiceLayout pageTitle="Hướng dẫn dự thi">
+    element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
       <DrivingInstructionPage />
     </ServiceLayout>
   },
   {
     path: PATH.DRIVING.REGISTRATION,
-    element: <ServiceLayout pageTitle="Đăng ký dự thi">
+    element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
       <DrivingRegisterPage />
     </ServiceLayout>
   },
@@ -165,7 +180,7 @@ const router = createBrowserRouter([
     element: <ServiceLayout pageTitle="Yên share">
       <YenSharePage />
     </ServiceLayout>
-  }
+  },
 ]);
 
 export default router;

@@ -1,0 +1,51 @@
+import axiosClient from './axiosClient';
+
+const API_PATH = "https://api.food.isinhvien.vn/order";
+
+class Api {
+  getOrders = async (page, limit, search) => {
+    return axiosClient.get(API_PATH, {
+      params: {
+        search,
+        page,
+        limit,
+      },
+    });
+  };
+
+  getOrderById = async (id) => {
+    return axiosClient.get(`${API_PATH}/${id}`);
+  }
+
+  searchOrders = async (term) => {
+    return axiosClient.get(`${API_PATH}/search`, {
+      params: {
+        term
+      },
+    });
+  };
+
+  getOrderHistory = async (page, limit, search) => {
+    return axiosClient.get(`${API_PATH}/histories`, {
+      params: {
+        page,
+        limit,
+        search
+      }
+    })
+  }
+
+  getOrder = async (id) => {
+    return axiosClient.get(`${API_PATH}/${id}`);
+  }
+
+  getOrderByToken = async (token) => {
+    return axiosClient.get(`${API_PATH}/token`, { params: { token } });
+  }
+
+  createOrder = async (data) => {
+    return axiosClient.post(API_PATH, data);
+  };
+}
+
+export default new Api();
