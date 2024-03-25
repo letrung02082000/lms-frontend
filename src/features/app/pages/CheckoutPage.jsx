@@ -1,0 +1,260 @@
+import React, { useEffect } from 'react';
+import { Button, Col, Container, Image, Row } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import Cart from '../components/Cart';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import orderApi from 'api/orderApi';
+import { ToastWrapper } from 'utils';
+import { useSelector, useDispatch } from 'react-redux';
+import { clearCart, selectCart } from 'store/cart';
+import EmptyCartImage from 'assets/images/food/empty-cart.jpg'
+import InputField from 'components/form/InputField';
+import { PATH } from 'constants/path';
+
+function CheckoutPage() {
+  const [loading, setLoading] = React.useState(false);
+  const navigate = useNavigate();
+  const cart = useSelector(selectCart);
+  const dispatch = useDispatch();
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    setError,
+    formState: { isSubmitting, errors },
+    watch,
+    setFocus,
+  } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    defaultValues: {},
+    resolver: undefined,
+    context: undefined,
+    shouldFocusError: true,
+    shouldUnregister: true,
+    shouldUseNativeValidation: false,
+    delayError: false,
+  });
+
+  const handleClearButton = (name) => {
+    setValue(name, '');
+    setFocus(name);
+  };
+
+  const onSubmit = async () => {
+    setLoading(true);
+    await handleSubmit((formData) => {
+      const data = {
+        address: formData.formAddress || 'Không có',
+        name: formData.formName || 'Không có',
+        tel: formData.formTel || 'Không có',
+        email: formData.formEmail || 'Không có',
+        note: formData.formNote || 'Không có',
+        products: cart?.data || [],
+      };
+      localStorage.setItem('order', JSON.stringify(data));
+      
+      orderApi
+        .createOrder(data)
+        .then((res) => {
+          setLoading(false);
+          dispatch(clearCart());
+          navigate(PATH.APP.ORDER_SUCCESS);
+        })
+        .catch((err) => {
+          setLoading(false);
+          ToastWrapper('Không thể tạo đơn hàng', 'error');
+        });
+    }, () => {
+      setLoading(false);
+    })();
+  };
+
+  if(cart?.data?.length === 0) {
+    return (
+      <>
+        <Container>
+          <Row>
+            <Col xs={12}>
+              <h1 className='text-center my-5 fw-bold'>Giỏ hàng trống</h1>
+            </Col>
+          </Row>
+          <Row>
+            <div className='d-flex justify-content-center'>
+              <Image src={EmptyCartImage} alt='empty-cart' height={200} />
+            </div>
+          </Row>
+          <Row>
+            <Col>
+              <Button
+                className='w-100 my-5 text-white'
+                onClick={() => navigate(PATH.APP.ROOT)}
+              >
+                Quay lại cửa hàng
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </>
+    );
+  }
+
+  return (
+    <Styles>
+      <Container>
+        <Row>
+          <Col xs={12} md={7}>
+            <div className='cart-area'>
+              <Row className='cart-body'>
+                <Cart />
+              </Row>
+            </div>
+          </Col>
+          <Col xs={12} md={5}>
+            <Row>
+              <div className='checkout-title'>Thông tin thanh toán</div>
+            </Row>
+            <Row className='mb-3'>
+              <InputField
+                onClear={handleClearButton}
+                control={control}
+                label='Địa chỉ'
+                name='formAddress'
+                hasAsterisk
+                rules={{
+                  required: 'Vui lòng nhập trường này',
+                  minLength: {
+                    value: 5,
+                    message: 'Địa chỉ phải có ít nhất 5 ký tự',
+                  },
+                  maxLength: {
+                    value: 100,
+                    message: 'Địa chỉ không được vượt quá 100 ký tự',
+                  },
+                }}
+              />
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  onClear={handleClearButton}
+                  control={control}
+                  label='Họ tên'
+                  name='formName'
+                  hasAsterisk
+                  rules={{
+                    required: 'Vui lòng nhập trường này',
+                    minLength: {
+                      value: 2,
+                      message: 'Họ tên phải có ít nhất 2 ký tự',
+                    },
+                    maxLength: {
+                      value: 50,
+                      message: 'Họ tên không được vượt quá 50 ký tự',
+                    },
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  onClear={handleClearButton}
+                  control={control}
+                  label='Số điện thoại'
+                  name='formTel'
+                  hasAsterisk
+                  type='number'
+                  rules={{
+                    required: 'Vui lòng nhập trường này',
+                    minLength: {
+                      value: 10,
+                      message: 'Số điện thoại phải có 10 số',
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: 'Số điện thoại phải có 10 số',
+                    },
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <InputField
+                onClear={handleClearButton}
+                control={control}
+                label='Ghi chú đơn hàng (tuỳ chọn)'
+                name='formNote'
+                as='textarea'
+                rows={5}
+                rules={{
+                  required: false,
+                  minLength: {
+                    value: 5,
+                    message: 'Ghi chú phải có ít nhất 5 ký tự',
+                  },
+                  maxLength: {
+                    value: 500,
+                    message: 'Ghi chú không được vượt quá 500 ký tự',
+                  },
+                }}
+              />
+            </Row>
+            <Row className='cart-btn mx-1'>
+              <Button
+                onClick={onSubmit}
+                variant='primary text-white'
+                disabled={loading}
+              >
+                {loading ? 'Đang tạo đơn hàng của bạn...' : 'Đặt hàng'}
+              </Button>
+            </Row>
+          </Col>
+        </Row>
+      </Container>
+    </Styles>
+  );
+}
+
+export default CheckoutPage;
+
+const Styles = styled.div`
+  margin-bottom: 2rem;
+
+  .checkout-title {
+    margin: 1rem 0;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .product-area {
+    margin-bottom: 15rem;
+  }
+
+  .cart-area {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .cart-body {
+    height: 85%;
+  }
+
+  .cart-btn {
+    height: 15%;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 768px) {
+    .cart-area {
+      height: 100%;
+    }
+
+    .cart-body {
+      height: 100%;
+    }
+  }
+`;

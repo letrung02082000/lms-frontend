@@ -12,9 +12,9 @@ function TitleBar(props) {
       return navigate(props?.path)
     }
 
-    if (!window.location.key) {
-      return navigate('/')
-    }
+    // if (!window.location.key) {
+    //   return navigate('/')
+    // }
 
     navigate(-1)
   }
