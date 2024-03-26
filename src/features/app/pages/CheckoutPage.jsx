@@ -74,6 +74,13 @@ function CheckoutPage() {
   if(cart?.data?.length === 0) {
     return (
       <>
+        <Button
+          className='w-100 mb-4'
+          variant='outline-danger'
+          onClick={() => navigate(PATH.APP.ORDER_SUCCESS)}
+        >
+          Xem đơn hàng đã đặt
+        </Button>
         <Container>
           <Row>
             <Col xs={12}>
@@ -89,7 +96,7 @@ function CheckoutPage() {
             <Col>
               <Button
                 className='w-100 my-5 text-white'
-                onClick={() => navigate(PATH.APP.ROOT)}
+                onClick={() => navigate(-1)}
               >
                 Quay lại cửa hàng
               </Button>
@@ -102,6 +109,13 @@ function CheckoutPage() {
 
   return (
     <Styles>
+      <Button
+        className='w-100 mb-4'
+        variant='outline-danger'
+        onClick={() => navigate(PATH.APP.ORDER_SUCCESS)}
+      >
+        Xem đơn hàng đã đặt
+      </Button>
       <Container>
         <Row>
           <Col xs={12} md={7}>
@@ -113,7 +127,7 @@ function CheckoutPage() {
           </Col>
           <Col xs={12} md={5}>
             <Row>
-              <div className='checkout-title'>Thông tin thanh toán</div>
+              <div className='checkout-title'>Thông tin đặt hàng</div>
             </Row>
             <Row className='mb-3'>
               <InputField
@@ -223,7 +237,7 @@ const Styles = styled.div`
   margin-bottom: 2rem;
 
   .checkout-title {
-    margin: 1rem 0;
+    margin: 1.5rem 0 1rem;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 1.2rem;

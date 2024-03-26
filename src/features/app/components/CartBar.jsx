@@ -1,19 +1,31 @@
 import { PATH } from 'constants/path';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { selectCart } from 'store/cart';
 import styled from 'styled-components';
+import { formatCurrency } from 'utils/commonUtils';
 
-function CartBar() {
+function CartBar({bottom = 0}) {
   const navigate = useNavigate();
+  const cart = useSelector(selectCart);
+  const totalPrice = useMemo(()=>{
+    return cart?.data?.reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
+  }, [cart])
 
   return (
-    <StyledLayout>
+    <StyledLayout bottom={bottom}>
       <div>
         <p className='m-0'>Cộng</p>
-        <p className='m-0 text-center'>0</p>
+        <p className='m-0 text-center'>{cart?.data?.length || 0}</p>
       </div>
-      <button className='btn text-white' onClick={() => navigate(PATH.APP.CHECKOUT)}>Xem giỏ hàng</button>
-      <div>100,000đ</div>
+      <button
+        className='btn text-white'
+        onClick={() => navigate(PATH.APP.CHECKOUT)}
+      >
+        Xem giỏ hàng
+      </button>
+      <div>{formatCurrency(totalPrice)} đ</div>
     </StyledLayout>
   );
 }
@@ -23,7 +35,7 @@ const StyledLayout = styled.div`
   justify-content: space-between;
   align-items: center;
   position: fixed;
-  bottom: 0;
+  bottom: ${(props) => props.bottom}rem;
   height: 3.5rem;
   width: 100%;
   background-color: var(--primary);

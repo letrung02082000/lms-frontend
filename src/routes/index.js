@@ -14,6 +14,7 @@ import AdminDrivingA1Page from 'features/admin/driving-license/pages/AdminDrivin
 import DrivingAdminPage from 'features/admin/driving-license/DrivingAdminPage';
 import YenSharePage from 'features/yenshare/pages/YenSharePage';
 import { AppStorePage, CheckoutPage, StoreDetailPage } from 'features/app';
+import SuccessPage from 'features/app/pages/SuccessPage';
 
 const router = createBrowserRouter([
   {
@@ -48,8 +49,14 @@ const router = createBrowserRouter([
       },
       {
         path: PATH.APP.CHECKOUT,
-        element: <ServiceLayout pageTitle="Giỏ hàng">
+        element: <ServiceLayout pageTitle="Đặt hàng">
           <CheckoutPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.APP.ORDER_SUCCESS,
+        element: <ServiceLayout pageTitle="Đặt hàng">
+          <SuccessPage />
         </ServiceLayout>
       },
     ],
@@ -129,7 +136,7 @@ const router = createBrowserRouter([
   },
   {
     path: PATH.DRIVING.ROOT,
-    element: <ServiceLayout pageTitle="Sát hạch lái xe">
+    element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
       <DrivingInfoPage />
     </ServiceLayout>
   },
