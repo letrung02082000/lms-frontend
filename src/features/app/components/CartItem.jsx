@@ -55,15 +55,6 @@ function CartItem(props) {
                 <CiCirclePlus color='red' />
               </Button>
             </Col>
-            {/* <Col xs={3}>
-              <Button
-                variant='light'
-                className='p-0'
-                onClick={handleDeleteButton}
-              >
-                <i className='bi bi-trash'></i>
-              </Button>
-            </Col> */}
           </Row>
         </Col>
       </Row>
