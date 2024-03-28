@@ -12,9 +12,6 @@ function Cart() {
   
   return (
     <Styles>
-      <Row>
-        <div className='cart-title'>Giỏ hàng của tôi</div>
-      </Row>
       <Row className='product-list mb-2 py-2'>
         <Col>
           {cart?.data?.map((val, idx) => (

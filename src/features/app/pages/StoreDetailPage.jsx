@@ -74,7 +74,7 @@ function StoreDetailPage() {
           <div className='d-flex justify-content-between my-3 align-items-end'>
             <h2 className='m-0'>Thực đơn hôm nay</h2>
           </div>
-          <div className='d-flex flex-wrap w-100 mb-5'>
+          <div className='d-flex flex-wrap w-100 mb-5 justify-content-between'>
             {products.map((product) => {
               return (
                 <div
@@ -111,11 +111,8 @@ function StoreDetailPage() {
 }
 
 const StyledLayout = styled.div`
-  margin: ${(props) => (props.isDesktop === true ? '0 15%' : '0 5%')};
-
   .product-item {
     width: ${(props) => (props.isDesktop === true ? '20%' : '45%')};
-    margin-right: 5%;
   }
 
   .cart-btn:hover svg {

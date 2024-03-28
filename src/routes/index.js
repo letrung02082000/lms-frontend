@@ -15,6 +15,8 @@ import DrivingAdminPage from 'features/admin/driving-license/DrivingAdminPage';
 import YenSharePage from 'features/yenshare/pages/YenSharePage';
 import { AppStorePage, CheckoutPage, StoreDetailPage } from 'features/app';
 import SuccessPage from 'features/app/pages/SuccessPage';
+import AllStorePage from 'features/app/pages/AllStorePage';
+import StoreByCategory from 'features/app/pages/StoreByCategory';
 
 const router = createBrowserRouter([
   {
@@ -35,7 +37,7 @@ const router = createBrowserRouter([
           },
           {
             path: PATH.ACCOUNT,
-            element: <AccountPage/>
+            element: <AccountPage />
           },
           {
             path: PATH.APP.ROOT,
@@ -57,6 +59,18 @@ const router = createBrowserRouter([
         path: PATH.APP.ORDER_SUCCESS,
         element: <ServiceLayout pageTitle="Đặt hàng">
           <SuccessPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.APP.STORE,
+        element: <ServiceLayout pageTitle="Cửa hàng">
+          <AllStorePage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.APP.STORE_BY_CATEGORY,
+        element: <ServiceLayout pageTitle="Cửa hàng">
+          <StoreByCategory />
         </ServiceLayout>
       },
     ],
