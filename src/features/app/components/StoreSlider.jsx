@@ -6,6 +6,7 @@ import storeApi from 'api/storeApi';
 import productApi from 'api/productApi';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from 'constants/path';
+import StoreItem from './StoreItem';
 
 function StoreSlider() {
   const [stores, setStores] = React.useState([]);
@@ -24,7 +25,6 @@ function StoreSlider() {
   }, []);
 
   const handleStoreClick = (id) => {
-    console.log(id);
     navigate(PATH.APP.STORE_DETAIL.replace(':storeId', id));
   }
 
@@ -32,13 +32,13 @@ function StoreSlider() {
     <React.Fragment>
       <div className='d-flex justify-content-between my-4 align-items-end'>
         <h2 className='m-0'>Cửa hàng</h2>
-        <span>Xem tất cả</span>
+        <button className='btn' onClick={() => navigate(PATH.APP.STORE)}>Xem tất cả</button>
       </div>
       <Swiper
         modules={[Pagination, Scrollbar]}
         slidesPerView={3}
         loop={false}
-        scrollbar={{ hide: true }}
+        scrollbar={{ hide: false }}
         spaceBetween={10}
         breakpoints={{
           0: {
@@ -58,12 +58,7 @@ function StoreSlider() {
         {stores.map((store) => {
           return (
             <SwiperSlide key={store._id}>
-              <div onClick={() => handleStoreClick(store._id)}>
-                <div>
-                  <Image src={store.images[0]} />
-                </div>
-                <h6>{store.name}</h6>
-              </div>
+              <StoreItem store={store}/>
             </SwiperSlide>
           );
         })}

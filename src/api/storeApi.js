@@ -11,6 +11,20 @@ class StoreApi {
         const url = `${API_PATH}/${id}`;
         return axiosClient.get(url);
     };
+
+    getStoreCategories = async (id) => {
+        const url = `${API_PATH}/category`;
+        return axiosClient.get(url);
+    };
+
+    getStoresByCategory = async (id) => {
+        const url = `${API_PATH}`;
+        return axiosClient.get(url, {
+            params: {
+                category: id,
+            },
+        });
+    };
 }
 
 export default new StoreApi();

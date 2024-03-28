@@ -36,11 +36,12 @@ function AppStorePage() {
   return (
     <>
       <StyledLayout isDesktop={isDesktop}>
+        <CategorySlider />
         <StoreSlider />
         <div className='d-flex justify-content-between my-4 align-items-end'>
           <h2 className='m-0'>Sản phẩm nổi bật</h2>
         </div>
-        <div className='d-flex flex-wrap w-100 mb-3'>
+        <div className='d-flex flex-wrap w-100 mb-3 justify-content-between'>
           {products.map((product) => {
             return (
               <div
@@ -73,9 +74,6 @@ function AppStorePage() {
             );
           })}
         </div>
-        {/* <div className='w-100 d-flex justify-content-center'>
-        <Button variant='primary rounded-pill text-white' style={{marginBottom: '10rem'}}>Xem tất cả</Button>
-      </div> */}
       </StyledLayout>
       <CartBar bottom={5} />
     </>
@@ -88,7 +86,6 @@ const StyledLayout = styled.div`
 
   .product-item {
     width: ${(props) => (props.isDesktop === true ? '20%' : '45%')};
-    margin-right: 5%;
   }
 
   .cart-btn:hover svg {

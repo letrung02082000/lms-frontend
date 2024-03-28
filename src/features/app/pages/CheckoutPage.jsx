@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Col, Container, Image, Row } from 'react-bootstrap';
+import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Cart from '../components/Cart';
 import styled from 'styled-components';
@@ -81,7 +81,6 @@ function CheckoutPage() {
         >
           Xem đơn hàng đã đặt
         </Button>
-        <Container>
           <Row>
             <Col xs={12}>
               <h1 className='text-center my-5 fw-bold'>Giỏ hàng trống</h1>
@@ -102,8 +101,7 @@ function CheckoutPage() {
               </Button>
             </Col>
           </Row>
-        </Container>
-      </>
+        </>
     );
   }
 
@@ -116,117 +114,114 @@ function CheckoutPage() {
       >
         Xem đơn hàng đã đặt
       </Button>
-      <Container>
-        <Row>
-          <Col xs={12} md={7}>
-            <div className='cart-area'>
-              <Row className='cart-body'>
-                <Cart />
-              </Row>
-            </div>
-          </Col>
-          <Col xs={12} md={5}>
-            <Row>
-              <div className='checkout-title'>Thông tin đặt hàng</div>
+      <Row>
+        <Col xs={12} md={7}>
+          <div className='cart-area'>
+            <Row className='cart-body'>
+              <Cart />
             </Row>
-            <Row className='mb-3'>
+          </div>
+        </Col>
+        <Col xs={12} md={5}>
+          <Row>
+            <div className='checkout-title'>Thông tin đặt hàng</div>
+          </Row>
+          <Row className='mb-3'>
+            <InputField
+              onClear={handleClearButton}
+              control={control}
+              label='Địa chỉ'
+              name='formAddress'
+              hasAsterisk
+              rules={{
+                required: 'Vui lòng nhập trường này',
+                minLength: {
+                  value: 5,
+                  message: 'Địa chỉ phải có ít nhất 5 ký tự',
+                },
+                maxLength: {
+                  value: 100,
+                  message: 'Địa chỉ không được vượt quá 100 ký tự',
+                },
+              }}
+            />
+          </Row>
+          <Row className='mb-3'>
+            <Col>
               <InputField
                 onClear={handleClearButton}
                 control={control}
-                label='Địa chỉ'
-                name='formAddress'
+                label='Họ tên'
+                name='formName'
                 hasAsterisk
                 rules={{
                   required: 'Vui lòng nhập trường này',
                   minLength: {
-                    value: 5,
-                    message: 'Địa chỉ phải có ít nhất 5 ký tự',
+                    value: 2,
+                    message: 'Họ tên phải có ít nhất 2 ký tự',
                   },
                   maxLength: {
-                    value: 100,
-                    message: 'Địa chỉ không được vượt quá 100 ký tự',
+                    value: 50,
+                    message: 'Họ tên không được vượt quá 50 ký tự',
                   },
                 }}
               />
-            </Row>
-            <Row className='mb-3'>
-              <Col>
-                <InputField
-                  onClear={handleClearButton}
-                  control={control}
-                  label='Họ tên'
-                  name='formName'
-                  hasAsterisk
-                  rules={{
-                    required: 'Vui lòng nhập trường này',
-                    minLength: {
-                      value: 2,
-                      message: 'Họ tên phải có ít nhất 2 ký tự',
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: 'Họ tên không được vượt quá 50 ký tự',
-                    },
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row className='mb-3'>
-              <Col>
-                <InputField
-                  onClear={handleClearButton}
-                  control={control}
-                  label='Số điện thoại'
-                  name='formTel'
-                  hasAsterisk
-                  type='number'
-                  rules={{
-                    required: 'Vui lòng nhập trường này',
-                    minLength: {
-                      value: 10,
-                      message: 'Số điện thoại phải có 10 số',
-                    },
-                    maxLength: {
-                      value: 10,
-                      message: 'Số điện thoại phải có 10 số',
-                    },
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row>
+            </Col>
+          </Row>
+          <Row className='mb-3'>
+            <Col>
               <InputField
                 onClear={handleClearButton}
                 control={control}
-                label='Ghi chú đơn hàng (tuỳ chọn)'
-                name='formNote'
-                as='textarea'
-                rows={5}
+                label='Số điện thoại'
+                name='formTel'
+                hasAsterisk
+                type='number'
                 rules={{
-                  required: false,
+                  required: 'Vui lòng nhập trường này',
                   minLength: {
-                    value: 5,
-                    message: 'Ghi chú phải có ít nhất 5 ký tự',
+                    value: 10,
+                    message: 'Số điện thoại phải có 10 số',
                   },
                   maxLength: {
-                    value: 500,
-                    message: 'Ghi chú không được vượt quá 500 ký tự',
+                    value: 10,
+                    message: 'Số điện thoại phải có 10 số',
                   },
                 }}
               />
-            </Row>
-            <Row className='cart-btn mx-1'>
-              <Button
-                onClick={onSubmit}
-                variant='primary text-white'
-                disabled={loading}
-              >
-                {loading ? 'Đang tạo đơn hàng của bạn...' : 'Đặt hàng'}
-              </Button>
-            </Row>
-          </Col>
-        </Row>
-      </Container>
+            </Col>
+          </Row>
+          <Row>
+            <InputField
+              onClear={handleClearButton}
+              control={control}
+              label='Ghi chú đơn hàng (tuỳ chọn)'
+              name='formNote'
+              as='textarea'
+              rows={5}
+              rules={{
+                required: false,
+                minLength: {
+                  value: 5,
+                  message: 'Ghi chú phải có ít nhất 5 ký tự',
+                },
+                maxLength: {
+                  value: 500,
+                  message: 'Ghi chú không được vượt quá 500 ký tự',
+                },
+              }}
+            />
+          </Row>
+          <Button
+            className='w-100 mt-3'
+            onClick={onSubmit}
+            variant='primary text-white'
+            disabled={loading}
+          >
+            {loading ? 'Đang tạo đơn hàng của bạn...' : 'Đặt hàng'}
+          </Button>
+        </Col>
+      </Row>
     </Styles>
   );
 }
