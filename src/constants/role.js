@@ -3,12 +3,12 @@ export const ROLE = {
     ADMIN: 1,
 
     DRIVING: {
-        ADMIN: 2,
-        MANAGER: 21,
-        LANGF: 22,
-        UEL: 23,
-        UIT: 24,
-        CNTD: 25,
+        ADMIN: 10,
+        MANAGER: 11,
+        LANGF: 12,
+        UEL: 13,
+        UIT: 14,
+        CNTD: 17,
     },
 
     UNIFORM: {

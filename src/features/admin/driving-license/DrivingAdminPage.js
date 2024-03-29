@@ -37,29 +37,17 @@ function DrivingAdminPage() {
     localStorage.removeItem("user-jwt-tk");
     localStorage.removeItem("user-jwt-rftk");
     dispatch(logoutUser());
+    window.location.reload();
   };
 
-  if (
-    user.isLoggedIn &&
-    (user.data.role === 1 ||
-      user.data.role === 10 ||
-      user.data.role === 11 ||
-      user.data.role === 12 ||
-      user.data.role === 13 ||
-      user.data.role === 17 ||
-      user.data.role === 19)
-  ) {
-    return (
-      <DrivingAdminLayout onNavigate={onNavigate} onLogout={handleLogout}>
-        {navigation === "/a1" ? <A1Driving /> : null}
-        {navigation === "/a2" ? <A2Driving /> : null}
-        {navigation === "/b2" ? <B2Driving /> : null}
-        {navigation === "/date" ? <DrivingDate /> : null}
-      </DrivingAdminLayout>
-    );
-  }
-
-  return <DrivingLogin />;
+  return (
+    <DrivingAdminLayout onNavigate={onNavigate} onLogout={handleLogout}>
+      {navigation === "/a1" ? <A1Driving /> : null}
+      {navigation === "/a2" ? <A2Driving /> : null}
+      {navigation === "/b2" ? <B2Driving /> : null}
+      {navigation === "/date" ? <DrivingDate /> : null}
+    </DrivingAdminLayout>
+  );
 }
 
 export default DrivingAdminPage;
