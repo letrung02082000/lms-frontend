@@ -45,6 +45,17 @@ function CheckoutPage() {
   const onSubmit = async () => {
     setLoading(true);
     await handleSubmit((formData) => {
+      const productByStoreId = {};
+      cart?.data?.forEach((item) => {
+        const currentStores = Object.keys(productByStoreId);
+
+        if (!currentStores.includes(item?.store?._id)) {
+          productByStoreId[item?.store?._id] = [item];
+        } else {
+          productByStoreId[item?.store?._id].push(item);
+        }
+      });
+
       const data = {
         address: formData.formAddress || 'Không có',
         name: formData.formName || 'Không có',
@@ -52,6 +63,7 @@ function CheckoutPage() {
         email: formData.formEmail || 'Không có',
         note: formData.formNote || 'Không có',
         products: cart?.data || [],
+        productByStoreId,
       };
       localStorage.setItem('order', JSON.stringify(data));
       
