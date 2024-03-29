@@ -5,12 +5,12 @@ import { Outlet } from 'react-router-dom';
 
 function AdminDrivingGuard() {
   const user = JSON.parse(localStorage.getItem('user-info'));
-  console.log(Math.floor(user.role/10))
-  if (!user || Math.floor(user.role/10) !== ROLE.DRIVING.ADMIN) {
+
+  if (Math.floor(user?.role / 10) === (ROLE.DRIVING.ADMIN / 10) || user?.role === ROLE.ADMIN) {
+    return <Outlet />;
+  } else {
     window.location.href = PATH.AUTH.SIGNIN;
   }
-  
-  return <Outlet />;
 }
 
 export default AdminDrivingGuard;

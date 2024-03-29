@@ -17,6 +17,7 @@ import { AppStorePage, CheckoutPage, StoreDetailPage } from 'features/app';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
 import StoreByCategory from 'features/app/pages/StoreByCategory';
+import AdminDrivingGuard from 'components/guard/AdminDrivingGuard';
 
 const router = createBrowserRouter([
   {
@@ -93,7 +94,7 @@ const router = createBrowserRouter([
   },
   {
     path: '',
-    element: <AdminGuard />,
+    element: <AdminDrivingGuard />,
     errorElement: <NotFoundPage />,
     children: [
       {
