@@ -86,46 +86,39 @@ function CheckoutPage() {
   if(cart?.data?.length === 0) {
     return (
       <>
-        <Button
-          className='w-100 mb-4'
-          variant='outline-danger'
-          onClick={() => navigate(PATH.APP.ORDER_SUCCESS)}
-        >
-          Xem đơn hàng đã đặt
-        </Button>
-          <Row>
-            <Col xs={12}>
-              <h1 className='text-center my-5 fw-bold'>Giỏ hàng trống</h1>
-            </Col>
-          </Row>
-          <Row>
-            <div className='d-flex justify-content-center'>
-              <Image src={EmptyCartImage} alt='empty-cart' height={200} />
-            </div>
-          </Row>
-          <Row>
-            <Col>
-              <Button
-                className='w-100 my-5 text-white'
-                onClick={() => navigate(-1)}
-              >
-                Quay lại cửa hàng
-              </Button>
-            </Col>
-          </Row>
-        </>
+        <Row>
+          <Col xs={12}>
+            <h1 className='text-center my-5 fw-bold'>Giỏ hàng trống</h1>
+          </Col>
+        </Row>
+        <Row>
+          <div className='d-flex justify-content-center'>
+            <Image src={EmptyCartImage} alt='empty-cart' height={200} />
+          </div>
+        </Row>
+        <Row>
+          <Col>
+            <Button
+              className='w-100 my-3 text-white'
+              onClick={() => navigate(-1)}
+            >
+              Quay lại cửa hàng
+            </Button>
+            <Button
+              className='w-100 mb-4'
+              variant='outline-danger'
+              onClick={() => navigate(PATH.APP.ORDER_SUCCESS)}
+            >
+              Xem đơn hàng đã đặt
+            </Button>
+          </Col>
+        </Row>
+      </>
     );
   }
 
   return (
     <Styles>
-      <Button
-        className='w-100 mb-4'
-        variant='outline-danger'
-        onClick={() => navigate(PATH.APP.ORDER_SUCCESS)}
-      >
-        Xem đơn hàng đã đặt
-      </Button>
       <Row>
         <Col xs={12} md={7}>
           <div className='cart-area'>
@@ -225,12 +218,19 @@ function CheckoutPage() {
             />
           </Row>
           <Button
-            className='w-100 mt-3'
+            className='w-100 my-3'
             onClick={onSubmit}
             variant='primary text-white'
             disabled={loading}
           >
             {loading ? 'Đang tạo đơn hàng của bạn...' : 'Đặt hàng'}
+          </Button>
+          <Button
+            className='w-100 mb-4'
+            variant='outline-danger'
+            onClick={() => navigate(PATH.APP.ORDER_SUCCESS)}
+          >
+            Xem đơn hàng đã đặt
           </Button>
         </Col>
       </Row>
