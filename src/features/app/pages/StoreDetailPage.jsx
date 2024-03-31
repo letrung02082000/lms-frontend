@@ -72,7 +72,7 @@ function StoreDetailPage() {
             <p>{store?.description}</p>
           </div>
           <div className='d-flex justify-content-between my-3 align-items-end'>
-            <h2 className='m-0'>Thực đơn hôm nay</h2>
+            <h2 className='m-0'>Danh sách sản phẩm</h2>
           </div>
           <div className='d-flex flex-wrap w-100 mb-5 justify-content-between'>
             {products.map((product) => {
