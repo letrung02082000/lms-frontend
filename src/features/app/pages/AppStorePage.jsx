@@ -11,6 +11,7 @@ import CartBar from '../components/CartBar';
 import { ToastWrapper } from 'utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, selectCart } from 'store/cart';
+import ProductItem from '../components/ProductItem';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -49,34 +50,7 @@ function AppStorePage() {
                 key={product._id}
                 className='product-item mb-3 d-flex flex-column justify-content-between'
               >
-                <div>
-                  <div className='w-100 mb-2'>
-                    <Image src={product.image} className='w-100 rounded' />
-                  </div>
-                  <h6>{product.name}</h6>
-                </div>
-                <Row>
-                  <Col xs={4} className='align-self-center'>
-                    <Button
-                      variant='outline-danger'
-                      className='cart-btn'
-                      onClick={() => handleAddToCartButton(product)}
-                    >
-                      <BsCartPlus color='red' />
-                    </Button>
-                  </Col>
-                  <Col xs={8} className='align-self-center'>
-                    <Row className='text-danger'>
-                      {formatCurrency(product.price)} đ
-                    </Row>
-                    {product?.originalPrice > 0 &&
-                      product?.originalPrice !== product?.price && (
-                        <Row className='text-decoration-line-through'>
-                          {formatCurrency(product?.originalPrice)} đ
-                        </Row>
-                      )}
-                  </Col>
-                </Row>
+                <ProductItem product={product} handleAddToCartButton={handleAddToCartButton}/>
               </div>
             );
           })}
