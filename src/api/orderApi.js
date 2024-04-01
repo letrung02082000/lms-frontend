@@ -46,6 +46,10 @@ class Api {
   createOrder = async (data) => {
     return axiosClient.post(API_PATH, data);
   };
+
+  queryOrder = async (data) => {
+    return axiosClient.get(`${API_PATH}/query`, { params: data });
+  };
 }
 
 export default new Api();

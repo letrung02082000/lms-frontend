@@ -36,7 +36,7 @@ function SuccessPage() {
               <h1 className='fw-bold mb-5 text-center'>Đặt hàng thành công</h1>
             </Col>
           </Row>
-          <OrderInfo />
+          <OrderInfo order={order}/>
           <Row>
             <Col>
               <Button

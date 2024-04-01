@@ -14,6 +14,7 @@ import { PATH } from 'constants/path';
 
 function CheckoutPage() {
   const [loading, setLoading] = React.useState(false);
+  const order = JSON.parse(localStorage.getItem('order') || '{}');
   const navigate = useNavigate();
   const cart = useSelector(selectCart);
   const dispatch = useDispatch();
@@ -28,7 +29,12 @@ function CheckoutPage() {
   } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    defaultValues: {},
+    defaultValues: {
+      formAddress: order?.address || '',
+      formName: order?.name || '',
+      formTel: order?.tel || '',
+      formEmail: order?.email || '',
+    },
     resolver: undefined,
     context: undefined,
     shouldFocusError: true,
@@ -107,7 +113,7 @@ function CheckoutPage() {
             <Button
               className='w-100 mb-4'
               variant='outline-danger'
-              onClick={() => navigate(PATH.APP.ORDER_SUCCESS)}
+              onClick={() => navigate(PATH.APP.ORDER_HISTORY)}
             >
               Xem đơn hàng đã đặt
             </Button>
@@ -228,7 +234,7 @@ function CheckoutPage() {
           <Button
             className='w-100 mb-4'
             variant='outline-danger'
-            onClick={() => navigate(PATH.APP.ORDER_SUCCESS)}
+            onClick={() => navigate(PATH.APP.ORDER_HISTORY)}
           >
             Xem đơn hàng đã đặt
           </Button>
