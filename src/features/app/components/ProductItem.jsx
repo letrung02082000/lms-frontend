@@ -1,0 +1,39 @@
+import React from 'react';
+import { Button, Col, Image, Row } from 'react-bootstrap';
+import { BsCartPlus } from 'react-icons/bs';
+import { formatCurrency } from 'utils/commonUtils';
+
+function ProductItem({ product, handleAddToCartButton }) {
+  return (
+    <>
+      <div>
+        <div className='w-100 mb-2'>
+          <Image src={product.image} className='w-100 rounded' />
+        </div>
+        <h6>{product.name}</h6>
+      </div>
+      <Row>
+        <Col xs={4} className='align-self-center'>
+          <Button
+            variant='outline-danger'
+            className='cart-btn'
+            onClick={() => handleAddToCartButton(product)}
+          >
+            <BsCartPlus color='red' />
+          </Button>
+        </Col>
+        <Col xs={8} className='align-self-center'>
+          <Row className='text-danger'>{formatCurrency(product.price)} đ</Row>
+          {product?.originalPrice > 0 &&
+            product?.originalPrice !== product?.price && (
+              <Row className='text-decoration-line-through'>
+                {formatCurrency(product?.originalPrice)} đ
+              </Row>
+            )}
+        </Col>
+      </Row>
+    </>
+  );
+}
+
+export default ProductItem;

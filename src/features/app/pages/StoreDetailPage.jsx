@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from 'store/cart';
 import { toastWrapper } from 'utils';
 import useMediaQuery from 'hooks/useMediaQuery';
+import ProductItem from '../components/ProductItem';
 
 function StoreDetailPage() {
   const storeId = useParams().storeId;
@@ -83,24 +84,10 @@ function StoreDetailPage() {
                   key={product._id}
                   className='product-item mb-3 d-flex flex-column justify-content-between'
                 >
-                  <div>
-                    <div className='w-100 mb-2'>
-                      <Image src={product.image} className='w-100 rounded' />
-                    </div>
-                    <h6>{product.name}</h6>
-                  </div>
-                  <Row>
-                    <Col xs={4}>
-                      <Button variant='outline-danger' className='cart-btn' onClick={() => handleAddToCartButton(product)}>
-                        <BsCartPlus color='red' />
-                      </Button>
-                    </Col>
-                    <Col xs={8} className='align-self-center'>
-                      <span className='text-danger'>
-                        {formatCurrency(product.price)} đ
-                      </span>
-                    </Col>
-                  </Row>
+                  <ProductItem
+                    product={product}
+                    handleAddToCartButton={handleAddToCartButton}
+                  />
                 </div>
               );
             })}
