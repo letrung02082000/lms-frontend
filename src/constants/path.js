@@ -58,6 +58,8 @@ export const PATH = {
         ROOT: '/app',
         STORE: '/app/store',
         CHECKOUT: '/app/checkout',
+        ORDER_DETAIL: '/app/order/:orderId',
+        ORDER_HISTORY: '/app/order/history',
         ORDER_SUCCESS: '/app/checkout/success',
         STORE_DETAIL: '/app/:storeId',
         STORE_BY_CATEGORY: '/app/category/:categoryId',

@@ -2,9 +2,8 @@ import React from 'react';
 import { Table } from 'react-bootstrap';
 import { formatCurrency } from 'utils/commonUtils';
 
-function OrderInfo() {
-  const order = JSON.parse(localStorage.getItem('order') || '{}');
-  const products = order.products || [];
+function OrderInfo({ order }) {
+  const products = order?.products || [];
   const totalPrice = products.reduce((total, product) => {
     return total + product.price * product.quantity;
   }, 0);
@@ -47,6 +46,7 @@ function OrderInfo() {
           <tr>
             <th>#</th>
             <th>Sản phẩm</th>
+            <th>Cửa hàng</th>
             <th>Số lượng</th>
             <th>Thành tiền</th>
           </tr>
@@ -56,14 +56,23 @@ function OrderInfo() {
             return (
               <tr key={index}>
                 <td>{index + 1}</td>
-                <td>{product.name}</td>
-                <td>{product.quantity}</td>
-                <td>{formatCurrency(product.price * product.quantity)} đ</td>
+                <td>{product?.name}</td>
+                <td>
+                  <a
+                    href={'/app/' + product?.store?._id}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    {product?.store?.name}
+                  </a>
+                </td>
+                <td>{product?.quantity}</td>
+                <td>{formatCurrency(product?.price * product?.quantity)} đ</td>
               </tr>
             );
           })}
           <tr>
-            <td colSpan={3}>
+            <td colSpan={4}>
               <b>Tổng cộng</b>
             </td>
             <td>

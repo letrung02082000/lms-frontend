@@ -43,7 +43,7 @@ const StyledLayout = styled.div`
   border-radius: 1rem;
   margin-bottom: 0.1rem;
   padding: 0 1rem;
-  z-index: 1000;
+  z-index: 10000000000;
 `;
 
 export default CartBar;
