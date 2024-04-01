@@ -5,8 +5,10 @@ import { Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import StoreItem from '../components/StoreItem';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 function AllStorePage() {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   const [stores, setStores] = React.useState([]);
   const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ function AllStorePage() {
     navigate(PATH.APP.STORE_DETAIL.replace(':storeId', id));
   }
 
-  return <StyledLayout>
+  return <StyledLayout isDesktop={isDesktop}>
     <div className='d-flex flex-wrap justify-content-between w-100 mb-3'>
           {stores.map((store) => {
             return (
@@ -43,7 +45,7 @@ function AllStorePage() {
 
 const StyledLayout = styled.div`
   .store-item {
-    width: ${(props) => (props.isDesktop === true ? '20%' : '45%')};
+    width: ${(props) => (props.isDesktop === true ? '22%' : '45%')};
   }
 `;
 

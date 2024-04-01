@@ -14,9 +14,11 @@ import { PATH } from 'constants/path';
 import { useDispatch } from 'react-redux';
 import { addToCart } from 'store/cart';
 import { toastWrapper } from 'utils';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 function StoreDetailPage() {
   const storeId = useParams().storeId;
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   const [store, setStore] = React.useState(null);
   const [products, setProducts] = React.useState([]);
 
@@ -49,7 +51,7 @@ function StoreDetailPage() {
   return (
     <>
       <ServiceLayout backTo={PATH.APP.ROOT} pageTitle='Xem cửa hàng'>
-        <StyledLayout>
+        <StyledLayout isDesktop={isDesktop}>
           <Swiper
             className='m-2'
             modules={[Pagination, Scrollbar]}
@@ -112,7 +114,7 @@ function StoreDetailPage() {
 
 const StyledLayout = styled.div`
   .product-item {
-    width: ${(props) => (props.isDesktop === true ? '20%' : '45%')};
+    width: ${(props) => (props.isDesktop === true ? '22%' : '45%')};
   }
 
   .cart-btn:hover svg {

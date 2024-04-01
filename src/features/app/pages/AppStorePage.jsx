@@ -9,13 +9,14 @@ import { BsCartPlus } from 'react-icons/bs';
 import { formatCurrency } from 'utils/commonUtils';
 import CartBar from '../components/CartBar';
 import { ToastWrapper } from 'utils';
-import { useDispatch } from 'react-redux';
-import { addToCart } from 'store/cart';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, selectCart } from 'store/cart';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [products, setProducts] = React.useState([]);
   const dispatch = useDispatch();
+  const cart = useSelector(selectCart);
 
   useEffect(() => {
     productApi
@@ -55,7 +56,7 @@ function AppStorePage() {
                   <h6>{product.name}</h6>
                 </div>
                 <Row>
-                  <Col xs={4}>
+                  <Col xs={4} className='align-self-center'>
                     <Button
                       variant='outline-danger'
                       className='cart-btn'
@@ -65,9 +66,15 @@ function AppStorePage() {
                     </Button>
                   </Col>
                   <Col xs={8} className='align-self-center'>
-                    <span className='text-danger'>
+                    <Row className='text-danger'>
                       {formatCurrency(product.price)} đ
-                    </span>
+                    </Row>
+                    {product?.originalPrice > 0 &&
+                      product?.originalPrice !== product?.price && (
+                        <Row className='text-decoration-line-through'>
+                          {formatCurrency(product?.originalPrice)} đ
+                        </Row>
+                      )}
                   </Col>
                 </Row>
               </div>
@@ -75,7 +82,11 @@ function AppStorePage() {
           })}
         </div>
       </StyledLayout>
-      <CartBar bottom={5} />
+      {
+        cart?.data?.length > 0 && (
+          <CartBar bottom={5} />
+        )
+      }
     </>
   );
 }
@@ -85,7 +96,7 @@ const StyledLayout = styled.div`
   margin-bottom: 10rem;
 
   .product-item {
-    width: ${(props) => (props.isDesktop === true ? '20%' : '45%')};
+    width: ${(props) => (props.isDesktop === true ? '22%' : '45%')};
   }
 
   .cart-btn:hover svg {

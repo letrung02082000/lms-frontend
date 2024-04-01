@@ -13,7 +13,7 @@ import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDriv
 import AdminDrivingA1Page from 'features/admin/driving-license/pages/AdminDrivingPage';
 import DrivingAdminPage from 'features/admin/driving-license/DrivingAdminPage';
 import YenSharePage from 'features/yenshare/pages/YenSharePage';
-import { AppStorePage, CheckoutPage, StoreDetailPage } from 'features/app';
+import { AppStorePage, CheckoutPage, OrderPage, StoreDetailPage } from 'features/app';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
 import StoreByCategory from 'features/app/pages/StoreByCategory';
@@ -72,6 +72,12 @@ const router = createBrowserRouter([
         path: PATH.APP.STORE_BY_CATEGORY,
         element: <ServiceLayout pageTitle="Cửa hàng">
           <StoreByCategory />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.APP.ORDER_DETAIL,
+        element: <ServiceLayout pageTitle="Thông tin đơn hàng">
+          <OrderPage />
         </ServiceLayout>
       },
     ],
