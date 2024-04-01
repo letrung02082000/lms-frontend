@@ -26,19 +26,6 @@ const HomePage = () => {
           <div className="homeSliderContainer">
             <HomeSlider />
           </div>
-
-          <div className="categorySliderContainer">
-            <p
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "bold",
-              }}
-            >
-              Loại hình
-            </p>
-            <CategorySlider />
-          </div>
-
           <div className="hotSliderContainer">
             <HotSlider />
           </div>
