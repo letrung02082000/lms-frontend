@@ -30,7 +30,7 @@ function ProductItem({ product, handleAddToCartButton }) {
             <BsCartPlus color='red' />
           </Button>
         </Col>
-        <Col xs={8} className='align-self-center'>
+        <Col xs={8} className='align-self-center ps-3'>
           <Row className='text-danger'>{formatCurrency(product.price)} đ</Row>
           {product?.originalPrice > 0 &&
             product?.originalPrice !== product?.price && (
