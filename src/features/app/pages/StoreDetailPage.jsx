@@ -110,7 +110,7 @@ function StoreDetailPage() {
             spaceBetween={10}
             breakpoints={{
               0: {
-                slidesPerView: 4,
+                slidesPerView: 3,
               },
               700: {
                 slidesPerView: 4,

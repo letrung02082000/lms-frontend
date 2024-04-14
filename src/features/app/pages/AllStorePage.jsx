@@ -1,46 +1,117 @@
 import storeApi from 'api/storeApi';
 import { PATH } from 'constants/path';
 import React, { useEffect } from 'react';
-import { Image } from 'react-bootstrap';
+import { Button, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import StoreItem from '../components/StoreItem';
 import useMediaQuery from 'hooks/useMediaQuery';
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+import { Pagination, Autoplay, Scrollbar } from 'swiper';
 
 function AllStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [stores, setStores] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
+  const [categoryId, setCategoryId] = React.useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     storeApi
-      .getStores()
+      .getStoreCategories()
       .then((res) => {
-        setStores(res.data);
+        setCategories(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  const handleStoreClick = (id) => {
-    navigate(PATH.APP.STORE_DETAIL.replace(':storeId', id));
-  }
+  useEffect(() => {
+    if (!categoryId) {
+      storeApi
+        .getStores()
+        .then((res) => {
+          setStores(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      storeApi
+        .getStoresByCategory(categoryId)
+        .then((res) => {
+          setStores(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [categoryId]);
 
-  return <StyledLayout isDesktop={isDesktop}>
-    <div className='d-flex flex-wrap justify-content-between w-100 mb-3'>
-          {stores.map((store) => {
-            return (
-              <div
-                key={store?._id}
-                className='store-item mb-3 d-flex flex-column justify-content-between'
+  return (
+    <StyledLayout isDesktop={isDesktop}>
+      <Swiper
+        modules={[Pagination, Scrollbar]}
+        slidesPerView={3}
+        loop={false}
+        scrollbar={{ hide: false }}
+        spaceBetween={10}
+        breakpoints={{
+          0: {
+            slidesPerView: 3,
+          },
+          700: {
+            slidesPerView: 4,
+          },
+          1000: {
+            slidesPerView: 4,
+          },
+          1500: {
+            slidesPerView: 5,
+          },
+        }}
+      >
+        <SwiperSlide>
+          <Button
+            onClick={() => setCategoryId('')}
+            variant={categoryId === '' ? 'secondary' : 'outline-secondary'}
+            className='w-100 rounded-pill fw-bold mb-3'
+          >
+            Tất cả
+          </Button>
+        </SwiperSlide>
+        {categories.map((cat) => {
+          return (
+            <SwiperSlide key={cat._id}>
+              <Button
+                onClick={() => setCategoryId(cat?._id)}
+                variant={
+                  categoryId === cat?._id ? 'secondary' : 'outline-secondary'
+                }
+                className='w-100 rounded-pill fw-bold mb-3'
+                style={{ whiteSpace: 'nowrap' }}
               >
-                <StoreItem store={store} />
-              </div>
-            );
-          })}
-        </div>
-  </StyledLayout>;
+                {cat?.name}
+              </Button>
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
+      <div className='d-flex flex-wrap justify-content-between w-100 my-3'>
+        {stores.map((store) => {
+          return (
+            <div
+              key={store?._id}
+              className='store-item mb-3 d-flex flex-column justify-content-between'
+            >
+              <StoreItem store={store} />
+            </div>
+          );
+        })}
+      </div>
+    </StyledLayout>
+  );
 }
 
 const StyledLayout = styled.div`
