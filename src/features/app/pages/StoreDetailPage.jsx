@@ -99,7 +99,7 @@ function StoreDetailPage() {
             <p>{store?.phone}</p>
             <p>{store?.description}</p>
           </div>
-          <div className='d-flex justify-content-between my-3 align-items-end'>
+          <div className='d-flex justify-content-between align-items-end'>
             <h2 className='m-0'>Danh sách sản phẩm</h2>
           </div>
           <Swiper
@@ -110,10 +110,10 @@ function StoreDetailPage() {
             spaceBetween={10}
             breakpoints={{
               0: {
-                slidesPerView: 3,
+                slidesPerView: 4,
               },
               700: {
-                slidesPerView: 3,
+                slidesPerView: 4,
               },
               1000: {
                 slidesPerView: 4,
@@ -127,7 +127,7 @@ function StoreDetailPage() {
               <Button
                 onClick={() => setCategoryId('')}
                 variant={categoryId === '' ? 'secondary' : 'outline-secondary'}
-                className='w-100 rounded-pill fw-bold'
+                className='w-100 rounded-pill fw-bold my-3'
               >
                 Tất cả
               </Button>
@@ -142,7 +142,7 @@ function StoreDetailPage() {
                         ? 'secondary'
                         : 'outline-secondary'
                     }
-                    className='w-100 rounded-pill fw-bold mb-3'
+                    className='w-100 rounded-pill fw-bold my-3'
                     style={{ whiteSpace: 'nowrap' }}
                   >
                     {cat?.name}
