@@ -16,37 +16,62 @@ import { addToCart } from 'store/cart';
 import { toastWrapper } from 'utils';
 import useMediaQuery from 'hooks/useMediaQuery';
 import ProductItem from '../components/ProductItem';
+import categoryApi from 'api/store/categoryApi';
 
 function StoreDetailPage() {
   const storeId = useParams().storeId;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [store, setStore] = React.useState(null);
   const [products, setProducts] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
+  const [categoryId, setCategoryId] = React.useState('');
 
   useEffect(() => {
     storeApi
       .getStoreById(storeId)
       .then((res) => {
-        setStore(res.data);
+        setStore(res?.data);
       })
       .catch((err) => {
         console.log(err);
       });
 
-    productApi
-      .getProductsByStoreId(storeId)
+    categoryApi
+      .getCategoriesByStore(storeId)
       .then((res) => {
-        setProducts(res.data);
+        setCategories(res?.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
+  useEffect(() => {
+    if (!categoryId) {
+      productApi
+        .getProductsByStoreId(storeId)
+        .then((res) => {
+          setProducts(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      productApi
+        .getProductsByCategory(categoryId)
+        .then((res) => {
+          setProducts(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [categoryId]);
+
   const dispatch = useDispatch();
   const handleAddToCartButton = (item) => {
     dispatch(addToCart(item));
-    toastWrapper('Đã thêm vào giỏ hàng', 'success')
+    toastWrapper('Đã thêm vào giỏ hàng', 'success');
   };
 
   return (
@@ -77,7 +102,58 @@ function StoreDetailPage() {
           <div className='d-flex justify-content-between my-3 align-items-end'>
             <h2 className='m-0'>Danh sách sản phẩm</h2>
           </div>
+          <Swiper
+            modules={[Pagination, Scrollbar]}
+            slidesPerView={3}
+            loop={false}
+            scrollbar={{ hide: false }}
+            spaceBetween={10}
+            breakpoints={{
+              0: {
+                slidesPerView: 3,
+              },
+              700: {
+                slidesPerView: 3,
+              },
+              1000: {
+                slidesPerView: 4,
+              },
+              1500: {
+                slidesPerView: 5,
+              },
+            }}
+          >
+            <SwiperSlide>
+              <Button
+                onClick={() => setCategoryId('')}
+                variant={categoryId === '' ? 'secondary' : 'outline-secondary'}
+                className='w-100 rounded-pill fw-bold'
+              >
+                Tất cả
+              </Button>
+            </SwiperSlide>
+            {categories.map((cat) => {
+              return (
+                <SwiperSlide key={cat._id}>
+                  <Button
+                    onClick={() => setCategoryId(cat?._id)}
+                    variant={
+                      categoryId === cat?._id
+                        ? 'secondary'
+                        : 'outline-secondary'
+                    }
+                    className='w-100 rounded-pill fw-bold'
+                  >
+                    {cat?.name}
+                  </Button>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
           <div className='d-flex flex-wrap w-100 mb-5 justify-content-between'>
+            {products.length === 0 && (
+              <p className='w-100 my-5 text-center'>Không có sản phẩm nào</p>
+            )}
             {products.map((product) => {
               return (
                 <div
