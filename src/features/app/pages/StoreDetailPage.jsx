@@ -142,7 +142,8 @@ function StoreDetailPage() {
                         ? 'secondary'
                         : 'outline-secondary'
                     }
-                    className='w-100 rounded-pill fw-bold'
+                    className='w-100 rounded-pill fw-bold mb-3'
+                    style={{ whiteSpace: 'nowrap' }}
                   >
                     {cat?.name}
                   </Button>
@@ -150,7 +151,7 @@ function StoreDetailPage() {
               );
             })}
           </Swiper>
-          <div className='d-flex flex-wrap w-100 mb-5 justify-content-between'>
+          <div className='d-flex flex-wrap w-100 mt-3 mb-5 justify-content-between'>
             {products.length === 0 && (
               <p className='w-100 my-5 text-center'>Không có sản phẩm nào</p>
             )}
