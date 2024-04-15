@@ -19,6 +19,7 @@ import AllStorePage from 'features/app/pages/AllStorePage';
 import StoreByCategory from 'features/app/pages/StoreByCategory';
 import AdminDrivingGuard from 'components/guard/AdminDrivingGuard';
 import OrderHistoryPage from 'features/app/pages/OrderHistoryPage';
+import StoreByLocation from 'features/app/pages/StoreByLocation';
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,12 @@ const router = createBrowserRouter([
         path: PATH.APP.STORE_BY_CATEGORY,
         element: <ServiceLayout pageTitle="Cửa hàng">
           <StoreByCategory />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.APP.STORE_BY_LOCATION,
+        element: <ServiceLayout pageTitle="Cửa hàng">
+          <StoreByLocation />
         </ServiceLayout>
       },
       {

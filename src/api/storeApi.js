@@ -25,6 +25,15 @@ class StoreApi {
             },
         });
     };
+
+    getStoresByLocation = async (id) => {
+        const url = `${API_PATH}`;
+        return axiosClient.get(url, {
+            params: {
+                location: id,
+            },
+        });
+    };
 }
 
 export default new StoreApi();
