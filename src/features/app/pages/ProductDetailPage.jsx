@@ -34,7 +34,7 @@ function ProductDetailPage() {
   const dispatch = useDispatch();
   const handleAddToCartButton = (item) => {
     dispatch(addToCart(item));
-    toastWrapper('Đã thêm vào giỏ hàng', 'success')
+    toastWrapper('Đã thêm vào giỏ hàng', 'success');
   };
 
   return (
@@ -48,12 +48,18 @@ function ProductDetailPage() {
           <Row className='mb-3'>
             <Col xs={8} className='align-self-center'>
               <Button
-                variant='outline-danger'
-                className='cart-btn'
-                onClick={() => handleAddToCartButton(product)}
+                variant='outline-primary'
+                className='w-100'
+                onClick={() =>
+                  navigate(
+                    PATH?.APP?.STORE_DETAIL.replace(
+                      ':storeId',
+                      product?.store?._id
+                    )
+                  )
+                }
               >
-                <BsCartPlus color='red' />
-                <span className='ms-2'>Thêm vào giỏ hàng</span>
+                Xem cửa hàng
               </Button>
             </Col>
             <Col xs={4} className='align-self-center'>
@@ -71,18 +77,12 @@ function ProductDetailPage() {
           <Row>
             <Col className='align-self-center'>
               <Button
-                variant='outline-primary'
-                className='w-100'
-                onClick={() =>
-                  navigate(
-                    PATH?.APP?.STORE_DETAIL.replace(
-                      ':storeId',
-                      product?.store?._id
-                    )
-                  )
-                }
+                variant='outline-danger'
+                className='cart-btn w-100'
+                onClick={() => handleAddToCartButton(product)}
               >
-                Xem cửa hàng
+                <BsCartPlus color='red' />
+                <span className='ms-2'>Thêm vào giỏ hàng</span>
               </Button>
             </Col>
           </Row>

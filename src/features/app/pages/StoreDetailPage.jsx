@@ -1,6 +1,6 @@
 import storeApi from 'api/storeApi';
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Pagination, Autoplay, Scrollbar } from 'swiper';
 import { Button, Col, Image, Row } from 'react-bootstrap';
@@ -19,7 +19,7 @@ import ProductItem from '../components/ProductItem';
 import categoryApi from 'api/store/categoryApi';
 
 function StoreDetailPage() {
-  const storeId = useParams().storeId;
+  const storeId = useParams()?.storeId;
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [store, setStore] = React.useState(null);
   const [products, setProducts] = React.useState([]);
@@ -171,7 +171,7 @@ function StoreDetailPage() {
           </div>
         </StyledLayout>
       </ServiceLayout>
-      <CartBar />
+      <CartBar/>
     </>
   );
 }
