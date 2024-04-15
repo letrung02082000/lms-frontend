@@ -1,0 +1,44 @@
+import storeApi from 'api/storeApi';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import StoreItem from '../components/StoreItem';
+import styled from 'styled-components';
+
+function StoreByLocation() {
+  const locationId = useParams().locationId;
+  const [stores, setStores] = React.useState([]);
+  useEffect(() => {
+    storeApi
+      .getStoresByLocation(locationId)
+      .then((res) => {
+        setStores(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  return (
+    <StyledLayout className='d-flex w-100 flex-wrap justify-content-between'>
+      {stores.length === 0 && <p className='text-center w-100'>Không có cửa hàng nào</p>}
+      {stores.map((store) => {
+        return (
+          <div
+            key={store?._id}
+            className='store-item mb-3 d-flex flex-column justify-content-between'
+          >
+            <StoreItem store={store} />
+          </div>
+        );
+      })}
+    </StyledLayout>
+  );
+}
+
+const StyledLayout = styled.div`
+  .store-item {
+    width: ${(props) => (props.isDesktop === true ? '20%' : '45%')};
+  }
+`;
+
+export default StoreByLocation;

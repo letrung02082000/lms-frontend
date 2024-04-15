@@ -8,14 +8,13 @@ import { PATH } from 'constants/path';
 
 function CategorySlider() {
   const [categories, setCategories] = React.useState([]);
-  console.log(categories);
   const navigate = useNavigate();
 
   useEffect(() => {
     storeApi
       .getStoreCategories()
       .then((res) => {
-        setCategories(res.data);
+        setCategories(res?.data);
       })
       .catch((err) => {
         console.log(err);

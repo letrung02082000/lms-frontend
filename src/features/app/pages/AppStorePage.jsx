@@ -12,6 +12,7 @@ import { ToastWrapper } from 'utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, selectCart } from 'store/cart';
 import ProductItem from '../components/ProductItem';
+import LocationSlider from '../components/LocationSlider';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -40,6 +41,7 @@ function AppStorePage() {
       <StyledLayout isDesktop={isDesktop}>
         <CategorySlider />
         <StoreSlider />
+        <LocationSlider />
         <div className='d-flex justify-content-between my-4 align-items-end'>
           <h2 className='m-0'>Sản phẩm nổi bật</h2>
         </div>

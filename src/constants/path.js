@@ -63,6 +63,7 @@ export const PATH = {
         ORDER_SUCCESS: '/app/checkout/success',
         STORE_DETAIL: '/app/:storeId',
         STORE_BY_CATEGORY: '/app/category/:categoryId',
+        STORE_BY_LOCATION: '/app/location/:locationId',
         PRODUCT_DETAIL: '/app/product/:productId',
     },
 };
