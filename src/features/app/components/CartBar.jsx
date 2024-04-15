@@ -1,12 +1,24 @@
 import { PATH } from 'constants/path';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { selectCart } from 'store/cart';
 import styled from 'styled-components';
 import { formatCurrency } from 'utils/commonUtils';
 
 function CartBar({bottom = 0}) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const source = searchParams.get('src');
+  const orderInfo = {
+    address: searchParams.get('address'),
+    tel: searchParams.get('tel'),
+    name: searchParams.get('name'),
+    note: searchParams.get('note'),
+  }
+  const SOURCES = {
+    QR: 'qr',
+    APP: 'app',
+  }
   const navigate = useNavigate();
   const cart = useSelector(selectCart);
   const totalPrice = useMemo(()=>{
@@ -21,7 +33,11 @@ function CartBar({bottom = 0}) {
       </div>
       <button
         className='btn text-white'
-        onClick={() => navigate(PATH.APP.CHECKOUT)}
+        onClick={() => {
+          if (source === SOURCES.QR)
+            return navigate(PATH.APP.CHECKOUT, { state: orderInfo });
+          navigate(PATH.APP.CHECKOUT);
+        }}
       >
         Xem giỏ hàng
       </button>

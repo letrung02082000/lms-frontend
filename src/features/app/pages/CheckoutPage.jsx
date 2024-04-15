@@ -3,7 +3,7 @@ import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Cart from '../components/Cart';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import orderApi from 'api/orderApi';
 import { ToastWrapper } from 'utils';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,6 +13,7 @@ import InputField from 'components/form/InputField';
 import { PATH } from 'constants/path';
 
 function CheckoutPage() {
+  const { state } = useLocation();
   const [loading, setLoading] = React.useState(false);
   const order = JSON.parse(localStorage.getItem('order') || '{}');
   const navigate = useNavigate();
@@ -30,10 +31,11 @@ function CheckoutPage() {
     mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: {
-      formAddress: order?.address || '',
-      formName: order?.name || '',
-      formTel: order?.tel || '',
-      formEmail: order?.email || '',
+      formAddress: state?.address || order?.address || '',
+      formName: state?.name || order?.name || '',
+      formTel: state?.tel || order?.tel || '',
+      formEmail: state?.email || order?.email || '',
+      formNote: state?.note || '',
     },
     resolver: undefined,
     context: undefined,
