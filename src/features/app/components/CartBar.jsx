@@ -14,6 +14,7 @@ function CartBar({bottom = 0}) {
     tel: searchParams.get('tel'),
     name: searchParams.get('name'),
     note: searchParams.get('note'),
+    src: searchParams.get('src'),
   }
   const SOURCES = {
     QR: 'qr',
