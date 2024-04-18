@@ -87,7 +87,7 @@ function CheckoutPage() {
         .then((res) => {
           setLoading(false);
           dispatch(clearCart());
-          navigate(PATH.APP.ORDER_SUCCESS);
+          navigate(PATH.APP.ORDER_DETAIL.replace(':orderId', res?.data?._id));
         })
         .catch((err) => {
           setLoading(false);
