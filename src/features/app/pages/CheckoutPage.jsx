@@ -13,6 +13,10 @@ import InputField from 'components/form/InputField';
 import { PATH } from 'constants/path';
 
 function CheckoutPage() {
+  const SOURCES = {
+    QR: 'qr',
+    APP: 'app',
+  }
   const { state } = useLocation();
   const [loading, setLoading] = React.useState(false);
   const order = JSON.parse(localStorage.getItem('order') || '{}');
@@ -73,7 +77,10 @@ function CheckoutPage() {
         products: cart?.data || [],
         productByStoreId,
       };
-      localStorage.setItem('order', JSON.stringify(data));
+      
+      if (state?.src != SOURCES.QR) {
+        localStorage.setItem('order', JSON.stringify(data));
+      }
       
       orderApi
         .createOrder(data)
