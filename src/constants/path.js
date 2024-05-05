@@ -55,7 +55,7 @@ export const PATH = {
         ROOT: '/yen-share',
     },
     APP: {
-        ROOT: '/shop',
+        ROOT: '',
         STORE: '/shop/store',
         CHECKOUT: '/shop/checkout',
         ORDER_DETAIL: '/shop/order/:orderId',

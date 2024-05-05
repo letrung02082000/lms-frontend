@@ -31,8 +31,8 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children: [
           {
-            path: '',
-            element: <HomePage />,
+            path: PATH.APP.ROOT,
+            element: <AppStorePage />,
           },
           {
             path: PATH.EXPLORE.ROOT,
@@ -42,10 +42,6 @@ const router = createBrowserRouter([
             path: PATH.ACCOUNT,
             element: <AccountPage />
           },
-          {
-            path: PATH.APP.ROOT,
-            element: <AppStorePage />
-          }
         ],
       },
       {
@@ -100,52 +96,52 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: PATH.ADMIN.ROOT,
-    element: <AdminGuard />,
-    errorElement: <NotFoundPage />,
-    children: [
-      {
-        element: <AdminLayout />,
-        children: [
-          {
-            path: '',
-            element: <AdminPage />,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    path: '',
-    element: <AdminDrivingGuard />,
-    errorElement: <NotFoundPage />,
-    children: [
-      {
-        element: <DrivingAdminPage />,
-        path: PATH.DRIVING_ADMIN,
-      },
-    ],
-  },
-  {
-    element: <AdminGuard />,
-    errorElement: <NotFoundPage />,
-    children: [
-      {
-        element: <AdminLayout menu={ADMIN_DRIVING_MENU} title='Quản lý lái xe'/>,
-        children: [
-          {
-            path: PATH.DRIVING.ADMIN.DATE,
-            element: <AdminDrivingDatePage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.ROOT,
-            element: <AdminDrivingA1Page />,
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   path: PATH.ADMIN.ROOT,
+  //   element: <AdminGuard />,
+  //   errorElement: <NotFoundPage />,
+  //   children: [
+  //     {
+  //       element: <AdminLayout />,
+  //       children: [
+  //         {
+  //           path: '',
+  //           element: <AdminPage />,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: '',
+  //   element: <AdminDrivingGuard />,
+  //   errorElement: <NotFoundPage />,
+  //   children: [
+  //     {
+  //       element: <DrivingAdminPage />,
+  //       path: PATH.DRIVING_ADMIN,
+  //     },
+  //   ],
+  // },
+  // {
+  //   element: <AdminGuard />,
+  //   errorElement: <NotFoundPage />,
+  //   children: [
+  //     {
+  //       element: <AdminLayout menu={ADMIN_DRIVING_MENU} title='Quản lý lái xe'/>,
+  //       children: [
+  //         {
+  //           path: PATH.DRIVING.ADMIN.DATE,
+  //           element: <AdminDrivingDatePage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.ROOT,
+  //           element: <AdminDrivingA1Page />,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     path: PATH.USER.ROOT,
     element: <UserGuard />,
@@ -173,60 +169,60 @@ const router = createBrowserRouter([
       <MaintainPage />
     </ServiceLayout>
   },
-  {
-    path: PATH.DRIVING.ROOT,
-    element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
-      <DrivingInfoPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.DRIVING.INSTRUCTION,
-    element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
-      <DrivingInstructionPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.DRIVING.REGISTRATION,
-    element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
-      <DrivingRegisterPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.UNIFORM.ROOT,
-    element: <ServiceLayout pageTitle="Đăng ký dự thi">
-      <UniformRegistrationPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.PHOTOCOPY.ROOT,
-    element: <ServiceLayout pageTitle="In ấn sinh viên">
-      <MaintainPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.SWIMMING_POOL.ROOT,
-    element: <ServiceLayout pageTitle="Hồ bơi">
-      <PoolInfoPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.GUEST_HOUSE.ROOT,
-    element: <ServiceLayout pageTitle="Đặt phòng nhà khách">
-      <GuestHouseInfoPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.QR_SCAN.ROOT,
-    element: <ServiceLayout pageTitle="Quét mã">
-      <QrScanPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.YEN_SHARE.ROOT,
-    element: <ServiceLayout pageTitle="Yên share">
-      <YenSharePage />
-    </ServiceLayout>
-  },
+  // {
+  //   path: PATH.DRIVING.ROOT,
+  //   element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
+  //     <DrivingInfoPage />
+  //   </ServiceLayout>
+  // },
+  // {
+  //   path: PATH.DRIVING.INSTRUCTION,
+  //   element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
+  //     <DrivingInstructionPage />
+  //   </ServiceLayout>
+  // },
+  // {
+  //   path: PATH.DRIVING.REGISTRATION,
+  //   element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
+  //     <DrivingRegisterPage />
+  //   </ServiceLayout>
+  // },
+  // {
+  //   path: PATH.UNIFORM.ROOT,
+  //   element: <ServiceLayout pageTitle="Đăng ký dự thi">
+  //     <UniformRegistrationPage />
+  //   </ServiceLayout>
+  // },
+  // {
+  //   path: PATH.PHOTOCOPY.ROOT,
+  //   element: <ServiceLayout pageTitle="In ấn sinh viên">
+  //     <MaintainPage />
+  //   </ServiceLayout>
+  // },
+  // {
+  //   path: PATH.SWIMMING_POOL.ROOT,
+  //   element: <ServiceLayout pageTitle="Hồ bơi">
+  //     <PoolInfoPage />
+  //   </ServiceLayout>
+  // },
+  // {
+  //   path: PATH.GUEST_HOUSE.ROOT,
+  //   element: <ServiceLayout pageTitle="Đặt phòng nhà khách">
+  //     <GuestHouseInfoPage />
+  //   </ServiceLayout>
+  // },
+  // {
+  //   path: PATH.QR_SCAN.ROOT,
+  //   element: <ServiceLayout pageTitle="Quét mã">
+  //     <QrScanPage />
+  //   </ServiceLayout>
+  // },
+  // {
+  //   path: PATH.YEN_SHARE.ROOT,
+  //   element: <ServiceLayout pageTitle="Yên share">
+  //     <YenSharePage />
+  //   </ServiceLayout>
+  // },
 ]);
 
 export default router;
