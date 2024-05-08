@@ -20,6 +20,7 @@ import StoreByCategory from 'features/app/pages/StoreByCategory';
 import AdminDrivingGuard from 'components/guard/AdminDrivingGuard';
 import OrderHistoryPage from 'features/app/pages/OrderHistoryPage';
 import StoreByLocation from 'features/app/pages/StoreByLocation';
+import ShortLinkPage from 'features/short-link/pages/ShortLinkPage';
 
 const router = createBrowserRouter([
   {
@@ -93,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: PATH.APP.PRODUCT_DETAIL,
         element: <ProductDetailPage />
+      },
+      {
+        path: PATH.SHORT_LINK,
+        element: <ShortLinkPage />
       },
     ],
   },

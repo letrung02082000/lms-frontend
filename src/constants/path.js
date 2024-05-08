@@ -1,4 +1,5 @@
 export const PATH = {
+    SHORT_LINK: '/:shortLink',
     NOT_FOUND: '/404',
     HOME: '/',
     ADMIN: {
@@ -66,4 +67,5 @@ export const PATH = {
         STORE_BY_LOCATION: '/shop/location/:locationId',
         PRODUCT_DETAIL: '/shop/product/:productId',
     },
+
 };
