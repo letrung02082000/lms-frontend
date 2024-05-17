@@ -4,7 +4,12 @@ const API_PATH = "https://api.food.isinhvien.vn/store";
 
 class StoreApi {
     getStores = async () => {
-        return axiosClient.get(API_PATH);
+        return axiosClient.get(API_PATH, {
+            params: {
+                visible: true,
+            },
+        
+        });
     };
 
     getStoreById = async (id) => {
@@ -22,6 +27,7 @@ class StoreApi {
         return axiosClient.get(url, {
             params: {
                 category: id,
+                visible: true,
             },
         });
     };
@@ -31,6 +37,7 @@ class StoreApi {
         return axiosClient.get(url, {
             params: {
                 location: id,
+                visible: true,
             },
         });
     };
