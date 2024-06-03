@@ -28,7 +28,12 @@ export const PATH = {
     },
     DRIVING_ADMIN: '/driving-admin',
     DRIVING: {
-        ROOT: '/driving-test',
+        ROOT: '/driving',
+        TEST: '/driving-test',
+        A1_TEST: '/driving-test/a1',
+        A2_TEST: '/driving-test/a2',
+        B1_TEST: '/driving-test/b1',
+        B2_TEST: '/driving-test/b2',
         REGISTRATION: '/driving-registration',
         INSTRUCTION: '/driving-instruction',
         ADMIN: {

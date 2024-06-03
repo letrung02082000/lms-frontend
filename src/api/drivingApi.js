@@ -168,6 +168,13 @@ class DrivingApi {
       ...authHeader(),
     });
   };
+
+  getTest = async (type) => {
+    const url = `/driving-test`;
+    return axiosClient.get(url, {
+      params: { type },
+    });
+  };
 }
 
 export default new DrivingApi();
