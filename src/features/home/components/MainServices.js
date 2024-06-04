@@ -21,7 +21,7 @@ function MainServices(props) {
   return (
     <div className={styles.container}>
       <div className={styles.itemsContainer}>
-        <div className={styles.itemContainer} onClick={() => navigateTo('/driving-test')}>
+        <div className={styles.itemContainer} onClick={() => navigateTo(PATH.DRIVING.ROOT)}>
           <div>
             <img src="/main-icon/motorbike.png" alt="pool" className={styles.mainIcon} />
           </div>
