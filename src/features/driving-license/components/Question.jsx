@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Image } from 'react-bootstrap';
 
 function Question({ number, question, answers, explanation, questionData }) {
@@ -7,6 +7,11 @@ function Question({ number, question, answers, explanation, questionData }) {
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
+
+  useEffect(() => {
+    setSelectedOption(null);
+
+  }, [number]);
 
   return (
     <Form>
@@ -30,9 +35,10 @@ function Question({ number, question, answers, explanation, questionData }) {
             key={index}
             type='radio'
             label={answer?.text}
-            name='options'
+            name={`question-${number}`}
             id={`option-${index}`}
             onChange={handleOptionChange}
+            checked={selectedOption === index.toString()}
           />
         ))}
         {selectedOption && <p className='mt-2'>Giải thích: {explanation}</p>}
