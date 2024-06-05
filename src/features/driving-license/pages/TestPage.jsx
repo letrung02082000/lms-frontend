@@ -13,6 +13,7 @@ function DrivingTestPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   useEffect(() => {
+    setCurrentQuestionIndex(0);
     drivingApi
       .getTest(drivingType?.toLocaleLowerCase())
       .then((res) => {
@@ -23,7 +24,7 @@ function DrivingTestPage() {
       .catch((err) => {
         console.log(err);
       });
-  }, [drivingType, setSearchParams]);
+  }, [drivingType]);
 
   if (!drivingType)
     return (
