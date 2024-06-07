@@ -14,6 +14,7 @@ function DrivingTestPage() {
 
   useEffect(() => {
     setCurrentQuestionIndex(0);
+    setQuestionData([]);
     drivingApi
       .getTest(drivingType?.toLocaleLowerCase())
       .then((res) => {
@@ -81,21 +82,21 @@ function DrivingTestPage() {
 
         <Pagination className='mt-5'>
           <Pagination.First onClick={() => setCurrentQuestionIndex(0)} />
+          <Pagination.Ellipsis />
           <Pagination.Prev
             onClick={() =>
               currentQuestionIndex > 0 &&
               setCurrentQuestionIndex(currentQuestionIndex - 1)
             }
           />
-          <Pagination.Item active>
-            {currentQuestionIndex + 1} trên {questionData?.length}
-          </Pagination.Item>
+          <Pagination.Item active>{currentQuestionIndex + 1}</Pagination.Item>
           <Pagination.Next
             onClick={() =>
               currentQuestionIndex < questionData.length - 1 &&
               setCurrentQuestionIndex(currentQuestionIndex + 1)
             }
           />
+          <Pagination.Ellipsis />   
           <Pagination.Last
             onClick={() => setCurrentQuestionIndex(questionData.length - 1)}
           />
