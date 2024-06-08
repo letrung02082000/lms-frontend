@@ -425,8 +425,8 @@ export default function DrivingRegisterPage() {
         <Row className="mb-3">
           <Col>
               <InputField
-                label='Bằng lái hạng khác'
-                subLabel='Vui lòng ghi rõ loại bằng lái hạng khác (nếu có)'
+                label='Bằng lái hạng khác/Mã ưu đãi'
+                subLabel='Vui lòng ghi rõ loại bằng lái hạng khác hoặc mã ưu đãi (nếu có)'
                 control={control}
                 name='feedback'
                 as='textarea'
