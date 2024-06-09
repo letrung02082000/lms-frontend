@@ -32,6 +32,9 @@ function Question({ number, question, answers, explanation, questionData }) {
         <Form.Label>{question}</Form.Label>
         {questionData?.images.length > 0 && (
           <Image
+            key={number}
+            id={`image-${number}`}
+            name={`image-${number}`}
             src={questionData?.images[0]}
             height={200}
             className='mt-2 mb-3'
