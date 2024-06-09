@@ -31,10 +31,10 @@ function GuestHouseInfoPage() {
           <br />
           0981.190.069 ( Ms. Ngọc)
         </p>
-        {/* <div className='d-flex flex-column align-items-center'>
+        <div className='d-flex flex-column align-items-center'>
           <a className='btn btn-outline-primary mb-3' href={GUEST_HOUSE_URL} rel='noopener' target='_blank'>Trang thông tin</a>
-          <button className='btn btn-primary' onClick={handleSignupButton}>Đặt phòng ngay</button>
-        </div> */}
+          {/* <button className='btn btn-primary' onClick={handleSignupButton}>Đặt phòng ngay</button> */}
+        </div>
       </div>
       <div className={styles.body}>
         <h2 className={styles.title}>Bảng giá phòng</h2>
