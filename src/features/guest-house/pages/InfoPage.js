@@ -24,17 +24,17 @@ function GuestHouseInfoPage() {
         <p style={{ textAlign: 'center' }}>Nhà Khách Đại Học Quốc Gia TP.HCM</p>
         <p style={{ textAlign: 'center' }}>Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương</p>
         <p style={{ textAlign: 'center' }}>
-          Thông tin liên hệ
-          <br /> 02837.244.222 / 0977.742.191 ( Ms.Hà)
+          Liên hệ đặt phòng
+          <br /> 02837.244.222 / 0977.742.191 ( Ms. Hà)
           <br />
           hoặc
           <br />
-          0981.190.069 ( Ms.Ngọc)
+          0981.190.069 ( Ms. Ngọc)
         </p>
-        <div className='d-flex flex-column align-items-center'>
+        {/* <div className='d-flex flex-column align-items-center'>
           <a className='btn btn-outline-primary mb-3' href={GUEST_HOUSE_URL} rel='noopener' target='_blank'>Trang thông tin</a>
           <button className='btn btn-primary' onClick={handleSignupButton}>Đặt phòng ngay</button>
-        </div>
+        </div> */}
       </div>
       <div className={styles.body}>
         <h2 className={styles.title}>Bảng giá phòng</h2>
@@ -44,19 +44,19 @@ function GuestHouseInfoPage() {
           <li>
             <h5>Phòng đơn</h5>
             <p>&#10024; 1 giường đôi</p>
-            <p>&#128142; Đơn giá: 300 000 đồng</p>
+            <p>&#128142; Đơn giá: 400 000 đồng</p>
             <p>&#128073; Số lượng: 1-2 người</p>
           </li>
           <li>
             <h5>Phòng đôi 1</h5>
             <p>&#10024; 2 giường đôi</p>
-            <p>&#128142; Đơn giá: 400 000 đồng</p>
+            <p>&#128142; Đơn giá: 500 000 đồng</p>
             <p>&#128073; Số lượng: 1-2 người</p>
           </li>
           <li>
             <h5>Phòng đôi 2</h5>
             <p>&#10024; 1 giường đôi, 1 giường đơn</p>
-            <p>&#128142; Đơn giá: 400 000 đồng</p>
+            <p>&#128142; Đơn giá: 500 000 đồng</p>
             <p>&#128073; Số lượng: 1-2 người</p>
           </li>
           <li>
@@ -81,13 +81,15 @@ function GuestHouseInfoPage() {
           <li>
             Nếu quý khách trả phòng sau 12g00 phụ thu như sau:
             <br />
-            Từ 12g05-15g00, phụ thu 30% giá phòng
+            Từ 12g00-15g00, phụ thu 30% giá phòng
             <br />
-            Từ 15g05-18g00, phụ thu 50% giá phòng
+            Từ 15g00-18g00, phụ thu 50% giá phòng
             <br />
-            Từ 18g05, phụ thu 100% giá phòng
+            Từ 18g00, phụ thu 100% giá phòng
+            <br/>
+            Nếu quý khách ở thêm người so với quy định, phụ thu 100 000đ/người
           </li>
-          <li>Quý khách được miễn phí 1 chai nước/người/ngày và sử dụng miễn phí hồ bơi, phòng tập gym.</li>
+          <li>Quý khách được miễn phí 2 chai nước và 2 vé bơi mỗi ngày.</li>
         </ul>
       </div>
     </div>
