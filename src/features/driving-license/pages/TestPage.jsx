@@ -82,25 +82,38 @@ function DrivingTestPage() {
 
         <Pagination className='mt-5'>
           <Pagination.First onClick={() => setCurrentQuestionIndex(0)} />
-          <Pagination.Ellipsis />
           <Pagination.Prev
             onClick={() =>
               currentQuestionIndex > 0 &&
               setCurrentQuestionIndex(currentQuestionIndex - 1)
             }
-          />
-          <Pagination.Item active>{currentQuestionIndex + 1}</Pagination.Item>
+          >Lùi lại</Pagination.Prev>
+          <Pagination.Item active>{currentQuestionIndex + 1}/{questionData?.length}</Pagination.Item>
           <Pagination.Next
             onClick={() =>
               currentQuestionIndex < questionData.length - 1 &&
               setCurrentQuestionIndex(currentQuestionIndex + 1)
             }
-          />
-          <Pagination.Ellipsis />   
+          >Kế tiếp</Pagination.Next>
           <Pagination.Last
             onClick={() => setCurrentQuestionIndex(questionData.length - 1)}
           />
         </Pagination>
+        <h5 className='text-center mt-5 mb-3'>Danh sách câu hỏi</h5>
+        <div className='d-flex flex-wrap justify-content-between'>
+          {
+            questionData.map((question, index) => (
+              <Button
+                variant={currentQuestionIndex === index ? 'primary' : 'outline-primary'}
+                key={index}
+                onClick={() => setCurrentQuestionIndex(index)}
+                className='m-1 btn-lg'
+              >
+                {index + 1}
+              </Button>
+            ))
+          }
+        </div>
       </Container>
     )
   );
