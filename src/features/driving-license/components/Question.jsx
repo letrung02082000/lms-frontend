@@ -2,16 +2,25 @@ import { DRIVING_TAG } from 'constants/driving';
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Image } from 'react-bootstrap';
 
-function Question({ number, question, answers, explanation, questionData }) {
+function Question({ number, question, answers, explanation, questionData, currentQuestionIndex, setAnswers}) {
   const [selectedOption, setSelectedOption] = useState(null);
-
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
+    if (answers[event.target.value]?.correct) {
+      setAnswers((prev) => {
+        prev[currentQuestionIndex] = true;
+        return prev;
+      });
+    } else {
+      setAnswers((prev) => {
+        prev[currentQuestionIndex] = false;
+        return prev;
+      });
+    }
   };
 
   useEffect(() => {
     setSelectedOption(null);
-
   }, [number]);
 
   return (
@@ -40,22 +49,24 @@ function Question({ number, question, answers, explanation, questionData }) {
             className='mt-2 mb-3'
           />
         )}
-        {answers.map((answer, index) => (
-          <Form.Check
-            style={{
-              color: selectedOption && (answer?.correct ? 'green' : 'red'),
-              fontWeight: selectedOption && 'bold',
-            }}
-            value={index}
-            key={index}
-            type='radio'
-            label={answer?.text}
-            name={`question-${number}`}
-            id={`option-${index}`}
-            onChange={handleOptionChange}
-            checked={selectedOption === index.toString()}
-          />
-        ))}
+        {answers.map((answer, index) => {
+          return (
+            <Form.Check
+              style={{
+                color: selectedOption && (answer?.correct ? 'green' : 'red'),
+                fontWeight: selectedOption && 'bold',
+              }}
+              value={index}
+              key={index}
+              type='radio'
+              label={answer?.text}
+              name={`question-${number}`}
+              id={`option-${index}`}
+              onChange={handleOptionChange}
+              checked={selectedOption === index.toString()}
+            />
+          );
+        })}
         {selectedOption && <p className='mt-2'>Giải thích: {explanation}</p>}
       </Form.Group>
     </Form>

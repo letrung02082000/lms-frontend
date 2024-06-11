@@ -1,7 +1,14 @@
 import drivingApi from 'api/drivingApi';
 import { DRIVING_TYPE } from 'constants/driving';
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Container, Image, Pagination, Row } from 'react-bootstrap';
+import {
+  Button,
+  Col,
+  Container,
+  Image,
+  Pagination,
+  Row,
+} from 'react-bootstrap';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Question from '../components/Question';
 
@@ -11,7 +18,8 @@ function DrivingTestPage() {
   const drivingType = searchParams.get('type');
   const [questionData, setQuestionData] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
+  const [answers, setAnswers] = useState([]);
+  console.log(answers);
   useEffect(() => {
     setCurrentQuestionIndex(0);
     setQuestionData([]);
@@ -24,8 +32,13 @@ function DrivingTestPage() {
       })
       .catch((err) => {
         console.log(err);
-      });
+        setQuestionData([]);
+      })
   }, [drivingType]);
+
+  useEffect(() => {
+    setAnswers(Array(questionData.length).fill(null));
+  }, [questionData.length]);
 
   if (!drivingType)
     return (
@@ -73,6 +86,8 @@ function DrivingTestPage() {
     questionData.length > 0 && (
       <Container>
         <Question
+          setAnswers={setAnswers}
+          currentQuestionIndex={currentQuestionIndex}
           questionData={questionData[currentQuestionIndex]}
           number={questionData[currentQuestionIndex]?.number}
           question={questionData[currentQuestionIndex]?.question}
@@ -87,32 +102,40 @@ function DrivingTestPage() {
               currentQuestionIndex > 0 &&
               setCurrentQuestionIndex(currentQuestionIndex - 1)
             }
-          >Lùi lại</Pagination.Prev>
-          <Pagination.Item active>{currentQuestionIndex + 1}/{questionData?.length}</Pagination.Item>
+          >
+            Lùi lại
+          </Pagination.Prev>
+          <Pagination.Item active>
+            {currentQuestionIndex + 1}/{questionData?.length}
+          </Pagination.Item>
           <Pagination.Next
             onClick={() =>
               currentQuestionIndex < questionData.length - 1 &&
               setCurrentQuestionIndex(currentQuestionIndex + 1)
             }
-          >Kế tiếp</Pagination.Next>
+          >
+            Kế tiếp
+          </Pagination.Next>
           <Pagination.Last
             onClick={() => setCurrentQuestionIndex(questionData.length - 1)}
           />
         </Pagination>
         <h5 className='text-center mt-5 mb-3'>Danh sách câu hỏi</h5>
         <div className='d-flex flex-wrap justify-content-between'>
-          {
-            questionData.map((question, index) => (
-              <Button
-                variant={currentQuestionIndex === index ? 'primary' : 'outline-primary'}
-                key={index}
-                onClick={() => setCurrentQuestionIndex(index)}
-                className='m-1 btn-lg'
-              >
-                {index + 1}
-              </Button>
-            ))
-          }
+          {answers.map((ans, index) => (
+            <Button
+              variant={
+                index === currentQuestionIndex ? 'primary' : (
+                  ans === null ? 'outline-primary' : (ans ? 'success' : 'danger')
+                )
+              }
+              key={index}
+              onClick={() => setCurrentQuestionIndex(index)}
+              className='m-1'
+            >
+              {index + 1}
+            </Button>
+          ))}
         </div>
       </Container>
     )
