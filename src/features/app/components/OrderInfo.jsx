@@ -1,3 +1,4 @@
+import { PATH } from 'constants/path';
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import { formatCurrency } from 'utils/commonUtils';
@@ -59,7 +60,7 @@ function OrderInfo({ order }) {
                 <td>{product?.name}</td>
                 <td>
                   <a
-                    href={'/app/' + product?.store?._id}
+                    href={PATH.APP.STORE_DETAIL.replace(':storeId', product?.store?._id)}
                     target='_blank'
                     rel='noopener noreferrer'
                   >
