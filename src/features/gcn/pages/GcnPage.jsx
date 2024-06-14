@@ -8,6 +8,7 @@ function GcnPage() {
   const [gcn, setGcn] = useState(template);
   const [width, setWidth] = useState(1122);
   const [height, setHeight] = useState(793);
+  const [isDownload, setIsDownload] = useState(false);
 
   useEffect(() => {
     document.querySelector('svg').style.display = 'none';
@@ -49,17 +50,38 @@ function GcnPage() {
   };
   return (
     <div className='d-flex flex-column align-items-center'>
-      <Button variant='success' className='my-3' onClick={() => setShow(true)}>
-        Nhập thông tin
-      </Button>
-      <Button variant='outline-success' className='mb-3' onClick={download}>
-        Tải xuống
-      </Button>
-      <img src={`data:image/svg+xml;utf8,${encodeURIComponent(gcn)}`} width={'100%'} />
+      {isDownload ? (
+        <>
+          <Button variant='success' className='my-3' onClick={() => {
+            setIsDownload(false);
+            setGcn(template);
+            setShow(true);
+          }}>
+            Tạo lại
+          </Button>
+          <Button variant='outline-success' className='mb-3' onClick={download}>
+            Tải xuống
+          </Button>
+        </>
+      ) : (
+        <Button
+          variant='success'
+          className='my-3'
+          onClick={() => setShow(true)}
+        >
+          Nhập thông tin
+        </Button>
+      )}
+
+      <img
+        src={`data:image/svg+xml;utf8,${encodeURIComponent(gcn)}`}
+        width={'100%'}
+      />
       <GcnModal
         show={show}
         setShow={setShow}
         setInfo={({ name, school }) => {
+          setIsDownload(true);
           setGcn(
             gcn
               .replace('{{name}}', name?.toUpperCase())
