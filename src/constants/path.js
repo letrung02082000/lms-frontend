@@ -71,4 +71,9 @@ export const PATH = {
         STORE_BY_LOCATION: '/shop/location/:locationId',
         PRODUCT_DETAIL: '/shop/product/:productId',
     },
+    GCN: {
+        ROOT: '/gcn',
+        LIST: '/gcn/list',
+        DETAIL: '/gcn/detail/:id',
+    },
 };

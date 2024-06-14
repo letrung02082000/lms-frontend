@@ -20,6 +20,7 @@ import StoreByCategory from 'features/app/pages/StoreByCategory';
 import AdminDrivingGuard from 'components/guard/AdminDrivingGuard';
 import OrderHistoryPage from 'features/app/pages/OrderHistoryPage';
 import StoreByLocation from 'features/app/pages/StoreByLocation';
+import GcnPage from 'features/gcn/pages/GcnPage';
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
       {
         path: PATH.APP.PRODUCT_DETAIL,
         element: <ProductDetailPage />
+      },
+      {
+        path: PATH.GCN.ROOT,
+        element: <GcnPage />
       },
     ],
   },
