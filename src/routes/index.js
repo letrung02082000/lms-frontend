@@ -21,6 +21,7 @@ import AdminDrivingGuard from 'components/guard/AdminDrivingGuard';
 import OrderHistoryPage from 'features/app/pages/OrderHistoryPage';
 import StoreByLocation from 'features/app/pages/StoreByLocation';
 import GcnPage from 'features/gcn/pages/GcnPage';
+import UsshGcnPage from 'features/gcn/pages/GcnPage2';
 
 const router = createBrowserRouter([
   {
@@ -102,6 +103,10 @@ const router = createBrowserRouter([
       {
         path: PATH.GCN.ROOT,
         element: <GcnPage />
+      },
+      {
+        path: PATH.GCN.USSH,
+        element: <UsshGcnPage />
       },
     ],
   },

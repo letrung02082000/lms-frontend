@@ -73,6 +73,7 @@ export const PATH = {
     },
     GCN: {
         ROOT: '/gcn',
+        USSH: '/gcn/ussh',
         LIST: '/gcn/list',
         DETAIL: '/gcn/detail/:id',
     },
