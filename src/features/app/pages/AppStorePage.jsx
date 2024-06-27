@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, selectCart } from 'store/cart';
 import ProductItem from '../components/ProductItem';
 import LocationSlider from '../components/LocationSlider';
+import CategoryBar from '../components/CategoryBar';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -39,7 +40,7 @@ function AppStorePage() {
   return (
     <>
       <StyledLayout isDesktop={isDesktop}>
-        <CategorySlider />
+        <CategoryBar />
         <StoreSlider />
         <LocationSlider />
         <div className='d-flex justify-content-between my-4 align-items-end'>
