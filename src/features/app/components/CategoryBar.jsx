@@ -6,24 +6,12 @@ import storeApi from 'api/storeApi';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from 'constants/path';
 
-function CategoryBar() {
-  const [categories, setCategories] = React.useState([]);
+function CategoryBar({ categories }) {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    storeApi
-      .getStoreCategories()
-      .then((res) => {
-        setCategories(res?.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   const handleStoreClick = (id) => {
     navigate(PATH.APP.STORE_BY_CATEGORY.replace(':categoryId', id));
-  }
+  };
 
   return (
     <React.Fragment>
@@ -37,16 +25,23 @@ function CategoryBar() {
               style={{ width: '22%' }}
             >
               <div>
-                <div style={{
-                  backgroundColor: '#f5f5f5',
-                  borderRadius: '15%',
-                }}>
-                  <Image className='p-2 w-100' src={category?.icon} />
+                <div
+                  style={{
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: '15%',
+                  }}
+                >
+                  <Image className='p-3 w-100' src={category?.icon} />
                 </div>
               </div>
-              <h6 style={{
-                fontSize: '0.9rem',
-              }} className='text-center mt-1'>{category?.name}</h6>
+              <h6
+                style={{
+                  fontSize: '0.9rem',
+                }}
+                className='text-center mt-1'
+              >
+                {category?.name}
+              </h6>
             </div>
           );
         })}

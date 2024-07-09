@@ -12,18 +12,18 @@ function Cart() {
   
   return (
     <Styles>
-      <Row className='product-list mb-2 py-2'>
+      <Row className='py-3'>
         <Col>
           {cart?.data?.map((val, idx) => (
             <CartItem key={val?._id} {...val} idx={idx} />
           ))}
         </Col>
       </Row>
-      <Row className='cart-footer pt-2'>
-          <Col xs={8}>
+      <Row className='my-2'>
+          <Col xs={7}>
             <div>Tổng cộng</div>
           </Col>
-          <Col xs={4}>
+          <Col xs={5}>
             <div className='fw-bold'>{formatCurrency(total)} ₫</div>
           </Col>
         </Row>
@@ -34,8 +34,9 @@ function Cart() {
 export default Cart;
 
 const Styles = styled.div`
-  border: ${(props) => `1px solid ${props.theme.colors.gainsboro}`};
+  border: ${(props) => `1px solid ${props.theme.colors.teal}`};
   height: 100%;
+  border-radius: 0.5rem;
 
   .cart-title {
     height: 10%;
@@ -54,6 +55,6 @@ const Styles = styled.div`
     max-height: 80%;
     overflow-y: scroll;
     overflow-x: hidden;
-    border-bottom: ${(props) => `1px solid ${props.theme.colors.gainsboro}`};
+    /* border-bottom: ${(props) => `1px solid ${props.theme.colors.gainsboro}`}; */
   }
 `;

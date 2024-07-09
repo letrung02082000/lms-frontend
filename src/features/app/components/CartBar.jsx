@@ -15,6 +15,7 @@ function CartBar({bottom = 0}) {
     name: searchParams.get('name'),
     note: searchParams.get('note'),
     src: searchParams.get('src'),
+    hasDelivery: Boolean(searchParams.get('delivery')),
   }
   const SOURCES = {
     QR: 'qr',

@@ -30,6 +30,9 @@ function StoreByCategory() {
           </div>
         );
       })}
+      {stores.length === 0 && (
+        <p className='text-center w-100'>Không có cửa hàng nào</p>
+      )}
     </StyledLayout>
   );
 }

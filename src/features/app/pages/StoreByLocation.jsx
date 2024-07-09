@@ -20,7 +20,6 @@ function StoreByLocation() {
 
   return (
     <StyledLayout className='d-flex w-100 flex-wrap justify-content-between'>
-      {stores.length === 0 && <p className='text-center w-100'>Không có cửa hàng nào</p>}
       {stores.map((store) => {
         return (
           <div
@@ -31,6 +30,9 @@ function StoreByLocation() {
           </div>
         );
       })}
+      {stores.length === 0 && (
+        <p className='text-center w-100'>Không có cửa hàng nào</p>
+      )}
     </StyledLayout>
   );
 }

@@ -18,6 +18,7 @@ function CheckoutPage() {
     APP: 'app',
   }
   const { state } = useLocation();
+  console.log(state)
   const [loading, setLoading] = React.useState(false);
   const order = JSON.parse(localStorage.getItem('order') || '{}');
   const navigate = useNavigate();
@@ -39,7 +40,6 @@ function CheckoutPage() {
       formName: state?.name || order?.name || '',
       formTel: state?.tel || order?.tel || '',
       formEmail: state?.email || order?.email || '',
-      formNote: state?.note || '',
     },
     resolver: undefined,
     context: undefined,
@@ -119,13 +119,6 @@ function CheckoutPage() {
             >
               Quay lại cửa hàng
             </Button>
-            <Button
-              className='w-100 mb-4'
-              variant='outline-danger'
-              onClick={() => navigate(PATH.APP.ORDER_HISTORY)}
-            >
-              Xem đơn hàng đã đặt
-            </Button>
           </Col>
         </Row>
       </>
@@ -135,36 +128,10 @@ function CheckoutPage() {
   return (
     <Styles>
       <Row>
-        <Col xs={12} md={7}>
-          <div className='cart-area'>
-            <Row className='cart-body'>
-              <Cart />
-            </Row>
-          </div>
-        </Col>
+        <Cart />
         <Col xs={12} md={5}>
           <Row>
             <div className='checkout-title'>Thông tin đặt hàng</div>
-          </Row>
-          <Row className='mb-3'>
-            <InputField
-              onClear={handleClearButton}
-              control={control}
-              label='Địa chỉ'
-              name='formAddress'
-              hasAsterisk
-              rules={{
-                required: 'Vui lòng nhập trường này',
-                minLength: {
-                  value: 5,
-                  message: 'Địa chỉ phải có ít nhất 5 ký tự',
-                },
-                maxLength: {
-                  value: 100,
-                  message: 'Địa chỉ không được vượt quá 100 ký tự',
-                },
-              }}
-            />
           </Row>
           <Row className='mb-3'>
             <Col>
@@ -211,11 +178,33 @@ function CheckoutPage() {
               />
             </Col>
           </Row>
+          {state?.hasDelivery || true && (
+            <Row className='mb-3'>
+              <InputField
+                onClear={handleClearButton}
+                control={control}
+                label='Địa chỉ'
+                name='formAddress'
+                rules={{
+                  required: false,
+                  minLength: {
+                    value: 5,
+                    message: 'Địa chỉ phải có ít nhất 5 ký tự',
+                  },
+                  maxLength: {
+                    value: 100,
+                    message: 'Địa chỉ không được vượt quá 100 ký tự',
+                  },
+                }}
+              />
+            </Row>
+          )}
           <Row>
             <InputField
               onClear={handleClearButton}
               control={control}
-              label='Ghi chú đơn hàng (tuỳ chọn)'
+              label='Ghi chú'
+              subLabel={state?.note}
               name='formNote'
               as='textarea'
               rows={5}
@@ -238,14 +227,7 @@ function CheckoutPage() {
             variant='primary text-white'
             disabled={loading}
           >
-            {loading ? 'Đang tạo đơn hàng của bạn...' : 'Đặt hàng'}
-          </Button>
-          <Button
-            className='w-100 mb-4'
-            variant='outline-danger'
-            onClick={() => navigate(PATH.APP.ORDER_HISTORY)}
-          >
-            Xem đơn hàng đã đặt
+            {loading ? 'Đang tạo đơn hàng của bạn...' : 'Tạo đơn hàng'}
           </Button>
         </Col>
       </Row>

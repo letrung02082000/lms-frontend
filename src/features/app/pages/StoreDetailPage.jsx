@@ -103,23 +103,22 @@ function StoreDetailPage() {
             <h2 className='m-0'>Danh sách sản phẩm</h2>
           </div>
           <Swiper
-            modules={[Pagination, Scrollbar]}
-            slidesPerView={3}
+            modules={[Pagination]}
+            slidesPerView={3.2}
             loop={false}
-            scrollbar={{ hide: false }}
             spaceBetween={10}
             breakpoints={{
               0: {
-                slidesPerView: 3,
+                slidesPerView: 3.2,
               },
               700: {
-                slidesPerView: 4,
+                slidesPerView: 4.2,
               },
               1000: {
-                slidesPerView: 4,
+                slidesPerView: 4.2,
               },
               1500: {
-                slidesPerView: 5,
+                slidesPerView: 5.2,
               },
             }}
           >

@@ -4,7 +4,8 @@ import { useDispatch } from 'react-redux';
 import { addToCart, deleteFromCart, removeFromCart } from 'store/cart';
 import styled from 'styled-components';
 import { formatCurrency } from 'utils/commonUtils';
-import { CiCircleMinus, CiCirclePlus } from 'react-icons/ci';
+import { CiCircleMinus, CiCirclePlus, CiSquareMinus, CiSquarePlus } from 'react-icons/ci';
+import theme from 'constants/theme';
 
 function CartItem(props) {
   const { idx, name, price, quantity } = props;
@@ -44,7 +45,7 @@ function CartItem(props) {
                 className='p-0'
                 onClick={handleMinusButton}
               >
-                <CiCircleMinus color='red' />
+                <CiSquareMinus color={theme.colors.teal} />
               </Button>
             </Col>
             <Col xs={3}>
@@ -52,7 +53,7 @@ function CartItem(props) {
             </Col>
             <Col xs={3}>
               <Button variant='light' className='p-0' onClick={handleAddButton}>
-                <CiCirclePlus color='red' />
+                <CiSquarePlus color={theme.colors.teal} />
               </Button>
             </Col>
           </Row>
@@ -66,12 +67,11 @@ export default CartItem;
 
 const Styles = styled.div`
   .product-no {
-    background-color: ${({ theme }) => theme.colors.vividRed};
+    background-color: ${({ theme }) => theme.colors.teal};
     color: ${({ theme }) => theme.colors.white};
-    font-weight: bold;
     border-radius: 50%;
-    height: 1.8rem;
-    width: 1.8rem;
+    height: 1.3rem;
+    width: 1.3rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,7 +79,6 @@ const Styles = styled.div`
 
   .product-name {
     color: ${(props) => props.theme.colors.gray};
-    font-weight: bold;
     padding: 0 0.5rem;
   }
 
