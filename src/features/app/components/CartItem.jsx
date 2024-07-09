@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { addToCart, deleteFromCart, removeFromCart } from 'store/cart';
 import styled from 'styled-components';
 import { formatCurrency } from 'utils/commonUtils';
-import { CiCircleMinus, CiCirclePlus, CiSquareMinus, CiSquarePlus } from 'react-icons/ci';
+import { CiCircleMinus, CiCirclePlus, CiSquareMinus, CiSquarePlus, CiTrash } from 'react-icons/ci';
 import theme from 'constants/theme';
 
 function CartItem(props) {
@@ -12,6 +12,7 @@ function CartItem(props) {
   const dispatch = useDispatch();
 
   const handleMinusButton = () => {
+    if(quantity === 1) return;
     dispatch(removeFromCart(props));
   };
 
@@ -20,7 +21,8 @@ function CartItem(props) {
   };
 
   const handleDeleteButton = () => {
-    dispatch(deleteFromCart(props));
+    const confirm = window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');
+    if (confirm) dispatch(deleteFromCart(props));
   };
 
   return (
@@ -48,12 +50,17 @@ function CartItem(props) {
                 <CiSquareMinus color={theme.colors.teal} />
               </Button>
             </Col>
-            <Col xs={3}>
-              <span>{quantity}</span>
+            <Col xs={2}>
+              <small>{quantity}</small>
             </Col>
             <Col xs={3}>
               <Button variant='light' className='p-0' onClick={handleAddButton}>
                 <CiSquarePlus color={theme.colors.teal} />
+              </Button>
+            </Col>
+            <Col xs={4}>
+              <Button variant='light' className='p-0' onClick={handleDeleteButton}>
+                <CiTrash color={theme.colors.vividRed} />
               </Button>
             </Col>
           </Row>
@@ -66,6 +73,8 @@ function CartItem(props) {
 export default CartItem;
 
 const Styles = styled.div`
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+  padding: 0.5rem 0;
   .product-no {
     background-color: ${({ theme }) => theme.colors.teal};
     color: ${({ theme }) => theme.colors.white};

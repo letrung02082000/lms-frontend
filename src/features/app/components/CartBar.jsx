@@ -28,30 +28,28 @@ function CartBar({bottom = 0}) {
   }, [cart])
 
   return (
-    <StyledLayout bottom={bottom}>
-      <div>
-        <p className='m-0'>Cộng</p>
-        <p className='m-0 text-center'>{cart?.data?.length || 0}</p>
+    <StyledLayout bottom={bottom} className='d-flex align-items-center justify-content-between'>
+      <div className='' style={{ flex: 1 }}>
+        <p className='m-0'>Tổng</p>
+        <p className='m-0'>{cart?.data?.length || 0}</p>
       </div>
       <button
-        className='btn text-white'
+        style={{ flex: 1 }}
+        className='btn text-white text-center'
         onClick={() => {
           if (source === SOURCES.QR)
             return navigate(PATH.APP.CHECKOUT, { state: orderInfo });
           navigate(PATH.APP.CHECKOUT);
         }}
       >
-        Xem giỏ hàng
+        Đặt hàng
       </button>
-      <div>{formatCurrency(totalPrice)} đ</div>
+      <div style={{flex: 1}} className='text-end'>{formatCurrency(totalPrice)} đ</div>
     </StyledLayout>
   );
 }
 
 const StyledLayout = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   position: fixed;
   bottom: ${(props) => props.bottom}rem;
   height: 3.5rem;

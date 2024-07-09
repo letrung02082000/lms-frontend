@@ -15,9 +15,11 @@ import { Pagination, Scrollbar } from 'swiper';
 import storeApi from 'api/storeApi';
 import productApi from 'api/productApi';
 import categoryApi from 'api/store/categoryApi';
+import Loading from 'components/Loading';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const [loading, setLoading] = React.useState(true);
   const [products, setProducts] = React.useState([]);
   const [productCategories, setProductCategories] = React.useState([]);
   const [storeCategories, setStoreCategories] = React.useState([]);
@@ -62,6 +64,9 @@ function AppStorePage() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
 
     categoryApi
@@ -81,6 +86,7 @@ function AppStorePage() {
 
   return (
     <>
+      {loading && <Loading />}
       <Swiper modules={[Pagination]} slidesPerView={1} loop={true}>
         <SwiperSlide>
           <Image

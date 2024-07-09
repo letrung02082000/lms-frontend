@@ -17,6 +17,7 @@ import { toastWrapper } from 'utils';
 import useMediaQuery from 'hooks/useMediaQuery';
 import ProductItem from '../components/ProductItem';
 import categoryApi from 'api/store/categoryApi';
+import Loading from 'components/Loading';
 
 function StoreDetailPage() {
   const storeId = useParams()?.storeId;
@@ -25,6 +26,7 @@ function StoreDetailPage() {
   const [products, setProducts] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const [categoryId, setCategoryId] = React.useState('');
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
     storeApi
@@ -43,6 +45,8 @@ function StoreDetailPage() {
       })
       .catch((err) => {
         console.log(err);
+      }).finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -76,6 +80,7 @@ function StoreDetailPage() {
 
   return (
     <>
+      {loading && <Loading />}
       <ServiceLayout backTo={PATH.APP.ROOT} pageTitle='Xem cửa hàng'>
         <StyledLayout isDesktop={isDesktop}>
           <Swiper

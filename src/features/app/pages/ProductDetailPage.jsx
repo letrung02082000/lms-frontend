@@ -13,12 +13,14 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from 'store/cart';
 import { toastWrapper } from 'utils';
 import useMediaQuery from 'hooks/useMediaQuery';
+import Loading from 'components/Loading';
 
 function ProductDetailPage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const productId = useParams().productId;
   const [product, setProduct] = React.useState({});
   const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
     productApi
@@ -28,6 +30,9 @@ function ProductDetailPage() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -39,6 +44,7 @@ function ProductDetailPage() {
 
   return (
     <>
+      {loading && <Loading />}
       <ServiceLayout backTo={PATH.APP.ROOT} pageTitle='Thông tin sản phẩm'>
         <StyledLayout isDesktop={isDesktop}>
           <Image src={product?.image} className='w-100' />
@@ -46,7 +52,30 @@ function ProductDetailPage() {
             <h2>{product?.name}</h2>
           </div>
           <Row className='mb-3'>
-            <Col xs={8} className='align-self-center'>
+            <Col xs={6} className='align-self-center'>
+              <span className='text-danger'>
+                {formatCurrency(product?.price)} đ
+              </span>
+              {product?.originalPrice > 0 &&
+                product?.originalPrice !== product?.price && (
+                  <Row className='text-decoration-line-through text-primary'>
+                    <Col>{formatCurrency(product?.originalPrice)} đ</Col>
+                  </Row>
+                )}
+            </Col>
+            <Col xs={6} className='align-self-center'>
+              <Button
+                variant='outline-danger'
+                className='cart-btn w-100'
+                onClick={() => handleAddToCartButton(product)}
+              >
+                <BsCartPlus color='red' />
+                <span className='ms-2'>Thêm vào giỏ hàng</span>
+              </Button>
+            </Col>
+          </Row>
+          <Row>
+            <Col className='align-self-center'>
               <Button
                 variant='outline-primary'
                 className='w-100'
@@ -62,29 +91,6 @@ function ProductDetailPage() {
                 Xem cửa hàng
               </Button>
             </Col>
-            <Col xs={4} className='align-self-center'>
-              <Row className='text-danger'>
-                {formatCurrency(product?.price)} đ
-              </Row>
-              {product?.originalPrice > 0 &&
-                product?.originalPrice !== product?.price && (
-                  <Row className='text-decoration-line-through'>
-                    {formatCurrency(product?.originalPrice)} đ
-                  </Row>
-                )}
-            </Col>
-          </Row>
-          <Row>
-            <Col className='align-self-center'>
-              <Button
-                variant='outline-danger'
-                className='cart-btn w-100'
-                onClick={() => handleAddToCartButton(product)}
-              >
-                <BsCartPlus color='red' />
-                <span className='ms-2'>Thêm vào giỏ hàng</span>
-              </Button>
-            </Col>
           </Row>
           <div className='my-3'>
             <h4>Mô tả sản phẩm</h4>
@@ -98,7 +104,7 @@ function ProductDetailPage() {
 }
 
 const StyledLayout = styled.div`
-  margin-bottom: ${(props) => (props.isDesktop === true ? '5rem' : '0')};
+  margin-bottom: 10rem;
 
   .product-item {
     width: ${(props) => (props.isDesktop === true ? '22%' : '45%')};

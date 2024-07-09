@@ -114,7 +114,8 @@ function CheckoutPage() {
         <Row>
           <Col>
             <Button
-              className='w-100 my-3 text-white'
+              variant='outline-primary'
+              className='w-100 my-3'
               onClick={() => navigate(-1)}
             >
               Quay lại cửa hàng
