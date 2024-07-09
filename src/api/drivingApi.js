@@ -1,7 +1,7 @@
 import axiosClient from "./axiosClient";
 import { authHeader } from "utils";
 
-const API_PATH = "/driving";
+const API_PATH = "https://api.isinhvien.vn/driving";
 
 class DrivingApi {
   getDrivings = async (query, search, page) => {

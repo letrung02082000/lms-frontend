@@ -99,6 +99,24 @@ const router = createBrowserRouter([
         path: PATH.SHORT_LINK,
         element: <ShortLinkPage />
       },
+      {
+        path: PATH.DRIVING.ROOT,
+        element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
+          <DrivingInfoPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.DRIVING.INSTRUCTION,
+        element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
+          <DrivingInstructionPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.DRIVING.REGISTRATION,
+        element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
+          <DrivingRegisterPage />
+        </ServiceLayout>
+      },
     ],
   },
   // {
@@ -174,24 +192,12 @@ const router = createBrowserRouter([
       <MaintainPage />
     </ServiceLayout>
   },
-  // {
-  //   path: PATH.DRIVING.ROOT,
-  //   element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
-  //     <DrivingInfoPage />
-  //   </ServiceLayout>
-  // },
-  // {
-  //   path: PATH.DRIVING.INSTRUCTION,
-  //   element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
-  //     <DrivingInstructionPage />
-  //   </ServiceLayout>
-  // },
-  // {
-  //   path: PATH.DRIVING.REGISTRATION,
-  //   element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
-  //     <DrivingRegisterPage />
-  //   </ServiceLayout>
-  // },
+  {
+    path: PATH.NOT_FOUND,
+    element: <ServiceLayout pageTitle="404" backTo={PATH.HOME}>
+    <NotFoundPage />
+  </ServiceLayout>
+  },
   // {
   //   path: PATH.UNIFORM.ROOT,
   //   element: <ServiceLayout pageTitle="Đăng ký dự thi">

@@ -29,7 +29,7 @@ function LocationSlider() {
 
   return (
     <React.Fragment>
-      <div className='d-flex justify-content-between my-4 align-items-end'>
+      <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
         <h2 className='m-0'>Theo khu vực</h2>
       </div>
       <Swiper

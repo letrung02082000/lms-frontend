@@ -1,11 +1,12 @@
 import shortLinkApi from 'api/shortLinkApi';
 import Loading from 'components/Loading';
+import { PATH } from 'constants/path';
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function ShortLinkPage() {
   const short = useParams().shortLink;
-  console.log(short);
+  const navigate = useNavigate();
   useEffect(() => {
     shortLinkApi
       .getShortLink(short)
@@ -13,7 +14,7 @@ function ShortLinkPage() {
         if (res?.data?.url) {
           window.location.href = res?.data?.url;
         } else {
-          window.location.href = window.location.origin + '/404';
+          navigate(PATH.NOT_FOUND);
         }
       })
       .catch((error) => {

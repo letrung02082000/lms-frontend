@@ -16,6 +16,7 @@ import storeApi from 'api/storeApi';
 import productApi from 'api/productApi';
 import categoryApi from 'api/store/categoryApi';
 import Loading from 'components/Loading';
+import ServiceBar from '../components/ServiceBar';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -87,7 +88,11 @@ function AppStorePage() {
   return (
     <>
       {loading && <Loading />}
-      <Swiper modules={[Pagination]} slidesPerView={1} loop={true}>
+      <StyledLayout isDesktop={isDesktop}>
+        <div className='d-flex justify-content-between my-4 align-items-end'>
+          <h5 className='m-0'>{welcomeMsg}</h5>
+        </div>
+        <Swiper modules={[Pagination]} slidesPerView={1} loop={true}>
         <SwiperSlide>
           <Image
             src='https://istudentspace.sgp1.digitaloceanspaces.com/store/home/home-banner.jpeg'
@@ -96,15 +101,17 @@ function AppStorePage() {
           />
         </SwiperSlide>
       </Swiper>
-
-      <StyledLayout isDesktop={isDesktop}>
-        <div className='d-flex justify-content-between my-4 align-items-end'>
-          <h5 className='m-0'>{welcomeMsg}</h5>
+        <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
+          <h2 className='m-0'>Dịch vụ sinh viên</h2>
+        </div>
+        <ServiceBar categories={storeCategories} />
+        <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
+          <h2 className='m-0'>Ưu đãi</h2>
         </div>
         <CategoryBar categories={storeCategories} />
         <StoreSlider />
         <LocationSlider />
-        <div className='d-flex justify-content-between my-4 align-items-end'>
+        <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Sản phẩm nổi bật</h2>
         </div>
         <Swiper

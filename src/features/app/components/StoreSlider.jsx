@@ -30,7 +30,7 @@ function StoreSlider() {
 
   return (
     <React.Fragment>
-      <div className='d-flex justify-content-between my-4 align-items-end'>
+      <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
         <h2 className='m-0'>Cửa hàng</h2>
         <button className='btn m-0 p-0' onClick={() => navigate(PATH.APP.STORE)}>Xem tất cả</button>
       </div>

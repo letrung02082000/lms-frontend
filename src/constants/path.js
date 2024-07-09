@@ -29,7 +29,7 @@ export const PATH = {
     },
     DRIVING_ADMIN: '/driving-admin',
     DRIVING: {
-        ROOT: '/driving-test',
+        ROOT: '/driving',
         REGISTRATION: '/driving-registration',
         INSTRUCTION: '/driving-instruction',
         ADMIN: {
@@ -38,10 +38,10 @@ export const PATH = {
         },
     },
     UNIFORM: {
-        ROOT: '/uniform',
+        ROOT: '/shop/666195bad4fed7a40f1016fe',
     },
     PHOTOCOPY: {
-        ROOT: '/photocopy',
+        ROOT: '/shop/668d71dadbb560eb9a8fbbf8',
     },
     SWIMMING_POOL: {
         ROOT: '/pool-info',
@@ -67,5 +67,7 @@ export const PATH = {
         STORE_BY_LOCATION: '/shop/location/:locationId',
         PRODUCT_DETAIL: '/shop/product/:productId',
     },
-
+    REAL_ESTATE: {
+        ROOT: '/shop/668d7116dbb560eb9a8fbbf7',
+    }
 };
