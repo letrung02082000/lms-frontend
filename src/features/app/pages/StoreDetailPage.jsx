@@ -37,7 +37,7 @@ function StoreDetailPage() {
       });
 
     categoryApi
-      .getCategoriesByStore(storeId)
+      .getProductCategories(storeId)
       .then((res) => {
         setCategories(res?.data);
       })
@@ -58,7 +58,7 @@ function StoreDetailPage() {
         });
     } else {
       productApi
-        .getProductsByCategory(categoryId)
+        .getProductsByCategory(categoryId, storeId)
         .then((res) => {
           setProducts(res.data);
         })

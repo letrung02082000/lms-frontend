@@ -14,46 +14,60 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Pagination, Scrollbar } from 'swiper';
 import storeApi from 'api/storeApi';
 import productApi from 'api/productApi';
+import categoryApi from 'api/store/categoryApi';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [products, setProducts] = React.useState([]);
-  const [categories, setCategories] = React.useState([]);
-  const [category, setCategory] = React.useState(null);
+  const [productCategories, setProductCategories] = React.useState([]);
+  const [storeCategories, setStoreCategories] = React.useState([]);
+  const [productCategory, setProductCategory] = React.useState('');
   const dispatch = useDispatch();
   const cart = useSelector(selectCart);
   const date = new Date().getHours();
-  const welcomeMsg = date < 12 ? 'Chào ngày mới, bạn đang cần gì?' : date < 18 ? 'Xin chào, chiều nay bạn cần gì?' : 'Chúc bạn buổi tối tốt lành!';
-  console.log(category)
+  const welcomeMsg =
+    date < 12
+      ? 'Chào ngày mới, bạn đang cần gì?'
+      : date < 18
+      ? 'Xin chào, chiều nay bạn cần gì?'
+      : 'Chúc bạn buổi tối tốt lành!';
 
   useEffect(() => {
-    if(category) {
+    if (productCategory) {
       productApi
-      .getProductsByCategory(category)
-      .then((res) => {
-        setProducts(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .getProductsByCategory(productCategory)
+        .then((res) => {
+          setProducts(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       productApi
-      .getProducts()
+        .getProducts()
+        .then((res) => {
+          setProducts(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [productCategory]);
+
+  useEffect(() => {
+    categoryApi
+      .getStoreCategories()
       .then((res) => {
-        setProducts(res.data);
+        setStoreCategories(res?.data);
       })
       .catch((err) => {
         console.log(err);
       });
-    }
-    
-  }, [category]);
 
-  useEffect(() => {
-    storeApi
-      .getStoreCategories()
+    categoryApi
+      .getProductCategories()
       .then((res) => {
-        setCategories(res?.data);
+        setProductCategories(res?.data);
       })
       .catch((err) => {
         console.log(err);
@@ -62,8 +76,8 @@ function AppStorePage() {
 
   const handleAddToCartButton = (item) => {
     dispatch(addToCart(item));
-    ToastWrapper('Đã thêm vào giỏ hàng', 'success')
-  }
+    ToastWrapper('Đã thêm vào giỏ hàng', 'success');
+  };
 
   return (
     <>
@@ -81,60 +95,62 @@ function AppStorePage() {
         <div className='d-flex justify-content-between my-4 align-items-end'>
           <h5 className='m-0'>{welcomeMsg}</h5>
         </div>
-        <CategoryBar categories={categories}/>
+        <CategoryBar categories={storeCategories} />
         <StoreSlider />
         <LocationSlider />
         <div className='d-flex justify-content-between my-4 align-items-end'>
           <h2 className='m-0'>Sản phẩm nổi bật</h2>
         </div>
         <Swiper
-            modules={[Pagination]}
-            slidesPerView={3.2}
-            loop={false}
-            spaceBetween={10}
-            breakpoints={{
-              0: {
-                slidesPerView: 3.2,
-              },
-              700: {
-                slidesPerView: 4.2,
-              },
-              1000: {
-                slidesPerView: 4.2,
-              },
-              1500: {
-                slidesPerView: 5.2,
-              },
-            }}
-          >
-            <SwiperSlide>
-              <Button
-                onClick={() => setCategory('')}
-                variant={category === '' ? 'secondary' : 'outline-secondary'}
-                className='w-100 rounded-pill fw-bold  my-1 p-1'
-              >
-                <small>Tất cả</small>
-              </Button>
-            </SwiperSlide>
-            {categories.map((cat) => {
-              return (
-                <SwiperSlide key={cat._id}>
-                  <Button
-                    onClick={() => setCategory(cat?._id)}
-                    variant={
-                      category === cat?._id
-                        ? 'secondary'
-                        : 'outline-secondary'
-                    }
-                    className='w-100 rounded-pill fw-bold  my-1 p-1'
-                    style={{ whiteSpace: 'nowrap' }}
-                  >
-                    <small>{cat?.name}</small>
-                  </Button>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
+          modules={[Pagination]}
+          slidesPerView={3.2}
+          loop={false}
+          spaceBetween={10}
+          breakpoints={{
+            0: {
+              slidesPerView: 3.2,
+            },
+            700: {
+              slidesPerView: 4.2,
+            },
+            1000: {
+              slidesPerView: 4.2,
+            },
+            1500: {
+              slidesPerView: 5.2,
+            },
+          }}
+        >
+          <SwiperSlide>
+            <Button
+              onClick={() => setProductCategory('')}
+              variant={
+                productCategory === '' ? 'secondary' : 'outline-secondary'
+              }
+              className='w-100 rounded-pill fw-bold  my-1 p-1'
+            >
+              <small>Tất cả</small>
+            </Button>
+          </SwiperSlide>
+          {productCategories.map((cat) => {
+            return (
+              <SwiperSlide key={cat._id}>
+                <Button
+                  onClick={() => setProductCategory(cat?._id)}
+                  variant={
+                    productCategory === cat?._id
+                      ? 'secondary'
+                      : 'outline-secondary'
+                  }
+                  className='w-100 rounded-pill fw-bold  my-1 p-1'
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  <small>{cat?.name}</small>
+                </Button>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
         <div className='d-flex flex-wrap w-100 my-3 justify-content-between'>
           {products?.map((product) => {
             return (
@@ -149,7 +165,9 @@ function AppStorePage() {
               </div>
             );
           })}
-          {products.length === 0 && <p className='text-center w-100'>Không có sản phẩm nào</p>}
+          {products.length === 0 && (
+            <p className='text-center w-100'>Không có sản phẩm nào</p>
+          )}
         </div>
       </StyledLayout>
       {cart?.data?.length > 0 && <CartBar bottom={isDesktop ? 0 : 5} />}
