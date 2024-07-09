@@ -15,7 +15,13 @@ function LocationItem({ location }) {
       <div className='w-100 mb-2'>
         <Image src={location?.images[0]} className='w-100 rounded' />
       </div>
-      <h6>{location?.title}</h6>
+      <h6
+        style={{
+          fontSize: '0.9rem',
+        }}
+      >
+        {location?.title}
+      </h6>
     </div>
   );
 }

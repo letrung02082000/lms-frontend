@@ -127,9 +127,9 @@ function StoreDetailPage() {
               <Button
                 onClick={() => setCategoryId('')}
                 variant={categoryId === '' ? 'secondary' : 'outline-secondary'}
-                className='w-100 rounded-pill fw-bold my-3'
+                className='w-100 rounded-pill fw-bold  my-1 p-1'
               >
-                Tất cả
+                <small>Tất cả</small>
               </Button>
             </SwiperSlide>
             {categories.map((cat) => {
@@ -142,10 +142,10 @@ function StoreDetailPage() {
                         ? 'secondary'
                         : 'outline-secondary'
                     }
-                    className='w-100 rounded-pill fw-bold my-3'
+                    className='w-100 rounded-pill fw-bold  my-1 p-1'
                     style={{ whiteSpace: 'nowrap' }}
                   >
-                    {cat?.name}
+                    <small>{cat?.name}</small>
                   </Button>
                 </SwiperSlide>
               );

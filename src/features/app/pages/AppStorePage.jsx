@@ -1,12 +1,9 @@
 import React, { useEffect } from 'react';
-import CategorySlider from '../components/CategorySlider';
 import StoreSlider from '../components/StoreSlider';
 import { Button, Col, Image, Row } from 'react-bootstrap';
 import productApi from 'api/productApi';
 import styled from 'styled-components';
 import useMediaQuery from 'hooks/useMediaQuery';
-import { BsCartPlus } from 'react-icons/bs';
-import { formatCurrency } from 'utils/commonUtils';
 import CartBar from '../components/CartBar';
 import { ToastWrapper } from 'utils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,6 +17,8 @@ function AppStorePage() {
   const [products, setProducts] = React.useState([]);
   const dispatch = useDispatch();
   const cart = useSelector(selectCart);
+  const date = new Date().getHours();
+  const welcomeMsg = date < 12 ? 'Chào ngày mới, bạn đang cần gì?' : date < 18 ? 'Xin chào, chiều nay bạn cần gì?' : 'Chúc bạn buổi tối tốt lành!';
 
   useEffect(() => {
     productApi
@@ -39,7 +38,15 @@ function AppStorePage() {
 
   return (
     <>
+      <Image
+        src='https://istudentspace.sgp1.digitaloceanspaces.com/store/home/home-banner.jpeg'
+        fluid
+        rounded
+      />
       <StyledLayout isDesktop={isDesktop}>
+        <div className='d-flex justify-content-between my-4 align-items-end'>
+          <h5 className='m-0'>{welcomeMsg}</h5>
+        </div>
         <CategoryBar />
         <StoreSlider />
         <LocationSlider />
@@ -53,17 +60,16 @@ function AppStorePage() {
                 key={product._id}
                 className='product-item mb-3 d-flex flex-column justify-content-between'
               >
-                <ProductItem product={product} handleAddToCartButton={handleAddToCartButton}/>
+                <ProductItem
+                  product={product}
+                  handleAddToCartButton={handleAddToCartButton}
+                />
               </div>
             );
           })}
         </div>
       </StyledLayout>
-      {
-        cart?.data?.length > 0 && (
-          <CartBar bottom={isDesktop ? 0 : 5} />
-        )
-      }
+      {cart?.data?.length > 0 && <CartBar bottom={isDesktop ? 0 : 5} />}
     </>
   );
 }

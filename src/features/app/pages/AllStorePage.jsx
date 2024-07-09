@@ -1,13 +1,13 @@
 import storeApi from 'api/storeApi';
 import { PATH } from 'constants/path';
 import React, { useEffect } from 'react';
-import { Button, Image } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import StoreItem from '../components/StoreItem';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination, Autoplay, Scrollbar } from 'swiper';
+import { FreeMode, Pagination } from 'swiper';
 
 function AllStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -52,23 +52,22 @@ function AllStorePage() {
   return (
     <StyledLayout isDesktop={isDesktop}>
       <Swiper
-        modules={[Pagination, Scrollbar]}
-        slidesPerView={3}
+        modules={[Pagination, FreeMode]}
+        slidesPerView={3.2}
         loop={false}
-        scrollbar={{ hide: false }}
         spaceBetween={10}
         breakpoints={{
           0: {
-            slidesPerView: 3,
+            slidesPerView: 3.2,
           },
           700: {
-            slidesPerView: 4,
+            slidesPerView: 4.2,
           },
           1000: {
-            slidesPerView: 4,
+            slidesPerView: 4.2,
           },
           1500: {
-            slidesPerView: 5,
+            slidesPerView: 5.2,
           },
         }}
       >
@@ -76,9 +75,9 @@ function AllStorePage() {
           <Button
             onClick={() => setCategoryId('')}
             variant={categoryId === '' ? 'secondary' : 'outline-secondary'}
-            className='w-100 rounded-pill fw-bold mb-3'
+            className='w-100 rounded-pill fw-bold my-1 p-1'
           >
-            Tất cả
+            <small>Tất cả</small>
           </Button>
         </SwiperSlide>
         {categories.map((cat) => {
@@ -89,10 +88,10 @@ function AllStorePage() {
                 variant={
                   categoryId === cat?._id ? 'secondary' : 'outline-secondary'
                 }
-                className='w-100 rounded-pill fw-bold mb-3'
+                className='w-100 rounded-pill fw-bold my-1 p-1'
                 style={{ whiteSpace: 'nowrap' }}
               >
-                {cat?.name}
+                <small>{cat?.name}</small>
               </Button>
             </SwiperSlide>
           );
@@ -118,6 +117,6 @@ const StyledLayout = styled.div`
   .store-item {
     width: ${(props) => (props.isDesktop === true ? '22%' : '45%')};
   }
-`;
+`; 
 
 export default AllStorePage;
