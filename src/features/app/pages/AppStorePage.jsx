@@ -17,6 +17,7 @@ import productApi from 'api/productApi';
 import categoryApi from 'api/store/categoryApi';
 import Loading from 'components/Loading';
 import ServiceBar from '../components/ServiceBar';
+import FilterSilder from '../components/FilterSilder';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -93,18 +94,18 @@ function AppStorePage() {
           <h5 className='m-0'>{welcomeMsg}</h5>
         </div>
         <Swiper modules={[Pagination]} slidesPerView={1} loop={true}>
-        <SwiperSlide>
-          <Image
-            src='https://istudentspace.sgp1.digitaloceanspaces.com/store/home/home-banner.jpeg'
-            fluid
-            className='mx-1'
-          />
-        </SwiperSlide>
-      </Swiper>
+          <SwiperSlide>
+            <Image
+              src='https://istudentspace.sgp1.digitaloceanspaces.com/store/home/home-banner.jpeg'
+              fluid
+              className='mx-1'
+            />
+          </SwiperSlide>
+        </Swiper>
         <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Dịch vụ sinh viên</h2>
         </div>
-        <ServiceBar categories={storeCategories} />
+        <ServiceBar />
         <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Ưu đãi</h2>
         </div>
@@ -114,56 +115,11 @@ function AppStorePage() {
         <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Sản phẩm nổi bật</h2>
         </div>
-        <Swiper
-          modules={[Pagination]}
-          slidesPerView={3.2}
-          loop={false}
-          spaceBetween={10}
-          breakpoints={{
-            0: {
-              slidesPerView: 3.2,
-            },
-            700: {
-              slidesPerView: 4.2,
-            },
-            1000: {
-              slidesPerView: 4.2,
-            },
-            1500: {
-              slidesPerView: 5.2,
-            },
-          }}
-        >
-          <SwiperSlide>
-            <Button
-              onClick={() => setProductCategory('')}
-              variant={
-                productCategory === '' ? 'secondary' : 'outline-secondary'
-              }
-              className='w-100 rounded-pill fw-bold  my-1 p-1'
-            >
-              <small>Tất cả</small>
-            </Button>
-          </SwiperSlide>
-          {productCategories.map((cat) => {
-            return (
-              <SwiperSlide key={cat._id}>
-                <Button
-                  onClick={() => setProductCategory(cat?._id)}
-                  variant={
-                    productCategory === cat?._id
-                      ? 'secondary'
-                      : 'outline-secondary'
-                  }
-                  className='w-100 rounded-pill fw-bold  my-1 p-1'
-                  style={{ whiteSpace: 'nowrap' }}
-                >
-                  <small>{cat?.name}</small>
-                </Button>
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
+        <FilterSilder
+          categories={productCategories}
+          setCategoryId={setProductCategory}
+          categoryId={productCategory}
+        />
         <div className='d-flex flex-wrap w-100 my-3 justify-content-between'>
           {products?.map((product) => {
             return (

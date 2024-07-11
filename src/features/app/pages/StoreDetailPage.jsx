@@ -18,6 +18,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import ProductItem from '../components/ProductItem';
 import categoryApi from 'api/store/categoryApi';
 import Loading from 'components/Loading';
+import FilterSilder from '../components/FilterSilder';
 
 function StoreDetailPage() {
   const storeId = useParams()?.storeId;
@@ -107,54 +108,11 @@ function StoreDetailPage() {
           <div className='d-flex justify-content-between align-items-end'>
             <h2 className='m-0'>Danh sách sản phẩm</h2>
           </div>
-          <Swiper
-            modules={[Pagination]}
-            slidesPerView={3.2}
-            loop={false}
-            spaceBetween={10}
-            breakpoints={{
-              0: {
-                slidesPerView: 3.2,
-              },
-              700: {
-                slidesPerView: 4.2,
-              },
-              1000: {
-                slidesPerView: 4.2,
-              },
-              1500: {
-                slidesPerView: 5.2,
-              },
-            }}
-          >
-            <SwiperSlide>
-              <Button
-                onClick={() => setCategoryId('')}
-                variant={categoryId === '' ? 'secondary' : 'outline-secondary'}
-                className='w-100 rounded-pill fw-bold  my-1 p-1'
-              >
-                <small>Tất cả</small>
-              </Button>
-            </SwiperSlide>
-            {categories.map((cat) => {
-              return (
-                <SwiperSlide key={cat._id}>
-                  <Button
-                    onClick={() => setCategoryId(cat?._id)}
-                    variant={
-                      categoryId === cat?._id
-                        ? 'secondary'
-                        : 'outline-secondary'
-                    }
-                    className='w-100 rounded-pill fw-bold  my-1 p-1'
-                    style={{ whiteSpace: 'nowrap' }}
-                  >
-                    <small>{cat?.name}</small>
-                  </Button>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
+          <FilterSilder
+            categories={categories}
+            setCategoryId={setCategoryId}
+            categoryId={categoryId}
+          />
           <div className='d-flex flex-wrap w-100 mt-3 mb-5 justify-content-between'>
             {products.length === 0 && (
               <p className='w-100 my-5 text-center'>Không có sản phẩm nào</p>
@@ -175,7 +133,7 @@ function StoreDetailPage() {
           </div>
         </StyledLayout>
       </ServiceLayout>
-      <CartBar/>
+      <CartBar />
     </>
   );
 }

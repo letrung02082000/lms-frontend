@@ -25,13 +25,13 @@ function ServiceBar() {
         path: PATH.UNIFORM.ROOT
       },
       {
-        _id: '2',
+        _id: '3',
         name: 'In ấn',
         icon: PhotocopyIcon,
         path: PATH.PHOTOCOPY.ROOT
       },
       {
-        _id: '2',
+        _id: '4',
         name: 'Căn hộ',
         icon: RealEstateIcon,
         path: PATH.REAL_ESTATE.ROOT
@@ -42,7 +42,7 @@ function ServiceBar() {
 
   return (
     <React.Fragment>
-      <div className='d-flex w-100 flex-wrap justify-content-start'>
+      <div className='d-flex w-100 justify-content-between'>
         {services.map((service) => {
           return (
             <div
