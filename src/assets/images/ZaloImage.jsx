@@ -1,12 +1,12 @@
 import React from 'react';
 
-function ZaloImage() {
+function ZaloImage({width, height}) {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 48 48'
-      width='48px'
-      height='48px'
+      width={width || '25px'}
+      height={height || '25px'}
     >
       <path
         fill='#2962ff'
