@@ -28,11 +28,13 @@ function StoreDetailPage() {
   const [categories, setCategories] = React.useState([]);
   const [categoryId, setCategoryId] = React.useState('');
   const [loading, setLoading] = React.useState(true);
+  const [storeOptions, setStoreOptions] = React.useState(null);
 
   useEffect(() => {
     storeApi
       .getStoreById(storeId)
       .then((res) => {
+        setStoreOptions(res?.data?.options);
         setStore(res?.data);
       })
       .catch((err) => {
@@ -82,7 +84,10 @@ function StoreDetailPage() {
   return (
     <>
       {loading && <Loading />}
-      <ServiceLayout backTo={PATH.APP.ROOT} pageTitle='Xem cửa hàng'>
+      <ServiceLayout
+        backTo={PATH.APP.ROOT}
+        pageTitle={storeOptions?.storeLabel || 'Cửa hàng'}
+      >
         <StyledLayout isDesktop={isDesktop}>
           <Swiper
             className='m-2'
@@ -106,7 +111,9 @@ function StoreDetailPage() {
             <p>{store?.description}</p>
           </div>
           <div className='d-flex justify-content-between align-items-end'>
-            <h2 className='m-0'>Danh sách sản phẩm</h2>
+            <h2 className='m-0 mb-1'>
+              Danh sách {storeOptions?.storeLabel?.toLowerCase() || 'sản phẩm'}
+            </h2>
           </div>
           <FilterSilder
             categories={categories}
@@ -125,6 +132,7 @@ function StoreDetailPage() {
                 >
                   <ProductItem
                     product={product}
+                    hasCartButton={storeOptions?.hasCartButton}
                     handleAddToCartButton={handleAddToCartButton}
                   />
                 </div>

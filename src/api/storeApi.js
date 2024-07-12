@@ -8,7 +8,6 @@ class StoreApi {
             params: {
                 visible: true,
             },
-        
         });
     };
 
@@ -41,6 +40,11 @@ class StoreApi {
             },
         });
     };
+
+    getStoreOptions = async (id) => {
+        const url = `${API_PATH}/option/${id}`;
+        return axiosClient.get(url);
+    }
 }
 
 export default new StoreApi();

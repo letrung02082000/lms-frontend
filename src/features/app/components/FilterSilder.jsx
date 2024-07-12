@@ -31,7 +31,7 @@ function FilterSilder({ setCategoryId, categories, categoryId }) {
           <Button
             onClick={() => setCategoryId('')}
             variant={categoryId === '' ? 'secondary' : 'outline-secondary'}
-            className='w-100 rounded-pill fw-bold  my-1 p-1'
+            className='w-100 rounded-pill fw-bold  my-1 p-2'
           >
             <small>Tất cả</small>
           </Button>
@@ -44,7 +44,7 @@ function FilterSilder({ setCategoryId, categories, categoryId }) {
                 variant={
                   categoryId === cat?._id ? 'secondary' : 'outline-secondary'
                 }
-                className='w-100 rounded-pill fw-bold  my-1 p-1'
+                className='w-100 rounded-pill fw-bold  my-1 p-2'
               >
                 <small>{cat?.name}</small>
               </Button>

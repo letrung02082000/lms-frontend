@@ -42,7 +42,7 @@ function CartBar({bottom = 0}) {
           navigate(PATH.APP.CHECKOUT);
         }}
       >
-        Đặt hàng
+        Xem giỏ hàng
       </button>
       <div style={{flex: 1}} className='text-end'>{formatCurrency(totalPrice)} đ</div>
     </StyledLayout>

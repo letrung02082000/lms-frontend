@@ -96,7 +96,7 @@ function AppStorePage() {
         <Swiper modules={[Pagination]} slidesPerView={1} loop={true}>
           <SwiperSlide>
             <Image
-              src='https://istudentspace.sgp1.digitaloceanspaces.com/store/home/home-banner.jpeg'
+              src='https://istudentspace.sgp1.digitaloceanspaces.com/public/banner-2.jpg'
               fluid
               className='mx-1'
             />
