@@ -33,9 +33,6 @@ function ProductDetailPage() {
       .catch((err) => {
         console.log(err);
       })
-      .finally(() => {
-        setLoading(false);
-      });
   }, []);
 
   useEffect(() => {
@@ -47,6 +44,9 @@ function ProductDetailPage() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [product]);
 

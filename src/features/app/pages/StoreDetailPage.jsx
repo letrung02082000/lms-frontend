@@ -21,6 +21,7 @@ import { MdMessage, MdPhone } from 'react-icons/md';
 import ZaloImage from 'assets/images/ZaloImage';
 import ZaloLink from 'components/link/ZaloLink';
 import { formatPhoneNumber } from 'utils/commonUtils';
+import { IoIosGlobe } from 'react-icons/io';
 
 function StoreDetailPage() {
   const storeId = useParams()?.storeId;
@@ -123,12 +124,25 @@ function StoreDetailPage() {
                     </a>
                   )}
                 </div>
-                <div>
+                <div className='mb-2'>
                   {store?.zalo && (
                     <ZaloLink tel={store?.zalo} className='text-decoration-none'>
                       <ZaloImage />
                       <span className='ms-2'>{formatPhoneNumber(store.zalo)}</span>
                     </ZaloLink>
+                  )}
+                </div>
+                <div>
+                  {store?.website && (
+                    <a
+                    href={store.website}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-decoration-none'
+                  >
+                    <IoIosGlobe size={25} />
+                    <span className='ms-2'>{store.website}</span>
+                  </a>
                   )}
                 </div>
               </div>
