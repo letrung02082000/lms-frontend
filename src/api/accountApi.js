@@ -1,9 +1,19 @@
 import axiosClient from "./axiosClient";
 import { authHeader } from "utils";
 
-const API_PATH = "/user";
+const API_PATH = "https://api.food.isinhvien.vn/user";
 
 class AccountApi {
+  sendOtp = async (zaloNumber) => {
+    const url = `${API_PATH}/send-otp`;
+    return axiosClient.post(url, { zaloNumber });
+  }
+
+  verifyOtp = async (zaloNumber, otp) => {
+    const url = `${API_PATH}/check-otp`;
+    return axiosClient.post(url, { zaloNumber, otp });
+  }
+
   signupUser = (user) => {
     const url = `${API_PATH}/signup`;
     return axiosClient.post(url, user);

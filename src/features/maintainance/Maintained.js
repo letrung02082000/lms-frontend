@@ -12,7 +12,7 @@ function Maintained() {
       }}
     >
       <p>
-        Xin lỗi, dịch vụ này đang được bảo trì.
+        Tính năng này đang được phát triển
         <br />
         Vui lòng quay lại sau.
       </p>

@@ -9,11 +9,13 @@ import ProfileImage from "./components/ProfileImage";
 
 import AccountApi from "api/accountApi";
 import { PATH } from "constants/path";
+import { formatPhoneNumber, profileMsg } from "utils/commonUtils";
 
 function AccountPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const userInfo = JSON.parse(localStorage.getItem("user-info"));
+  console.log(userInfo)
 
   const handleLoginClick = () => {
     navigate(PATH.AUTH.SIGNIN);
@@ -23,32 +25,18 @@ function AccountPage() {
     navigate(PATH.AUTH.SIGNIN);
   };
 
-  const handleLogout = () => {
-    const refreshToken = localStorage.getItem("user-jwt-rftk");
-    AccountApi.logoutUser(refreshToken)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    localStorage.removeItem("user-info");
-    localStorage.removeItem("user-jwt-tk");
-    localStorage.removeItem("user-jwt-rftk");
-    dispatch(logoutUser());
-  };
-
   return (
     <Styles>
       <MainLayout>
         {user.isLoggedIn ? (
           <>
             <ProfileImage src={user.data.avatarUrl || "/common/avatar.png"} />
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              Xin chào {user?.data?.name || "bạn"}!
+            <div className="d-flex flex-column align-items-center justify-content-center mb-5">
+              <p className="mb-1">{profileMsg(userInfo?.data?.name || '+' + userInfo?.zalo)}</p>
             </div>
-            <Item path="/support">Hỗ trợ</Item>
-            <Item onClick={handleLogout}>Đăng xuất</Item>
+            <Item path={PATH.MAINTAIN}>Đơn hàng của bạn</Item>
+            <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
+            {/* <Item onClick={handleLogout}>Đăng xuất</Item> */}
           </>
         ) : (
           <>

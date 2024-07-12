@@ -15,5 +15,10 @@ const copyText = (value) => {
     return navigator.clipboard.writeText(value);
 };
 
+const profileMsg = (name) => {
+    return `Xin chào bạn ${name ? name : 'bạn'}!`;
 
-export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber }
+}
+
+
+export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg }

@@ -21,6 +21,7 @@ import AdminDrivingGuard from 'components/guard/AdminDrivingGuard';
 import OrderHistoryPage from 'features/app/pages/OrderHistoryPage';
 import StoreByLocation from 'features/app/pages/StoreByLocation';
 import ShortLinkPage from 'features/short-link/pages/ShortLinkPage';
+import OtpPage from 'features/login/OtpPage';
 
 const router = createBrowserRouter([
   {
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
           },
           {
             path: PATH.EXPLORE.ROOT,
-            element: <ExplorePage />,
+            element: <MaintainPage />,
           },
           {
             path: PATH.ACCOUNT,
@@ -179,6 +180,10 @@ const router = createBrowserRouter([
   {
     path: PATH.AUTH.SIGNIN,
     element: <LoginPage/>
+  },
+  {
+    path: PATH.AUTH.OTP,
+    element: <OtpPage/>
   },
   {
     path: PATH.SUPPORT.ROOT,

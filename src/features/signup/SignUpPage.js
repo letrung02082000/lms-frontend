@@ -115,9 +115,6 @@ const SignUpPage = () => {
               onChange={handlePasswordChange}
             />
           </Form.Group>
-          {/* <Form.Group className='mb-3' controlId='formBasicCheckbox'>
-          <Form.Check type='checkbox' label='Nhớ mật khẩu' />
-        </Form.Group> */}
           <Button variant="primary" type="submit" onClick={handleSignUpClick}>
             Tạo tài khoản
           </Button>
