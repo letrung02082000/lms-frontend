@@ -132,7 +132,7 @@ function CheckoutPage() {
         <Cart />
         <Col xs={12} md={5}>
           <Row>
-            <div className='checkout-title'>Thông tin đặt hàng</div>
+            <div className='checkout-title'>Thông tin liên hệ</div>
           </Row>
           <Row className='mb-3'>
             <Col>

@@ -53,7 +53,7 @@ function ProductDetailPage() {
   const dispatch = useDispatch();
   const handleAddToCartButton = (item) => {
     dispatch(addToCart(item));
-    toastWrapper('Đã thêm vào giỏ hàng', 'success');
+    navigate(PATH.APP.CHECKOUT)
   };
 
   return (
