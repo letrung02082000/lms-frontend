@@ -7,9 +7,13 @@ const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-GB').format(value || 0);
 }
 
+const formatPhoneNumber = (value) => {
+    return value.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
+}
+
 const copyText = (value) => {
     return navigator.clipboard.writeText(value);
 };
 
 
-export { convertToDateTime, formatCurrency, copyText }
+export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber }

@@ -19,6 +19,8 @@ import Loading from 'components/Loading';
 import FilterSilder from '../components/FilterSilder';
 import { MdMessage, MdPhone } from 'react-icons/md';
 import ZaloImage from 'assets/images/ZaloImage';
+import ZaloLink from 'components/link/ZaloLink';
+import { formatPhoneNumber } from 'utils/commonUtils';
 
 function StoreDetailPage() {
   const storeId = useParams()?.storeId;
@@ -106,7 +108,7 @@ function StoreDetailPage() {
           </Swiper>
           <div className='mt-3 mb-2'>
             <h2>{store?.name}</h2>
-            <div className='d-flex justify-content-between align-items-center'>
+            <div className='d-flex justify-content-between align-items-start'>
               <div>
                 <div className='mb-2'>
                   {store?.tel && (
@@ -114,28 +116,25 @@ function StoreDetailPage() {
                       href={`tel:${store.tel}`}
                       target='_blank'
                       rel='noopener noreferrer'
+                      className='text-decoration-none'
                     >
                       <MdPhone size={25} />
-                      <span className='ms-2'>{store.tel}</span>
+                      <span className='ms-2'>{formatPhoneNumber(store.tel)}</span>
                     </a>
                   )}
                 </div>
                 <div>
                   {store?.zalo && (
-                    <a
-                      href={`https://zalo.me/${store.zalo}`}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                    >
+                    <ZaloLink tel={store?.zalo} className='text-decoration-none'>
                       <ZaloImage />
-                      <span className='ms-2'>{store.zalo}</span>
-                    </a>
+                      <span className='ms-2'>{formatPhoneNumber(store.zalo)}</span>
+                    </ZaloLink>
                   )}
                 </div>
               </div>
               {storeOptions?.actionButtonLink && (
                 <a
-                  className='btn btn-primary text-white'
+                  className='btn btn-outline-primary'
                   href={storeOptions?.actionButtonLink}
                   target='_blank'
                   rel='noopener noreferrer'
