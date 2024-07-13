@@ -20,13 +20,18 @@ function Cart() {
         </Col>
       </Row>
       <Row className='my-2'>
-          <Col xs={7}>
-            <div>Tổng cộng</div>
-          </Col>
-          <Col xs={5}>
-            <div className='fw-bold'>{formatCurrency(total)} ₫</div>
-          </Col>
-        </Row>
+        <Col xs={7}>
+          <div>Tổng cộng</div>
+        </Col>
+        <Col xs={5}>
+          <div className='fw-bold'>{formatCurrency(total)} ₫</div>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <p className='text-primary'>Bạn sẽ có <strong>{Math.floor(total/1000)}</strong> điểm tích luỹ khi đơn hàng hoàn tất.</p>
+        </Col>
+      </Row>
     </Styles>
   );
 }
