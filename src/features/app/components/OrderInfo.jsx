@@ -1,7 +1,7 @@
 import { PATH } from 'constants/path';
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
-import { formatCurrency } from 'utils/commonUtils';
+import { formatCurrency, formatPhoneNumber } from 'utils/commonUtils';
 
 function OrderInfo({ order }) {
   console.log(order)
@@ -24,7 +24,7 @@ function OrderInfo({ order }) {
           </tr>
           <tr>
             <td>Số điện thoại</td>
-            <td>{order?.tel}</td>
+            <td>{formatPhoneNumber(order?.tel)}</td>
           </tr>
           <tr>
             <td>Địa chỉ</td>
@@ -37,6 +37,10 @@ function OrderInfo({ order }) {
           <tr>
             <td>Ghi chú</td>
             <td>{order?.note || 'Không có'}</td>
+          </tr>
+          <tr>
+            <td>Điểm tích luỹ</td>
+            <td>{order?.points || 0}</td>
           </tr>
         </tbody>
       </Table>
