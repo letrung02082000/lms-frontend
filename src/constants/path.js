@@ -70,6 +70,6 @@ export const PATH = {
     },
     REAL_ESTATE: {
         APARTMENT: '/shop/668d7116dbb560eb9a8fbbf7',
-        HOUSE: '/shop/668d7116dbb560eb9a8fbbf7',
+        HOUSE: '/shop/6692322f5b18a435b8e266ec',
     }
 };

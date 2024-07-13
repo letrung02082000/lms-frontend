@@ -116,7 +116,7 @@ function CheckoutPage() {
             <Button
               variant='outline-primary'
               className='w-100 my-3'
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(PATH.APP.ROOT)}
             >
               Quay lại cửa hàng
             </Button>
