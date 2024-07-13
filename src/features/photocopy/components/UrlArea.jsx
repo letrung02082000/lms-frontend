@@ -53,7 +53,7 @@ function UrlArea(props) {
           />
         </Col>
         <Col>
-          <Button className='w-100' onClick={handleAddButton}>
+          <Button className='w-100 text-white' onClick={handleAddButton}>
             Thêm
           </Button>
         </Col>
@@ -73,7 +73,7 @@ function UrlArea(props) {
                   onClick={() => handleDeleteButton(_idx)}
                 >
                   {_idx === urlDeleteId ? (
-                    <div className='delete-text'>Nhấn để xoá</div>
+                    <div className='delete-text'>Xác nhận xoá</div>
                   ) : (
                     <MdDeleteOutline color='#ed3e3e' />
                   )}

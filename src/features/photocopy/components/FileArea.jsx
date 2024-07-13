@@ -30,16 +30,6 @@ function FileArea(props) {
       label: 'Trung tâm tư vấn và thiết kế mẫu',
       value: 'design',
     },
-    // {
-    //   label: 'Không có tài liệu',
-    //   value: 'no-file',
-    //   component: (
-    //     <UrlArea
-    //       urlList={props?.urlList}
-    //       setUrlList={props?.setUrlList}
-    //     />
-    //   ),
-    // },
   ];
 
   return (

@@ -8,7 +8,7 @@ import { Button, Col, Image, Row, Table } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
 import RadioField2 from '../components/RadioField2';
-import SelectField from 'components/form/SelectField';
+import SelectField2 from '../components/SelectField2';
 import styled from 'styled-components';
 import { ToastWrapper } from 'utils';
 import FileArea from '../components/FileArea';
@@ -85,7 +85,7 @@ function PhotocopyPage() {
       label: 'Nhận tại cửa hàng',
       value: 'office',
       component: (
-        <SelectField
+        <SelectField2
           options={offices}
           name='office'
           control={control}
@@ -150,6 +150,7 @@ function PhotocopyPage() {
   const couponCode = watch('coupon');
   const category = watch('category');
   const tag = watch('tags');
+  console.log(tag)
   const tel = watch('tel');
 
   useEffect(() => {
@@ -180,23 +181,7 @@ function PhotocopyPage() {
     }
   }, [category?.value]);
 
-  const handleCouponButton = () => {
-    couponApi
-      .applyCode(couponCode.toUpperCase())
-      .then((res) => {
-        ToastWrapper(res?.message, 'success');
-        setCouponData(res?.data);
-      })
-      .catch((e) => {
-        ToastWrapper(
-          e?.response?.data?.message || 'Không thể áp dụng mã giảm giá',
-          'error'
-        );
-      });
-  };
-
   const validateForm = (formData, document) => {
-    console.log(uploadType);
     if (uploadType !== 'design' && document.length === 0) {
       ToastWrapper('Vui lòng đính kèm tài liệu in', 'error');
       return false;
@@ -319,20 +304,6 @@ function PhotocopyPage() {
       </a>
 
       <div className='body'>
-        {/* <Row>
-          <h5 className='text-uppercase'>Trung tâm in ấn Thời Đại</h5>
-          <span className='sub-label'>
-            <a
-              className='instruction-btn'
-              href={`${PRINT_URL}/quy-trinh-in/`}
-              target='_blank'
-              rel='noopener noreferrer'
-              onClick={() => setShowInstructionModal(true)}
-            >
-              Xem hướng dẫn tạo nhanh đơn hàng
-            </a>
-          </span>
-        </Row> */}
         <div>
           <label className='custom-label'>Tải lên tài liệu</label>
           <div className='sub-label'>
@@ -353,10 +324,10 @@ function PhotocopyPage() {
         <Row>
           <label className='custom-label'>Thể loại và quy cách in</label>
           <div className='sub-label'>
-            Chọn thể loại in và Thêm ghi chú về quy cách/yêu cầu của bạn cho nhà
+            Chọn thể loại và thêm quy cách tài liệu cho nhà
             in
           </div>
-          <SelectField
+          <SelectField2
             options={categories}
             label='Thể loại in'
             control={control}
@@ -365,10 +336,10 @@ function PhotocopyPage() {
           />
         </Row>
         <Row>
-          <SelectField
+          <SelectField2
             isMulti
             options={tagList}
-            label='Thẻ in'
+            label='Quy cách in'
             control={control}
             name='tags'
             hasAsterisk
@@ -377,18 +348,15 @@ function PhotocopyPage() {
         {!!tag && (
           <Row>
             <div>
-              <label className='form-label mt-3 suggestion-label'>
-                Quy cách in
-              </label>
               <Table striped bordered hover size='sm'>
                 <thead>
                   <tr>
                     <th>Thể loại</th>
-                    <th>Câu hỏi gợi ý</th>
+                    <th>Quy cách</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tagList?.map((v) => {
+                  {tag?.map((v) => {
                     return (
                       <tr>
                         <td className=''>{v?.label}</td>
@@ -405,7 +373,7 @@ function PhotocopyPage() {
               </Table>
             </div>
             <InputField
-              placeholder='Vui lòng trả lời các câu hỏi gợi ý ở bảng trên để nhân viên hiểu yêu cầu của bạn'
+              placeholder='Vui lòng trả lời các câu hỏi ở bảng trên để nhân viên hiểu yêu cầu của bạn'
               control={control}
               name='instruction'
               as='textarea'
@@ -448,7 +416,7 @@ function PhotocopyPage() {
             </Col>
             <Col lg={6} className='mb-3'>
               <InputField
-                label='Số Zalo nhận báo giá'
+                label='Zalo nhận báo giá'
                 placeholder='Nhập số zalo để nhận báo giá'
                 control={control}
                 name='zalo'
@@ -495,7 +463,7 @@ function PhotocopyPage() {
           </Col>
           <Col lg={8}>
             <Button
-              className='py-2 w-100'
+              className='py-2 w-100 text-white'
               variant='primary'
               disabled={isSubmitting}
               onClick={handleSubmitButton}
@@ -523,16 +491,6 @@ function PhotocopyPage() {
 export default PhotocopyPage;
 
 const Styles = styled.div`
-  .header {
-    background-color: white;
-    border-radius: 15px;
-    margin-top: 1rem;
-  }
-
-  .header h2 {
-    text-transform: uppercase;
-  }
-
   .instruction-btn {
     text-decoration: underline;
     font-size: 1.5rem;
@@ -542,7 +500,7 @@ const Styles = styled.div`
 
   .body {
     background-color: white;
-    padding: 2rem 1.5rem;
+    padding: 2rem 0rem;
     margin-top: 1rem;
     border-radius: 15px;
 

@@ -65,7 +65,7 @@ function SearchModal(props) {
               onChange={(e) => setTerm(e.target.value)}
             />
             <Button
-              className='mt-3 mb-5'
+              className='mt-3 mb-5 text-white'
               type='submit'
               variant='primary'
               disabled={loading}

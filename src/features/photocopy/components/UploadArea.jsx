@@ -1,20 +1,22 @@
 import React from 'react';
 import ImagePlaceholder from 'assets/images/ImagePlaceholder';
 import styled from 'styled-components';
-import FileUploader from 'components/form/FileUploader';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Row } from 'react-bootstrap';
 import { MdDeleteOutline } from 'react-icons/md';
 import Asterisk from 'components/form/Asterisk';
+import FileUploader2 from './FileUploader2';
 
 function UploadArea(props) {
-  let baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+  console.log(props.fileList)
+  let baseURL = 'https://api.in.isinhvien.vn';
   const url = `${baseURL}/files`
   const MAX_QUANTITY = 5;
   const [fileUploading, setFileUploading] = useState(false);
   const [deleteId, setDeleteId] = useState();
   const onUploaded = (val) => {
+    console.log(val)
     props?.setFileList((_prev) => {
       return [..._prev, val];
     });
@@ -71,7 +73,7 @@ function UploadArea(props) {
                     onClick={() => handleDeleteButton(_idx)}
                   >
                     {_idx === deleteId ? (
-                      <div className='delete-text'>Nhấn để xoá</div>
+                      <div className='delete-text'>Xác nhận xoá</div>
                     ) : (
                       <MdDeleteOutline color='#ed3e3e' />
                     )}
@@ -83,7 +85,7 @@ function UploadArea(props) {
         </Col>
 
         <Col>
-          <FileUploader
+          <FileUploader2
             onUploaded={onUploaded}
             uploading={fileUploading}
             setUploading={setFileUploading}

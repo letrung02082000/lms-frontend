@@ -1,5 +1,6 @@
 import React from 'react'
 import { BiSearchAlt } from 'react-icons/bi'
+import { MdSearch } from 'react-icons/md';
 import styled from 'styled-components'
 
 function PlaceHolder(props) {
@@ -9,7 +10,7 @@ function PlaceHolder(props) {
         <span>{props?.text}</span>
       </div>
       <div className='search-icon mx-3'>
-        <BiSearchAlt size={30} />
+        <MdSearch size={30} />
       </div>
     </Styles>
   );
