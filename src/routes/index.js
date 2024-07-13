@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { PATH } from 'constants/path';
-import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, ExplorePage, GuestHouseInfoPage, HomePage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, UniformRegistrationPage } from 'features';
+import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, ExplorePage, GuestHouseInfoPage, HomePage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, UniformRegistrationPage, PhotocopyPage } from 'features';
 import MainGuard from 'components/guard/MainGuard';
 import MainLayout from 'components/layout/MainLayout';
 import UserGuard from 'components/guard/UserGuard';
@@ -209,12 +209,12 @@ const router = createBrowserRouter([
   //     <UniformRegistrationPage />
   //   </ServiceLayout>
   // },
-  // {
-  //   path: PATH.PHOTOCOPY.ROOT,
-  //   element: <ServiceLayout pageTitle="In ấn sinh viên">
-  //     <MaintainPage />
-  //   </ServiceLayout>
-  // },
+  {
+    path: PATH.PHOTOCOPY.ROOT,
+    element: <ServiceLayout pageTitle="In ấn">
+      <PhotocopyPage />
+    </ServiceLayout>
+  },
   // {
   //   path: PATH.SWIMMING_POOL.ROOT,
   //   element: <ServiceLayout pageTitle="Hồ bơi">

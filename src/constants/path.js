@@ -42,7 +42,7 @@ export const PATH = {
         ROOT: '/shop/666195bad4fed7a40f1016fe',
     },
     PHOTOCOPY: {
-        ROOT: '/shop/668d71dadbb560eb9a8fbbf8',
+        ROOT: '/service/photocopy',
     },
     SWIMMING_POOL: {
         ROOT: '/pool-info',
