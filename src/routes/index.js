@@ -120,52 +120,52 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // {
-  //   path: PATH.ADMIN.ROOT,
-  //   element: <AdminGuard />,
-  //   errorElement: <NotFoundPage />,
-  //   children: [
-  //     {
-  //       element: <AdminLayout />,
-  //       children: [
-  //         {
-  //           path: '',
-  //           element: <AdminPage />,
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
-  // {
-  //   path: '',
-  //   element: <AdminDrivingGuard />,
-  //   errorElement: <NotFoundPage />,
-  //   children: [
-  //     {
-  //       element: <DrivingAdminPage />,
-  //       path: PATH.DRIVING_ADMIN,
-  //     },
-  //   ],
-  // },
-  // {
-  //   element: <AdminGuard />,
-  //   errorElement: <NotFoundPage />,
-  //   children: [
-  //     {
-  //       element: <AdminLayout menu={ADMIN_DRIVING_MENU} title='Quản lý lái xe'/>,
-  //       children: [
-  //         {
-  //           path: PATH.DRIVING.ADMIN.DATE,
-  //           element: <AdminDrivingDatePage />,
-  //         },
-  //         {
-  //           path: PATH.DRIVING.ADMIN.ROOT,
-  //           element: <AdminDrivingA1Page />,
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    path: PATH.ADMIN.ROOT,
+    element: <AdminGuard />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
+          {
+            path: '',
+            element: <AdminPage />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '',
+    element: <AdminDrivingGuard />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        element: <DrivingAdminPage />,
+        path: PATH.DRIVING_ADMIN,
+      },
+    ],
+  },
+  {
+    element: <AdminGuard />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        element: <AdminLayout menu={ADMIN_DRIVING_MENU} title='Quản lý lái xe'/>,
+        children: [
+          {
+            path: PATH.DRIVING.ADMIN.DATE,
+            element: <AdminDrivingDatePage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.ROOT,
+            element: <AdminDrivingA1Page />,
+          },
+        ],
+      },
+    ],
+  },
   {
     path: PATH.USER.ROOT,
     element: <UserGuard />,
@@ -203,42 +203,42 @@ const router = createBrowserRouter([
     <NotFoundPage />
   </ServiceLayout>
   },
-  // {
-  //   path: PATH.UNIFORM.ROOT,
-  //   element: <ServiceLayout pageTitle="Đăng ký dự thi">
-  //     <UniformRegistrationPage />
-  //   </ServiceLayout>
-  // },
+  {
+    path: PATH.UNIFORM.ROOT,
+    element: <ServiceLayout pageTitle="Đặt đồng phục">
+      <UniformRegistrationPage />
+    </ServiceLayout>
+  },
   {
     path: PATH.PHOTOCOPY.ROOT,
     element: <ServiceLayout pageTitle="In ấn">
       <PhotocopyPage />
     </ServiceLayout>
   },
-  // {
-  //   path: PATH.SWIMMING_POOL.ROOT,
-  //   element: <ServiceLayout pageTitle="Hồ bơi">
-  //     <PoolInfoPage />
-  //   </ServiceLayout>
-  // },
-  // {
-  //   path: PATH.GUEST_HOUSE.ROOT,
-  //   element: <ServiceLayout pageTitle="Đặt phòng nhà khách">
-  //     <GuestHouseInfoPage />
-  //   </ServiceLayout>
-  // },
-  // {
-  //   path: PATH.QR_SCAN.ROOT,
-  //   element: <ServiceLayout pageTitle="Quét mã">
-  //     <QrScanPage />
-  //   </ServiceLayout>
-  // },
-  // {
-  //   path: PATH.YEN_SHARE.ROOT,
-  //   element: <ServiceLayout pageTitle="Yên share">
-  //     <YenSharePage />
-  //   </ServiceLayout>
-  // },
+  {
+    path: PATH.SWIMMING_POOL.ROOT,
+    element: <ServiceLayout pageTitle="Hồ bơi">
+      <PoolInfoPage />
+    </ServiceLayout>
+  },
+  {
+    path: PATH.GUEST_HOUSE.ROOT,
+    element: <ServiceLayout pageTitle="Đặt phòng nhà khách">
+      <GuestHouseInfoPage />
+    </ServiceLayout>
+  },
+  {
+    path: PATH.QR_SCAN.ROOT,
+    element: <ServiceLayout pageTitle="Quét mã">
+      <QrScanPage />
+    </ServiceLayout>
+  },
+  {
+    path: PATH.YEN_SHARE.ROOT,
+    element: <ServiceLayout pageTitle="Yên share">
+      <YenSharePage />
+    </ServiceLayout>
+  },
 ]);
 
 export default router;
