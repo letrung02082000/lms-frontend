@@ -1,11 +1,22 @@
 import { PATH } from 'constants/path';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Table } from 'react-bootstrap';
 import { formatCurrency, formatPhoneNumber } from 'utils/commonUtils';
+import PaymentModal from './PaymentModal';
 
 function OrderInfo({ order }) {
-  console.log(order)
   const productByStoreId = order?.productByStoreId || [];
+  const [storeId, setStoreId] = React.useState('');
+  const [show, setShow] = React.useState(false);
+  const [amount, setAmount] = React.useState(0);
+  const [desc, setDesc] = React.useState('');
+
+  const handlePaymentButton = (storeId, amount, desc) => {
+    setStoreId(storeId);
+    setDesc(desc);
+    setAmount(amount);
+    setShow(true);
+  };
 
   return (
     <>
@@ -44,63 +55,68 @@ function OrderInfo({ order }) {
           </tr>
         </tbody>
       </Table>
-      {
-            Object.keys(productByStoreId).map((key, index) => {
-              return (
-                <Table striped bordered hover key={key}>
-                  <tbody>
-                    <tr>
-                      <td colSpan={4}>
-                        <a
-                          className='text-decoration-none fw-bold p-0'
-                          href={PATH.APP.STORE_DETAIL.replace(
-                            ':storeId',
-                            productByStoreId[key][0]?.store?._id
-                          )}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                        >
-                          {productByStoreId[key][0]?.store?.name}
-                        </a>
-                      </td>
-                    </tr>
-                    {productByStoreId[key].map((product, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{product?.name}</td>
-                          <td>x {product?.quantity}</td>
-                          <td>
-                            {formatCurrency(product?.price * product?.quantity)}{' '}
-                            đ
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colSpan={2} className='text-end'>
-                        <Button variant='outline-primary' className='w-100'>
-                          Thanh toán cho cửa hàng này
-                        </Button>
-                      </td>
-                      <td className='text-end'>Tổng cộng</td>
-                      <td>
-                        {formatCurrency(
-                          productByStoreId[key]?.reduce(
-                            (acc, cur) => acc + cur.price * cur.quantity,
-                            0
-                          )
-                        )}{' '}
-                        đ
-                      </td>
-                    </tr>
-                  </tfoot>
-                </Table>
-              );
-            })
-          }
+      {Object.keys(productByStoreId).map((key) => {
+        const total = productByStoreId[key]?.reduce(
+          (acc, cur) => acc + cur.price * cur.quantity,
+          0
+        );
+
+        return (
+          <Table striped bordered hover key={key}>
+            <tbody>
+              <tr>
+                <td colSpan={4}>
+                  <a
+                    className='text-decoration-none fw-bold p-0'
+                    href={PATH.APP.STORE_DETAIL.replace(
+                      ':storeId',
+                      productByStoreId[key][0]?.store?._id
+                    )}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    {productByStoreId[key][0]?.store?.name}
+                  </a>
+                </td>
+              </tr>
+              {productByStoreId[key].map((product, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{product?.name}</td>
+                    <td>x {product?.quantity}</td>
+                    <td>
+                      {formatCurrency(product?.price * product?.quantity)} đ
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={2} className='text-end'>
+                  <Button
+                    variant='outline-primary'
+                    className='w-100'
+                    onClick={() => handlePaymentButton(key, total, order?.code)}
+                  >
+                    Thanh toán cho cửa hàng này
+                  </Button>
+                </td>
+                <td className='text-end'>Tổng cộng</td>
+                <td>{formatCurrency(total)} đ</td>
+              </tr>
+            </tfoot>
+          </Table>
+        );
+      })}
+      <PaymentModal
+        storeId={storeId}
+        show={show}
+        setShow={setShow}
+        amount={amount}
+        desc={desc}
+      />
     </>
   );
 }
