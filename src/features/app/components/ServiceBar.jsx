@@ -3,7 +3,7 @@ import { Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from 'constants/path';
 import DrivingIcon from 'assets/icons/motorbike.png';
-import UniformIcon from 'assets/icons/uniform.png';
+import HouseIcon from 'assets/icons/house.png';
 import PhotocopyIcon from 'assets/icons/photocopy.png';
 import RealEstateIcon from 'assets/icons/real-estate.png';
 import theme from 'constants/theme';
@@ -20,21 +20,21 @@ function ServiceBar() {
       },
       {
         _id: '2',
-        name: 'Đồng phục',
-        icon: UniformIcon,
-        path: PATH.UNIFORM.ROOT
-      },
-      {
-        _id: '3',
         name: 'In ấn',
         icon: PhotocopyIcon,
         path: PATH.PHOTOCOPY.ROOT
       },
       {
-        _id: '4',
-        name: 'Căn hộ',
+        _id: '3',
+        name: 'Chung cư',
         icon: RealEstateIcon,
-        path: PATH.REAL_ESTATE.ROOT
+        path: PATH.REAL_ESTATE.APARTMENT
+      },
+      {
+        _id: '4',
+        name: 'Nhà trọ',
+        icon: HouseIcon,
+        path: PATH.REAL_ESTATE.HOUSE
       },
     ],
     []

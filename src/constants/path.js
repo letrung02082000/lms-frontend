@@ -69,6 +69,7 @@ export const PATH = {
         PRODUCT_DETAIL: '/shop/product/:productId',
     },
     REAL_ESTATE: {
-        ROOT: '/shop/668d7116dbb560eb9a8fbbf7',
+        APARTMENT: '/shop/668d7116dbb560eb9a8fbbf7',
+        HOUSE: '/shop/668d7116dbb560eb9a8fbbf7',
     }
 };

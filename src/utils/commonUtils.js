@@ -8,6 +8,10 @@ const formatCurrency = (value) => {
 }
 
 const formatPhoneNumber = (value) => {
+    if(value?.slice(0,2) === '84') {
+        return value.replace(/(\d{2})(\d{3})(\d{3})(\d{3})/, '+$1 $2 $3 $4');
+    }
+    
     return value.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
 }
 
@@ -16,7 +20,7 @@ const copyText = (value) => {
 };
 
 const profileMsg = (name) => {
-    return `Xin chào bạn ${name ? name : 'bạn'}!`;
+    return `Xin chào ${name ? name : 'bạn'}!`;
 
 }
 

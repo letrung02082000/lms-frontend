@@ -33,7 +33,7 @@ function AppStorePage() {
     date < 12
       ? 'Chào ngày mới, bạn đang cần gì?'
       : date < 18
-      ? 'Xin chào, chiều nay bạn cần gì?'
+      ? 'Chiều nay bạn cần gì?'
       : 'Chúc bạn buổi tối tốt lành!';
 
   useEffect(() => {
@@ -90,21 +90,21 @@ function AppStorePage() {
     <>
       {loading && <Loading />}
       <StyledLayout isDesktop={isDesktop}>
-        <div className='d-flex justify-content-between my-4 align-items-end'>
-          <h5 className='m-0'>{welcomeMsg}</h5>
-        </div>
         <Swiper modules={[Pagination]} slidesPerView={1} loop={true}>
           <SwiperSlide>
             <Image
               src='https://istudentspace.sgp1.digitaloceanspaces.com/public/banner-2.jpg'
               fluid
-              className='mx-1'
+              className='mt-3'
             />
           </SwiperSlide>
         </Swiper>
-        <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
-          <h2 className='m-0'>Dịch vụ sinh viên</h2>
+        <div className='d-flex justify-content-between my-4 align-items-end'>
+          <h5 className='m-0'>{welcomeMsg}</h5>
         </div>
+        {/* <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
+          <h2 className='m-0'>Dịch vụ sinh viên</h2>
+        </div> */}
         <ServiceBar />
         <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Ưu đãi</h2>

@@ -10,6 +10,7 @@ import accountApi from 'api/accountApi';
 import { toastWrapper } from 'utils';
 import { updateUser } from 'store/userSlice';
 import { useDispatch } from 'react-redux';
+import { formatPhoneNumber } from 'utils/commonUtils';
 
 export default function OtpPage() {
   const [loading, setLoading] = React.useState(false);
@@ -99,15 +100,16 @@ export default function OtpPage() {
           onClear={() => setValue('otp', '')}
         />
         <Button
+          variant='outline-primary'
           disabled={loading}
           onClick={handleVerifyButtonClick}
-          className='text-white w-100 fw-bold mt-3 mb-2'
+          className='w-100 fw-bold mt-3 mb-2'
         >
           Xác nhận mã OTP
         </Button>
         <Form.Text className='text-center'>
-          Nhập mã OTP gồm 6 chữ số mà bạn đã nhận được qua ứng dụng Zalo ứng với
-          số điện thoại +84{zalo.slice(1)}.
+          Nhập mã OTP gồm 6 chữ số được gửi qua ứng dụng Zalo đăng ký bằng
+          số điện thoại {formatPhoneNumber(zalo)}.
         </Form.Text>
       </Form>
     </Styles>

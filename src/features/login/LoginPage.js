@@ -77,6 +77,7 @@ export default function LoginPage() {
           control={control}
           name='zalo'
           type='number'
+          placeholder='Nhập số điện thoại Zalo'
           rules={{
             maxLength: {
               value: 10,
@@ -91,11 +92,12 @@ export default function LoginPage() {
           onClear={() => setValue('zalo', '')}
         />
         <Button
+          variant="outline-primary"
           onClick={handleOtpButtonClick}
-          className="text-white w-100 fw-bold mt-3 mb-2"
+          className="w-100 fw-bold mt-3 mb-2"
           disabled={isSubmitting}
         >
-          Gửi mã OTP qua Zalo
+          Nhận mã OTP
         </Button>
         <Form.Text className="text-center">Mã OTP sẽ được gửi qua ứng dụng Zalo đăng ký bằng số điện thoại của bạn.</Form.Text>
       </Form>

@@ -5,6 +5,7 @@ import { Pagination, Scrollbar } from 'swiper';
 import storeApi from 'api/storeApi';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from 'constants/path';
+import theme from 'constants/theme';
 
 function CategoryBar({ categories }) {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ function CategoryBar({ categories }) {
               <div>
                 <div
                   style={{
-                    backgroundColor: '#f5f5f5',
+                    backgroundColor: theme.colors.whiteSmoke,
                     borderRadius: '15%',
                   }}
                 >

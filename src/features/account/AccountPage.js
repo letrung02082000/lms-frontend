@@ -32,9 +32,11 @@ function AccountPage() {
           <>
             <ProfileImage src={user.data.avatarUrl || "/common/avatar.png"} />
             <div className="d-flex flex-column align-items-center justify-content-center mb-5">
-              <p className="mb-1">{profileMsg(userInfo?.data?.name || '+' + userInfo?.zalo)}</p>
+              <p className="mb-1">{profileMsg(userInfo?.name)}</p>
+              <div className="btn btn-outline-secondary"><small>{formatPhoneNumber(userInfo?.zalo)}</small></div>
             </div>
-            <Item path={PATH.MAINTAIN}>Đơn hàng của bạn</Item>
+            <Item path={PATH.MAINTAIN}>Ưu đãi cho bạn</Item>
+            <Item path={PATH.MAINTAIN}>Tra cứu đơn hàng</Item>
             <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
             {/* <Item onClick={handleLogout}>Đăng xuất</Item> */}
           </>
