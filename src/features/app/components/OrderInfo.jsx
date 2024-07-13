@@ -94,17 +94,19 @@ function OrderInfo({ order }) {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={2} className='text-end'>
+                <td colSpan={3} className='text-end'>Tổng cộng</td>
+                <td>{formatCurrency(total)} đ</td>
+              </tr>
+              <tr>
+              <td colSpan={4} className='text-end'>
                   <Button
-                    variant='outline-primary'
-                    className='w-100'
+                    variant='primary'
+                    className='w-100 text-white'
                     onClick={() => handlePaymentButton(key, total, order?.code)}
                   >
-                    Thanh toán cho cửa hàng này
+                    <small>Thanh toán cho cửa hàng này</small>
                   </Button>
                 </td>
-                <td className='text-end'>Tổng cộng</td>
-                <td>{formatCurrency(total)} đ</td>
               </tr>
             </tfoot>
           </Table>
