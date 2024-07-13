@@ -31,6 +31,11 @@ export const PATH = {
     DRIVING_ADMIN: '/driving-admin',
     DRIVING: {
         ROOT: '/driving',
+        TEST: '/driving-test',
+        A1_TEST: '/driving-test/a1',
+        A2_TEST: '/driving-test/a2',
+        B1_TEST: '/driving-test/b1',
+        B2_TEST: '/driving-test/b2',
         REGISTRATION: '/driving-registration',
         INSTRUCTION: '/driving-instruction',
         ADMIN: {
@@ -71,5 +76,11 @@ export const PATH = {
     REAL_ESTATE: {
         APARTMENT: '/shop/668d7116dbb560eb9a8fbbf7',
         HOUSE: '/shop/6692322f5b18a435b8e266ec',
-    }
+    },
+    GCN: {
+        ROOT: '/gcn',
+        USSH: '/gcn/ussh',
+        LIST: '/gcn/list',
+        DETAIL: '/gcn/detail/:id',
+    },
 };

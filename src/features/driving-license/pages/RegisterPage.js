@@ -239,21 +239,16 @@ export default function DrivingRegisterPage() {
       />
       {searchData &&
         searchData.map((child) => {
-          const date = new Date(child.date);
+          console.log(child)
+          const date = new Date(child.createdAt);
           const processDate = new Date(date);
-          processDate.setDate(date.getDate() - 14);
+          processDate.setDate(date.getDate() + 1);
           let state = "";
 
-          if (child.processState === 0) {
-            state = "Đang chờ xử lý";
-          } else if (child.processState === 1) {
-            state = "Đang chờ cập nhật";
-          } else if (child.processState === 2) {
-            state = "Đang chờ thanh toán";
-          } else if (child.processState === 3) {
-            state = "Đã hoàn tất hồ sơ";
-          } else if (child.processState === 4) {
+          if (child.processState === 4) {
             state = "Đã hủy hồ sơ";
+          } else {
+            state = "Đang chờ xử lý";
           }
 
           return (
@@ -266,9 +261,9 @@ export default function DrivingRegisterPage() {
                   }/${processDate.getFullYear()}`}
               </p>
               <p>
-                Vui lòng liên hệ Zalo OA{" "}
-                <ZaloLink tel={ZALO_OA_NUMBER}>
-                  {convertPhoneNumber(ZALO_OA_NUMBER, ".")}
+                Vui lòng liên hệ Zalo{" "}
+                <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
+                  {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
                 </ZaloLink>{" "}
                 để được hỗ trợ trong trường hợp hồ sơ của bạn chưa được xử lý.
               </p>
@@ -425,8 +420,8 @@ export default function DrivingRegisterPage() {
         <Row className="mb-3">
           <Col>
               <InputField
-                label='Bằng lái hạng khác'
-                subLabel='Vui lòng ghi rõ loại bằng lái hạng khác (nếu có)'
+                label='Bằng lái hạng khác/Mã ưu đãi'
+                subLabel='Vui lòng ghi rõ loại bằng lái hạng khác hoặc mã ưu đãi (nếu có)'
                 control={control}
                 name='feedback'
                 as='textarea'

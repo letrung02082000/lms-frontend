@@ -1,6 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { PATH } from 'constants/path';
-import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, ExplorePage, GuestHouseInfoPage, HomePage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, UniformRegistrationPage, PhotocopyPage } from 'features';
+import { ADMIN_DRIVING_MENU } from 'constants/menu';
+import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, ExplorePage, GuestHouseInfoPage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, UniformRegistrationPage, PhotocopyPage, DrivingTestPage } from 'features';
+import { AppStorePage, CheckoutPage, OrderPage, ProductDetailPage, StoreDetailPage } from 'features/app';
 import MainGuard from 'components/guard/MainGuard';
 import MainLayout from 'components/layout/MainLayout';
 import UserGuard from 'components/guard/UserGuard';
@@ -8,12 +10,10 @@ import ServiceLayout from 'components/layout/ServiceLayout';
 import AdminLayout from 'components/layout/AdminLayout';
 import AdminGuard from 'components/guard/AdminGuard';
 import AdminPage from 'features/admin/pages/AdminPage';
-import { ADMIN_DRIVING_MENU } from 'constants/menu';
 import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDrivingDatePage';
 import AdminDrivingA1Page from 'features/admin/driving-license/pages/AdminDrivingPage';
 import DrivingAdminPage from 'features/admin/driving-license/DrivingAdminPage';
 import YenSharePage from 'features/yenshare/pages/YenSharePage';
-import { AppStorePage, CheckoutPage, OrderPage, ProductDetailPage, StoreDetailPage } from 'features/app';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
 import StoreByCategory from 'features/app/pages/StoreByCategory';
@@ -22,6 +22,8 @@ import OrderHistoryPage from 'features/app/pages/OrderHistoryPage';
 import StoreByLocation from 'features/app/pages/StoreByLocation';
 import ShortLinkPage from 'features/short-link/pages/ShortLinkPage';
 import OtpPage from 'features/login/OtpPage';
+import GcnPage from 'features/gcn/pages/GcnPage';
+import UsshGcnPage from 'features/gcn/pages/GcnPage2';
 
 const router = createBrowserRouter([
   {
@@ -117,6 +119,14 @@ const router = createBrowserRouter([
         element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
           <DrivingRegisterPage />
         </ServiceLayout>
+      },
+      {
+        path: PATH.GCN.ROOT,
+        element: <GcnPage />
+      },
+      {
+        path: PATH.GCN.USSH,
+        element: <UsshGcnPage />
       },
     ],
   },
@@ -237,6 +247,12 @@ const router = createBrowserRouter([
     path: PATH.YEN_SHARE.ROOT,
     element: <ServiceLayout pageTitle="Yên share">
       <YenSharePage />
+    </ServiceLayout>
+  },
+  {
+    path: PATH.DRIVING.TEST,
+    element: <ServiceLayout pageTitle="Lý thuyết sát hạch">
+      <DrivingTestPage />
     </ServiceLayout>
   },
 ]);
