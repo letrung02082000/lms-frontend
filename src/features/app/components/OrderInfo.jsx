@@ -1,13 +1,11 @@
 import { PATH } from 'constants/path';
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { formatCurrency } from 'utils/commonUtils';
 
 function OrderInfo({ order }) {
-  const products = order?.products || [];
-  const totalPrice = products.reduce((total, product) => {
-    return total + product.price * product.quantity;
-  }, 0);
+  console.log(order)
+  const productByStoreId = order?.productByStoreId || [];
 
   return (
     <>
@@ -42,46 +40,63 @@ function OrderInfo({ order }) {
           </tr>
         </tbody>
       </Table>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Sản phẩm</th>
-            <th>Cửa hàng</th>
-            <th>Số lượng</th>
-            <th>Thành tiền</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products?.map((product, index) => {
-            return (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{product?.name}</td>
-                <td>
-                  <a
-                    href={PATH.APP.STORE_DETAIL.replace(':storeId', product?.store?._id)}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    {product?.store?.name}
-                  </a>
-                </td>
-                <td>{product?.quantity}</td>
-                <td>{formatCurrency(product?.price * product?.quantity)} đ</td>
-              </tr>
-            );
-          })}
-          <tr>
-            <td colSpan={4}>
-              <b>Tổng cộng</b>
-            </td>
-            <td>
-              <b>{formatCurrency(totalPrice)} đ</b>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
+      {
+            Object.keys(productByStoreId).map((key, index) => {
+              return (
+                <Table striped bordered hover key={key}>
+                  <tbody>
+                    <tr>
+                      <td colSpan={4}>
+                        <a
+                          className='text-decoration-none fw-bold p-0'
+                          href={PATH.APP.STORE_DETAIL.replace(
+                            ':storeId',
+                            productByStoreId[key][0]?.store?._id
+                          )}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          {productByStoreId[key][0]?.store?.name}
+                        </a>
+                      </td>
+                    </tr>
+                    {productByStoreId[key].map((product, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{product?.name}</td>
+                          <td>x {product?.quantity}</td>
+                          <td>
+                            {formatCurrency(product?.price * product?.quantity)}{' '}
+                            đ
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colSpan={2} className='text-end'>
+                        <Button variant='outline-primary' className='w-100'>
+                          Thanh toán cho cửa hàng này
+                        </Button>
+                      </td>
+                      <td className='text-end'>Tổng cộng</td>
+                      <td>
+                        {formatCurrency(
+                          productByStoreId[key]?.reduce(
+                            (acc, cur) => acc + cur.price * cur.quantity,
+                            0
+                          )
+                        )}{' '}
+                        đ
+                      </td>
+                    </tr>
+                  </tfoot>
+                </Table>
+              );
+            })
+          }
     </>
   );
 }

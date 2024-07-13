@@ -18,7 +18,6 @@ function CheckoutPage() {
     APP: 'app',
   }
   const { state } = useLocation();
-  console.log(state)
   const [loading, setLoading] = React.useState(false);
   const order = JSON.parse(localStorage.getItem('order') || '{}');
   const navigate = useNavigate();
