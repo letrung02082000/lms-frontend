@@ -14,7 +14,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc }) {
   const [amountCopied, setAmountCopied] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [paymentInfo, setPaymentInfo] = useState({});
+  const [paymentInfo, setPaymentInfo] = useState(null);
 
   const handleClose = () => {
     setIsPaid(true);
@@ -22,6 +22,8 @@ function PaymentModal({ storeId, show, setShow, amount, desc }) {
   };
 
   useEffect(() => {
+    setPaymentInfo(null);
+    setLoading(true);
     storeApi
       .getStoreById(storeId)
       .then((res) => {
@@ -45,88 +47,88 @@ function PaymentModal({ storeId, show, setShow, amount, desc }) {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Thông tin chuyển khoản</Modal.Title>
+          <Modal.Title>Thông tin thanh toán</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           {!loading ? (
-            <ModalStyles>
-              <Row>
-                <Col md={7}>
-                  <img
-                    src={`https://img.vietqr.io/image/${
-                      paymentInfo?.bankCode
-                    }-${paymentInfo?.bankAccount}-e59ZziA.jpg?accountName=${
-                      paymentInfo?.bankOwner
-                    }&amount=${amount}&addInfo=${desc}`}
-                    alt='vietqr'
-                    className='w-100 mb-2'
-                  />
-                </Col>
-                <Col>
-                  <div className='text-uppercase fw-bold mb-3'>
-                    {paymentInfo?.bankName}
-                  </div>
-                  <div className='mb-2'>
-                    Chủ tài khoản
-                    <br />
-                    <b>{paymentInfo?.bankOwner?.toUpperCase()}</b>
-                  </div>
-                  <Row className='mb-2'>
-                    <Col xs={12}>
-                      Số tài khoản
+            !paymentInfo ? (
+              <p>Cửa hàng chưa cập nhật thông tin thanh toán</p>
+            ) : (
+              <ModalStyles>
+                <Row>
+                  <Col md={7}>
+                    <img
+                      src={`https://img.vietqr.io/image/${paymentInfo?.bankCode}-${paymentInfo?.bankAccount}-e59ZziA.jpg?accountName=${paymentInfo?.bankOwner}&amount=${amount}&addInfo=${desc}`}
+                      alt='vietqr'
+                      className='w-100 mb-2'
+                    />
+                  </Col>
+                  <Col>
+                    <div className='text-uppercase fw-bold mb-3'>
+                      {paymentInfo?.bankName}
+                    </div>
+                    <div className='mb-2'>
+                      Chủ tài khoản
                       <br />
-                      <b>{paymentInfo?.bankAccount}</b>
-                    </Col>
-                    <Col>
-                      <CopyButton
-                        className='btn btn-outline-primary copy-btn'
-                        text={paymentInfo?.bankAccount}
-                        copied={copied}
-                        setCopied={setCopied}
-                      >
-                        <BiCopy /> {copied ? 'Đã chép' : 'Sao chép'}
-                      </CopyButton>
-                    </Col>
-                  </Row>
-                  <Row className='mb-2'>
-                    <Col xs={12}>
-                      Nội dung
-                      <br />
-                      <b>{paymentInfo?.description || desc}</b>
-                    </Col>
-                    <Col>
-                      <CopyButton
-                        className='btn btn-outline-primary copy-btn'
-                        text={desc}
-                        copied={contentCopied}
-                        setCopied={setContentCopied}
-                      >
-                        <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
-                      </CopyButton>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs={12}>
-                      Số tiền
-                      <br />
-                      <b>{formatCurrency(amount)} VNĐ</b>
-                    </Col>
+                      <b>{paymentInfo?.bankOwner?.toUpperCase()}</b>
+                    </div>
+                    <Row className='mb-2'>
+                      <Col xs={12}>
+                        Số tài khoản
+                        <br />
+                        <b>{paymentInfo?.bankAccount}</b>
+                      </Col>
+                      <Col>
+                        <CopyButton
+                          className='btn btn-outline-primary copy-btn'
+                          text={paymentInfo?.bankAccount}
+                          copied={copied}
+                          setCopied={setCopied}
+                        >
+                          <BiCopy /> {copied ? 'Đã chép' : 'Sao chép'}
+                        </CopyButton>
+                      </Col>
+                    </Row>
+                    <Row className='mb-2'>
+                      <Col xs={12}>
+                        Nội dung
+                        <br />
+                        <b>{paymentInfo?.description || desc}</b>
+                      </Col>
+                      <Col>
+                        <CopyButton
+                          className='btn btn-outline-primary copy-btn'
+                          text={desc}
+                          copied={contentCopied}
+                          setCopied={setContentCopied}
+                        >
+                          <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
+                        </CopyButton>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col xs={12}>
+                        Số tiền
+                        <br />
+                        <b>{formatCurrency(amount)} VNĐ</b>
+                      </Col>
 
-                    <Col>
-                      <CopyButton
-                        className='btn btn-outline-primary copy-btn'
-                        text={amount}
-                        copied={amountCopied}
-                        setCopied={setAmountCopied}
-                      >
-                        <BiCopy /> {amountCopied ? 'Đã chép' : 'Sao chép'}
-                      </CopyButton>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </ModalStyles>
+                      <Col>
+                        <CopyButton
+                          className='btn btn-outline-primary copy-btn'
+                          text={amount}
+                          copied={amountCopied}
+                          setCopied={setAmountCopied}
+                        >
+                          <BiCopy /> {amountCopied ? 'Đã chép' : 'Sao chép'}
+                        </CopyButton>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </ModalStyles>
+            )
           ) : (
             <Loading />
           )}
