@@ -6,6 +6,15 @@ class CouponApi {
             params: { code, total },
         });
     };
+
+    queryCoupons = async (category, store, storeCategory, serviceType, search='') => {
+        return axiosClient.get('/coupons/q', {
+            params: {
+                visible: true,
+
+            },
+        });
+    };
 }
 
 export default new CouponApi();

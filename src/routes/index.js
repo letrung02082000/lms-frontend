@@ -24,6 +24,7 @@ import ShortLinkPage from 'features/short-link/pages/ShortLinkPage';
 import OtpPage from 'features/login/OtpPage';
 import GcnPage from 'features/gcn/pages/GcnPage';
 import UsshGcnPage from 'features/gcn/pages/GcnPage2';
+import CouponPage from 'features/app/pages/CouponPage';
 
 const router = createBrowserRouter([
   {
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
           },
           {
             path: PATH.EXPLORE.ROOT,
-            element: <MaintainPage />,
+            element: <CouponPage />,
           },
           {
             path: PATH.ACCOUNT,
@@ -221,7 +222,7 @@ const router = createBrowserRouter([
   },
   {
     path: PATH.PHOTOCOPY.ROOT,
-    element: <ServiceLayout pageTitle="In ấn">
+    element: <ServiceLayout pageTitle="In ấn" backTo={PATH.HOME}>
       <PhotocopyPage />
     </ServiceLayout>
   },

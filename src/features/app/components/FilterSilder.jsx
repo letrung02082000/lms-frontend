@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Pagination } from 'swiper';
 import styled from 'styled-components';
 
-function FilterSilder({ setCategoryId, categories, categoryId }) {
+function FilterSilder({ setCategoryId, categories, categoryId, hasAll=true }) {
   return (
     <Styles>
       <Swiper
@@ -27,7 +27,7 @@ function FilterSilder({ setCategoryId, categories, categoryId }) {
           },
         }}
       >
-        <SwiperSlide>
+        {!!hasAll && <SwiperSlide>
           <Button
             onClick={() => setCategoryId('')}
             variant={categoryId === '' ? 'secondary' : 'outline-secondary'}
@@ -35,7 +35,7 @@ function FilterSilder({ setCategoryId, categories, categoryId }) {
           >
             <small>Tất cả</small>
           </Button>
-        </SwiperSlide>
+        </SwiperSlide>}
         {categories.map((cat) => {
           return (
             <SwiperSlide key={cat._id}>

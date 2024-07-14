@@ -74,6 +74,17 @@ class CouponApi {
     const url = `${API_PATH}`;
     return axiosClient.post(url, coupon, { ...authHeader() });
   };
+
+  applyCode = async (code, total = 0) => {
+    return axiosClient.get('/coupons/apply', {
+      params: { code, total },
+    });
+  };
+
+  queryCoupons = async (params) => {
+    const url = `${API_PATH}/q`;
+    return axiosClient.get(url, { params });
+  };
 }
 
 export default new CouponApi();

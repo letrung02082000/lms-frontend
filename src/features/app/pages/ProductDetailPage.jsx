@@ -113,7 +113,7 @@ function ProductDetailPage() {
                 <Row>
                   <Col>
                     <small>
-                      {storeOptions?.cartButtonLabel || 'Thêm vào giỏ hàng'}
+                      {storeOptions?.cartButtonLabel || 'Mua ngay'}
                     </small>
                   </Col>
                 </Row>
