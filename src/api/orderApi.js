@@ -1,6 +1,6 @@
 import axiosClient from './axiosClient';
 
-const API_PATH = "https://api.food.isinhvien.vn/order";
+const API_PATH = "/order";
 
 class Api {
   getOrders = async (page, limit, search) => {

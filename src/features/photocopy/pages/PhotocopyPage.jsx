@@ -136,13 +136,11 @@ function PhotocopyPage() {
     officeApi
       .getOffices(0, 25)
       .then((res) => {
-        console.log(res)
         setOffices(
           res?.data?.map((_item) => ({ label: _item.name, value: _item._id }))
         );
       })
       .catch((e) => {
-        console.log(e);
         ToastWrapper('Không thể tải danh sách cửa hàng', 'error');
       });
   }, []);
@@ -150,7 +148,6 @@ function PhotocopyPage() {
   const couponCode = watch('coupon');
   const category = watch('category');
   const tag = watch('tags');
-  console.log(tag)
   const tel = watch('tel');
 
   useEffect(() => {

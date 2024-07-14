@@ -116,7 +116,7 @@ function AppStorePage() {
           <h2 className='m-0'>Sản phẩm nổi bật</h2>
         </div>
         <FilterSilder
-          categories={productCategories}
+          categories={storeCategories}
           setCategoryId={setProductCategory}
           categoryId={productCategory}
         />

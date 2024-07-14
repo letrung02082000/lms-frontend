@@ -1,6 +1,6 @@
 import axiosClient from "./axiosClient";
 
-const API_PATH = "https://api.food.isinhvien.vn/short";
+const API_PATH = "/short";
 
 class ShortLinkApi {
     getShortLink = async (short) => {

@@ -1,7 +1,7 @@
 import axiosClient from "./axiosClient";
 import { authHeader } from "utils";
 
-const API_PATH = "https://api.food.isinhvien.vn/user";
+const API_PATH = "/user";
 
 class AccountApi {
   sendOtp = async (zaloNumber) => {

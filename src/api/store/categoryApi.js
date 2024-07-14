@@ -1,6 +1,6 @@
 import axiosClient from "../axiosClient";
 
-const API_PATH = "https://api.food.isinhvien.vn/category";
+const API_PATH = "/category";
 
 class CategoryApi {
     getProductCategories = async (id) => {

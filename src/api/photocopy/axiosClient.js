@@ -1,31 +1,31 @@
-import axios from 'axios';
+import axios from 'axios'
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000'
+const token = localStorage.getItem("user-jwt-tk");
 
-const token = localStorage.getItem('phototd-token');
-let baseURL = 'https://api.in.isinhvien.vn';
 const axiosClient = axios.create({
-  baseURL,
-  headers: token && {
-    Authorization: `Bearer ${token}`,
-  },
-});
+  baseURL: baseURL + '/photocopy',
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+})
 
-const handleResponse = (res) => {
-  return res.data;
-};
+const handleResponse = res => {
+  return res.data
+}
 
-const handleError = (err) => {
-  return Promise.reject(err);
-};
+const handleError = err => {
+  return Promise.reject(err)
+}
 
 axiosClient.interceptors.request.use(
-  (req) => {
-    return req;
+  req => {
+    return req
   },
-  (err) => {
-    return Promise.reject(err);
+  err => {
+    return Promise.reject(err)
   }
-);
+)
 
-axiosClient.interceptors.response.use(handleResponse, handleError);
+axiosClient.interceptors.response.use(handleResponse, handleError)
 
-export default axiosClient;
+export default axiosClient
