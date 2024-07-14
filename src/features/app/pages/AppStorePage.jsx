@@ -100,7 +100,7 @@ function AppStorePage() {
           </SwiperSlide>
         </Swiper>
         <div className='d-flex justify-content-between my-4 align-items-end'>
-          <h5 className='m-0'>{welcomeMsg}</h5>
+          <h2 className='m-0'>{welcomeMsg}</h2>
         </div>
         {/* <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Dịch vụ sinh viên</h2>
