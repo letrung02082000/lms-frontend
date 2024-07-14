@@ -39,7 +39,6 @@ function ProductDetailPage() {
     storeApi
       .getStoreOptions(product?.store?.options)
       .then((res) => {
-        console.log(res.data);
         setStoreOptions(res.data);
       })
       .catch((err) => {
@@ -112,9 +111,6 @@ function ProductDetailPage() {
                 onClick={() => handleAddToCartButton(product)}
               >
                 <Row>
-                  <Col xs={2}>
-                    <BsPlus color='red' />
-                  </Col>
                   <Col>
                     <small>
                       {storeOptions?.cartButtonLabel || 'Thêm vào giỏ hàng'}

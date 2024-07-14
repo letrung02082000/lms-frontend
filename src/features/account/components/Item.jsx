@@ -19,7 +19,7 @@ function Item({ children, path, onClick }) {
   return (
     <Styles>
       <button className="btn my-2 d-flex justify-content-between w-100 p-3" onClick={handleClick}>
-        <span className='fw-bold'>{children}</span>
+        <span className=''>{children}</span>
         <MdKeyboardArrowRight size={25}/>
       </button>
     </Styles>

@@ -33,7 +33,7 @@ function AppStorePage() {
     date < 12
       ? 'Chào ngày mới, bạn đang cần gì?'
       : date < 18
-      ? 'Chiều nay bạn cần gì?'
+      ? 'Hôm nay bạn cần gì?'
       : 'Chúc bạn buổi tối tốt lành!';
 
   useEffect(() => {
@@ -107,7 +107,7 @@ function AppStorePage() {
         </div> */}
         <ServiceBar />
         <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
-          <h2 className='m-0'>Ưu đãi</h2>
+          <h2 className='m-0'>Danh mục</h2>
         </div>
         <CategoryBar categories={storeCategories} />
         <StoreSlider />

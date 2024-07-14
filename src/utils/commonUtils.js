@@ -21,7 +21,7 @@ const copyText = (value) => {
 };
 
 const profileMsg = (name) => {
-    return `Xin chào ${name ? name : 'bạn'}!`;
+    return `Xin chào ${name ? name : ''}`;
 
 }
 
