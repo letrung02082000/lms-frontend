@@ -26,13 +26,14 @@ class StoreApi {
             });
     };
 
-    getProductsByCategory = async (categoryId, storeId) => {
+    queryProducts = async (category, store, storeCategory) => {
         const url = `${API_PATH}/q`;
         return axiosClient.get(url, {
             params: {
                 visible: true,
-                category: categoryId,
-                store: storeId,
+                category,
+                store,
+                storeCategory
             },
         });
     };

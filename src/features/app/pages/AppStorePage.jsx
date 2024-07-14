@@ -25,7 +25,7 @@ function AppStorePage() {
   const [products, setProducts] = React.useState([]);
   const [productCategories, setProductCategories] = React.useState([]);
   const [storeCategories, setStoreCategories] = React.useState([]);
-  const [productCategory, setProductCategory] = React.useState('');
+  const [storeCategory, setStoreCategory] = React.useState('');
   const dispatch = useDispatch();
   const cart = useSelector(selectCart);
   const date = new Date().getHours();
@@ -37,9 +37,9 @@ function AppStorePage() {
       : 'Chúc bạn buổi tối tốt lành!';
 
   useEffect(() => {
-    if (productCategory) {
+    if (storeCategory) {
       productApi
-        .getProductsByCategory(productCategory)
+        .queryProducts(null, null, storeCategory)
         .then((res) => {
           setProducts(res.data);
         })
@@ -56,7 +56,7 @@ function AppStorePage() {
           console.log(err);
         });
     }
-  }, [productCategory]);
+  }, [storeCategory]);
 
   useEffect(() => {
     categoryApi
@@ -117,8 +117,8 @@ function AppStorePage() {
         </div>
         <FilterSilder
           categories={storeCategories}
-          setCategoryId={setProductCategory}
-          categoryId={productCategory}
+          setCategoryId={setStoreCategory}
+          categoryId={storeCategory}
         />
         <div className='d-flex flex-wrap w-100 my-3 justify-content-between'>
           {products?.map((product) => {
