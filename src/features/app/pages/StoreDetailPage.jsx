@@ -68,7 +68,7 @@ function StoreDetailPage() {
         });
     } else {
       productApi
-        .getProductsByCategory(categoryId, storeId)
+        .queryProducts(categoryId, storeId)
         .then((res) => {
           setProducts(res.data);
         })
