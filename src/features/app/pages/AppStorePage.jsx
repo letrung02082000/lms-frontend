@@ -128,6 +128,7 @@ function AppStorePage() {
                 className='product-item mb-3 d-flex flex-column justify-content-between'
               >
                 <ProductItem
+                  hasCartButton={false}
                   product={product}
                   handleAddToCartButton={handleAddToCartButton}
                 />
