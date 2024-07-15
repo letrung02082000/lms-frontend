@@ -4,7 +4,7 @@ import { Button, Table } from 'react-bootstrap';
 import { formatCurrency, formatPhoneNumber } from 'utils/commonUtils';
 import PaymentModal from './PaymentModal';
 
-function OrderInfo({ order }) {
+function OrderInfo({ order, storeOrders }) {
   const productByStoreId = order?.productByStoreId || [];
   const [storeId, setStoreId] = React.useState('');
   const [show, setShow] = React.useState(false);
@@ -24,7 +24,7 @@ function OrderInfo({ order }) {
         <thead>
           <tr>
             <th colSpan={2} className='text-center text-uppercase'>
-              Thông tin đơn hàng
+              Thông tin khách hàng
             </th>
           </tr>
         </thead>
@@ -42,27 +42,18 @@ function OrderInfo({ order }) {
             <td>{order?.address}</td>
           </tr>
           <tr>
-            <td>Email</td>
-            <td>{order?.email || 'Không có'}</td>
+            <td>Điểm tích luỹ</td>
+            <td>{order?.points || 0}</td>
           </tr>
           <tr>
             <td>Ghi chú</td>
             <td>{order?.note || 'Không có'}</td>
           </tr>
-          <tr>
-            <td>Điểm tích luỹ</td>
-            <td>{order?.points || 0}</td>
-          </tr>
         </tbody>
       </Table>
-      {Object.keys(productByStoreId).map((key) => {
-        const total = productByStoreId[key]?.reduce(
-          (acc, cur) => acc + cur.price * cur.quantity,
-          0
-        );
-
+      {storeOrders.map((storeOrder) => {
         return (
-          <Table striped bordered hover key={key}>
+          <Table striped bordered hover key={storeOrder?._id}>
             <tbody>
               <tr>
                 <td colSpan={4}>
@@ -70,16 +61,16 @@ function OrderInfo({ order }) {
                     className='text-decoration-none fw-bold p-0'
                     href={PATH.APP.STORE_DETAIL.replace(
                       ':storeId',
-                      productByStoreId[key][0]?.store?._id
+                      storeOrder.storeId?._id
                     )}
                     target='_blank'
                     rel='noopener noreferrer'
                   >
-                    {productByStoreId[key][0]?.store?.name}
+                    {storeOrder.storeId?.name}
                   </a>
                 </td>
               </tr>
-              {productByStoreId[key].map((product, index) => {
+              {storeOrder?.products.map((product, index) => {
                 return (
                   <tr key={index}>
                     <td>{index + 1}</td>
@@ -94,15 +85,30 @@ function OrderInfo({ order }) {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={3} className='text-end'>Tổng cộng</td>
-                <td>{formatCurrency(total)} đ</td>
+                <td colSpan={2} className='text-end'>
+                  Tổng cộng
+                </td>
+                <td colSpan={2}>
+                  {order?.discount > 0 && (
+                    <div className='text-decoration-line-through'>
+                      {formatCurrency(order?.total)} đ
+                    </div>
+                  )}
+                  <div>{formatCurrency(order?.total - order?.discount)} đ</div>
+                </td>
               </tr>
               <tr>
-              <td colSpan={4} className='text-end'>
+                <td colSpan={4} className='text-end'>
                   <Button
                     variant='primary'
                     className='w-100 text-white'
-                    onClick={() => handlePaymentButton(key, total, order?.code)}
+                    onClick={() =>
+                      handlePaymentButton(
+                        storeOrder?.storeId?._id,
+                        storeOrder?.total - storeOrder?.discount,
+                        storeOrder?.paymentCode
+                      )
+                    }
                   >
                     <small>Thanh toán cho cửa hàng này</small>
                   </Button>

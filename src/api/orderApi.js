@@ -48,6 +48,7 @@ class Api {
   };
 
   queryOrder = async (data) => {
+    console.log(data)
     return axiosClient.get(`${API_PATH}/query`, { params: data });
   };
 }

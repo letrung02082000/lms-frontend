@@ -38,11 +38,13 @@ function CouponItem({ coupon }) {
         <Modal.Body>
           <h5>{coupon?.title}</h5>
           {coupon?.store?._id && (
-            <p>
-              Ưu đãi dùng cho {coupon?.store?.name} từ{' '}
-              {new Date(coupon?.validFrom).toLocaleDateString('en-GB')} đến{' '}
-              {new Date(coupon?.validUntil).toLocaleDateString('en-GB')}.
-            </p>
+            <div className='mb-2'>
+              <small>
+                Ưu đãi dùng cho <strong>{coupon?.store?.name}</strong> từ{' '}
+                {new Date(coupon?.validFrom).toLocaleDateString('en-GB')} đến{' '}
+                {new Date(coupon?.validUntil).toLocaleDateString('en-GB')}.
+              </small>
+            </div>
           )}
           <Button
             onClick={() => {
@@ -55,7 +57,11 @@ function CouponItem({ coupon }) {
             <span className='me-2'>{coupon?.code}</span>
             <BsCopy />
           </Button>
-          <Button variant='outline-primary' className='fw-bold ms-2' onClick={handleCouponButtonClick}>
+          <Button
+            variant='outline-primary'
+            className='fw-bold ms-2'
+            onClick={handleCouponButtonClick}
+          >
             Dùng ngay
           </Button>
           <p>{coupon?.description}</p>
