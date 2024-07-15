@@ -89,12 +89,12 @@ function OrderInfo({ order, storeOrders }) {
                   Tổng cộng
                 </td>
                 <td colSpan={2}>
-                  {order?.discount > 0 && (
+                  {storeOrder?.discount > 0 && (
                     <div className='text-decoration-line-through'>
-                      {formatCurrency(order?.total)} đ
+                      {formatCurrency(storeOrder?.total)} đ
                     </div>
                   )}
-                  <div>{formatCurrency(order?.total - order?.discount)} đ</div>
+                  <div>{formatCurrency(storeOrder?.total - storeOrder?.discount)} đ</div>
                 </td>
               </tr>
               <tr>
