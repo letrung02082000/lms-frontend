@@ -8,7 +8,7 @@ import FilterSilder from '../components/FilterSilder';
 import categoryApi from 'api/store/categoryApi';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Pagination } from 'swiper';
-import CouponByCategorySlider from '../components/CouponByCategorySlider';
+import CouponSlider from '../components/CouponSlider';
 
 function CouponPage() {
   const [loading, setLoading] = React.useState(true);
@@ -75,9 +75,16 @@ function CouponPage() {
           setCategoryId={setStoreCategory}
           categoryId={storeCategory}
         />
+        <div className='d-flex justify-content-between mb-2 align-items-end'></div>
+        <CouponSlider storeCategory={storeCategory} />
         <div className='d-flex justify-content-between mb-2 align-items-end'>
+          <h2>Ưu đãi mới</h2>
         </div>
-        <CouponByCategorySlider storeCategory={storeCategory} />
+        <CouponSlider />
+        <div className='d-flex justify-content-between mb-2 align-items-end'>
+          <h2>Dành cho bạn</h2>
+        </div>
+        <CouponSlider priority={-1} />
       </StyledLayout>
     </>
   );

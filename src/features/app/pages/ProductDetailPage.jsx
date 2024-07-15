@@ -1,6 +1,6 @@
 import storeApi from 'api/storeApi';
 import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, Image, Row } from 'react-bootstrap';
 import productApi from 'api/productApi';
 import { BsCartPlus, BsPlus } from 'react-icons/bs';
@@ -23,6 +23,8 @@ function ProductDetailPage() {
   const [storeOptions, setStoreOptions] = React.useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
+  const location = useLocation();
+  console.log(location)
 
   useEffect(() => {
     productApi
@@ -52,13 +54,16 @@ function ProductDetailPage() {
   const dispatch = useDispatch();
   const handleAddToCartButton = (item) => {
     dispatch(addToCart(item));
-    navigate(PATH.APP.CHECKOUT)
+    navigate(PATH.APP.CHECKOUT, { state: { coupon: location?.state?.coupon } });
   };
 
   return (
     <>
       {loading && <Loading />}
       <ServiceLayout
+        state={{
+          coupon: location?.state?.coupon,
+        }}
         backTo={PATH.APP.STORE_DETAIL.replace(':storeId', product?.store?._id)}
         pageTitle={`Thông tin ${
           storeOptions?.storeLabel?.toLowerCase() || 'sản phẩm'
@@ -112,16 +117,16 @@ function ProductDetailPage() {
               >
                 <Row>
                   <Col>
-                    <small>
-                      {storeOptions?.cartButtonLabel || 'Mua ngay'}
-                    </small>
+                    <small>{storeOptions?.cartButtonLabel || 'Mua ngay'}</small>
                   </Col>
                 </Row>
               </Button>
             </Col>
           </Row>
           <div className='my-3'>
-            <h4>Mô tả {storeOptions?.storeLabel?.toLowerCase() || 'sản phẩm'}</h4>
+            <h4>
+              Mô tả {storeOptions?.storeLabel?.toLowerCase() || 'sản phẩm'}
+            </h4>
             <p>{product?.description}</p>
           </div>
         </StyledLayout>

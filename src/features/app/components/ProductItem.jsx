@@ -2,17 +2,20 @@ import { PATH } from 'constants/path';
 import React from 'react';
 import { Button, Col, Image, Row } from 'react-bootstrap';
 import { BsCartPlus } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { formatCurrency } from 'utils/commonUtils';
 
 function ProductItem({ product, handleAddToCartButton, hasCartButton = true}) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <>
       <Row
         onClick={() =>
-          navigate(PATH.APP.PRODUCT_DETAIL.replace(':productId', product?._id))
+          navigate(PATH.APP.PRODUCT_DETAIL.replace(':productId', product?._id), {
+            state: { coupon: location?.state?.coupon },
+          })
         }
       >
         <Col>

@@ -1,13 +1,14 @@
 import { PATH } from 'constants/path';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { selectCart } from 'store/cart';
 import styled from 'styled-components';
 import { formatCurrency } from 'utils/commonUtils';
 
 function CartBar({bottom = 0}) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const source = searchParams.get('src');
   const orderInfo = {
     address: searchParams.get('address'),
@@ -38,8 +39,14 @@ function CartBar({bottom = 0}) {
         className='btn text-white text-center'
         onClick={() => {
           if (source === SOURCES.QR)
-            return navigate(PATH.APP.CHECKOUT, { state: orderInfo });
-          navigate(PATH.APP.CHECKOUT);
+            return navigate(PATH.APP.CHECKOUT, {
+              state: { ...orderInfo, coupon: location?.state?.coupon },
+            });
+          navigate(PATH.APP.CHECKOUT, {
+            state: {
+              coupon: location?.state?.coupon,
+            },
+          });
         }}
       >
         Xem giỏ hàng

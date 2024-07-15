@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-bootstrap';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { FreeMode, Pagination, Scrollbar } from 'swiper';
-import { useNavigate } from 'react-router-dom';
-import { PATH } from 'constants/path';
+import { FreeMode, Pagination } from 'swiper';
 import couponApi from 'api/couponApi';
 import CouponItem from './CouponItem';
+import Loading from 'components/Loading';
 
-function CouponByCategorySlider({storeCategory}) {
-  const navigate = useNavigate();
+function CouponSlider({ storeCategory, priority, visible = true }) {
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
-  console.log(coupons)
-  const handleStoreClick = (id) => {
-    navigate(PATH.APP.STORE_BY_CATEGORY.replace(':categoryId', id));
-  }
 
   useEffect(() => {
     couponApi
       .queryCoupons({
         storeCategory,
+        priority,
+        visible,
       })
       .then((res) => {
         setCoupons(res?.data);
@@ -58,13 +54,17 @@ function CouponByCategorySlider({storeCategory}) {
         {coupons.map((coupon) => {
           return (
             <SwiperSlide key={coupon._id}>
-              <CouponItem coupon={coupon}/>
+              <CouponItem coupon={coupon} />
             </SwiperSlide>
           );
         })}
+        {loading && <Loading />}
+        {!loading && coupons.length === 0 && (
+          <p className='text-center'>Không có ưu đãi nào</p>
+        )}
       </Swiper>
     </React.Fragment>
   );
 }
 
-export default CouponByCategorySlider;
+export default CouponSlider;

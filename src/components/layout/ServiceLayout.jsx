@@ -3,18 +3,26 @@ import styled from 'styled-components'
 import TitleBar from 'components/TitleBar'
 import useScrollDirection from 'hooks/useScrollDirection'
 
-function ServiceLayout({ pageTitle, navigationTo, navbarColor, children, noTitle, backTo }) {
+function ServiceLayout({ pageTitle, navigationTo, navbarColor, children, noTitle, backTo, state }) {
   const isTablet = useMediaQuery('(max-width: 768px)')
   const scrollDirection = useScrollDirection()
 
   return (
     <div>
       <NavStyled status={scrollDirection}>
-        {!noTitle && <TitleBar title={pageTitle} navigation={navigationTo} backgroundColor={navbarColor} path={backTo}/>}
+        {!noTitle && (
+          <TitleBar
+            title={pageTitle}
+            navigation={navigationTo}
+            backgroundColor={navbarColor}
+            path={backTo}
+            state={state}
+          />
+        )}
       </NavStyled>
       <LayoutStyled isTablet={isTablet}>{children}</LayoutStyled>
     </div>
-  )
+  );
 }
 
 const LayoutStyled = styled.div`

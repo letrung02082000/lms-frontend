@@ -1,6 +1,6 @@
 import storeApi from 'api/storeApi';
 import React, { useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Pagination, Autoplay, Scrollbar } from 'swiper';
 import { Button, Col, Image, Row } from 'react-bootstrap';
@@ -25,6 +25,7 @@ import { IoIosGlobe } from 'react-icons/io';
 
 function StoreDetailPage() {
   const storeId = useParams()?.storeId;
+  const location = useLocation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [store, setStore] = React.useState(null);
   const [products, setProducts] = React.useState([]);
@@ -32,6 +33,7 @@ function StoreDetailPage() {
   const [categoryId, setCategoryId] = React.useState('');
   const [loading, setLoading] = React.useState(true);
   const [storeOptions, setStoreOptions] = React.useState(null);
+  console.log(location)
 
   useEffect(() => {
     storeApi
@@ -88,7 +90,7 @@ function StoreDetailPage() {
     <>
       {loading && <Loading />}
       <ServiceLayout
-        backTo={PATH.APP.ROOT}
+        backTo={location?.state?.coupon?._id ? PATH.EXPLORE.ROOT : PATH.APP.ROOT}
         pageTitle={storeOptions?.storeLabel || 'Cửa hàng'}
       >
         <StyledLayout isDesktop={isDesktop}>

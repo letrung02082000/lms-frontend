@@ -9,12 +9,8 @@ function TitleBar(props) {
 
   const goBack = () => {
     if (props?.path) {
-      return navigate(props?.path)
+      return navigate(props?.path,  { state: props?.state })
     }
-
-    // if (!window.location.key) {
-    //   return navigate('/')
-    // }
 
     navigate(-1)
   }
