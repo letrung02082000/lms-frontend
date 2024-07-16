@@ -24,7 +24,6 @@ function ProductDetailPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const location = useLocation();
-  console.log(location)
 
   useEffect(() => {
     productApi

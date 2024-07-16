@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import CartItem from './CartItem';
 import styled from 'styled-components';
@@ -7,70 +7,105 @@ import { selectCart } from 'store/cart';
 import { formatCurrency } from 'utils/commonUtils';
 import { useLocation } from 'react-router-dom';
 import { couponUnit } from 'constants/coupon';
+import { MdDiscount } from 'react-icons/md';
 
 function Cart({ setCouponCode }) {
   const cart = useSelector(selectCart);
   const location = useLocation();
+  const [couponByStoreId, setCouponByStoreId] = React.useState({});
+  const [coupons, setCoupons] = useState(location?.state?.coupon ? [location?.state?.coupon] : []);
   const total = cart?.data?.reduce(
     (acc, cur) => acc + cur.price * cur.quantity,
     0
   );
-  const [msg, setMsg] = React.useState('');
-  const [discount, setDiscount] = React.useState(0);
+  const discount = coupons?.reduce((acc, cur) => acc + cur.amount, 0);
+
+  const productByStoreId = useMemo(() => {
+    const productByStoreId = {};
+    cart?.data?.forEach((item) => {
+      const currentStores = Object.keys(productByStoreId);
+
+      if (!currentStores.includes(item?.store?._id)) {
+        productByStoreId[item?.store?._id] = [item];
+      } else {
+        productByStoreId[item?.store?._id].push(item);
+      }
+    });
+    return productByStoreId;
+  }, [cart]);
 
   useEffect(() => {
-    if (!location?.state?.coupon) return;
-    const coupon = location?.state?.coupon;
-    setDiscount(0);
-
-    let invalidStore = [];
-    cart?.data?.map((val) => {
-      if (val?.store?._id !== coupon?.store?._id)
-        return invalidStore.push(val?.store?.name);
+    coupons.map((coupon) => {
+      const storeId = coupon?.store?._id;
+      setCouponByStoreId((prev) => ({
+        ...prev,
+        [storeId]: coupon,
+      }));
     });
-
-    if (invalidStore.length)
-      return setMsg(
-        `Mã giảm giá không áp dụng cho các sản phẩm từ cửa hàng ${invalidStore[0]}`
-      );
-
-    if (coupon?.minValue > total)
-      return setMsg(
-        `Đơn hàng phải từ ${formatCurrency(
-          coupon?.minValue
-        )}đ trở lên để sử dụng mã giảm giá.`
-      );
-
-    if (!coupon?.available) return setMsg('Mã giảm giá không hợp lệ');
-
-    if(new Date(coupon?.validFrom) > Date.now())
-      return setMsg('Mã giảm giá chưa có hiệu lực');
-
-    if(new Date(coupon?.validUntil) < Date.now())
-      return setMsg('Mã giảm giá đã hết hạn');
-
-    setMsg(
-      `Giảm ${coupon?.amount}${
-        coupon?.unit === couponUnit.PERCENT ? '%' : 'đ'
-      } cho đơn hàng từ ${formatCurrency(coupon?.minValue)}đ.`
-    );
-
-    setDiscount(
-      coupon?.unit === couponUnit.PERCENT
-        ? (total * coupon?.amount) / 100
-        : coupon?.amount
-    );
-
-    setCouponCode(coupon?.code);
-  }, [location?.state?.coupon, cart]);
+  }, [coupons?.length]);  
 
   return (
     <Styles>
       <Row className='py-3'>
         <Col>
-          {cart?.data?.map((val, idx) => (
-            <CartItem key={val?._id} {...val} idx={idx} />
-          ))}
+          {productByStoreId &&
+            Object.keys(productByStoreId).map((storeId) => {
+              const coupon = couponByStoreId[storeId];
+    const total = productByStoreId[storeId].reduce(
+      (acc, cur) => acc + cur.price * cur.quantity,
+      0
+    );
+    let msg = '';
+
+    if (coupon) {
+      if (coupon?.minValue > total)
+        msg = `Đơn cửa hàng phải từ ${formatCurrency(
+          coupon?.minValue
+        )}đ trở lên để sử dụng mã giảm giá.`;
+
+      if (!coupon?.available) msg = 'Mã giảm giá không hợp lệ';
+
+      if (new Date(coupon?.validFrom) > Date.now())
+        msg = 'Mã giảm giá chưa có hiệu lực';
+
+      if (new Date(coupon?.validUntil) < Date.now())
+        msg = 'Mã giảm giá đã hết hạn';
+
+      if (coupon?.amount) {
+        msg = `${coupon?.code} Giảm ${coupon?.amount}${
+          coupon?.unit === couponUnit.PERCENT ? '%' : 'đ'
+        } cho đơn cửa hàng từ ${formatCurrency(coupon?.minValue)}đ. `;
+      }
+    }
+
+              return (
+                <div key={storeId}>
+                  <h5 className='mt-3 mb-0'>
+                    {productByStoreId[storeId][0]?.store?.name}
+                  </h5>
+                  {coupon ? (
+                    <>
+                      <small className='text-primary'>
+                        <MdDiscount /> {msg}
+                        <small className='fw-bold'>Cập nhật mã</small>
+                      </small>
+                    </>
+                  ) : (
+                    <>
+                      <small className='text-primary'>
+                        Bạn có mã giảm giá?{' '}
+                      </small>
+                      <small className='text-primary fw-bold'>
+                        Nhập mã ngay
+                      </small>
+                    </>
+                  )}
+                  {productByStoreId[storeId].map((product, idx) => (
+                    <CartItem key={product?._id} {...product} idx={idx} />
+                  ))}
+                </div>
+              );
+            })}
         </Col>
       </Row>
 
@@ -85,7 +120,6 @@ function Cart({ setCouponCode }) {
                 - {formatCurrency(discount)} ₫
               </span>
             </Col>
-            {msg && <small className='w-100 text-warning'>{msg}</small>}
           </Row>
         </Col>
       </Row>
@@ -105,8 +139,10 @@ function Cart({ setCouponCode }) {
         <Col>
           <p className='text-primary'>
             Bạn sẽ có{' '}
-            <strong>{formatCurrency(Math.floor((total-discount) / 1000))}</strong> điểm
-            tích luỹ theo số điện thoại đặt hàng khi đơn hàng hoàn tất.
+            <strong>
+              {formatCurrency(Math.floor((total - discount) / 1000))}
+            </strong>{' '}
+            điểm tích luỹ theo số điện thoại đặt hàng khi đơn hàng hoàn tất.
           </p>
         </Col>
       </Row>
@@ -138,6 +174,7 @@ const Styles = styled.div`
     max-height: 80%;
     overflow-y: scroll;
     overflow-x: hidden;
-    /* border-bottom: ${(props) => `1px solid ${props.theme.colors.gainsboro}`}; */
+    /* border-bottom: ${(props) =>
+      `1px solid ${props.theme.colors.gainsboro}`}; */
   }
 `;

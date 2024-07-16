@@ -40,27 +40,27 @@ function CartItem(props) {
               {formatCurrency(price)} ₫ x {quantity}
             </span>
           </Row>
-          <Row className='align-items-end'>
+          <Row className='align-items-center'>
             <Col xs={3}>
               <Button
-                variant='light'
+                variant='white'
                 className='p-0'
                 onClick={handleMinusButton}
               >
-                <CiSquareMinus color={theme.colors.teal} />
+                <CiSquareMinus color={theme.colors.teal} size={21}/>
               </Button>
             </Col>
             <Col xs={2}>
               <small>{quantity}</small>
             </Col>
             <Col xs={3}>
-              <Button variant='light' className='p-0' onClick={handleAddButton}>
-                <CiSquarePlus color={theme.colors.teal} />
+              <Button variant='white' className='p-0' onClick={handleAddButton}>
+                <CiSquarePlus color={theme.colors.teal} size={21}/>
               </Button>
             </Col>
             <Col xs={4}>
-              <Button variant='light' className='p-0' onClick={handleDeleteButton}>
-                <CiTrash color={theme.colors.vividRed} />
+              <Button variant='white' className='p-0' onClick={handleDeleteButton}>
+                <CiTrash color={theme.colors.vividRed} size={21}/>
               </Button>
             </Col>
           </Row>

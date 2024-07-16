@@ -33,7 +33,6 @@ function StoreDetailPage() {
   const [categoryId, setCategoryId] = React.useState('');
   const [loading, setLoading] = React.useState(true);
   const [storeOptions, setStoreOptions] = React.useState(null);
-  console.log(location)
 
   useEffect(() => {
     storeApi
