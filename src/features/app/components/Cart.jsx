@@ -13,12 +13,14 @@ function Cart({ setCouponCode }) {
   const cart = useSelector(selectCart);
   const location = useLocation();
   const [couponByStoreId, setCouponByStoreId] = React.useState({});
-  const [coupons, setCoupons] = useState(location?.state?.coupon ? [location?.state?.coupon] : []);
+  const [coupons, setCoupons] = useState(
+    location?.state?.coupon ? [location?.state?.coupon] : []
+  );
   const total = cart?.data?.reduce(
     (acc, cur) => acc + cur.price * cur.quantity,
     0
   );
-  const discount = coupons?.reduce((acc, cur) => acc + cur.amount, 0);
+  const discount = 0;
 
   const productByStoreId = useMemo(() => {
     const productByStoreId = {};
@@ -42,7 +44,11 @@ function Cart({ setCouponCode }) {
         [storeId]: coupon,
       }));
     });
-  }, [coupons?.length]);  
+  }, [coupons?.length, cart]);
+
+  const handleUpdateCouponButton = () => {
+    console.log('update coupon');
+  };
 
   return (
     <Styles>
@@ -51,32 +57,32 @@ function Cart({ setCouponCode }) {
           {productByStoreId &&
             Object.keys(productByStoreId).map((storeId) => {
               const coupon = couponByStoreId[storeId];
-    const total = productByStoreId[storeId].reduce(
-      (acc, cur) => acc + cur.price * cur.quantity,
-      0
-    );
-    let msg = '';
+              const total = productByStoreId[storeId].reduce(
+                (acc, cur) => acc + cur.price * cur.quantity,
+                0
+              );
+              let msg = '';
 
-    if (coupon) {
-      if (coupon?.minValue > total)
-        msg = `Đơn cửa hàng phải từ ${formatCurrency(
-          coupon?.minValue
-        )}đ trở lên để sử dụng mã giảm giá.`;
+              if (coupon) {
+                if (coupon?.amount) {
+                  msg = `Giảm ${coupon?.amount}${
+                    coupon?.unit === couponUnit.PERCENT ? '%' : 'đ'
+                  } cho đơn cửa hàng từ ${formatCurrency(coupon?.minValue)}đ. `;
+                }
 
-      if (!coupon?.available) msg = 'Mã giảm giá không hợp lệ';
+                if (coupon?.minValue > total)
+                  msg = `Đơn cửa hàng phải từ ${formatCurrency(
+                    coupon?.minValue
+                  )}đ trở lên để sử dụng mã ${coupon?.code}.`;
 
-      if (new Date(coupon?.validFrom) > Date.now())
-        msg = 'Mã giảm giá chưa có hiệu lực';
+                if (!coupon?.available) msg = `Mã ${coupon?.code} không hợp lệ`;
 
-      if (new Date(coupon?.validUntil) < Date.now())
-        msg = 'Mã giảm giá đã hết hạn';
+                if (new Date(coupon?.validFrom) > Date.now())
+                  msg = `Mã ${coupon?.code} chưa có hiệu lực`;
 
-      if (coupon?.amount) {
-        msg = `${coupon?.code} Giảm ${coupon?.amount}${
-          coupon?.unit === couponUnit.PERCENT ? '%' : 'đ'
-        } cho đơn cửa hàng từ ${formatCurrency(coupon?.minValue)}đ. `;
-      }
-    }
+                if (new Date(coupon?.validUntil) < Date.now())
+                  msg = `Mã ${coupon?.code} đã hết hạn`;
+              }
 
               return (
                 <div key={storeId}>
@@ -86,16 +92,17 @@ function Cart({ setCouponCode }) {
                   {coupon ? (
                     <>
                       <small className='text-primary'>
-                        <MdDiscount /> {msg}
-                        <small className='fw-bold'>Cập nhật mã</small>
+                        <MdDiscount />
+                        {' '}{msg}{' '}
                       </small>
+                      <small className='text-primary fw-bold' onClick={handleUpdateCouponButton}>Cập nhật mã</small>
                     </>
                   ) : (
                     <>
                       <small className='text-primary'>
                         Bạn có mã giảm giá?{' '}
                       </small>
-                      <small className='text-primary fw-bold'>
+                      <small className='text-primary fw-bold' onClick={handleUpdateCouponButton}>
                         Nhập mã ngay
                       </small>
                     </>
