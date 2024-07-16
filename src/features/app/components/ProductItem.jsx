@@ -34,19 +34,8 @@ function ProductItem({
         </Col>
       </Row>
       <Row>
-        {hasCartButton && (
-          <Col xs={4} className='align-self-center'>
-            <Button
-              variant='outline-danger'
-              className='cart-btn'
-              onClick={() => handleAddToCartButton(product)}
-            >
-              <BsCartPlus color='red' />
-            </Button>
-          </Col>
-        )}
         {displayPrice && (
-          <Col xs={hasCartButton ? 8 : 12} className='align-self-center'>
+          <Col xs={hasCartButton ? 7 : 12} className='align-self-center'>
             <Row className='text-danger'>
               <small>{formatCurrency(product.price)} đ</small>
             </Row>
@@ -56,6 +45,16 @@ function ProductItem({
                   <small>{formatCurrency(product?.originalPrice)} đ</small>
                 </Row>
               )}
+          </Col>
+        )}
+        {hasCartButton && (
+          <Col xs={5} className='align-self-center'>
+            <Button
+              variant='outline-danger'
+              onClick={() => handleAddToCartButton(product)}
+            >
+              <BsCartPlus color='red' />
+            </Button>
           </Col>
         )}
       </Row>
