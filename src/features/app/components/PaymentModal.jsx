@@ -8,7 +8,7 @@ import { copyText, formatCurrency } from 'utils/commonUtils';
 import storeApi from 'api/storeApi';
 import Loading from 'components/Loading';
 
-function PaymentModal({ storeId, show, setShow, amount, desc }) {
+function PaymentModal({ storeId, show, setShow, amount, desc, onClose }) {
   const [copied, setCopied] = useState(false);
   const [contentCopied, setContentCopied] = useState(false);
   const [amountCopied, setAmountCopied] = useState(false);
@@ -19,6 +19,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc }) {
   const handleClose = () => {
     setIsPaid(true);
     setShow(false);
+    onClose();
   };
 
   useEffect(() => {
@@ -136,7 +137,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc }) {
 
         <Modal.Footer>
           <Button variant='secondary' onClick={handleClose}>
-            Đóng
+            Tôi đã thanh toán
           </Button>
         </Modal.Footer>
       </Modal>

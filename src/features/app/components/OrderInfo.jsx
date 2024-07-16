@@ -94,9 +94,34 @@ function OrderInfo({ order, storeOrders }) {
                       {formatCurrency(storeOrder?.total)} đ
                     </div>
                   )}
-                  <div>{formatCurrency(storeOrder?.total - storeOrder?.discount)} đ</div>
+                  <div>
+                    {formatCurrency(storeOrder?.total - storeOrder?.discount)} đ
+                  </div>
                 </td>
               </tr>
+
+              <tr>
+                <td colSpan={2} className='text-end'>
+                  Đã thanh toán
+                </td>
+                <td colSpan={2}>
+                  <div>
+                    {formatCurrency(storeOrder?.cash)} đ
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td colSpan={2} className='text-end'>
+                  Chưa thanh toán
+                </td>
+                <td colSpan={2}>
+                  <div>
+                    {formatCurrency(storeOrder?.total - storeOrder?.discount - storeOrder?.cash)} đ
+                  </div>
+                </td>
+              </tr>
+
               <tr>
                 <td colSpan={4} className='text-end'>
                   <Button
@@ -105,7 +130,7 @@ function OrderInfo({ order, storeOrders }) {
                     onClick={() =>
                       handlePaymentButton(
                         storeOrder?.storeId?._id,
-                        storeOrder?.total - storeOrder?.discount,
+                        storeOrder?.total - storeOrder?.discount - storeOrder?.cash,
                         storeOrder?.paymentCode
                       )
                     }
@@ -124,6 +149,7 @@ function OrderInfo({ order, storeOrders }) {
         setShow={setShow}
         amount={amount}
         desc={desc}
+        onClose={() => window.location.reload()}
       />
     </>
   );
