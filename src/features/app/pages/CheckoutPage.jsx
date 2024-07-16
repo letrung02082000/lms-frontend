@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap';
+import { Button, Col, Image, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Cart from '../components/Cart';
 import styled from 'styled-components';
@@ -19,7 +19,7 @@ function CheckoutPage() {
   }
   const { state } = useLocation();
   const [loading, setLoading] = React.useState(false);
-  const [couponCode, setCouponCode] = React.useState('');
+  const [couponByStoreId, setCouponByStoreId] = React.useState({});
   const order = JSON.parse(localStorage.getItem('order') || '{}');
   const navigate = useNavigate();
   const cart = useSelector(selectCart);
@@ -76,7 +76,7 @@ function CheckoutPage() {
         note: formData.formNote || 'Không có',
         products: cart?.data || [],
         productByStoreId,
-        couponCode,
+        couponByStoreId,
       };
       
       if (state?.src != SOURCES.QR) {
@@ -131,7 +131,10 @@ function CheckoutPage() {
   return (
     <Styles>
       <Row>
-        <Cart setCouponCode={setCouponCode}/>
+        <Cart
+          couponByStoreId={couponByStoreId}
+          setCouponByStoreId={setCouponByStoreId}
+        />
         <Col xs={12} md={5}>
           <Row>
             <div className='checkout-title'>Thông tin liên hệ</div>
@@ -181,27 +184,28 @@ function CheckoutPage() {
               />
             </Col>
           </Row>
-          {state?.hasDelivery || true && (
-            <Row className='mb-3'>
-              <InputField
-                onClear={handleClearButton}
-                control={control}
-                label='Địa chỉ'
-                name='formAddress'
-                rules={{
-                  required: false,
-                  minLength: {
-                    value: 5,
-                    message: 'Địa chỉ phải có ít nhất 5 ký tự',
-                  },
-                  maxLength: {
-                    value: 100,
-                    message: 'Địa chỉ không được vượt quá 100 ký tự',
-                  },
-                }}
-              />
-            </Row>
-          )}
+          {state?.hasDelivery ||
+            (true && (
+              <Row className='mb-3'>
+                <InputField
+                  onClear={handleClearButton}
+                  control={control}
+                  label='Địa chỉ'
+                  name='formAddress'
+                  rules={{
+                    required: false,
+                    minLength: {
+                      value: 5,
+                      message: 'Địa chỉ phải có ít nhất 5 ký tự',
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: 'Địa chỉ không được vượt quá 100 ký tự',
+                    },
+                  }}
+                />
+              </Row>
+            ))}
           <Row>
             <InputField
               onClear={handleClearButton}
