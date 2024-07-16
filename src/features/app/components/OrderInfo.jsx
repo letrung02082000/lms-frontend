@@ -41,10 +41,10 @@ function OrderInfo({ order, storeOrders }) {
             <td>Địa chỉ</td>
             <td>{order?.address}</td>
           </tr>
-          <tr>
+          {/* <tr>
             <td>Điểm tích luỹ</td>
             <td>{order?.points || 0}</td>
-          </tr>
+          </tr> */}
           <tr>
             <td>Ghi chú</td>
             <td>{order?.note || 'Không có'}</td>
