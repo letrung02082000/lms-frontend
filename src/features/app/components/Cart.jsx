@@ -8,13 +8,12 @@ import { formatCurrency } from 'utils/commonUtils';
 import { useLocation } from 'react-router-dom';
 import { couponUnit } from 'constants/coupon';
 import { MdDiscount } from 'react-icons/md';
+import couponApi from 'api/couponApi';
 
-function Cart({ couponByStoreId, setCouponByStoreId }) {
+function Cart({ couponsByStoreId, setCouponsByStoreId }) {
   const cart = useSelector(selectCart);
   const location = useLocation();
-  const [coupons, setCoupons] = useState(
-    location?.state?.coupon ? [location?.state?.coupon] : []
-  );
+  const [coupons, setCoupons] = useState([]);
   const [discount, setDiscount] = useState({});
   const total = cart?.data?.reduce(
     (acc, cur) => acc + cur.price * cur.quantity,
@@ -36,8 +35,16 @@ function Cart({ couponByStoreId, setCouponByStoreId }) {
   }, [cart]);
 
   useEffect(() => {
+    couponApi.getCouponById(location?.state?.coupon?._id).then((res) => {
+      setCoupons([res?.data]);
+    });
+  }, [location?.state?.coupon])
+
+  console.log(location?.state?.coupon);
+
+  useEffect(() => {
     Object.keys(productByStoreId).map((storeId) => {
-      const storeCoupon = couponByStoreId[storeId];
+      const storeCoupon = couponsByStoreId[storeId];
       const storeTotal = productByStoreId[storeId].reduce(
         (acc, cur) => acc + cur.price * cur.quantity,
         0
@@ -94,7 +101,7 @@ function Cart({ couponByStoreId, setCouponByStoreId }) {
         }));
       }
     });
-  }, [productByStoreId, cart, couponByStoreId]);
+  }, [productByStoreId, cart, couponsByStoreId]);
 
   const totalDiscount = Object.keys(discount).reduce(
     (acc, cur) => (acc + discount[cur]?.valid ? discount[cur]?.value : 0),
@@ -104,7 +111,7 @@ function Cart({ couponByStoreId, setCouponByStoreId }) {
   useEffect(() => {
     coupons.map((coupon) => {
       const storeId = coupon?.store?._id;
-      setCouponByStoreId((prev) => ({
+      setCouponsByStoreId((prev) => ({
         ...prev,
         [storeId]: coupon,
       }));
@@ -121,7 +128,7 @@ function Cart({ couponByStoreId, setCouponByStoreId }) {
         <Col>
           {productByStoreId &&
             Object.keys(productByStoreId).map((storeId) => {
-              const couponByStore = couponByStoreId[storeId];
+              const couponByStore = couponsByStoreId[storeId];
               return (
                 <div key={storeId}>
                   <h5 className='mt-3 mb-0'>
