@@ -15,8 +15,8 @@ function ProductItem({
   const location = useLocation();
 
   return (
-    <>
-      <Row
+    <div>
+      <div
         onClick={() =>
           navigate(
             PATH.APP.PRODUCT_DETAIL.replace(':productId', product?._id),
@@ -26,39 +26,39 @@ function ProductItem({
           )
         }
       >
-        <Col className='p-0'>
+        <div className='p-0'>
           <div className='w-100 mb-2'>
             <Image src={product.image} className='w-100 rounded' />
           </div>
           <h6>{product.name}</h6>
-        </Col>
-      </Row>
-      <Row>
+        </div>
+      </div>
+      <div className='d-flex justify-content-between align-items-end'>
         {displayPrice && (
-          <Col xs={hasCartButton ? 8 : 12} className='align-self-center'>
+          <div>
             {product?.originalPrice > 0 &&
               product?.originalPrice !== product?.price && (
-                <Row className='text-decoration-line-through'>
+                <div className='text-decoration-line-through'>
                   <small>{formatCurrency(product?.originalPrice)} đ</small>
-                </Row>
+                </div>
               )}
-            <Row className='text-danger'>
+            <div className='text-danger'>
               <small>{formatCurrency(product.price)} đ</small>
-            </Row>
-          </Col>
+            </div>
+          </div>
         )}
         {hasCartButton && (
-          <Col xs={4} className='align-self-center'>
+          <div>
             <Button
               variant='outline-danger'
               onClick={() => handleAddToCartButton(product)}
             >
               <BsCartPlus color='red' />
             </Button>
-          </Col>
+          </div>
         )}
-      </Row>
-    </>
+      </div>
+    </div>
   );
 }
 

@@ -69,65 +69,78 @@ function ProductDetailPage() {
         }`}
       >
         <StyledLayout isDesktop={isDesktop}>
-          <Image src={product?.image} className='w-100' />
-          <div className='my-3'>
-            <h2 className='d-inline-block'>{product?.name}</h2>
-            <div className=''>
-              {product?.originalPrice > 0 &&
-                product?.originalPrice !== product?.price && (
-                  <span className='text-decoration-line-through text-primary me-2'>
-                    <span>{formatCurrency(product?.originalPrice)} đ</span>
-                  </span>
-                )}
-              <span className='text-danger'>
-                {formatCurrency(product?.price)} đ
-              </span>
-            </div>
-          </div>
-          <Row className='mb-3'>
-            <Col>
-              <Button
-                variant='outline-primary'
-                className='w-100'
-                onClick={() =>
-                  navigate(
-                    PATH?.APP?.STORE_DETAIL.replace(
-                      ':storeId',
-                      product?.store?._id
-                    )
-                  )
-                }
-              >
-                <Row>
-                  <Col xs={2}>
-                    <MdStoreMallDirectory />
-                  </Col>
-                  <Col>
-                    <small>Xem cửa hàng</small>
-                  </Col>
-                </Row>
-              </Button>
+          <Row className='position-relative'>
+            <Col
+              xs={12}
+              md={6}
+              className={isDesktop ? 'position-sticky sticky-top h-100' : ''}
+            >
+              <Image src={product?.image} className='w-100' />
             </Col>
-            <Col xs={6}>
-              <Button
-                variant='outline-danger'
-                className='cart-btn w-100 fw-bold'
-                onClick={() => handleAddToCartButton(product)}
-              >
-                <Row>
-                  <Col>
-                    <small>{storeOptions?.cartButtonLabel || 'Mua ngay'}</small>
-                  </Col>
-                </Row>
-              </Button>
+            <Col>
+              <div className='my-3'>
+                <h2 className='d-inline-block'>{product?.name}</h2>
+                <div className=''>
+                  {product?.originalPrice > 0 &&
+                    product?.originalPrice !== product?.price && (
+                      <span className='text-decoration-line-through text-primary me-2'>
+                        <span>{formatCurrency(product?.originalPrice)} đ</span>
+                      </span>
+                    )}
+                  <span className='text-danger'>
+                    {formatCurrency(product?.price)} đ
+                  </span>
+                </div>
+              </div>
+              <div className='my-3'>
+                <h4>
+                  Thông tin{' '}
+                  {storeOptions?.storeLabel?.toLowerCase() || 'sản phẩm'}
+                </h4>
+                <p>{product?.description}</p>
+              </div>
+              <Row className='mb-3'>
+                <Col>
+                  <Button
+                    variant='outline-primary'
+                    className='w-100'
+                    onClick={() =>
+                      navigate(
+                        PATH?.APP?.STORE_DETAIL.replace(
+                          ':storeId',
+                          product?.store?._id
+                        )
+                      )
+                    }
+                  >
+                    <Row>
+                      <Col xs={2}>
+                        <MdStoreMallDirectory />
+                      </Col>
+                      <Col>
+                        <small>Xem cửa hàng</small>
+                      </Col>
+                    </Row>
+                  </Button>
+                </Col>
+                <Col xs={6}>
+                  <Button
+                    variant='outline-danger'
+                    className='cart-btn w-100 fw-bold'
+                    onClick={() => handleAddToCartButton(product)}
+                  >
+                    <Row>
+                      <Col>
+                        <small>
+                          {storeOptions?.cartButtonLabel || 'Mua ngay'}
+                        </small>
+                      </Col>
+                    </Row>
+                  </Button>
+                </Col>
+              </Row>
             </Col>
           </Row>
-          <div className='my-3'>
-            <h4>
-              Mô tả {storeOptions?.storeLabel?.toLowerCase() || 'sản phẩm'}
-            </h4>
-            <p>{product?.description}</p>
-          </div>
         </StyledLayout>
       </ServiceLayout>
       <CartBar />
@@ -136,11 +149,8 @@ function ProductDetailPage() {
 }
 
 const StyledLayout = styled.div`
+  margin: ${(props) => (props.isDesktop === true ? '0 10%' : '0 5%')};
   margin-bottom: 10rem;
-
-  .product-item {
-    width: ${(props) => (props.isDesktop === true ? '22%' : '45%')};
-  }
 
   .cart-btn:hover svg {
     color: white !important;

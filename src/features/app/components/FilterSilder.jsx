@@ -19,13 +19,13 @@ function FilterSilder({ setCategoryId, categories, categoryId, hasAll=false }) {
                 slidesPerView: 3.2,
               },
               700: {
-                slidesPerView: 4.2,
+                slidesPerView: 3.2,
               },
               1000: {
                 slidesPerView: 4.2,
               },
               1500: {
-                slidesPerView: 5.2,
+                slidesPerView: 4.2,
               },
             }}
           >
@@ -36,7 +36,7 @@ function FilterSilder({ setCategoryId, categories, categoryId, hasAll=false }) {
                   variant={
                     categoryId === '' ? 'secondary' : 'outline-secondary'
                   }
-                  className='w-100 rounded-pill fw-bold  my-1 p-2'
+                  className='w-100 rounded-pill fw-bold  my-1'
                 >
                   <small>Tất cả</small>
                 </Button>
@@ -52,7 +52,7 @@ function FilterSilder({ setCategoryId, categories, categoryId, hasAll=false }) {
                         ? 'secondary'
                         : 'outline-secondary'
                     }
-                    className='w-100 rounded-pill fw-bold  my-1 p-2'
+                    className='w-100 rounded-pill fw-bold  my-1'
                   >
                     <small>{cat?.name}</small>
                   </Button>

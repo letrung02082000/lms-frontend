@@ -83,7 +83,7 @@ function CouponPage() {
           categoryId={storeCategory}
         />
         <div className='d-flex justify-content-between mb-2 align-items-end'></div>
-        <CouponSlider storeCategory={storeCategory} slidesPerColumn={2}/>
+        <CouponSlider storeCategory={storeCategory}/>
         <div className='d-flex justify-content-between my-2 align-items-end'>
           <h2>Dành cho bạn</h2>
         </div>

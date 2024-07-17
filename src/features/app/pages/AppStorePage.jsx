@@ -117,7 +117,7 @@ function AppStorePage() {
           setCategoryId={setStoreCategory}
           categoryId={storeCategory}
         />
-        <div className='d-flex flex-wrap w-100 my-3 justify-content-between'>
+        <div className='d-flex flex-wrap w-100 my-3 justify-content-start'>
           {products?.map((product) => {
             return (
               <div
@@ -144,11 +144,13 @@ function AppStorePage() {
 }
 
 const StyledLayout = styled.div`
-  margin: ${(props) => (props.isDesktop === true ? '0 15%' : '0 5%')};
+  margin: ${(props) => (props.isDesktop === true ? '0 10%' : '0 5%')};
   margin-bottom: 10rem;
 
   .product-item {
     width: ${(props) => (props.isDesktop === true ? '22%' : '45%')};
+    margin-left: ${(props) => (props.isDesktop === true ? '1.5%' : '2.5%')};
+    margin-right: ${(props) => (props.isDesktop === true ? '1.5%' : '2.5%')};
   }
 
   .cart-btn:hover svg {

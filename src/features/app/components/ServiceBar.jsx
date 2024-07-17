@@ -7,8 +7,10 @@ import HouseIcon from 'assets/icons/house.png';
 import PhotocopyIcon from 'assets/icons/photocopy.png';
 import RealEstateIcon from 'assets/icons/real-estate.png';
 import theme from 'constants/theme';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 function ServiceBar() {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   const navigate = useNavigate();
   const services = useMemo(
     () => [
@@ -49,7 +51,7 @@ function ServiceBar() {
               onClick={() => navigate(service.path)}
               key={service._id}
               className='bg-white rounded m-1'
-              style={{ width: '22%' }}
+              style={{ width: isDesktop ? '15%' : '22%' }}
             >
               <div>
                 <div
@@ -58,7 +60,9 @@ function ServiceBar() {
                     borderRadius: '15%',
                   }}
                 >
-                  {service?.icon && <Image className='p-3 w-100' src={service?.icon} />}
+                  {service?.icon && (
+                    <Image className='p-3 w-100' src={service?.icon} />
+                  )}
                 </div>
               </div>
               <h6

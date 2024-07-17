@@ -29,9 +29,9 @@ function StoreCouponModal({ show, setShow, storeId, addCoupon }) {
 
   return (
     <>
-      <Modal show={show} closeButton onHide={() => setShow(false)}>
+      <Modal show={show} closeButton onHide={() => setShow(false)} scrollable>
         <Modal.Header closeButton>
-          <Modal.Title>Nhập ưu đãi</Modal.Title>
+          <Modal.Title>Ưu đãi cửa hàng</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {loading && <Loading />}
@@ -40,43 +40,55 @@ function StoreCouponModal({ show, setShow, storeId, addCoupon }) {
               return (
                 <Row className='border mb-2 p-2 rounded'>
                   <Col>
-                    <Image src={coupon?.image} className='w-100 rounded' />
-                  </Col>
-                  <Col xs={8}>
-                    <h6>{coupon?.title}</h6>
-                    {coupon?.store?._id && (
-                      <div className='mb-2'>
-                        <small>
-                          Ưu đãi dùng cho đơn cửa hàng{' '}
-                          <strong>{coupon?.store?.name}</strong> từ{' '}
-                          {formatCurrency(coupon?.minValue)}đ.
-                          <br />
-                          Thời gian áp dụng:{' '}
-                          {new Date(coupon?.validFrom).toLocaleDateString(
-                            'en-GB'
-                          )}{' '}
-                          -{' '}
-                          {new Date(coupon?.validUntil).toLocaleDateString(
-                            'en-GB'
-                          )}
-                          .
-                        </small>
-                      </div>
-                    )}
-                    <div className='d-flex justify-content-end'>
-                      <Button
-                        variant='outline-primary'
-                        className='fw-bold'
-                        onClick={() => handleCouponButtonClick(coupon)}
-                      >
-                        Dùng ngay
-                      </Button>
-                    </div>
+                    <Row>
+                      <Col>
+                        <Row>
+                          <h6>{coupon?.title}</h6>
+                        </Row>
+                        {coupon?.store?._id && (
+                          <div>
+                            <small>
+                              Ưu đãi cho đơn cửa hàng từ{' '}
+                              {formatCurrency(coupon?.minValue)}đ.
+                              <br />
+                              Áp dụng từ{' '}
+                              {new Date(coupon?.validFrom).toLocaleDateString(
+                                'en-GB'
+                              )}{' '}
+                              -{' '}
+                              {new Date(coupon?.validUntil).toLocaleDateString(
+                                'en-GB'
+                              )}
+                              .
+                            </small>
+                          </div>
+                        )}
+                      </Col>
+                      <Col xs={4}>
+                        <Image
+                          src={coupon?.image}
+                          className='w-100 rounded mb-2'
+                        />
+                        <Button
+                          variant='outline-primary'
+                          className='fw-bold w-100'
+                          onClick={() => handleCouponButtonClick(coupon)}
+                        >
+                          <small>Sử dụng</small>
+                        </Button>
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
               );
             })}
+            {!loading && coupons.length === 0 && <p>Không có ưu đãi nào</p>}
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant='secondary' onClick={() => setShow(false)}>
+            Đóng
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

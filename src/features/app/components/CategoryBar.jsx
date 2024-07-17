@@ -6,9 +6,11 @@ import storeApi from 'api/storeApi';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from 'constants/path';
 import theme from 'constants/theme';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 function CategoryBar({ categories }) {
   const navigate = useNavigate();
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   const handleStoreClick = (id) => {
     navigate(PATH.APP.STORE_BY_CATEGORY.replace(':categoryId', id));
@@ -16,14 +18,14 @@ function CategoryBar({ categories }) {
 
   return (
     <React.Fragment>
-      <div className='d-flex w-100 flex-wrap justify-content-start'>
+      <div className={`d-flex w-100 flex-wrap ${isDesktop ? 'justify-content-between' : 'justify-content-start'}`}>
         {categories.map((category) => {
           return (
             <div
               onClick={() => handleStoreClick(category._id)}
               key={category._id}
               className='bg-white rounded m-1'
-              style={{ width: '22%' }}
+              style={{ width: isDesktop ? '13%' : '22%' }}
             >
               <div>
                 <div

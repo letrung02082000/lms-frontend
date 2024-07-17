@@ -133,13 +133,15 @@ function CheckoutPage() {
   return (
     <Styles>
       <Row>
-        <Cart
-          couponsByStoreId={couponsByStoreId}
-          setCouponsByStoreId={setCouponsByStoreId}
-        />
-        <Col xs={12} md={5}>
+        <Col xs={12} md={6}>
+          <Cart
+            couponsByStoreId={couponsByStoreId}
+            setCouponsByStoreId={setCouponsByStoreId}
+          />
+        </Col>
+        <Col xs={12} md={6}>
           <Row>
-            <div className='checkout-title'>Thông tin liên hệ</div>
+            <div className='checkout-title'>Thông tin đặt hàng</div>
           </Row>
           <Row className='mb-3'>
             <Col>
@@ -250,7 +252,7 @@ const Styles = styled.div`
   margin-bottom: 2rem;
 
   .checkout-title {
-    margin: 1.5rem 0 1rem;
+    margin: 1rem 0;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 1.2rem;

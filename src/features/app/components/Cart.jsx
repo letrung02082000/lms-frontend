@@ -12,7 +12,6 @@ import couponApi from 'api/couponApi';
 import StoreCouponModal from './StoreCouponModal';
 
 function Cart({ couponsByStoreId, setCouponsByStoreId }) {
-  console.log(couponsByStoreId)
   const [showStoreCoupons, setShowStoreCoupons] = useState(false);
   const [storeId, setStoreId] = useState({});
   const cart = useSelector(selectCart);
@@ -239,6 +238,7 @@ const Styles = styled.div`
   border: ${(props) => `1px solid ${props.theme.colors.teal}`};
   height: 100%;
   border-radius: 0.5rem;
+  padding: 0 0.5rem;
 
   .cart-title {
     height: 10%;
