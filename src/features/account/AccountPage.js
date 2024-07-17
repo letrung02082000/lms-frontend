@@ -35,8 +35,8 @@ function AccountPage() {
               <p className="mb-3">{profileMsg(userInfo?.name)}</p>
               <div className="btn btn-outline-secondary"><small>{formatPhoneNumber(userInfo?.zalo)}</small></div>
             </div>
-            <Item path={PATH.MAINTAIN}>Ưu đãi của bạn</Item>
-            <Item path={PATH.MAINTAIN}>Lịch sử mua hàng</Item>
+            <Item path={PATH.EXPLORE}>Ưu đãi</Item>
+            <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
             <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
             {/* <Item onClick={handleLogout}>Đăng xuất</Item> */}
           </>

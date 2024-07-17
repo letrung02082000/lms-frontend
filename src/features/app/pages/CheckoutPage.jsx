@@ -80,15 +80,14 @@ function CheckoutPage() {
         productByStoreId,
         couponsByStoreId,
       };
-      
-      if (state?.src != SOURCES.QR) {
-        localStorage.setItem('order', JSON.stringify(data));
-      }
 
       
       orderApi
         .createOrder(data)
         .then((res) => {
+          if (state?.src != SOURCES.QR) {
+            localStorage.setItem('order', JSON.stringify(res?.data));
+          }
           setLoading(false);
           dispatch(clearCart());
           navigate(PATH.APP.ORDER_DETAIL.replace(':orderId', res?.data?._id));

@@ -149,8 +149,9 @@ function ProductDetailPage() {
 }
 
 const StyledLayout = styled.div`
-  margin: ${(props) => (props.isDesktop === true ? '0 10%' : '0 5%')};
+  margin: 0 auto;
   margin-bottom: 10rem;
+  width: ${({theme}) => (theme.isDesktop === true ? '60%' : '90%')};
 
   .cart-btn:hover svg {
     color: white !important;

@@ -222,10 +222,16 @@ function StoreDetailPage() {
 }
 
 const StyledLayout = styled.div`
+  margin: 0 auto;
+  margin-bottom: 10rem;
+  width: 90%;
+
   .product-item {
-    width: ${({theme}) => (theme.isDesktop === true ? '30%' : '45%')};
-    margin-left: ${({theme}) => (theme.isDesktop === true ? '1.67%' : '2.5%')};
-    margin-right: ${({theme}) => (theme.isDesktop === true ? '1.66%' : '2.5%')};
+    width: ${({ theme }) => (theme.isDesktop === true ? '30%' : '45%')};
+    margin-left: ${({ theme }) =>
+      theme.isDesktop === true ? '1.67%' : '2.5%'};
+    margin-right: ${({ theme }) =>
+      theme.isDesktop === true ? '1.66%' : '2.5%'};
   }
 
   .cart-btn:hover svg {

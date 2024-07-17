@@ -4,8 +4,7 @@ import { Button, Table } from 'react-bootstrap';
 import { formatCurrency, formatPhoneNumber } from 'utils/commonUtils';
 import PaymentModal from './PaymentModal';
 
-function OrderInfo({ order, storeOrders }) {
-  const productByStoreId = order?.productByStoreId || [];
+function OrderInfo({ order, storeOrders=[] }) {
   const [storeId, setStoreId] = React.useState('');
   const [show, setShow] = React.useState(false);
   const [amount, setAmount] = React.useState(0);
@@ -24,7 +23,7 @@ function OrderInfo({ order, storeOrders }) {
         <thead>
           <tr>
             <th colSpan={2} className='text-center text-uppercase'>
-              Thông tin khách hàng
+              Thông tin đơn hàng
             </th>
           </tr>
         </thead>

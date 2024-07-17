@@ -37,7 +37,7 @@ function CartBar({ bottom = 0 }) {
       {isDesktop && (
         <>
           <div
-            className='position-fixed d-flex align-items-end justify-content-center flex-column'
+            className='position-fixed d-flex align-items-center justify-content-center flex-column'
             style={{ right: '3rem', bottom: '5rem', height: '3.5rem' }}
           >
             {/* <Button variant='outline-danger mb-2 rounded-pill fw-bold'>
@@ -59,6 +59,8 @@ function CartBar({ bottom = 0 }) {
               <FaBasketShopping color='white' size={35} />
               <span className='badge'>{cart?.data?.length || 0}</span>
             </Button>
+            <p>Mua ngay</p>
+
           </div>
         </>
       )}

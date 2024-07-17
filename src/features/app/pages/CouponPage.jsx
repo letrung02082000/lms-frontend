@@ -94,16 +94,9 @@ function CouponPage() {
 }
 
 const StyledLayout = styled.div`
-  margin: ${(props) => (props.isDesktop === true ? '0 15%' : '0 5%')};
+  margin: 0 auto;
   margin-bottom: 10rem;
-
-  .product-item {
-    width: ${(props) => (props.isDesktop === true ? '22%' : '45%')};
-  }
-
-  .cart-btn:hover svg {
-    color: white !important;
-  }
+  width: ${({theme}) => (theme.isDesktop === true ? '60%' : '90%')};
 `;
 
 export default CouponPage;

@@ -144,8 +144,9 @@ function AppStorePage() {
 }
 
 const StyledLayout = styled.div`
-  margin: ${(props) => (props.isDesktop === true ? '0 10%' : '0 5%')};
+  margin: 0 auto;
   margin-bottom: 10rem;
+  width: ${(props) => (props.isDesktop === true ? '60%' : '90%')};
 
   .product-item {
     width: ${(props) => (props.isDesktop === true ? '22%' : '45%')};
