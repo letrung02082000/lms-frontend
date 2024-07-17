@@ -204,7 +204,7 @@ export default function DrivingInstructionPage(props) {
             <p>3. Thanh toán lệ phí</p>
             <ul>
               <li>Chuyển khoản ngân hàng</li>
-              <Button className="my-3" variant='outline-primary' onClick={() => setAccountShow(true)}>Xem hướng dẫn chuyển khoản</Button>
+              <Button className="my-3" variant='outline-primary' onClick={() => setAccountShow(true)}><small>Xem hướng dẫn chuyển khoản</small></Button>
 
               <li>
                 Đóng trực tiếp: Tại văn phòng iSinhvien
@@ -347,7 +347,7 @@ export default function DrivingInstructionPage(props) {
           </p>
         </div>
       </div>
-    <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' desc={`GPLX ${drivingInfo?.tel || '<Số điện thoại>'}`} />
+    <AccountModal show={accountShow} setShow={setAccountShow} amount={690000} tel={drivingInfo?.tel}/>
     </div>
 
   );

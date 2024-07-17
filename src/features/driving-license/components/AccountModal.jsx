@@ -13,10 +13,9 @@ import CopyButton from 'components/button/CopyButton';
 import styled from 'styled-components';
 import { copyText, formatCurrency } from 'utils/commonUtils';
 
-function AccountModal({ show, setShow }) {
+function AccountModal({ show, setShow, tel }) {
   const [copied, setCopied] = useState(false);
   const [contentCopied, setContentCopied] = useState(false);
-  const [amountCopied, setAmountCopied] = useState(false);
   const [bankCode, setBankCode] = useState('MB');
   const [accountNumber, setAccountNumber] = useState('7899996886');
   const [desc, setDesc] = useState('GPLX <Số điện thoại>');
@@ -68,11 +67,11 @@ function AccountModal({ show, setShow }) {
     }
 
     if (group === 1) {
-      setDesc('GPLX <Số điện thoại>');
+      setDesc('GPLX ' + (tel || '<Số điện thoại>'));
     } else if (group === 2) {
-      setDesc('GPLX <SĐT 1> <SĐT 2>');
+      setDesc('GPLX <SĐT1> <SĐT2>');
     } else if (group === 3) {
-      setDesc('GPLX <SĐT 1> <SĐT 2> <SĐT 3>');
+      setDesc('GPLX <SĐT1> <SĐT2> <SĐT3>');
     }
   }, [drivingClass, isStudent, hasCheckup, group]);
 
