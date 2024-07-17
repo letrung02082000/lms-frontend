@@ -26,7 +26,7 @@ function ProductItem({
           )
         }
       >
-        <Col>
+        <Col className='p-0'>
           <div className='w-100 mb-2'>
             <Image src={product.image} className='w-100 rounded' />
           </div>
@@ -35,20 +35,20 @@ function ProductItem({
       </Row>
       <Row>
         {displayPrice && (
-          <Col xs={hasCartButton ? 7 : 12} className='align-self-center'>
-            <Row className='text-danger'>
-              <small>{formatCurrency(product.price)} đ</small>
-            </Row>
+          <Col xs={hasCartButton ? 8 : 12} className='align-self-center'>
             {product?.originalPrice > 0 &&
               product?.originalPrice !== product?.price && (
                 <Row className='text-decoration-line-through'>
                   <small>{formatCurrency(product?.originalPrice)} đ</small>
                 </Row>
               )}
+            <Row className='text-danger'>
+              <small>{formatCurrency(product.price)} đ</small>
+            </Row>
           </Col>
         )}
         {hasCartButton && (
-          <Col xs={5} className='align-self-center'>
+          <Col xs={4} className='align-self-center'>
             <Button
               variant='outline-danger'
               onClick={() => handleAddToCartButton(product)}

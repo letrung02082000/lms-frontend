@@ -11,6 +11,7 @@ import { clearCart, selectCart } from 'store/cart';
 import EmptyCartImage from 'assets/images/food/empty-cart.jpg'
 import InputField from 'components/form/InputField';
 import { PATH } from 'constants/path';
+import StoreCouponModal from '../components/StoreCouponModal';
 
 function CheckoutPage() {
   const SOURCES = {
@@ -48,6 +49,7 @@ function CheckoutPage() {
     shouldUseNativeValidation: false,
     delayError: false,
   });
+  const [showStoreCoupons, setShowStoreCoupons] = React.useState(false);
 
   const handleClearButton = (name) => {
     setValue(name, '');
@@ -234,7 +236,7 @@ function CheckoutPage() {
             variant='primary text-white'
             disabled={loading}
           >
-            {loading ? 'Đang tạo đơn hàng của bạn...' : 'Tạo đơn hàng'}
+            {loading ? 'Đang tạo đơn hàng của bạn...' : 'Đặt hàng'}
           </Button>
         </Col>
       </Row>

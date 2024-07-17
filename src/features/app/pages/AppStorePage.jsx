@@ -102,15 +102,12 @@ function AppStorePage() {
         <div className='d-flex justify-content-between my-4 align-items-end'>
           <h2 className='m-0'>{welcomeMsg}</h2>
         </div>
-        {/* <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
-          <h2 className='m-0'>Dịch vụ sinh viên</h2>
-        </div> */}
         <ServiceBar />
         <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Danh mục</h2>
         </div>
         <CategoryBar categories={storeCategories} />
-        <StoreSlider />
+        <StoreSlider slidesPerColumn={1}/>
         <LocationSlider />
         <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Sản phẩm nổi bật</h2>

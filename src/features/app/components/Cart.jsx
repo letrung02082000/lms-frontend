@@ -9,8 +9,12 @@ import { useLocation } from 'react-router-dom';
 import { couponUnit } from 'constants/coupon';
 import { MdDiscount } from 'react-icons/md';
 import couponApi from 'api/couponApi';
+import StoreCouponModal from './StoreCouponModal';
 
 function Cart({ couponsByStoreId, setCouponsByStoreId }) {
+  console.log(couponsByStoreId)
+  const [showStoreCoupons, setShowStoreCoupons] = useState(false);
+  const [storeId, setStoreId] = useState({});
   const cart = useSelector(selectCart);
   const location = useLocation();
   const [coupons, setCoupons] = useState([]);
@@ -40,9 +44,9 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
     });
   }, [location?.state?.coupon])
 
-  console.log(location?.state?.coupon);
-
   useEffect(() => {
+    setDiscount({});
+    console.log(productByStoreId)
     Object.keys(productByStoreId).map((storeId) => {
       const storeCoupon = couponsByStoreId[storeId];
       const storeTotal = productByStoreId[storeId].reduce(
@@ -55,7 +59,7 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
 
       if (storeCoupon?._id) {
         if (storeCoupon?.amount) {
-          msg = `Giảm ${storeCoupon?.amount}${
+          msg = `Giảm ${formatCurrency(storeCoupon?.amount)}${
             storeCoupon?.unit === couponUnit.PERCENT ? '%' : 'đ'
           } cho đơn cửa hàng từ ${formatCurrency(storeCoupon?.minValue)}đ. `;
         }
@@ -94,7 +98,7 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
             value:
               storeCoupon?.unit === couponUnit.PERCENT
                 ? (storeCoupon?.amount * storeTotal) / 100
-                : storeCoupon?.amount,
+                : (storeCoupon?.amount),
             msg,
             valid,
           },
@@ -102,11 +106,12 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
       }
     });
   }, [productByStoreId, cart, couponsByStoreId]);
-
-  const totalDiscount = Object.keys(discount).reduce(
-    (acc, cur) => (acc + discount[cur]?.valid ? discount[cur]?.value : 0),
-    0
-  );
+  const totalDiscount = useMemo(() => {
+    return Object.keys(discount).reduce((acc, cur) => {
+      return acc + (discount[cur]?.valid ? discount[cur]?.value : 0);
+    }, 0);
+  }, [discount]);
+  console.log(totalDiscount)
 
   useEffect(() => {
     coupons.map((coupon) => {
@@ -118,8 +123,9 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
     });
   }, [coupons?.length, cart]);
 
-  const handleUpdateCouponButton = () => {
-    console.log('update coupon');
+  const handleUpdateCouponButton = (storeId) => {
+    setShowStoreCoupons(true);
+    setStoreId(storeId);
   };
 
   return (
@@ -140,10 +146,12 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
                         <MdDiscount /> {discount[storeId]?.msg}
                       </small>
                       <small
+                        style={{ cursor: 'pointer' }}
                         className='text-primary fw-bold'
-                        onClick={handleUpdateCouponButton}
+                        onClick={() => handleUpdateCouponButton(storeId)}
                       >
-                        {' '}Cập nhật
+                        {' '}
+                        Cập nhật
                       </small>
                     </>
                   ) : (
@@ -152,8 +160,9 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
                         Bạn có mã giảm giá?{' '}
                       </small>
                       <small
+                        style={{ cursor: 'pointer' }}
                         className='text-primary fw-bold'
-                        onClick={handleUpdateCouponButton}
+                        onClick={() => handleUpdateCouponButton(storeId)}
                       >
                         Nhập mã ngay
                       </small>
@@ -189,7 +198,9 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
         </Col>
         <Col xs={5}>
           <div>
-            <p className='fw-bold text-end w-100 p-0 m-0'>{formatCurrency(total - totalDiscount)} ₫</p>
+            <p className='fw-bold text-end w-100 p-0 m-0'>
+              {formatCurrency(total - (totalDiscount || 0))} ₫
+            </p>
           </div>
         </Col>
       </Row>
@@ -205,6 +216,19 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
           </p>
         </Col>
       </Row> */}
+      <StoreCouponModal
+        show={showStoreCoupons}
+        setShow={setShowStoreCoupons}
+        storeId={storeId}
+        addCoupon={(coupon) => {
+          setCouponsByStoreId((prev) => {
+            return {
+              ...prev,
+              [storeId]: coupon,
+            };
+          });
+        }}
+      />
     </Styles>
   );
 }

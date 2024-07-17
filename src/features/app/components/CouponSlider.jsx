@@ -5,8 +5,15 @@ import { FreeMode, Pagination } from 'swiper';
 import couponApi from 'api/couponApi';
 import CouponItem from './CouponItem';
 import Loading from 'components/Loading';
+import styled from 'styled-components';
 
-function CouponSlider({ storeCategory, priority, visible = true }) {
+function CouponSlider({
+  storeCategory,
+  priority,
+  visible = true,
+  slidesPerColumn = 1,
+  freeMode = false,
+}) {
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,10 +36,10 @@ function CouponSlider({ storeCategory, priority, visible = true }) {
   }, [storeCategory]);
 
   return (
-    <React.Fragment>
+    <Styles slidesPerColumn={slidesPerColumn}>
       <Swiper
         modules={[Pagination, FreeMode]}
-        freeMode={true}
+        freeMode={freeMode}
         slidesPerView={3.2}
         loop={false}
         spaceBetween={10}
@@ -58,13 +65,26 @@ function CouponSlider({ storeCategory, priority, visible = true }) {
             </SwiperSlide>
           );
         })}
-        {loading && <Loading />}
         {!loading && coupons.length === 0 && (
           <p className='text-center'>Không có ưu đãi nào</p>
         )}
       </Swiper>
-    </React.Fragment>
+      {loading && <Loading />}
+    </Styles>
   );
 }
 
 export default CouponSlider;
+
+const Styles = styled.div`
+  .swiper-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: ${({ slidesPerColumn }) => `repeat(${slidesPerColumn}, auto)`};
+    grid-auto-flow: column;
+
+    & > .swiper-slide {
+      height: fit-content;
+    }
+  }
+`;
