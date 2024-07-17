@@ -99,10 +99,20 @@ function AccountModal({ show, setShow, tel }) {
                 alt='vietqr'
                 className='w-100'
               />
+              <p className='text-center m-0'>
+                Lệ phí thi hạng {drivingClass}{' '}
+                {isStudent ? 'đối với sinh viên' : ''} khi{' '}
+                {hasCheckup
+                  ? 'khám sức khoẻ tại trung tâm.'
+                  : 'tự khám sức khoẻ.'}
+              </p>
               <p className='text-center'>
                 {formatCurrency(amount)} VNĐ
                 {group === 1 ? '' : ` x ${group} người`}
               </p>
+              {group > 1 && (
+                <p className='text-center m-0'>Ưu đãi đăng ký theo nhóm {group} người chỉ áp dụng khi đăng ký trực tiếp.</p>
+              )}
             </Col>
 
             <Col>
@@ -197,13 +207,6 @@ function AccountModal({ show, setShow, tel }) {
                     </Button>
                   </ButtonGroup>
                 </ButtonToolbar>
-                <p className='text-center'>
-                  Lệ phí thi hạng {drivingClass}{' '}
-                  {isStudent ? 'đối với sinh viên' : ''} khi{' '}
-                  {hasCheckup
-                    ? 'khám sức khoẻ tại trung tâm.'
-                    : 'tự khám sức khoẻ.'}
-                </p>
               </Row>
               <Row>
                 <div className='text-uppercase fw-bold mb-3'>{bankName}</div>
