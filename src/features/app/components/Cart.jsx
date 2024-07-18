@@ -11,21 +11,22 @@ import { MdDiscount } from 'react-icons/md';
 import couponApi from 'api/couponApi';
 import StoreCouponModal from './StoreCouponModal';
 
-function Cart({ couponsByStoreId, setCouponsByStoreId }) {
+function Cart({ couponsByStoreId, setCouponsByStoreId, products=[] }) {
   const [showStoreCoupons, setShowStoreCoupons] = useState(false);
+  const buyNow = products.length > 0;
   const [storeId, setStoreId] = useState({});
   const cart = useSelector(selectCart);
   const location = useLocation();
   const [coupons, setCoupons] = useState([]);
   const [discount, setDiscount] = useState({});
-  const total = cart?.data?.reduce(
+  const total = (products.length ? products : cart?.data)?.reduce(
     (acc, cur) => acc + cur.price * cur.quantity,
     0
   );
 
   const productByStoreId = useMemo(() => {
     const productByStoreId = {};
-    cart?.data?.forEach((item) => {
+    (products.length ? products : cart?.data)?.forEach((item) => {
       const currentStores = Object.keys(productByStoreId);
 
       if (!currentStores.includes(item?.store?._id)) {
@@ -45,7 +46,6 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
 
   useEffect(() => {
     setDiscount({});
-    console.log(productByStoreId)
     Object.keys(productByStoreId).map((storeId) => {
       const storeCoupon = couponsByStoreId[storeId];
       const storeTotal = productByStoreId[storeId].reduce(
@@ -110,7 +110,6 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
       return acc + (discount[cur]?.valid ? discount[cur]?.value : 0);
     }, 0);
   }, [discount]);
-  console.log(totalDiscount)
 
   useEffect(() => {
     coupons.map((coupon) => {
@@ -168,7 +167,7 @@ function Cart({ couponsByStoreId, setCouponsByStoreId }) {
                     </>
                   )}
                   {productByStoreId[storeId].map((product, idx) => (
-                    <CartItem key={product?._id} {...product} idx={idx} />
+                    <CartItem buyNow={buyNow} key={product?._id} {...product} idx={idx} />
                   ))}
                 </div>
               );

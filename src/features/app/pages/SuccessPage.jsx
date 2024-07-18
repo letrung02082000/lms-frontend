@@ -28,33 +28,33 @@ function SuccessPage() {
     }
   }, [order?._id])
 
-  if(!order?.products?.length) {
-    return (
-      <Row className='my-2'>
-        <Image src={EmptyCartImage} alt='empty-cart'/>
-        <h3 className='fw-bold mb-2 text-center'>Bạn chưa đặt đơn hàng nào</h3>
-      </Row>
-    );
-  }
-
   return (
     <Styles>
-        <Container>
-          <OrderInfo order={order} storeOrders={storeOrders}/>
-          <Row>
-            <Col>
-              <Button
-                variant='outline-primary'
-                className='w-100 py-2 mb-5'
-                onClick={() => {
-                  navigate(PATH.APP.ROOT);
-                }}
-              >
-                Tạo đơn hàng mới
-              </Button>
-            </Col>
-          </Row>
-        </Container>
+      <Container>
+        {!order?.products?.length ? (
+          <div className='my-2 w-100 d-flex flex-column align-items-center'>
+            <Image width={'50%'} src={EmptyCartImage} alt='empty-cart' />
+            <h3 className='fw-bold mb-2 text-center'>
+              Bạn chưa đặt đơn hàng nào!
+            </h3>
+          </div>
+        ) : (
+          <OrderInfo order={order} storeOrders={storeOrders} />
+        )}
+        <Row>
+          <Col>
+            <Button
+              variant='outline-primary'
+              className='w-100 py-2 mb-5'
+              onClick={() => {
+                navigate(PATH.APP.ROOT);
+              }}
+            >
+              Tạo đơn hàng mới
+            </Button>
+          </Col>
+        </Row>
+      </Container>
     </Styles>
   );
 }

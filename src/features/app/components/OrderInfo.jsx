@@ -20,13 +20,6 @@ function OrderInfo({ order, storeOrders=[] }) {
   return (
     <>
       <Table bordered hover>
-        <thead>
-          <tr>
-            <th colSpan={2} className='text-center text-uppercase'>
-              Thông tin đơn hàng
-            </th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
             <td>Họ tên</td>

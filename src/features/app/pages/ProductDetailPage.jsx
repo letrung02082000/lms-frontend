@@ -10,7 +10,7 @@ import CartBar from '../components/CartBar';
 import ServiceLayout from 'components/layout/ServiceLayout';
 import { PATH } from 'constants/path';
 import { useDispatch } from 'react-redux';
-import { addToCart } from 'store/cart';
+import { addProduct } from 'store/cart';
 import { toastWrapper } from 'utils';
 import useMediaQuery from 'hooks/useMediaQuery';
 import Loading from 'components/Loading';
@@ -24,6 +24,7 @@ function ProductDetailPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const location = useLocation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     productApi
@@ -50,10 +51,14 @@ function ProductDetailPage() {
       });
   }, [product]);
 
-  const dispatch = useDispatch();
-  const handleAddToCartButton = (item) => {
-    dispatch(addToCart(item));
-    navigate(PATH.APP.CHECKOUT, { state: { coupon: location?.state?.coupon } });
+  const handleAddToCartButton = (product) => {
+    dispatch(addProduct({ ...product, quantity: 1 }));
+    navigate(PATH.APP.CHECKOUT, {
+      state: {
+        coupon: location?.state?.coupon,
+        buyNow: true,
+      },
+    });
   };
 
   return (
@@ -151,7 +156,6 @@ function ProductDetailPage() {
 const StyledLayout = styled.div`
   margin: 0 auto;
   margin-bottom: 10rem;
-  width: ${({theme}) => (theme.isDesktop === true ? '60%' : '90%')};
 
   .cart-btn:hover svg {
     color: white !important;

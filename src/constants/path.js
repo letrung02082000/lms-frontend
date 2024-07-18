@@ -11,7 +11,7 @@ export const PATH = {
         SIGNIN: '/auth/login',
         OTP: '/auth/otp',
         ACTIVATION: '/auth/activate',
-        SIGNUP: '/auth/register',
+        SIGNUP: '/auth/login',
         FORGOT_PASSWORD: '/auth/forgot-password',
         GOOGLE: '/auth/google',
     },
@@ -47,7 +47,7 @@ export const PATH = {
         ROOT: '/shop/666195bad4fed7a40f1016fe',
     },
     PHOTOCOPY: {
-        ROOT: '/service/photocopy',
+        ROOT: '/s/photocopy',
     },
     SWIMMING_POOL: {
         ROOT: '/pool-info',

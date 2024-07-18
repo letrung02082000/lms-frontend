@@ -1,7 +1,7 @@
 import { PATH } from 'constants/path';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Col, Image, Row } from 'react-bootstrap';
-import { BsCartPlus } from 'react-icons/bs';
+import { BsCartCheckFill, BsCartPlus } from 'react-icons/bs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { formatCurrency } from 'utils/commonUtils';
 
@@ -13,6 +13,13 @@ function ProductItem({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [addedToCart, setAddedToCart] = React.useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setAddedToCart(false);
+    }, 2000);
+  }, [addedToCart]);
 
   return (
     <div>
@@ -49,12 +56,24 @@ function ProductItem({
         )}
         {hasCartButton && (
           <div>
-            <Button
-              variant='outline-danger'
-              onClick={() => handleAddToCartButton(product)}
-            >
-              <BsCartPlus color='red' />
-            </Button>
+            {addedToCart ? (
+              <Button
+                variant='outline-danger'
+                onClick={() => handleAddToCartButton(product)}
+              >
+                <BsCartCheckFill color='red' />
+              </Button>
+            ) : (
+              <Button
+                variant='outline-danger'
+                onClick={() => {
+                  handleAddToCartButton(product);
+                  setAddedToCart(true);
+                }}
+              >
+                <BsCartPlus color='red' />
+              </Button>
+            )}
           </div>
         )}
       </div>

@@ -69,7 +69,7 @@ function FilterSilder({ setCategoryId, categories, categoryId, hasAll=false }) {
 export default FilterSilder;
 
 const Styles = styled.div`
-  /* .swiper-slide {
+  .swiper-slide {
     width: fit-content !important;
-  } */
+  }
 `;

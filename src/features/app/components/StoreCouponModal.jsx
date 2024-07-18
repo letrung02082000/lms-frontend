@@ -82,13 +82,12 @@ function StoreCouponModal({ show, setShow, storeId, addCoupon }) {
                 </Row>
               );
             })}
-            {!loading && coupons.length === 0 && <p>Không có ưu đãi nào</p>}
+          {!loading && coupons.length === 0 && (
+            <p className='text-center'>
+              Không tìm thấy ưu đãi cho cửa hàng này
+            </p>
+          )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant='secondary' onClick={() => setShow(false)}>
-            Đóng
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

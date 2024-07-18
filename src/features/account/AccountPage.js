@@ -27,15 +27,14 @@ function AccountPage() {
 
   return (
     <Styles>
-      <MainLayout>
         {user.isLoggedIn ? (
           <>
             <ProfileImage src={user.data.avatarUrl || "/common/avatar.png"} />
             <div className="d-flex flex-column align-items-center justify-content-center mb-5">
-              <p className="mb-3">{profileMsg(userInfo?.name)}</p>
-              <div className="btn btn-outline-secondary"><small>{formatPhoneNumber(userInfo?.zalo)}</small></div>
+              <p className="mb-1">{profileMsg(userInfo?.name)}</p>
+              <div><small>{formatPhoneNumber(userInfo?.zalo)}</small></div>
             </div>
-            <Item path={PATH.EXPLORE}>Ưu đãi</Item>
+            <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
             <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
             <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
             {/* <Item onClick={handleLogout}>Đăng xuất</Item> */}
@@ -52,11 +51,12 @@ function AccountPage() {
               </button>
             </div>
             <div className="content">
-              <Item path="/support">Hỗ trợ</Item>
+              <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
+              <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
+              <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
             </div>
           </>
         )}
-      </MainLayout>
     </Styles>
   );
 }

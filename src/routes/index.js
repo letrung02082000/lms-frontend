@@ -47,6 +47,17 @@ const router = createBrowserRouter([
             path: PATH.ACCOUNT,
             element: <AccountPage />
           },
+          {
+            path: PATH.USER.ROOT,
+            element: <UserGuard />,
+            errorElement: <NotFoundPage />,
+            children: [
+              {
+                path: PATH.USER.PROFILE,
+                element: <AccountPage />,
+              },
+            ],
+          },
         ],
       },
       {
@@ -61,7 +72,7 @@ const router = createBrowserRouter([
       },
       {
         path: PATH.APP.ORDER_SUCCESS,
-        element: <ServiceLayout pageTitle="Đặt hàng">
+        element: <ServiceLayout pageTitle="Thông tin đơn hàng">
           <SuccessPage />
         </ServiceLayout>
       },
@@ -85,7 +96,7 @@ const router = createBrowserRouter([
       },
       {
         path: PATH.APP.ORDER_DETAIL,
-        element: <ServiceLayout pageTitle="Thông tin đơn hàng">
+        element: <ServiceLayout pageTitle="Thông tin đơn hàng" backTo={PATH.APP.ROOT}>
           <OrderPage />
         </ServiceLayout>
       },
@@ -174,17 +185,6 @@ const router = createBrowserRouter([
             element: <AdminDrivingA1Page />,
           },
         ],
-      },
-    ],
-  },
-  {
-    path: PATH.USER.ROOT,
-    element: <UserGuard />,
-    errorElement: <NotFoundPage />,
-    children: [
-      {
-        path: PATH.USER.PROFILE,
-        element: <AccountPage />,
       },
     ],
   },

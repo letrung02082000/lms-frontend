@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Pagination, Autoplay, Scrollbar } from 'swiper';
-import { Button, Col, Image, Row } from 'react-bootstrap';
+import { Button, Col, Image, Modal, Row } from 'react-bootstrap';
 import productApi from 'api/productApi';
 import styled from 'styled-components';
 import CartBar from '../components/CartBar';
@@ -22,6 +22,7 @@ import ZaloImage from 'assets/images/ZaloImage';
 import ZaloLink from 'components/link/ZaloLink';
 import { formatPhoneNumber } from 'utils/commonUtils';
 import { IoIosGlobe } from 'react-icons/io';
+import { IoInformationCircleSharp, IoLocationSharp } from "react-icons/io5";
 
 function StoreDetailPage() {
   const storeId = useParams()?.storeId;
@@ -33,6 +34,7 @@ function StoreDetailPage() {
   const [categoryId, setCategoryId] = React.useState('');
   const [loading, setLoading] = React.useState(true);
   const [storeOptions, setStoreOptions] = React.useState(null);
+  const [readMore, setReadMore] = React.useState(false);
 
   useEffect(() => {
     storeApi
@@ -102,7 +104,6 @@ function StoreDetailPage() {
               className={isDesktop ? 'position-sticky sticky-top h-100' : ''}
             >
               <Swiper
-                className='m-2'
                 modules={[Pagination, Scrollbar]}
                 slidesPerView={1}
                 loop={false}
@@ -122,6 +123,17 @@ function StoreDetailPage() {
                   <div>
                     <div className='mb-2'>
                       {store?.tel && (
+                        <button
+                          onClick={() => setReadMore(true)}
+                          className='text-primary bg-white border-0'
+                        >
+                          <IoInformationCircleSharp size={25} />
+                          <small className='ms-2'>Giới thiệu cửa hàng</small>
+                        </button>
+                      )}
+                    </div>
+                    <div className='mb-2'>
+                      {store?.tel && (
                         <a
                           href={`tel:${store.tel}`}
                           target='_blank'
@@ -129,9 +141,9 @@ function StoreDetailPage() {
                           className='text-decoration-none'
                         >
                           <MdPhone size={25} />
-                          <span className='ms-2'>
+                          <small className='ms-2'>
                             {formatPhoneNumber(store.tel)}
-                          </span>
+                          </small>
                         </a>
                       )}
                     </div>
@@ -142,29 +154,16 @@ function StoreDetailPage() {
                           className='text-decoration-none'
                         >
                           <ZaloImage />
-                          <span className='ms-2'>
+                          <small className='ms-2'>
                             {formatPhoneNumber(store.zalo)}
-                          </span>
+                          </small>
                         </ZaloLink>
-                      )}
-                    </div>
-                    <div>
-                      {store?.website && (
-                        <a
-                          href={store.website}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='text-decoration-none'
-                        >
-                          <IoIosGlobe size={25} />
-                          <span className='ms-2'>{store.website}</span>
-                        </a>
                       )}
                     </div>
                   </div>
                   {storeOptions?.actionButtonLink && (
                     <a
-                      className='btn btn-outline-primary'
+                      className='btn btn-outline-primary fw-bold'
                       href={storeOptions?.actionButtonLink}
                       target='_blank'
                       rel='noopener noreferrer'
@@ -173,8 +172,50 @@ function StoreDetailPage() {
                     </a>
                   )}
                 </div>
-                <p>{store?.address}</p>
-                <div dangerouslySetInnerHTML={{__html: store?.description}}></div>
+                <div>
+                  <div className='mb-2'>
+                    {store?.website && (
+                      <a
+                        href={store.website}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-decoration-none'
+                      >
+                        <IoIosGlobe size={25} />
+                        <small className='ms-2'>{store.website}</small>
+                      </a>
+                    )}
+                  </div>
+                  {store?.googleMapLink && (
+                    <a
+                      href={store.googleMapLink}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='text-decoration-none'
+                    >
+                      <IoLocationSharp size={25} />
+                      <small className='ms-2'>
+                        {store?.address || 'Chỉ đường'}
+                      </small>
+                    </a>
+                  )}
+                </div>
+                <Modal show={readMore} onHide={() => setReadMore(false)}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Giới thiệu cửa hàng</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <h5>{store?.name}</h5>
+                    <div className='d-flex justify-content-between align-items-start'>
+                      <div
+                        style={{ textAlign: 'justify' }}
+                        dangerouslySetInnerHTML={{
+                          __html: store?.description,
+                        }}
+                      ></div>
+                    </div>
+                  </Modal.Body>
+                </Modal>
               </div>
             </Col>
             <Col md={8}>
@@ -222,9 +263,7 @@ function StoreDetailPage() {
 }
 
 const StyledLayout = styled.div`
-  margin: 0 auto;
   margin-bottom: 10rem;
-  width: 90%;
 
   .product-item {
     width: ${({ theme }) => (theme.isDesktop === true ? '30%' : '45%')};

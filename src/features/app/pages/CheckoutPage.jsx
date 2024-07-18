@@ -11,7 +11,6 @@ import { clearCart, selectCart } from 'store/cart';
 import EmptyCartImage from 'assets/images/food/empty-cart.jpg'
 import InputField from 'components/form/InputField';
 import { PATH } from 'constants/path';
-import StoreCouponModal from '../components/StoreCouponModal';
 
 function CheckoutPage() {
   const SOURCES = {
@@ -24,6 +23,9 @@ function CheckoutPage() {
   const order = JSON.parse(localStorage.getItem('order') || '{}');
   const navigate = useNavigate();
   const cart = useSelector(selectCart);
+  console.log(cart)
+  console.log(state)
+
   const dispatch = useDispatch();
   const {
     control,
@@ -49,7 +51,6 @@ function CheckoutPage() {
     shouldUseNativeValidation: false,
     delayError: false,
   });
-  const [showStoreCoupons, setShowStoreCoupons] = React.useState(false);
 
   const handleClearButton = (name) => {
     setValue(name, '');
@@ -60,7 +61,7 @@ function CheckoutPage() {
     setLoading(true);
     await handleSubmit((formData) => {
       const productByStoreId = {};
-      cart?.data?.forEach((item) => {
+      (state?.buyNow ? [cart?.product] : cart?.data)?.forEach((item) => {
         const currentStores = Object.keys(productByStoreId);
 
         if (!currentStores.includes(item?.store?._id)) {
@@ -76,7 +77,7 @@ function CheckoutPage() {
         tel: formData.formTel || 'Không có',
         email: formData.formEmail || 'Không có',
         note: formData.formNote || 'Không có',
-        products: cart?.data || [],
+        products: state?.buyBow ? [cart?.product] : cart?.data,
         productByStoreId,
         couponsByStoreId,
       };
@@ -89,7 +90,11 @@ function CheckoutPage() {
             localStorage.setItem('order', JSON.stringify(res?.data));
           }
           setLoading(false);
-          dispatch(clearCart());
+
+          if(!state?.buyNow) {
+            dispatch(clearCart());
+          }
+          
           navigate(PATH.APP.ORDER_DETAIL.replace(':orderId', res?.data?._id));
         })
         .catch((err) => {
@@ -101,7 +106,7 @@ function CheckoutPage() {
     })();
   };
 
-  if(cart?.data?.length === 0) {
+  if(cart?.data?.length === 0 && !state?.buyNow) {
     return (
       <>
         <Row>
@@ -129,11 +134,14 @@ function CheckoutPage() {
     );
   }
 
+  console.log('first', state)
+
   return (
     <Styles>
       <Row>
         <Col xs={12} md={6}>
           <Cart
+            products={state?.buyNow ? [cart.product] : []}
             couponsByStoreId={couponsByStoreId}
             setCouponsByStoreId={setCouponsByStoreId}
           />

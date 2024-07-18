@@ -1,22 +1,33 @@
 import React from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
-import { addToCart, deleteFromCart, removeFromCart } from 'store/cart';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct, addToCart, deleteFromCart, removeFromCart, selectCart } from 'store/cart';
 import styled from 'styled-components';
 import { formatCurrency } from 'utils/commonUtils';
 import { CiCircleMinus, CiCirclePlus, CiSquareMinus, CiSquarePlus, CiTrash } from 'react-icons/ci';
 import theme from 'constants/theme';
 
-function CartItem(props) {
+function CartItem({buyNow, ...props}) {
   const { idx, name, price, quantity } = props;
   const dispatch = useDispatch();
+  const cart = useSelector(selectCart);
 
   const handleMinusButton = () => {
     if(quantity === 1) return;
+
+    if(buyNow) {
+      dispatch(addProduct({...cart?.product, quantity: cart?.product?.quantity - 1}));
+      return;
+    }
+
     dispatch(removeFromCart(props));
   };
 
   const handleAddButton = () => {
+    if(buyNow) {
+      dispatch(addProduct({...cart?.product, quantity: cart?.product?.quantity + 1}));
+      return;
+    }
     dispatch(addToCart(props));
   };
 
