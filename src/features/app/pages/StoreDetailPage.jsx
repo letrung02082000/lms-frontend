@@ -122,7 +122,7 @@ function StoreDetailPage() {
                 <div className='d-flex justify-content-between align-items-start'>
                   <div>
                     <div className='mb-2'>
-                      {store?.tel && (
+                      {store?.description && (
                         <button
                           onClick={() => setReadMore(true)}
                           className='text-primary bg-white border-0'
@@ -187,17 +187,18 @@ function StoreDetailPage() {
                     )}
                   </div>
                   {store?.googleMapLink && (
-                    <a
-                      href={store.googleMapLink}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='text-decoration-none'
-                    >
+                    <>
                       <IoLocationSharp size={25} />
-                      <small className='ms-2'>
-                        {store?.address || 'Chỉ đường'}
-                      </small>
-                    </a>
+                      <small className='ms-2'>{store?.address}{' '}</small>
+                      <a
+                        href={store.googleMapLink}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-decoration-none'
+                      >
+                        Xem chỉ đường
+                      </a>
+                    </>
                   )}
                 </div>
                 <Modal show={readMore} onHide={() => setReadMore(false)}>

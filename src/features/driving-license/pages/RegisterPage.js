@@ -100,9 +100,6 @@ export default function DrivingRegisterPage() {
   const [backData, setBackData] = useState(null);
   const [portraitData, setPortraitData] = useState(null);
 
-  console.log(date)
-  console.log(drivingType)
-
   const imageExtensions = [
     "image/jpeg",
     "image/png",
@@ -151,10 +148,11 @@ export default function DrivingRegisterPage() {
       return;
     }
 
-
-    if(drivingType === 0) {
+    let drivingLink = '';
+    
+    if(drivingType == 0) {
       const dateObj = dateList.filter((child) => child.value == date)[0];
-      const drivingLink = dateObj?.link;
+      drivingLink = dateObj?.link;
       localStorage.setItem('driving-link', drivingLink || '');
       formData.date = dateObj?.date?.getTime();
     } else {
@@ -170,6 +168,7 @@ export default function DrivingRegisterPage() {
       paymentMethod: paymentMethod,
       drivingType: drivingType,
       source: source,
+      link: drivingLink,
     }
 
     drivingApi.addDriving(data)

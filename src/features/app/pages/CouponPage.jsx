@@ -96,7 +96,7 @@ function CouponPage() {
 const StyledLayout = styled.div`
   margin: 0 auto;
   margin-bottom: 10rem;
-  width: ${({theme}) => (theme.isDesktop === true ? '60%' : '90%')};
+  width: ${({theme}) => (theme.isDesktop === true ? '60%' : '95%')};
 `;
 
 export default CouponPage;
