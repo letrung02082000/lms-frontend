@@ -57,7 +57,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose }) {
               <p>Cửa hàng chưa cập nhật thông tin thanh toán</p>
             ) : (
               <ModalStyles>
-                <Row>
+                <Row className='justify-content-center'>
                   <Col md={7}>
                     <img
                       src={`https://img.vietqr.io/image/${paymentInfo?.bankCode}-${paymentInfo?.bankAccount}-e59ZziA.jpg?accountName=${paymentInfo?.bankOwner}&amount=${amount}&addInfo=${desc}`}
@@ -78,52 +78,50 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose }) {
                       <Col xs={12}>
                         Số tài khoản
                         <br />
-                        <b>{paymentInfo?.bankAccount}</b>
-                      </Col>
-                      <Col>
+                        <b>{paymentInfo?.bankAccount}{' '}</b>
                         <CopyButton
-                          className='btn btn-outline-primary copy-btn'
                           text={paymentInfo?.bankAccount}
                           copied={copied}
                           setCopied={setCopied}
                         >
-                          <BiCopy /> {copied ? 'Đã chép' : 'Sao chép'}
+                          <BiCopy />
                         </CopyButton>
+                      </Col>
+                      <Col>
+                        
                       </Col>
                     </Row>
                     <Row className='mb-2'>
                       <Col xs={12}>
                         Nội dung
                         <br />
-                        <b>{paymentInfo?.description || desc}</b>
-                      </Col>
-                      <Col>
+                        <b>{paymentInfo?.description || desc}{' '}</b>
                         <CopyButton
-                          className='btn btn-outline-primary copy-btn'
                           text={desc}
                           copied={contentCopied}
                           setCopied={setContentCopied}
                         >
-                          <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
+                          <BiCopy />
                         </CopyButton>
+                      </Col>
+                      <Col>
+                        
                       </Col>
                     </Row>
                     <Row>
                       <Col xs={12}>
                         Số tiền
                         <br />
-                        <b>{formatCurrency(amount)} VNĐ</b>
-                      </Col>
-
-                      <Col>
+                        <b>{formatCurrency(amount)} VNĐ{' '}</b>
                         <CopyButton
-                          className='btn btn-outline-primary copy-btn'
                           text={amount}
                           copied={amountCopied}
                           setCopied={setAmountCopied}
                         >
-                          <BiCopy /> {amountCopied ? 'Đã chép' : 'Sao chép'}
+                          <BiCopy />
                         </CopyButton>
+                      </Col>
+                      <Col>
                       </Col>
                     </Row>
                   </Col>
@@ -137,7 +135,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose }) {
 
         <Modal.Footer>
           <Button variant='secondary' onClick={handleClose}>
-            Tôi đã thanh toán
+            Đóng
           </Button>
         </Modal.Footer>
       </Modal>
@@ -148,9 +146,4 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose }) {
 export default PaymentModal;
 
 const ModalStyles = styled.div`
-  .custom-label {
-    font-size: 1rem;
-    font-weight: 500;
-    margin: 0.5rem 0 0;
-  }
 `;

@@ -219,16 +219,13 @@ function AccountModal({ show, setShow, tel }) {
                   <Col xs={12}>
                     Số tài khoản
                     <br />
-                    <b>{accountNumber}</b>
-                  </Col>
-                  <Col>
+                    <b>{accountNumber}{' '}</b>
                     <CopyButton
-                      className='btn btn-outline-primary copy-btn'
                       text={accountNumber}
                       copied={copied}
                       setCopied={setCopied}
                     >
-                      <BiCopy /> {copied ? 'Đã chép' : 'Sao chép'}
+                      <BiCopy />
                     </CopyButton>
                   </Col>
                 </Row>
@@ -236,16 +233,13 @@ function AccountModal({ show, setShow, tel }) {
                   <Col xs={12}>
                     Nội dung
                     <br />
-                    <b>{desc}</b>
-                  </Col>
-                  <Col>
+                    <b>{desc}{' '}</b>
                     <CopyButton
-                      className='btn btn-outline-primary copy-btn'
                       text={desc}
                       copied={contentCopied}
                       setCopied={setContentCopied}
                     >
-                      <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
+                      <BiCopy />
                     </CopyButton>
                   </Col>
                 </Row>

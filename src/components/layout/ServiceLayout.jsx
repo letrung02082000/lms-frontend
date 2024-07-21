@@ -36,7 +36,7 @@ function ServiceLayout({
 const LayoutStyled = styled.div`
   margin: 0 auto;
   margin-bottom: 10rem;
-  width: ${({ theme }) => (theme.isDesktop === true ? '60%' : '95%')};
+  width: ${({ theme }) => (theme.isDesktop === true ? '60%' : '100%')};
   background-color: ${({ theme }) => theme.color.background};
   padding: 1rem;
   padding-bottom: 5rem;
