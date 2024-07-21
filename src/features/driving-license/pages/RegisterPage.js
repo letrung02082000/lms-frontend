@@ -285,7 +285,7 @@ export default function DrivingRegisterPage() {
         </h4>
         <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <p className="text-center">Bạn vui lòng hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</p>
-        <Button className="mb-3" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán online</Button>
+        <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán online</Button>
         <a className="btn btn-outline-primary mb-3" href='driving-instruction#offline' target='_blank' rel="noopener noreferrer">Thanh toán trực tiếp</a>
         
         <p className="text-center">
