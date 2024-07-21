@@ -152,7 +152,7 @@ export default function DrivingRegisterPage() {
     }
 
 
-    if(drivingType === 0) {
+    if(drivingType == 0) {
       const dateObj = dateList.filter((child) => child.value == date)[0];
       const drivingLink = dateObj?.link;
       localStorage.setItem('driving-link', drivingLink || '');
