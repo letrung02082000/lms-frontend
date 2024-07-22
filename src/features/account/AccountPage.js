@@ -27,42 +27,46 @@ function AccountPage() {
 
   return (
     <Styles>
-        {user.isLoggedIn ? (
-          <>
-            <ProfileImage src={user.data.avatarUrl || "/common/avatar.png"} />
-            <div className="d-flex flex-column align-items-center justify-content-center mb-5">
-              <p className="mb-1">{profileMsg(userInfo?.name)}</p>
-              <div><small>{formatPhoneNumber(userInfo?.zalo)}</small></div>
-            </div>
+      {user.isLoggedIn ? (
+        <>
+          <ProfileImage src={user.data.avatarUrl || "/common/avatar.png"} />
+          <div className="d-flex flex-column align-items-center justify-content-center mb-5">
+            <p className="mb-1">{profileMsg(userInfo?.name)}</p>
+            <div><small>{formatPhoneNumber(userInfo?.zalo)}</small></div>
+          </div>
+          <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
+          <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
+          <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
+          {/* <Item onClick={handleLogout}>Đăng xuất</Item> */}
+        </>
+      ) : (
+        <>
+          <div className="welcome">
+            <p className="welcome-title">Chào mừng bạn đến với iSinhVien!</p>
+            <button onClick={handleLoginClick} className="btn fw-bold">
+              Đăng nhập
+            </button>
+            <button onClick={handleSignUpClick} className="btn fw-bold ms-3">
+              Đăng ký ngay
+            </button>
+          </div>
+          <div className="content">
             <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
             <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
             <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
-            {/* <Item onClick={handleLogout}>Đăng xuất</Item> */}
-          </>
-        ) : (
-          <>
-            <div className="welcome">
-              <p className="welcome-title">Chào mừng bạn đến với iSinhVien!</p>
-              <button onClick={handleLoginClick} className="btn fw-bold">
-                Đăng nhập
-              </button>
-              <button onClick={handleSignUpClick} className="btn fw-bold ms-3">
-                Đăng ký ngay
-              </button>
-            </div>
-            <div className="content">
-              <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
-              <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
-              <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
-            </div>
-          </>
-        )}
+          </div>
+        </>
+      )}
     </Styles>
   );
 }
 export default AccountPage;
 
 const Styles = styled.div`
+  margin: 0 auto;
+  margin-bottom: 10rem;
+  width: ${({ theme }) => (theme.isDesktop ? '60%' : '95%')};
+
   .welcome {
     padding: 1rem;
     background-color: var(--primary);
