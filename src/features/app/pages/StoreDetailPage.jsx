@@ -196,7 +196,7 @@ function StoreDetailPage() {
                         rel='noopener noreferrer'
                         className='text-decoration-none'
                       >
-                        Xem chỉ đường
+                        <small>Xem chỉ đường</small>
                       </a>
                     </>
                   )}
