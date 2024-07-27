@@ -73,7 +73,7 @@ function AccountModal({ show, setShow, tel }) {
     } else if (group === 3) {
       setDesc('GPLX <SĐT1> <SĐT2> <SĐT3>');
     }
-  }, [drivingClass, isStudent, hasCheckup, group]);
+  }, [drivingClass, isStudent, hasCheckup, group, tel]);
 
   return (
     <Modal
