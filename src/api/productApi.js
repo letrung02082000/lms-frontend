@@ -1,10 +1,14 @@
 import axiosClient from "./axiosClient";
 
-const API_PATH = "https://api.food.isinhvien.vn/product";
+const API_PATH = "/product";
 
 class StoreApi {
     getProducts = async () => {
-        return axiosClient.get(API_PATH);
+        return axiosClient.get(API_PATH, {
+            params: {
+                visible: true,
+            },
+        });
     };
 
     getProductById = async (id) => {
@@ -14,12 +18,28 @@ class StoreApi {
 
     getProductsByStoreId = async (storeId) => {
         const url = `${API_PATH}/store/${storeId}`;
-        return axiosClient.get(url);
+        return axiosClient.get(url,
+            {
+                params: {
+                    visible: true,
+                },
+            });
     };
 
-    getProductsByCategory = async (categoryId) => {
-        const url = `${API_PATH}/q?category=${categoryId}`;
-        console.log(url);
+    queryProducts = async (category, store, storeCategory) => {
+        const url = `${API_PATH}/q`;
+        return axiosClient.get(url, {
+            params: {
+                visible: true,
+                category,
+                store,
+                storeCategory
+            },
+        });
+    };
+
+    getProductCategories = async () => {
+        const url = `${API_PATH}/category`;
         return axiosClient.get(url);
     };
 }

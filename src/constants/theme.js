@@ -11,6 +11,8 @@ const theme = {
         gray: '#777',
         lightGray: '#e0e1e2',
         blueGray: '#00000099',
+        teal: '#008080',
+        whiteSmoke: '#f5f5f5',
     },
     fonts: ["Roboto Condensed", "sans-serif"],
     fontSizes: {

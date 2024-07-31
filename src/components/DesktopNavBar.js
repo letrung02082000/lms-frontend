@@ -30,12 +30,12 @@ function DesktopNavBar(props) {
 
   const handleSignUpClick = () => {
     setActiveKey(null);
-    navigate("/login");
+    navigate(PATH.AUTH.SIGNUP);
   };
 
   const handleLoginClick = () => {
     setActiveKey(null);
-    navigate("/login");
+    navigate(PATH.AUTH.SIGNIN);
   };
 
   const handleProfileClick = () => {

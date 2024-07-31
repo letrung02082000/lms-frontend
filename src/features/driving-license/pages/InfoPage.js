@@ -16,26 +16,8 @@ function DrivingTestPage() {
 
   return (
     <div className={styles.drivingContainer}>
-      <div className={styles.header}>
+      <div>
         <img src="/drivingbanner.jpg" alt="driving banner" className={styles.drivingBanner} />
-        <div className={styles.introContainerTop}>
-          <a
-            className={styles.contactButtonTop}
-            href={`tel:${convertPhoneNumber(DRIVING_LICENSE_NUMBER, '+84')}`}
-            target="_blank"
-            rel="noreferer noreferrer"
-          >
-            Gọi ngay
-          </a>
-          <a
-            className={styles.contactButtonTop}
-            href={`https://zalo.me/${DRIVING_LICENSE_NUMBER}`}
-            target="_blank"
-            rel="noreferer noreferrer"
-          >
-            Zalo
-          </a>
-        </div>
       </div>
 
       <div className={styles.bodyContainer}>
@@ -61,28 +43,7 @@ function DrivingTestPage() {
           <img className={styles.numberIcon} src="/two.png" alt="img" />
         </div>
         <h5>Đóng phí dự thi</h5>
-        <ul className={styles.mobileMoneyContainer}>
-          <li>
-            <p className={styles.payText}>Momo</p>
-            <img className={styles.payIcon} src="/momo.png" alt="pay-icon" />
-          </li>
-          <li>
-            <p className={styles.payText}>Zalo Pay</p>
-            <img className={styles.payIcon} src="/zalopay.png" alt="pay-icon" />
-          </li>
-          <li>
-            <p className={styles.payText}>Viettel Money</p>
-            <img className={styles.payIcon} src="/viettelmoney.svg" alt="pay-icon" />
-          </li>
-          <li>
-            <p className={styles.payText}>Chuyển khoản ngân hàng</p>
-            <img className={styles.payIcon} src="/napas.jpg" alt="pay-icon" />
-          </li>
-          <li>
-            <p className={styles.payText}>Đóng trực tiếp</p>
-            <img className={styles.payIcon} src="/directmoney.png" alt="pay-icon" />
-          </li>
-        </ul>
+        <p className='text-center'>Thanh toán online hoặc trực tiếp</p>
         <div>
           <img className={styles.numberIcon} src="/three.png" alt="img" />
         </div>

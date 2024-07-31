@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 const toastWrapper = (msg, type, options) => {
   return toast(msg, {
     position: 'top-right',
-    autoClose: 5000,
+    autoClose: 1000,
     hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,

@@ -1,80 +1,102 @@
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import CopyButton from 'components/button/CopyButton';
 import styled from 'styled-components';
+import { copyText } from 'utils/commonUtils';
 import Timeline from './Timeline';
+import Asterisk from 'components/form/Asterisk';
 function SearchOrder(data) {
   const {
     name,
     orderCode,
     category,
     document,
-    receipt,
     state,
     isPrinted,
     instruction,
-    isDelivered,
+    deliveryTime,
+    token
   } = data;
+  const ORIGINAL_URL = window.location.origin;
+  const quotationLink = `${ORIGINAL_URL}/order?id=${data._id}&token=${token}`;
   const [copied, setCopied] = useState(false);
-  console.log(data);
   const handleCopyButton = () => {
-    navigator.clipboard.writeText(`${orderCode} ${name}`);
+    copyText(`IN ${orderCode}`)
     setCopied(true);
   };
 
+  let timeText = deliveryTime ? `${new Date(deliveryTime)?.toLocaleTimeString('en-GB')} ngày ${new Date(deliveryTime)?.toLocaleDateString('en-GB')}` : 'Đang cập nhật'
+
   return (
     <Styles>
-      <p>Mã đơn hàng: {orderCode}</p>
-      <p>Khách hàng: {name}</p>
-      <p>Thể loại in: {category?.name}</p>
       <p>
-        Tài liệu (admin):{' '}
-        {typeof document === 'string' ? (
-          <a href={document} rel="noopenner noreferrer" target="_blank">
-            Tài liệu
-          </a>
-        ) : (
-          <div>
-            {document?.map((url, index) => {
-              return (
-                <a href={url} rel="noopenner noreferrer" target="_blank">
-                  Tài liệu {index + 1} <br />
-                </a>
-              )
-            })}
-          </div>
-        )}
+        Mã đơn hàng: #<b>{orderCode}</b>
       </p>
-      <p>Hướng dẫn in: {instruction}</p>
-      <p>Trạng thái: {isPrinted ? 'Đã in' : 'Chưa in'}</p>
       <p>
-        Nội dung chuyển khoản (không dấu):
-        <br />
+        Khách hàng: <b>{name}</b>
+      </p>
+      <p>
+        Thể loại in: <b>{category?.name}</b>
+      </p>
+      {/* <p>
+        Tài liệu:
+        <div>
+          {document?.map((_item, index) => {
+            let url = _item?.fileUrl ? _item.fileUrl : `https://drive.google.com/file/d/${_item?.fileId}`
+            return (
+              <a href={url} rel='noopener noreferrer' target='_blank'>
+                Tài liệu {index + 1} <br />
+              </a>
+            );
+          })}
+        </div>
+      </p> */}
+      <p>Hướng dẫn in: {instruction}</p>
+      <p>
+        Trạng thái:{' '}
         <b>
-          {orderCode} {name}
+          {isPrinted ? (
+            <span className='text-success'>Đã in</span>
+          ) : (
+            <span className='text-danger'>Chưa in</span>
+          )}
         </b>
       </p>
-      {copied ? (
-        <Button
-          type='button'
-          variant='outline-primary'
-          onClick={handleCopyButton}
-        >
-          Đã chép
-        </Button>
+      {deliveryTime ? (
+        <p className='text-success fw-bold'>
+          Đơn hàng sẽ được giao vào lúc {timeText}
+        </p>
       ) : (
-        <Button
-          type='button'
-          variant='outline-primary'
-          onClick={handleCopyButton}
-        >
-          Sao chép
-        </Button>
+        <span className='text-primary fw-bold'>
+          Thời gian giao hàng: Đang cập nhật
+        </span>
       )}
       <Timeline data={data?.timeline} current={state} />
+      <div className='mt-2'>
+        <span className='me-2'>
+          Nội dung chuyển khoản:{' '}
+          <b>{`IN ${orderCode}`}</b>
+        </span>
+        <CopyButton copied={copied} setCopied={setCopied} text={`IN ${orderCode}`}/>
+      </div>
 
+      <div>
+        <Asterisk color='red' /> Viết in hoa, không dấu, đúng cú pháp
+        <br />
+        <Asterisk color='red' /> Thanh toán được duyệt tự động
+      </div>
+      {token && (
+        <a
+          className='mt-2 btn btn-primary'
+          href={quotationLink}
+          rel='noopener noreferrer'
+          target='_blank'
+        >
+          Xem báo giá
+        </a>
+      )}
       <hr />
     </Styles>
-  )
+  );
 }
 
 export default SearchOrder

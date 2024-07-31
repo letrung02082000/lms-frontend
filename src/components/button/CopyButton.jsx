@@ -11,7 +11,7 @@ function CopyButton({ copied, setCopied, text, ...props }) {
 
   return (
     <Styles className='btn btn-outline-primary' onClick={handleCopyButton} type='button' {...props}>
-      <BiCopy /> <span className='copy-text'>{copied ? 'Đã chép' : 'Sao chép'}</span>
+      <BiCopy />
     </Styles>
   );
 }

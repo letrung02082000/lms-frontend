@@ -1,3 +1,6 @@
+import PhotocopyPage from './photocopy/pages/PhotocopyPage'
+export { PhotocopyPage }
+
 export * from './404'
 export * from './account'
 export * from './admin'
@@ -13,7 +16,6 @@ export * from './job'
 export * from './login'
 export * from './maintainance'
 export * from './mbbank'
-export * from './photocopy'
 export * from './profile'
 export * from './qr-scan'
 export * from './swimming-pool'
