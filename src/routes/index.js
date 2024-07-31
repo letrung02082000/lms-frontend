@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { PATH } from 'constants/path';
 import { ADMIN_DRIVING_MENU } from 'constants/menu';
-import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, ExplorePage, GuestHouseInfoPage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, UniformRegistrationPage, PhotocopyPage, DrivingTestPage } from 'features';
+import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, ExplorePage, GuestHouseInfoPage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, UniformRegistrationPage, PhotocopyPage, DrivingTestPage, DrivingHealthPage } from 'features';
 import { AppStorePage, CheckoutPage, OrderPage, ProductDetailPage, StoreDetailPage } from 'features/app';
 import MainGuard from 'components/guard/MainGuard';
 import MainLayout from 'components/layout/MainLayout';
@@ -130,6 +130,12 @@ const router = createBrowserRouter([
         path: PATH.DRIVING.REGISTRATION,
         element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
           <DrivingRegisterPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.DRIVING.HEALTH_CHECK,
+        element: <ServiceLayout pageTitle="Đăng ký thông tin khám sức khoẻ" backTo={PATH.HOME}>
+          <DrivingHealthPage />
         </ServiceLayout>
       },
       {
