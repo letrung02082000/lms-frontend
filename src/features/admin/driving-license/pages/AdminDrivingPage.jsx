@@ -142,33 +142,6 @@ function AdminDrivingA1Page() {
     },
     { field: 'cash', headerName: 'Chuyển khoản', flex: 1 },
     {
-      field: 'isPaid',
-      headerName: 'Thanh toán',
-      flex: 1,
-      cellRenderer: PaymentCheckbox,
-      valueGetter: rowDataGetter,
-    },
-    {
-      field: 'healthChecked',
-      headerName: 'Đã khám sức khoẻ',
-      flex: 1,
-      cellRenderer: HealthCheckbox,
-      valueGetter: rowDataGetter,
-    },
-    {
-      field: 'hasFile',
-      headerName: 'Đã có hồ sơ',
-      flex: 1,
-      cellRenderer: FileCheckbox,
-      valueGetter: rowDataGetter,
-    },
-    {
-      field: 'processState',
-      headerName: 'Trạng thái',
-      flex: 1,
-      // cellRenderer: FileCheckbox,
-    },
-    {
       field: 'action',
       headerName: 'Thao tác',
       cellRenderer: ActionButton,
@@ -321,7 +294,7 @@ function AdminDrivingA1Page() {
     >
       <div
         style={{ height: '9%' }}
-        className='d-flex align-items-center ps-3 pe-5'
+        className='d-flex align-items-center ps-3'
       >
         <div className='w-100 position-relative'>
           <Form.Control
@@ -340,13 +313,13 @@ function AdminDrivingA1Page() {
             <MdClear />
           </button>
         </div>
-        <button className='btn ms-3' onClick={handleSearchButton}>
+        <button className='btn ms-2' onClick={handleSearchButton}>
           <MdSearch size={25} />
         </button>
-        <button className='btn ms-3' onClick={() => setShow(true)}>
+        <button className='btn ms-2' onClick={() => setShow(true)}>
           <MdFilterList size={25} />
         </button>
-        <button className='btn ms-3' onClick={() => setShowQRModal(true)}>
+        <button className='btn ms-2' onClick={() => setShowQRModal(true)}>
           <MdQrCodeScanner size={25} />
         </button>
       </div>
@@ -481,13 +454,13 @@ function AdminDrivingA1Page() {
           <Modal.Title>Cập nhật hồ sơ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className='d-flex justify-content-center mb-3'>
+          <div className='d-flex flex-wrap justify-content-center mb-3'>
             <Button
               onClick={() => updateProcessState(selectedRow?._id, 0)}
               variant={
                 selectedRow?.processState === 0 ? 'primary' : 'outline-primary'
               }
-              className='mx-3'
+              className='m-2'
             >
               Đã tạo
             </Button>
@@ -496,7 +469,7 @@ function AdminDrivingA1Page() {
               variant={
                 selectedRow?.processState === 1 ? 'primary' : 'outline-primary'
               }
-              className='mx-3'
+              className='m-2'
             >
               Chờ cập nhật
             </Button>
@@ -505,7 +478,7 @@ function AdminDrivingA1Page() {
               variant={
                 selectedRow?.processState === 2 ? 'primary' : 'outline-primary'
               }
-              className='mx-3'
+              className='m-2'
             >
               Chờ thanh toán
             </Button>
@@ -514,7 +487,7 @@ function AdminDrivingA1Page() {
               variant={
                 selectedRow?.processState === 3 ? 'success' : 'outline-primary'
               }
-              className='mx-3'
+              className='m-2'
             >
               Đã hoàn tất
             </Button>
@@ -523,7 +496,7 @@ function AdminDrivingA1Page() {
               variant={
                 selectedRow?.processState === 4 ? 'danger' : 'outline-primary'
               }
-              className='mx-3'
+              className='m-2'
             >
               Đã huỷ
             </Button>
