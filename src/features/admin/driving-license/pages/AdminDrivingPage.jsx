@@ -10,7 +10,7 @@ import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
 import { ToastWrapper, toastWrapper } from 'utils';
 import Select from 'react-select';
-import { QrReader } from 'react-qr-reader';
+import { Scanner } from '@yudiel/react-qr-scanner';
 
 function AdminDrivingA1Page() {
   const [query, setQuery] = useState({});
@@ -745,17 +745,10 @@ function AdminDrivingA1Page() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <QrReader
+          <Scanner
             constraints={{ facingMode: facingMode }}
-            onResult={(result, error) => {
-              if (!!result) {
-                console.log(result);
-                setQrData(result?.text);
-              }
-
-              if (!!error) {
-                ToastWrapper(error, 'error');
-              }
+            onScan={(result) => {
+              setQrData(result[0]?.rawValue);
             }}
           />
         </Modal.Body>
