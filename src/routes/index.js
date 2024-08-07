@@ -1,14 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { PATH } from 'constants/path';
 import { ADMIN_DRIVING_MENU } from 'constants/menu';
-import AdminLayout from 'components/layout/AdminLayout';
-import MainLayout from 'components/layout/MainLayout';
-import ServiceLayout from 'components/layout/ServiceLayout';
-import AdminGuard from 'components/guard/AdminGuard';
-import UserGuard from 'components/guard/UserGuard';
-import MainGuard from 'components/guard/MainGuard';
-import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, ExplorePage, GuestHouseInfoPage, HomePage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, UniformRegistrationPage, DrivingTestPage } from 'features';
+import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, ExplorePage, GuestHouseInfoPage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, UniformRegistrationPage, PhotocopyPage, DrivingTestPage } from 'features';
 import { AppStorePage, CheckoutPage, OrderPage, ProductDetailPage, StoreDetailPage } from 'features/app';
+import MainGuard from 'components/guard/MainGuard';
+import MainLayout from 'components/layout/MainLayout';
+import UserGuard from 'components/guard/UserGuard';
+import ServiceLayout from 'components/layout/ServiceLayout';
+import AdminLayout from 'components/layout/AdminLayout';
+import AdminGuard from 'components/guard/AdminGuard';
 import AdminPage from 'features/admin/pages/AdminPage';
 import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDrivingDatePage';
 import AdminDrivingA1Page from 'features/admin/driving-license/pages/AdminDrivingPage';
@@ -20,8 +20,11 @@ import StoreByCategory from 'features/app/pages/StoreByCategory';
 import AdminDrivingGuard from 'components/guard/AdminDrivingGuard';
 import OrderHistoryPage from 'features/app/pages/OrderHistoryPage';
 import StoreByLocation from 'features/app/pages/StoreByLocation';
+import ShortLinkPage from 'features/short-link/pages/ShortLinkPage';
+import OtpPage from 'features/login/OtpPage';
 import GcnPage from 'features/gcn/pages/GcnPage';
 import UsshGcnPage from 'features/gcn/pages/GcnPage2';
+import CouponPage from 'features/app/pages/CouponPage';
 
 const router = createBrowserRouter([
   {
@@ -33,21 +36,28 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children: [
           {
-            path: '',
-            element: <HomePage />,
+            path: PATH.APP.ROOT,
+            element: <AppStorePage />,
           },
           {
             path: PATH.EXPLORE.ROOT,
-            element: <ExplorePage />,
+            element: <CouponPage />,
           },
           {
             path: PATH.ACCOUNT,
             element: <AccountPage />
           },
           {
-            path: PATH.APP.ROOT,
-            element: <AppStorePage />
-          }
+            path: PATH.USER.ROOT,
+            element: <UserGuard />,
+            errorElement: <NotFoundPage />,
+            children: [
+              {
+                path: PATH.USER.PROFILE,
+                element: <AccountPage />,
+              },
+            ],
+          },
         ],
       },
       {
@@ -62,7 +72,7 @@ const router = createBrowserRouter([
       },
       {
         path: PATH.APP.ORDER_SUCCESS,
-        element: <ServiceLayout pageTitle="Đặt hàng">
+        element: <ServiceLayout pageTitle="Thông tin đơn hàng">
           <SuccessPage />
         </ServiceLayout>
       },
@@ -86,7 +96,7 @@ const router = createBrowserRouter([
       },
       {
         path: PATH.APP.ORDER_DETAIL,
-        element: <ServiceLayout pageTitle="Thông tin đơn hàng">
+        element: <ServiceLayout pageTitle="Thông tin đơn hàng" backTo={PATH.APP.ROOT}>
           <OrderPage />
         </ServiceLayout>
       },
@@ -99,6 +109,28 @@ const router = createBrowserRouter([
       {
         path: PATH.APP.PRODUCT_DETAIL,
         element: <ProductDetailPage />
+      },
+      {
+        path: PATH.SHORT_LINK,
+        element: <ShortLinkPage />
+      },
+      {
+        path: PATH.DRIVING.ROOT,
+        element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
+          <DrivingInfoPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.DRIVING.INSTRUCTION,
+        element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
+          <DrivingInstructionPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.DRIVING.REGISTRATION,
+        element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
+          <DrivingRegisterPage />
+        </ServiceLayout>
       },
       {
         path: PATH.GCN.ROOT,
@@ -157,19 +189,12 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: PATH.USER.ROOT,
-    element: <UserGuard />,
-    errorElement: <NotFoundPage />,
-    children: [
-      {
-        path: PATH.USER.PROFILE,
-        element: <AccountPage />,
-      },
-    ],
-  },
-  {
     path: PATH.AUTH.SIGNIN,
     element: <LoginPage/>
+  },
+  {
+    path: PATH.AUTH.OTP,
+    element: <OtpPage/>
   },
   {
     path: PATH.SUPPORT.ROOT,
@@ -184,33 +209,21 @@ const router = createBrowserRouter([
     </ServiceLayout>
   },
   {
-    path: PATH.DRIVING.ROOT,
-    element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
-      <DrivingInfoPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.DRIVING.INSTRUCTION,
-    element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
-      <DrivingInstructionPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.DRIVING.REGISTRATION,
-    element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
-      <DrivingRegisterPage />
-    </ServiceLayout>
+    path: PATH.NOT_FOUND,
+    element: <ServiceLayout pageTitle="404" backTo={PATH.HOME}>
+    <NotFoundPage />
+  </ServiceLayout>
   },
   {
     path: PATH.UNIFORM.ROOT,
-    element: <ServiceLayout pageTitle="Đăng ký dự thi">
+    element: <ServiceLayout pageTitle="Đặt đồng phục">
       <UniformRegistrationPage />
     </ServiceLayout>
   },
   {
     path: PATH.PHOTOCOPY.ROOT,
-    element: <ServiceLayout pageTitle="In ấn sinh viên">
-      <MaintainPage />
+    element: <ServiceLayout pageTitle="In ấn" backTo={PATH.HOME}>
+      <PhotocopyPage />
     </ServiceLayout>
   },
   {

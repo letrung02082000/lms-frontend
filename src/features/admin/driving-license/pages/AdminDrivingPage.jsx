@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Offcanvas, Pagination, Row } from 'react-bootstrap';
-import { MdClear, MdEdit, MdFilterList, MdRotateLeft, MdSearch } from 'react-icons/md';
+import { MdClear, MdEdit, MdFilterList, MdRotateLeft, MdSearch, MdQrCodeScanner } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
 import SelectField from 'components/form/SelectField';
 import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
-import { toastWrapper } from 'utils';
+import { ToastWrapper, toastWrapper } from 'utils';
 import Select from 'react-select';
+import { QrReader } from 'react-qr-reader';
 
 function AdminDrivingA1Page() {
   const [query, setQuery] = useState({});
@@ -19,12 +20,13 @@ function AdminDrivingA1Page() {
   const [selectedRow, setSelectedRow] = useState({});
   const [pagination, setPagination] = useState({});
   const [show, setShow] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [qrData, setQrData] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [visibleDate, setVisibleDate] = useState([{}]);
   const [portraitUploading, setPortraitUploading] = useState(false);
   const [frontUploading, setFrontUploading] = useState(false);
   const [backUploading, setBackUploading] = useState(false);
-
   const {
     control,
     setValue,
@@ -193,6 +195,16 @@ function AdminDrivingA1Page() {
       });
   }, [page, query]);
 
+  useEffect(() => {
+    if(qrData) {
+      const qrDataArr = qrData.split('|');
+      const searchText = qrDataArr[2] || qrDataArr[0];
+      setSearchText(searchText);
+      setShowQRModal(false);
+      fetchDrivings(query, searchText, 1);
+    }
+  }, [qrData]);
+
   const fetchDrivings = async (query, searchText, page) => {
     drivingApi
       .getDrivings(query, searchText, page)
@@ -282,6 +294,18 @@ function AdminDrivingA1Page() {
     setValue(name, '');
   }
 
+  const updateProcessState = (id, processState) => {
+    drivingApi.updateProcessState(id, processState).then((res) => {
+      const message = processState === 0 ? 'Đã tạo' : processState === 1 ? 'Chờ cập nhật' : processState === 2 ? 'Chờ thanh toán' : processState === 3 ? 'Đã hoàn tất' : 'Đã huỷ';
+      toastWrapper('Đã cập nhật thành ' + message, 'success');
+      fetchDrivings(query, searchText, page);
+      setShowEditModal(false);
+    }).catch((err) => {
+      toastWrapper(err.response.data.message, 'error');
+    }
+    );
+  }
+
   const rotateImage = (id) => {
     const tmp = document.getElementById(id);
     tmp.style.transform = `rotate(${(tmp.getAttribute('data-rotate') || 0) - 90}deg)`;
@@ -315,17 +339,17 @@ function AdminDrivingA1Page() {
             <MdClear />
           </button>
         </div>
-        <button className='btn mx-3' onClick={handleSearchButton}>
+        <button className='btn ms-3' onClick={handleSearchButton}>
           <MdSearch size={25} />
         </button>
-        <button className='btn' onClick={() => setShow(true)}>
+        <button className='btn ms-3' onClick={() => setShow(true)}>
           <MdFilterList size={25} />
         </button>
+        <button className='btn ms-3' onClick={() => setShowQRModal(true)}>
+          <MdQrCodeScanner size={25} />
+        </button>
       </div>
-      <div
-        className='ag-theme-quartz'
-        style={{ height: '85%' }}
-      >
+      <div className='ag-theme-quartz' style={{ height: '85%' }}>
         <AgGridReact rowData={rowData} columnDefs={colDefs} />
       </div>
       <Pagination
@@ -456,6 +480,13 @@ function AdminDrivingA1Page() {
           <Modal.Title>Cập nhật hồ sơ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <div className='d-flex justify-content-center mb-3'>
+           <Button onClick={() => updateProcessState(selectedRow?._id, 0)} variant={selectedRow?.processState === 0 ? 'primary' : 'outline-primary'} className='mx-3'>Đã tạo</Button> 
+           <Button onClick={() => updateProcessState(selectedRow?._id, 1)} variant={selectedRow?.processState === 1 ? 'primary' : 'outline-primary'} className='mx-3'>Chờ cập nhật</Button> 
+           <Button onClick={() => updateProcessState(selectedRow?._id, 2)} variant={selectedRow?.processState === 2 ? 'primary' : 'outline-primary'} className='mx-3'>Chờ thanh toán</Button> 
+           <Button onClick={() => updateProcessState(selectedRow?._id, 3)} variant={selectedRow?.processState === 3 ? 'success' : 'outline-primary'} className='mx-3'>Đã hoàn tất</Button> 
+           <Button onClick={() => updateProcessState(selectedRow?._id, 4)} variant={selectedRow?.processState === 4 ? 'danger' : 'outline-primary'} className='mx-3'>Đã huỷ</Button> 
+          </div>
           <div>
             <Row className='mb-3'>
               <Col>
@@ -655,6 +686,25 @@ function AdminDrivingA1Page() {
             Cập nhật
           </Button>
         </Modal.Footer>
+      </Modal>
+      <Modal show={showQRModal} onHide={() => setShowQRModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Quét hồ sơ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <QrReader
+            onResult={(result, error) => {
+              if (!!result) {
+                console.log(result);
+                setQrData(result?.text);
+              }
+
+              if (!!error) {
+                ToastWrapper(error, 'error');
+              }
+            }}
+          />
+        </Modal.Body>
       </Modal>
     </div>
   );

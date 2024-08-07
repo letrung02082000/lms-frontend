@@ -2,16 +2,19 @@ export const light = {
   id: "T001",
   name: "theme-light",
   color: {
-    header: "teal",
-    background: "white",
-    text: "white",
-    button: {
-      text: "white",
-      background: "teal"
+    header: {
+      background: {
+        mobile: "teal",
+        desktop: "teal"
+      },
+      text: {
+        mobile: "white",
+        desktop: "white"
+      },
+      button : {
+        mobile: "white",
+        desktop: "white"
+      }
     },
-    link: {
-      text: "teal",
-      opacity: 1
-    }
-  }
+  },
 }

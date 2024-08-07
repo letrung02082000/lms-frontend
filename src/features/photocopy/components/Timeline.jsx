@@ -4,10 +4,8 @@ import styled from 'styled-components';
 import { FaAngleDoubleRight } from 'react-icons/fa';
 
 function Timeline({ data, current }) {
-  console.log(data, current);
   return (
     <Styles className="d-flex flex-wrap mt-3">
-      {/* <p className="me-5 fw-bold">Timeline: </p> */}
       {data?.map((item, idx) => {
         let label = '';
         switch (idx) {
@@ -37,14 +35,14 @@ function Timeline({ data, current }) {
         if (idx > current) return <div></div>;
 
         return (
-          <div className="mb-2" style={{ display: 'flex', alignItems: 'center' }}>
+          <div key={`key${idx}`} className="mb-2" style={{ display: 'flex', alignItems: 'center' }}>
             {item && (
               <div>
-                <div className="fw-bold" style={current === idx ? { color: 'green' } : { color: 'gray' }}>
-                  {label}
-                </div>
                 <div>{item ? new Date(item).toLocaleDateString('en-GB') : null}</div>
                 <div>{item ? new Date(item).toLocaleTimeString() : null}</div>
+                <div className="fw-bold text-center" style={current === idx ? { color: 'green' } : { color: 'gray' }}>
+                  {label}
+                </div>
               </div>
             )}
             {item && idx < current && (
@@ -62,7 +60,8 @@ function Timeline({ data, current }) {
 export default Timeline;
 
 const Styles = styled.div`
-  .item-container {
-    display: flex;
-  }
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: fit-content;
+  padding: .5rem 1rem;
 `;

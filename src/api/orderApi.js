@@ -1,6 +1,6 @@
 import axiosClient from './axiosClient';
 
-const API_PATH = "https://api.food.isinhvien.vn/order";
+const API_PATH = "/order";
 
 class Api {
   getOrders = async (page, limit, search) => {
@@ -48,6 +48,7 @@ class Api {
   };
 
   queryOrder = async (data) => {
+    console.log(data)
     return axiosClient.get(`${API_PATH}/query`, { params: data });
   };
 }

@@ -1,25 +1,39 @@
 import React from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
-import { addToCart, deleteFromCart, removeFromCart } from 'store/cart';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct, addToCart, deleteFromCart, removeFromCart, selectCart } from 'store/cart';
 import styled from 'styled-components';
 import { formatCurrency } from 'utils/commonUtils';
-import { CiCircleMinus, CiCirclePlus } from 'react-icons/ci';
+import { CiCircleMinus, CiCirclePlus, CiSquareMinus, CiSquarePlus, CiTrash } from 'react-icons/ci';
+import theme from 'constants/theme';
 
-function CartItem(props) {
+function CartItem({buyNow, ...props}) {
   const { idx, name, price, quantity } = props;
   const dispatch = useDispatch();
+  const cart = useSelector(selectCart);
 
   const handleMinusButton = () => {
+    if(quantity === 1) return;
+
+    if(buyNow) {
+      dispatch(addProduct({...cart?.product, quantity: cart?.product?.quantity - 1}));
+      return;
+    }
+
     dispatch(removeFromCart(props));
   };
 
   const handleAddButton = () => {
+    if(buyNow) {
+      dispatch(addProduct({...cart?.product, quantity: cart?.product?.quantity + 1}));
+      return;
+    }
     dispatch(addToCart(props));
   };
 
   const handleDeleteButton = () => {
-    dispatch(deleteFromCart(props));
+    const confirm = window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');
+    if (confirm) dispatch(deleteFromCart(props));
   };
 
   return (
@@ -37,22 +51,27 @@ function CartItem(props) {
               {formatCurrency(price)} ₫ x {quantity}
             </span>
           </Row>
-          <Row className='align-items-end'>
+          <Row className='align-items-center'>
             <Col xs={3}>
               <Button
-                variant='light'
+                variant='white'
                 className='p-0'
                 onClick={handleMinusButton}
               >
-                <CiCircleMinus color='red' />
+                <CiSquareMinus color={theme.colors.teal} size={21}/>
               </Button>
             </Col>
-            <Col xs={3}>
-              <span>{quantity}</span>
+            <Col xs={2}>
+              <small>{quantity}</small>
             </Col>
             <Col xs={3}>
-              <Button variant='light' className='p-0' onClick={handleAddButton}>
-                <CiCirclePlus color='red' />
+              <Button variant='white' className='p-0' onClick={handleAddButton}>
+                <CiSquarePlus color={theme.colors.teal} size={21}/>
+              </Button>
+            </Col>
+            <Col xs={4}>
+              <Button variant='white' className='p-0' onClick={handleDeleteButton}>
+                <CiTrash color={theme.colors.vividRed} size={21}/>
               </Button>
             </Col>
           </Row>
@@ -65,13 +84,14 @@ function CartItem(props) {
 export default CartItem;
 
 const Styles = styled.div`
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+  padding: 0.5rem 0;
   .product-no {
-    background-color: ${({ theme }) => theme.colors.vividRed};
+    background-color: ${({ theme }) => theme.colors.teal};
     color: ${({ theme }) => theme.colors.white};
-    font-weight: bold;
     border-radius: 50%;
-    height: 1.8rem;
-    width: 1.8rem;
+    height: 1.3rem;
+    width: 1.3rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,7 +99,6 @@ const Styles = styled.div`
 
   .product-name {
     color: ${(props) => props.theme.colors.gray};
-    font-weight: bold;
     padding: 0 0.5rem;
   }
 

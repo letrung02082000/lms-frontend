@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap';
+import { Button, Col, Image, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Cart from '../components/Cart';
 import styled from 'styled-components';
@@ -19,9 +19,13 @@ function CheckoutPage() {
   }
   const { state } = useLocation();
   const [loading, setLoading] = React.useState(false);
+  const [couponsByStoreId, setCouponsByStoreId] = React.useState({});
   const order = JSON.parse(localStorage.getItem('order') || '{}');
   const navigate = useNavigate();
   const cart = useSelector(selectCart);
+  console.log(cart)
+  console.log(state)
+
   const dispatch = useDispatch();
   const {
     control,
@@ -39,7 +43,6 @@ function CheckoutPage() {
       formName: state?.name || order?.name || '',
       formTel: state?.tel || order?.tel || '',
       formEmail: state?.email || order?.email || '',
-      formNote: state?.note || '',
     },
     resolver: undefined,
     context: undefined,
@@ -58,7 +61,7 @@ function CheckoutPage() {
     setLoading(true);
     await handleSubmit((formData) => {
       const productByStoreId = {};
-      cart?.data?.forEach((item) => {
+      (state?.buyNow ? [cart?.product] : cart?.data)?.forEach((item) => {
         const currentStores = Object.keys(productByStoreId);
 
         if (!currentStores.includes(item?.store?._id)) {
@@ -74,19 +77,24 @@ function CheckoutPage() {
         tel: formData.formTel || 'Không có',
         email: formData.formEmail || 'Không có',
         note: formData.formNote || 'Không có',
-        products: cart?.data || [],
+        products: state?.buyBow ? [cart?.product] : cart?.data,
         productByStoreId,
+        couponsByStoreId,
       };
-      
-      if (state?.src != SOURCES.QR) {
-        localStorage.setItem('order', JSON.stringify(data));
-      }
+
       
       orderApi
         .createOrder(data)
         .then((res) => {
+          if (state?.src != SOURCES.QR) {
+            localStorage.setItem('order', JSON.stringify(res?.data));
+          }
           setLoading(false);
-          dispatch(clearCart());
+
+          if(!state?.buyNow) {
+            dispatch(clearCart());
+          }
+          
           navigate(PATH.APP.ORDER_DETAIL.replace(':orderId', res?.data?._id));
         })
         .catch((err) => {
@@ -98,7 +106,7 @@ function CheckoutPage() {
     })();
   };
 
-  if(cart?.data?.length === 0) {
+  if(cart?.data?.length === 0 && !state?.buyNow) {
     return (
       <>
         <Row>
@@ -114,17 +122,11 @@ function CheckoutPage() {
         <Row>
           <Col>
             <Button
-              className='w-100 my-3 text-white'
-              onClick={() => navigate(-1)}
+              variant='outline-primary'
+              className='w-100 my-3'
+              onClick={() => navigate(PATH.APP.ROOT)}
             >
               Quay lại cửa hàng
-            </Button>
-            <Button
-              className='w-100 mb-4'
-              variant='outline-danger'
-              onClick={() => navigate(PATH.APP.ORDER_HISTORY)}
-            >
-              Xem đơn hàng đã đặt
             </Button>
           </Col>
         </Row>
@@ -132,39 +134,21 @@ function CheckoutPage() {
     );
   }
 
+  console.log('first', state)
+
   return (
     <Styles>
       <Row>
-        <Col xs={12} md={7}>
-          <div className='cart-area'>
-            <Row className='cart-body'>
-              <Cart />
-            </Row>
-          </div>
+        <Col xs={12} md={6}>
+          <Cart
+            products={state?.buyNow ? [cart.product] : []}
+            couponsByStoreId={couponsByStoreId}
+            setCouponsByStoreId={setCouponsByStoreId}
+          />
         </Col>
-        <Col xs={12} md={5}>
+        <Col xs={12} md={6}>
           <Row>
             <div className='checkout-title'>Thông tin đặt hàng</div>
-          </Row>
-          <Row className='mb-3'>
-            <InputField
-              onClear={handleClearButton}
-              control={control}
-              label='Địa chỉ'
-              name='formAddress'
-              hasAsterisk
-              rules={{
-                required: 'Vui lòng nhập trường này',
-                minLength: {
-                  value: 5,
-                  message: 'Địa chỉ phải có ít nhất 5 ký tự',
-                },
-                maxLength: {
-                  value: 100,
-                  message: 'Địa chỉ không được vượt quá 100 ký tự',
-                },
-              }}
-            />
           </Row>
           <Row className='mb-3'>
             <Col>
@@ -211,11 +195,34 @@ function CheckoutPage() {
               />
             </Col>
           </Row>
+          {state?.hasDelivery ||
+            (true && (
+              <Row className='mb-3'>
+                <InputField
+                  onClear={handleClearButton}
+                  control={control}
+                  label='Địa chỉ'
+                  name='formAddress'
+                  rules={{
+                    required: false,
+                    minLength: {
+                      value: 5,
+                      message: 'Địa chỉ phải có ít nhất 5 ký tự',
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: 'Địa chỉ không được vượt quá 100 ký tự',
+                    },
+                  }}
+                />
+              </Row>
+            ))}
           <Row>
             <InputField
               onClear={handleClearButton}
               control={control}
-              label='Ghi chú đơn hàng (tuỳ chọn)'
+              label='Ghi chú'
+              subLabel={state?.note}
               name='formNote'
               as='textarea'
               rows={5}
@@ -240,13 +247,6 @@ function CheckoutPage() {
           >
             {loading ? 'Đang tạo đơn hàng của bạn...' : 'Đặt hàng'}
           </Button>
-          <Button
-            className='w-100 mb-4'
-            variant='outline-danger'
-            onClick={() => navigate(PATH.APP.ORDER_HISTORY)}
-          >
-            Xem đơn hàng đã đặt
-          </Button>
         </Col>
       </Row>
     </Styles>
@@ -259,7 +259,7 @@ const Styles = styled.div`
   margin-bottom: 2rem;
 
   .checkout-title {
-    margin: 1.5rem 0 1rem;
+    margin: 1rem 0;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 1.2rem;

@@ -31,6 +31,10 @@ export const slice = createSlice({
             }
         },
 
+        addProduct: (state, action) => {
+            state.product = action.payload;
+        },
+
         removeFromCart: (state, action) => {
             for (let idx = 0; idx < state.data.length; idx++) {
                 const cartItem = state.data[idx];
@@ -69,6 +73,7 @@ export const {
     removeFromCart,
     deleteFromCart,
     clearCart,
+    addProduct
 } = slice.actions;
 export const selectCart = (state) => state.cart;
 export default slice.reducer;

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Image } from 'react-bootstrap';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination, Autoplay, Scrollbar } from 'swiper';
+import { Pagination, Autoplay, FreeMode } from 'swiper';
 import storeApi from 'api/storeApi';
 import productApi from 'api/productApi';
 import { useNavigate } from 'react-router-dom';
@@ -29,28 +29,27 @@ function LocationSlider() {
 
   return (
     <React.Fragment>
-      <div className='d-flex justify-content-between my-4 align-items-end'>
+      <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
         <h2 className='m-0'>Theo khu vực</h2>
-        {/* <button className='btn m-0 p-0' onClick={() => navigate(PATH.APP.STORE)}>Xem tất cả</button> */}
       </div>
       <Swiper
-        modules={[Pagination, Scrollbar]}
-        slidesPerView={3}
+        modules={[Pagination, Autoplay, FreeMode]}
+        slidesPerView={3.2}
+        freeMode={true}
         loop={false}
-        scrollbar={{ hide: false }}
         spaceBetween={10}
         breakpoints={{
           0: {
-            slidesPerView: 2,
+            slidesPerView: 2.2,
           },
           700: {
-            slidesPerView: 3,
+            slidesPerView: 3.2,
           },
           1000: {
-            slidesPerView: 4,
+            slidesPerView: 4.2,
           },
           1500: {
-            slidesPerView: 5,
+            slidesPerView: 5.2,
           },
         }}
       >

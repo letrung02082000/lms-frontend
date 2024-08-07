@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { Container, Nav, Navbar } from 'react-bootstrap'
 import { HiHome, HiOutlineHome } from 'react-icons/hi'
 import { MdAccountCircle, MdOutlineAccountCircle } from 'react-icons/md'
-import { RiCoupon2Line, RiCoupon3Fill } from 'react-icons/ri'
+import { RiDiscountPercentFill, RiDiscountPercentLine } from 'react-icons/ri'
 import { BsDot } from 'react-icons/bs'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import styles from './mobileNavBar.module.css'
 import { PATH } from 'constants/path'
@@ -40,16 +40,15 @@ export default function MobileNavBar() {
                 ) : (
                   <HiOutlineHome className={`mx-auto ${styles.navIcon}`} size="25" />
                 )}
-                {/* <p className={('m-0 p-0', styles.navText)}>Trang chủ</p> */}
               </Nav.Link>
               <Nav.Link className="m-0 p-1 position-relative" onClick={handleExploreClick} eventKey="/explore">
                 {activeKey === PATH.EXPLORE.ROOT ? (
                   <>
-                    <RiCoupon3Fill className={`mx-auto ${styles.navIcon}`} size="25" />
+                    <RiDiscountPercentFill className={`mx-auto ${styles.navIcon}`} size="25" />
                     <BsDot className="dot" size="25" />
                   </>
                 ) : (
-                  <RiCoupon2Line className={`mx-auto ${styles.navIcon}`} size="25" />
+                  <RiDiscountPercentLine className={`mx-auto ${styles.navIcon}`} size="25" />
                 )}
               </Nav.Link>
               <Nav.Link className="m-0 p-1 position-relative" onClick={handleAccountClick} eventKey="/account">
@@ -62,7 +61,6 @@ export default function MobileNavBar() {
                   <MdOutlineAccountCircle className={`mx-auto ${styles.navIcon}`} size="25" />
                 )}
 
-                {/* <p className={('m-0 p-0', styles.navText)}>Cá nhân</p> */}
               </Nav.Link>
             </Nav>
           </Container>

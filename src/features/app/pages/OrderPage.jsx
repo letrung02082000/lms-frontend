@@ -7,6 +7,7 @@ import { Container } from 'react-bootstrap';
 function OrderPage() {
   const orderId = useParams().orderId;
   const [order, setOrder] = React.useState({});
+  const [storeOrders, setStoreOrders] = React.useState([]);
 
   useEffect(() => {
     orderApi
@@ -19,9 +20,25 @@ function OrderPage() {
       });
   }, []);
 
+  useEffect(() => {
+    if(order?._id){
+      orderApi
+        .queryOrder({
+          code: order?.code,
+        })
+        .then((res) => {
+          setStoreOrders(res?.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [order?._id])
+  
+
   return (
     <Container>
-      <OrderInfo order={order} />
+      <OrderInfo order={order} storeOrders={storeOrders}/>
     </Container>
   );
 }

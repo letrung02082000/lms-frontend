@@ -73,7 +73,7 @@ function AccountModal({ show, setShow, tel }) {
     } else if (group === 3) {
       setDesc('GPLX <SĐT1> <SĐT2> <SĐT3>');
     }
-  }, [drivingClass, isStudent, hasCheckup, group]);
+  }, [drivingClass, isStudent, hasCheckup, group, tel]);
 
   return (
     <Modal
@@ -99,7 +99,7 @@ function AccountModal({ show, setShow, tel }) {
                 alt='vietqr'
                 className='w-100'
               />
-              <p className='text-center m-0'>
+              <p className='text-center text-primary m-0'>
                 Lệ phí thi hạng {drivingClass}{' '}
                 {isStudent ? 'đối với sinh viên' : ''} khi{' '}
                 {hasCheckup
@@ -107,11 +107,11 @@ function AccountModal({ show, setShow, tel }) {
                   : 'tự khám sức khoẻ.'}
               </p>
               <p className='text-center'>
-                {formatCurrency(amount)} VNĐ
+                <strong>{formatCurrency(amount)}</strong> VNĐ
                 {group === 1 ? '' : ` x ${group} người`}
               </p>
               {group > 1 && (
-                <p className='text-center m-0'>Ưu đãi đăng ký theo nhóm {group} người chỉ áp dụng khi đăng ký trực tiếp.</p>
+                <p className='text-center text-danger'>Ưu đãi đăng ký theo nhóm {group} người chỉ áp dụng khi đăng ký trực tiếp.</p>
               )}
             </Col>
 
@@ -211,41 +211,35 @@ function AccountModal({ show, setShow, tel }) {
               <Row>
                 <div className='text-uppercase fw-bold mb-3'>{bankName}</div>
                 <div className='mb-2'>
-                  Chủ tài khoản
-                  <br />
+                  <small>Chủ tài khoản</small>
+                  <br/>
                   <b>{accountName?.toUpperCase()}</b>
                 </div>
                 <Row className='mb-2'>
                   <Col xs={12}>
-                    Số tài khoản
-                    <br />
-                    <b>{accountNumber}</b>
-                  </Col>
-                  <Col>
+                    <small>Số tài khoản</small>
+                    <br/>
+                    <b>{accountNumber}{' '}</b>
                     <CopyButton
-                      className='btn btn-outline-primary copy-btn'
                       text={accountNumber}
                       copied={copied}
                       setCopied={setCopied}
                     >
-                      <BiCopy /> {copied ? 'Đã chép' : 'Sao chép'}
+                      <BiCopy />
                     </CopyButton>
                   </Col>
                 </Row>
                 <Row className='mb-2'>
                   <Col xs={12}>
-                    Nội dung
-                    <br />
-                    <b>{desc}</b>
-                  </Col>
-                  <Col>
+                    <small>Nội dung</small>
+                    <br/>
+                    <b>{desc}{' '}</b>
                     <CopyButton
-                      className='btn btn-outline-primary copy-btn'
                       text={desc}
                       copied={contentCopied}
                       setCopied={setContentCopied}
                     >
-                      <BiCopy /> {contentCopied ? 'Đã chép' : 'Sao chép'}
+                      <BiCopy />
                     </CopyButton>
                   </Col>
                 </Row>

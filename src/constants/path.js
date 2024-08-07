@@ -1,4 +1,5 @@
 export const PATH = {
+    SHORT_LINK: '/:shortLink',
     NOT_FOUND: '/404',
     HOME: '/',
     ADMIN: {
@@ -8,8 +9,9 @@ export const PATH = {
     AUTH: {
         ROOT: '/auth',
         SIGNIN: '/auth/login',
+        OTP: '/auth/otp',
         ACTIVATION: '/auth/activate',
-        SIGNUP: '/auth/register',
+        SIGNUP: '/auth/login',
         FORGOT_PASSWORD: '/auth/forgot-password',
         GOOGLE: '/auth/google',
     },
@@ -42,10 +44,10 @@ export const PATH = {
         },
     },
     UNIFORM: {
-        ROOT: '/uniform',
+        ROOT: '/shop/666195bad4fed7a40f1016fe',
     },
     PHOTOCOPY: {
-        ROOT: '/photocopy',
+        ROOT: '/s/photocopy',
     },
     SWIMMING_POOL: {
         ROOT: '/pool-info',
@@ -60,7 +62,7 @@ export const PATH = {
         ROOT: '/yen-share',
     },
     APP: {
-        ROOT: '/shop',
+        ROOT: '/',
         STORE: '/shop/store',
         CHECKOUT: '/shop/checkout',
         ORDER_DETAIL: '/shop/order/:orderId',
@@ -70,6 +72,10 @@ export const PATH = {
         STORE_BY_CATEGORY: '/shop/category/:categoryId',
         STORE_BY_LOCATION: '/shop/location/:locationId',
         PRODUCT_DETAIL: '/shop/product/:productId',
+    },
+    REAL_ESTATE: {
+        APARTMENT: '/shop/668d7116dbb560eb9a8fbbf7',
+        HOUSE: '/shop/6692322f5b18a435b8e266ec',
     },
     GCN: {
         ROOT: '/gcn',
