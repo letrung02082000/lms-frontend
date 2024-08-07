@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Offcanvas, Pagination, Row } from 'react-bootstrap';
-import { MdClear, MdEdit, MdFilterList, MdRotateLeft, MdSearch, MdQrCodeScanner } from 'react-icons/md';
+import { MdClear, MdEdit, MdFilterList, MdRotateLeft, MdSearch, MdQrCodeScanner, MdFlipCameraAndroid } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
 import SelectField from 'components/form/SelectField';
@@ -14,6 +14,7 @@ import { QrReader } from 'react-qr-reader';
 
 function AdminDrivingA1Page() {
   const [query, setQuery] = useState({});
+  const [facingMode, setFacingMode] = useState('environment');
   const [searchText, setSearchText] = useState('');
   const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
@@ -481,11 +482,51 @@ function AdminDrivingA1Page() {
         </Modal.Header>
         <Modal.Body>
           <div className='d-flex justify-content-center mb-3'>
-           <Button onClick={() => updateProcessState(selectedRow?._id, 0)} variant={selectedRow?.processState === 0 ? 'primary' : 'outline-primary'} className='mx-3'>Đã tạo</Button> 
-           <Button onClick={() => updateProcessState(selectedRow?._id, 1)} variant={selectedRow?.processState === 1 ? 'primary' : 'outline-primary'} className='mx-3'>Chờ cập nhật</Button> 
-           <Button onClick={() => updateProcessState(selectedRow?._id, 2)} variant={selectedRow?.processState === 2 ? 'primary' : 'outline-primary'} className='mx-3'>Chờ thanh toán</Button> 
-           <Button onClick={() => updateProcessState(selectedRow?._id, 3)} variant={selectedRow?.processState === 3 ? 'success' : 'outline-primary'} className='mx-3'>Đã hoàn tất</Button> 
-           <Button onClick={() => updateProcessState(selectedRow?._id, 4)} variant={selectedRow?.processState === 4 ? 'danger' : 'outline-primary'} className='mx-3'>Đã huỷ</Button> 
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 0)}
+              variant={
+                selectedRow?.processState === 0 ? 'primary' : 'outline-primary'
+              }
+              className='mx-3'
+            >
+              Đã tạo
+            </Button>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 1)}
+              variant={
+                selectedRow?.processState === 1 ? 'primary' : 'outline-primary'
+              }
+              className='mx-3'
+            >
+              Chờ cập nhật
+            </Button>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 2)}
+              variant={
+                selectedRow?.processState === 2 ? 'primary' : 'outline-primary'
+              }
+              className='mx-3'
+            >
+              Chờ thanh toán
+            </Button>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 3)}
+              variant={
+                selectedRow?.processState === 3 ? 'success' : 'outline-primary'
+              }
+              className='mx-3'
+            >
+              Đã hoàn tất
+            </Button>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 4)}
+              variant={
+                selectedRow?.processState === 4 ? 'danger' : 'outline-primary'
+              }
+              className='mx-3'
+            >
+              Đã huỷ
+            </Button>
           </div>
           <div>
             <Row className='mb-3'>
@@ -689,10 +730,23 @@ function AdminDrivingA1Page() {
       </Modal>
       <Modal show={showQRModal} onHide={() => setShowQRModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Quét hồ sơ</Modal.Title>
+          <Modal.Title>
+            <span className='me-3'>Quét hồ sơ</span>
+            <Button
+              variant='outline-primary'
+              onClick={() =>
+                setFacingMode(
+                  facingMode === 'environment' ? 'user' : 'environment'
+                )
+              }
+            >
+              <MdFlipCameraAndroid size={25} />
+            </Button>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <QrReader
+            constraints={{ facingMode: facingMode }}
             onResult={(result, error) => {
               if (!!result) {
                 console.log(result);
