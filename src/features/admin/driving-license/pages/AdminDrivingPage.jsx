@@ -10,9 +10,11 @@ import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
 import { ToastWrapper, toastWrapper } from 'utils';
 import Select from 'react-select';
+import cryptojs from 'crypto-js'
 import { Scanner } from '@yudiel/react-qr-scanner';
 
 function AdminDrivingA1Page() {
+  const key = 'aes123456789101112131415';
   const [query, setQuery] = useState({});
   const [facingMode, setFacingMode] = useState('environment');
   const [searchText, setSearchText] = useState('');
@@ -172,7 +174,7 @@ function AdminDrivingA1Page() {
   useEffect(() => {
     if(qrData) {
       const qrDataArr = qrData.split('|');
-      const searchText = qrDataArr[2] || qrDataArr[0];
+      const searchText = qrDataArr[2] || cryptojs.AES.decrypt(qrDataArr[0], key).toString(cryptojs.enc.Utf8);
       setSearchText(searchText);
       setShowQRModal(false);
       fetchDrivings(query, searchText, 1);
