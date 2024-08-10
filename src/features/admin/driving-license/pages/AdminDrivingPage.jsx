@@ -12,6 +12,7 @@ import { ToastWrapper, toastWrapper } from 'utils';
 import Select from 'react-select';
 import cryptojs from 'crypto-js'
 import { Scanner } from '@yudiel/react-qr-scanner';
+import CopyButton from 'components/button/CopyButton';
 
 function AdminDrivingA1Page() {
   const PROCESS_STATE = {
@@ -26,10 +27,10 @@ function AdminDrivingA1Page() {
     date: undefined,
     processState: undefined,
   });
-  console.log(updateParams);
   const [query, setQuery] = useState({});
   const [facingMode, setFacingMode] = useState('environment');
   const [searchText, setSearchText] = useState('');
+  const [searchData, setSearchData] = useState({});
   const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
@@ -202,8 +203,7 @@ function AdminDrivingA1Page() {
 
           if (updateParams?.date != undefined || updateParams?.processState != undefined) {
             for (let i = 0; i < res.data.length; i++) {
-              const data = res.data[i];
-              toastWrapper('Hồ sơ ' + data.name, 'info');
+              setSelectedRow(res.data[i]);
               if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
                 drivingApi
                     .updateDriving(res.data[i]._id, updateParams)
@@ -792,6 +792,10 @@ function AdminDrivingA1Page() {
               setQrData(result[0]?.rawValue);
             }}
           />
+          <Form.Group className='my-3' as={Row}>
+            <Form.Label className='text-center'>{rowData[0]?.name}</Form.Label>
+            <Form.Text className='text-center'>{rowData[0]?.tel} <CopyButton text={rowData?.[0]?.tel} /></Form.Text>
+          </Form.Group>
           <Form.Group className='my-3' as={Row}>
             <Form.Label column sm='4'>
               Ngày dự thi
