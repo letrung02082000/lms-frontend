@@ -14,7 +14,19 @@ import cryptojs from 'crypto-js'
 import { Scanner } from '@yudiel/react-qr-scanner';
 
 function AdminDrivingA1Page() {
+  const PROCESS_STATE = {
+    CREATED: 0,
+    WAITING_FOR_UPDATE: 1,
+    WAITING_FOR_PAYMENT: 2,
+    COMPLETED: 3,
+    CANCELLED: 4,
+  }
   const key = 'aes123456789101112131415';
+  const [updateParams, setUpdateParams] = useState({
+    date: undefined,
+    processState: undefined,
+  });
+  console.log(updateParams);
   const [query, setQuery] = useState({});
   const [facingMode, setFacingMode] = useState('environment');
   const [searchText, setSearchText] = useState('');
@@ -172,12 +184,69 @@ function AdminDrivingA1Page() {
   }, [page, query]);
 
   useEffect(() => {
-    if(qrData) {
+    if (qrData) {
       const qrDataArr = qrData.split('|');
-      const searchText = qrDataArr[2] || cryptojs.AES.decrypt(qrDataArr[0], key).toString(cryptojs.enc.Utf8);
+      const searchText =
+        qrDataArr[2] ||
+        cryptojs.AES.decrypt(qrDataArr[0], key).toString(cryptojs.enc.Utf8);
       setSearchText(searchText);
-      setShowQRModal(false);
-      fetchDrivings(query, searchText, 1);
+      drivingApi
+        .getDrivings(query, searchText, 1)
+        .then((res) => {
+          setRowData(res.data);
+          setPagination(res.pagination);
+
+          if(res.data.length === 0) {
+            toastWrapper('Không tìm thấy hồ sơ', 'error');
+          }
+
+          if (updateParams?.date != undefined || updateParams?.processState != undefined) {
+            for (let i = 0; i < res.data.length; i++) {
+              const data = res.data[i];
+              toastWrapper('Hồ sơ ' + data.name, 'info');
+              if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
+                drivingApi
+                    .updateDriving(res.data[i]._id, updateParams)
+                    .then((res) => {
+                      if(updateParams?.date != undefined) {
+                        toastWrapper(
+                          'Đã cập nhật thành ngày ' +
+                            new Date(updateParams.date).toLocaleDateString(
+                              'en-GB'
+                            ),
+                          'success'
+                        );
+                      }
+
+                      if (updateParams?.processState != undefined) {
+                        toastWrapper(
+                          `${
+                            updateParams.processState === 0
+                              ? 'Đã tạo'
+                              : updateParams.processState === 1
+                              ? 'Chờ cập nhật'
+                              : updateParams.processState === 2
+                              ? 'Chờ thanh toán'
+                              : updateParams.processState === 3
+                              ? 'Đã hoàn tất'
+                              : 'Đã huỷ'
+                          }`,
+                          'success'
+                        );
+                      }
+                      fetchDrivings(query, searchText, 1);
+                    })
+                    .catch((err) => {
+                      toastWrapper(err.toString(), 'error');
+                    });
+  
+              }
+            }
+          }
+        })
+        .catch((err) => {
+          toastWrapper(err.toString(), 'error');
+        });
     }
   }, [qrData]);
 
@@ -294,10 +363,7 @@ function AdminDrivingA1Page() {
         height: '100vh',
       }}
     >
-      <div
-        style={{ height: '9%' }}
-        className='d-flex align-items-center ps-3'
-      >
+      <div style={{ height: '9%' }} className='d-flex align-items-center ps-3'>
         <div className='w-100 position-relative'>
           <Form.Control
             type='text'
@@ -726,6 +792,46 @@ function AdminDrivingA1Page() {
               setQrData(result[0]?.rawValue);
             }}
           />
+          <Form.Group className='my-3' as={Row}>
+            <Form.Label column sm='4'>
+              Ngày dự thi
+            </Form.Label>
+            <Col>
+              <Select
+                isClearable
+                options={visibleDate}
+                onChange={(val) => {
+                  setUpdateParams({
+                    ...updateParams,
+                    date: val?.value || undefined,
+                  });
+                }}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group className='mb-3' as={Row}>
+            <Form.Label column sm='4'>
+              Trạng thái
+            </Form.Label>
+            <Col>
+              <Select
+                isClearable
+                options={[
+                  { label: 'Đã tạo', value: 0 },
+                  { label: 'Chờ cập nhật', value: 1 },
+                  { label: 'Chờ thanh toán', value: 2 },
+                  { label: 'Đã hoàn tất', value: 3 },
+                  { label: 'Đã huỷ', value: 4 },
+                ]}
+                onChange={(val) =>
+                  setUpdateParams({
+                    ...updateParams,
+                    processState: val?.value,
+                  })
+                }
+              />
+            </Col>
+          </Form.Group>
         </Modal.Body>
       </Modal>
     </div>
