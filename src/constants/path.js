@@ -53,7 +53,7 @@ export const PATH = {
         ROOT: '/pool-info',
     },
     GUEST_HOUSE: {
-        ROOT: '/guest-house',
+        ROOT: '/shop/66a6617be063722bc1af0f47',
     },
     QR_SCAN: {
         ROOT: '/qr-scan',

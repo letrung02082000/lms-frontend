@@ -793,8 +793,12 @@ function AdminDrivingA1Page() {
             }}
           />
           <Form.Group className='my-3' as={Row}>
-            <Form.Label className='text-center'>{rowData[0]?.name}</Form.Label>
-            <Form.Text className='text-center'>{rowData[0]?.tel} <CopyButton text={rowData?.[0]?.tel} /></Form.Text>
+            <Form.Label className='text-center'>
+              {rowData?.[0]?.name}
+            </Form.Label>
+            <Form.Text className='text-center'>
+              {rowData?.[0]?.tel} <CopyButton text={rowData?.[0]?.tel} />
+            </Form.Text>
           </Form.Group>
           <Form.Group className='my-3' as={Row}>
             <Form.Label column sm='4'>

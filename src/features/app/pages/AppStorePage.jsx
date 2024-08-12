@@ -18,6 +18,7 @@ import categoryApi from 'api/store/categoryApi';
 import Loading from 'components/Loading';
 import ServiceBar from '../components/ServiceBar';
 import FilterSilder from '../components/FilterSilder';
+import CouponSlider from '../components/CouponSlider';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -107,7 +108,11 @@ function AppStorePage() {
           <h2 className='m-0'>Danh mục</h2>
         </div>
         <CategoryBar categories={storeCategories} />
-        <StoreSlider slidesPerColumn={1}/>
+        <StoreSlider slidesPerColumn={2}/>
+        <div className='d-flex justify-content-between my-2 align-items-end'>
+          <h2>Ưu đãi mới</h2>
+        </div>
+        <CouponSlider />
         <LocationSlider />
         <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Sản phẩm nổi bật</h2>

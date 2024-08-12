@@ -233,12 +233,6 @@ const router = createBrowserRouter([
     </ServiceLayout>
   },
   {
-    path: PATH.GUEST_HOUSE.ROOT,
-    element: <ServiceLayout pageTitle="Đặt phòng nhà khách">
-      <GuestHouseInfoPage />
-    </ServiceLayout>
-  },
-  {
     path: PATH.QR_SCAN.ROOT,
     element: <ServiceLayout pageTitle="Quét mã">
       <QrScanPage />

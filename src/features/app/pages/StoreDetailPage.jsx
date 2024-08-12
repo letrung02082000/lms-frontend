@@ -23,6 +23,7 @@ import ZaloLink from 'components/link/ZaloLink';
 import { formatPhoneNumber } from 'utils/commonUtils';
 import { IoIosGlobe } from 'react-icons/io';
 import { IoInformationCircleSharp, IoLocationSharp } from "react-icons/io5";
+import theme from 'constants/theme';
 
 function StoreDetailPage() {
   const storeId = useParams()?.storeId;
@@ -128,7 +129,7 @@ function StoreDetailPage() {
                           className='text-primary bg-white border-0'
                         >
                           <IoInformationCircleSharp size={25} />
-                          <small className='ms-2'>Giới thiệu cửa hàng</small>
+                          <small className='ms-2'>Thông tin chi tiết</small>
                         </button>
                       )}
                     </div>
@@ -188,7 +189,7 @@ function StoreDetailPage() {
                   </div>
                   {store?.googleMapLink && (
                     <>
-                      <IoLocationSharp size={25} />
+                      <IoLocationSharp size={25} color={theme.colors.teal}/>
                       <small className='ms-2'>{store?.address}{' '}</small>
                       <a
                         href={store.googleMapLink}
@@ -203,7 +204,7 @@ function StoreDetailPage() {
                 </div>
                 <Modal show={readMore} onHide={() => setReadMore(false)}>
                   <Modal.Header closeButton>
-                    <Modal.Title>Giới thiệu cửa hàng</Modal.Title>
+                    <Modal.Title>Thông tin chi tiết</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
                     <h5>{store?.name}</h5>
