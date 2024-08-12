@@ -108,7 +108,7 @@ function AppStorePage() {
           <h2 className='m-0'>Danh mục</h2>
         </div>
         <CategoryBar categories={storeCategories} />
-        <StoreSlider slidesPerColumn={2}/>
+        <StoreSlider slidesPerColumn={2} freeMode={true}/>
         <div className='d-flex justify-content-between my-2 align-items-end'>
           <h2>Ưu đãi mới</h2>
         </div>
