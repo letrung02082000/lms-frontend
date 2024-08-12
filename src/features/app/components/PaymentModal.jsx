@@ -8,13 +8,13 @@ import { copyText, formatCurrency } from 'utils/commonUtils';
 import storeApi from 'api/storeApi';
 import Loading from 'components/Loading';
 
-function PaymentModal({ storeId, show, setShow, amount, desc, onClose }) {
+function PaymentModal({ storeId, show, setShow, amount, desc, onClose, defaultPaymentInfo }) {
   const [copied, setCopied] = useState(false);
   const [contentCopied, setContentCopied] = useState(false);
   const [amountCopied, setAmountCopied] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [paymentInfo, setPaymentInfo] = useState(null);
+  const [paymentInfo, setPaymentInfo] = useState(defaultPaymentInfo || null);
 
   const handleClose = () => {
     setIsPaid(true);
@@ -25,7 +25,9 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose }) {
   useEffect(() => {
     setPaymentInfo(null);
     setLoading(true);
-    storeApi
+    
+    if(storeId) {
+      storeApi
       .getStoreById(storeId)
       .then((res) => {
         setPaymentInfo(res?.data?.paymentInfo)
@@ -36,6 +38,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose }) {
       .finally(() => {
         setLoading(false);
       });
+    }
   }, [storeId]);
   
 
@@ -62,7 +65,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose }) {
                     <img
                       src={`https://img.vietqr.io/image/${paymentInfo?.bankCode}-${paymentInfo?.bankAccount}-e59ZziA.jpg?accountName=${paymentInfo?.bankOwner}&amount=${amount}&addInfo=${desc}`}
                       alt='vietqr'
-                      className='w-100 mb-2'
+                      className='w-100'
                     />
                   </Col>
                   <Col>

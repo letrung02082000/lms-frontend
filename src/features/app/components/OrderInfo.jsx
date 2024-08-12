@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Button, Table } from 'react-bootstrap';
 import { formatCurrency, formatPhoneNumber } from 'utils/commonUtils';
 import PaymentModal from './PaymentModal';
+import OrderItem from './OrderItem';
 
 function OrderInfo({ order, storeOrders=[] }) {
   const [storeId, setStoreId] = React.useState('');
@@ -22,7 +23,7 @@ function OrderInfo({ order, storeOrders=[] }) {
       <Table bordered hover>
         <tbody>
           <tr>
-            <td>Họ tên</td>
+            <td>Khách hàng</td>
             <td>{order?.name}</td>
           </tr>
           <tr>
@@ -33,10 +34,6 @@ function OrderInfo({ order, storeOrders=[] }) {
             <td>Địa chỉ</td>
             <td>{order?.address}</td>
           </tr>
-          {/* <tr>
-            <td>Điểm tích luỹ</td>
-            <td>{order?.points || 0}</td>
-          </tr> */}
           <tr>
             <td>Ghi chú</td>
             <td>{order?.note || 'Không có'}</td>
@@ -45,94 +42,11 @@ function OrderInfo({ order, storeOrders=[] }) {
       </Table>
       {storeOrders.map((storeOrder) => {
         return (
-          <Table striped bordered hover key={storeOrder?._id}>
-            <tbody>
-              <tr>
-                <td colSpan={4}>
-                  <a
-                    className='text-decoration-none fw-bold p-0'
-                    href={PATH.APP.STORE_DETAIL.replace(
-                      ':storeId',
-                      storeOrder.storeId?._id
-                    )}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    {storeOrder.storeId?.name}
-                  </a>
-                </td>
-              </tr>
-              {storeOrder?.products.map((product, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{product?.name}</td>
-                    <td>x {product?.quantity}</td>
-                    <td>
-                      {formatCurrency(product?.price * product?.quantity)} đ
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan={2} className='text-end'>
-                  Tổng cộng
-                </td>
-                <td colSpan={2}>
-                  {storeOrder?.discount > 0 && (
-                    <div className='text-decoration-line-through'>
-                      {formatCurrency(storeOrder?.total)} đ
-                    </div>
-                  )}
-                  <div>
-                    {formatCurrency(storeOrder?.total - storeOrder?.discount)} đ
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td colSpan={2} className='text-end'>
-                  Đã thanh toán
-                </td>
-                <td colSpan={2}>
-                  <div>
-                    {formatCurrency(storeOrder?.cash)} đ
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td colSpan={2} className='text-end'>
-                  Chưa thanh toán
-                </td>
-                <td colSpan={2}>
-                  <div>
-                    {formatCurrency(storeOrder?.total - storeOrder?.discount - storeOrder?.cash)} đ
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td colSpan={4} className='text-end'>
-                  <Button
-                    variant='primary'
-                    className='w-100 text-white'
-                    onClick={() =>
-                      handlePaymentButton(
-                        storeOrder?.storeId?._id,
-                        storeOrder?.total - storeOrder?.discount - storeOrder?.cash,
-                        storeOrder?.paymentCode
-                      )
-                    }
-                  >
-                    <small>Thanh toán cho cửa hàng này</small>
-                  </Button>
-                </td>
-              </tr>
-            </tfoot>
-          </Table>
+          <OrderItem
+            key={storeOrder?._id}
+            storeOrder={storeOrder}
+            handlePaymentButton={handlePaymentButton}
+          />
         );
       })}
       <PaymentModal
@@ -141,7 +55,9 @@ function OrderInfo({ order, storeOrders=[] }) {
         setShow={setShow}
         amount={amount}
         desc={desc}
-        onClose={() => window.location.reload()}
+        onClose={() => {
+          window.location.reload();
+        }}
       />
     </>
   );
