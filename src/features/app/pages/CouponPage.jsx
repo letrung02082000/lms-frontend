@@ -73,7 +73,7 @@ function CouponPage() {
         <div className='d-flex justify-content-between my-2 align-items-end'>
           <h2>Ưu đãi mới</h2>
         </div>
-        <CouponSlider />
+        <CouponSlider slidesPerColumn={2}/>
         <div className='d-flex justify-content-between my-2 align-items-end'>
           <h2>Danh mục</h2>
         </div>
