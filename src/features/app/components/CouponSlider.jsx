@@ -43,21 +43,21 @@ function CouponSlider({
           fill: 'row',
           rows: slidesPerColumn,
         }}
-        slidesPerView={3.2}
+        slidesPerView={3.5}
         loop={false}
         spaceBetween={10}
         breakpoints={{
           0: {
-            slidesPerView: 2.2,
+            slidesPerView: 2.5,
           },
           700: {
-            slidesPerView: 3.2,
+            slidesPerView: 3.5,
           },
           1000: {
-            slidesPerView: 4.2,
+            slidesPerView: 4.5,
           },
           1500: {
-            slidesPerView: 5.2,
+            slidesPerView: 5.5,
           },
         }}
       >

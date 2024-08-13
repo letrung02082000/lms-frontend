@@ -42,20 +42,20 @@ function StoreSlider({ slidesPerColumn = 1, freeMode = false }) {
           rows: slidesPerColumn,
         }}
         freeMode={freeMode}
-        slidesPerView={3.2}
+        slidesPerView={3.5}
         spaceBetween={10}
         breakpoints={{
           0: {
-            slidesPerView: 2.2,
+            slidesPerView: 2.5,
           },
           700: {
-            slidesPerView: 3.2,
+            slidesPerView: 3.5,
           },
           1000: {
-            slidesPerView: 4.2,
+            slidesPerView: 4.5,
           },
           1500: {
-            slidesPerView: 5.2,
+            slidesPerView: 5.5,
           },
         }}
       >

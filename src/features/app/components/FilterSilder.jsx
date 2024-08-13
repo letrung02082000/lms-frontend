@@ -11,21 +11,21 @@ function FilterSilder({ setCategoryId, categories, categoryId, hasAll=false }) {
         <Col>
           <Swiper
             modules={[Pagination]}
-            slidesPerView={3.2}
+            slidesPerView={3.5}
             loop={true}
             spaceBetween={10}
             breakpoints={{
               0: {
-                slidesPerView: 3.2,
+                slidesPerView: 3.5,
               },
               700: {
-                slidesPerView: 3.2,
+                slidesPerView: 3.5,
               },
               1000: {
-                slidesPerView: 4.2,
+                slidesPerView: 4.5,
               },
               1500: {
-                slidesPerView: 4.2,
+                slidesPerView: 4.5,
               },
             }}
           >
