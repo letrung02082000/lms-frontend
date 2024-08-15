@@ -44,6 +44,7 @@
     "moment": "^2.29.3",
     "node-sass": "^7.0.1",
     "nodemon": "^2.0.15",
+    "payos-checkout": "^1.0.8",
     "prop-types": "^15.8.1",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",

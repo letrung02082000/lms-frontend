@@ -8,13 +8,15 @@ import { copyText, formatCurrency } from 'utils/commonUtils';
 import storeApi from 'api/storeApi';
 import Loading from 'components/Loading';
 
-function PaymentModal({ storeId, show, setShow, amount, desc, onClose, defaultPaymentInfo }) {
+function PaymentModal({show, setShow, onClose, storeOrder }) {
   const [copied, setCopied] = useState(false);
   const [contentCopied, setContentCopied] = useState(false);
   const [amountCopied, setAmountCopied] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [paymentInfo, setPaymentInfo] = useState(defaultPaymentInfo || null);
+  const [paymentInfo, setPaymentInfo] = useState(storeOrder?.storeId?.paymentInfo);
+  const storeId = storeOrder?.storeId?._id;
+  const amount = storeOrder?.total - storeOrder?.discount - storeOrder?.cash;
 
   const handleClose = () => {
     setIsPaid(true);
@@ -63,7 +65,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose, defaultPa
                 <Row className='justify-content-center'>
                   <Col md={7}>
                     <img
-                      src={`https://img.vietqr.io/image/${paymentInfo?.bankCode}-${paymentInfo?.bankAccount}-e59ZziA.jpg?accountName=${paymentInfo?.bankOwner}&amount=${amount}&addInfo=${desc}`}
+                      src={`https://img.vietqr.io/image/${paymentInfo?.bankCode}-${paymentInfo?.bankAccount}-e59ZziA.jpg?accountName=${paymentInfo?.bankOwner}&amount=${amount}&addInfo=${storeOrder?.paymentCode}`}
                       alt='vietqr'
                       className='w-100'
                     />
@@ -81,7 +83,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose, defaultPa
                       <Col xs={12}>
                         Số tài khoản
                         <br />
-                        <b>{paymentInfo?.bankAccount}{' '}</b>
+                        <b>{paymentInfo?.bankAccount} </b>
                         <CopyButton
                           text={paymentInfo?.bankAccount}
                           copied={copied}
@@ -90,32 +92,30 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose, defaultPa
                           <BiCopy />
                         </CopyButton>
                       </Col>
-                      <Col>
-                        
-                      </Col>
+                      <Col></Col>
                     </Row>
                     <Row className='mb-2'>
                       <Col xs={12}>
                         Nội dung
                         <br />
-                        <b>{paymentInfo?.description || desc}{' '}</b>
+                        <b>
+                          {paymentInfo?.description || storeOrder?.paymentCode}
+                        </b>
                         <CopyButton
-                          text={desc}
+                          text={paymentInfo?.description || storeOrder?.paymentCode}
                           copied={contentCopied}
                           setCopied={setContentCopied}
                         >
                           <BiCopy />
                         </CopyButton>
                       </Col>
-                      <Col>
-                        
-                      </Col>
+                      <Col></Col>
                     </Row>
                     <Row>
                       <Col xs={12}>
                         Số tiền
                         <br />
-                        <b>{formatCurrency(amount)} VNĐ{' '}</b>
+                        <b>{formatCurrency(amount)} VNĐ </b>
                         <CopyButton
                           text={amount}
                           copied={amountCopied}
@@ -124,8 +124,7 @@ function PaymentModal({ storeId, show, setShow, amount, desc, onClose, defaultPa
                           <BiCopy />
                         </CopyButton>
                       </Col>
-                      <Col>
-                      </Col>
+                      <Col></Col>
                     </Row>
                   </Col>
                 </Row>

@@ -25,6 +25,7 @@ import OtpPage from 'features/login/OtpPage';
 import GcnPage from 'features/gcn/pages/GcnPage';
 import UsshGcnPage from 'features/gcn/pages/GcnPage2';
 import CouponPage from 'features/app/pages/CouponPage';
+import PaymentPage from 'features/app/pages/PaymentPage';
 
 const router = createBrowserRouter([
   {
@@ -98,6 +99,12 @@ const router = createBrowserRouter([
         path: PATH.APP.ORDER_DETAIL,
         element: <ServiceLayout pageTitle="Thông tin đơn hàng" backTo={PATH.APP.ROOT}>
           <OrderPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.APP.PAYMENT,
+        element: <ServiceLayout pageTitle="Thanh toán">
+          <PaymentPage />
         </ServiceLayout>
       },
       {
@@ -213,12 +220,6 @@ const router = createBrowserRouter([
     element: <ServiceLayout pageTitle="404" backTo={PATH.HOME}>
     <NotFoundPage />
   </ServiceLayout>
-  },
-  {
-    path: PATH.UNIFORM.ROOT,
-    element: <ServiceLayout pageTitle="Đặt đồng phục">
-      <UniformRegistrationPage />
-    </ServiceLayout>
   },
   {
     path: PATH.PHOTOCOPY.ROOT,

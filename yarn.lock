@@ -10341,6 +10341,11 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+payos-checkout@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/payos-checkout/-/payos-checkout-1.0.8.tgz#f2fdeef2a2c086cd9a8c5300e6dc5fa882411ed6"
+  integrity sha512-PYYSTF7lO8GV6ppjbrfHz8mXmRBI1KlXUf/fe2Q/DRzp06xnp/QP52nJ4z/mJG2HSsRnW1kEOOm99MkXUzXAug==
+
 pbkdf2@^3.0.3:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.1.2.tgz#dd822aa0887580e52f1a039dc3eda108efae3075"
