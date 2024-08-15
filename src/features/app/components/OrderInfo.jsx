@@ -10,11 +10,10 @@ function OrderInfo({ order, storeOrders=[] }) {
   const [show, setShow] = React.useState(false);
   const [amount, setAmount] = React.useState(0);
   const [desc, setDesc] = React.useState('');
+  const [storeOrder, setStoreOrder] = React.useState({});
 
-  const handlePaymentButton = (storeId, amount, desc) => {
-    setStoreId(storeId);
-    setDesc(desc);
-    setAmount(amount);
+  const handlePaymentButton = (storeOrder) => {
+    setStoreOrder(storeOrder);
     setShow(true);
   };
 
@@ -43,18 +42,17 @@ function OrderInfo({ order, storeOrders=[] }) {
       {storeOrders.map((storeOrder) => {
         return (
           <OrderItem
+            orderId={order?._id}
             key={storeOrder?._id}
             storeOrder={storeOrder}
-            handlePaymentButton={handlePaymentButton}
+            handlePaymentButton={() => handlePaymentButton(storeOrder)}
           />
         );
       })}
       <PaymentModal
-        storeId={storeId}
+        storeOrder={storeOrder}
         show={show}
         setShow={setShow}
-        amount={amount}
-        desc={desc}
         onClose={() => {
           window.location.reload();
         }}

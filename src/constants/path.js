@@ -72,6 +72,7 @@ export const PATH = {
         STORE_BY_CATEGORY: '/shop/category/:categoryId',
         STORE_BY_LOCATION: '/shop/location/:locationId',
         PRODUCT_DETAIL: '/shop/product/:productId',
+        PAYMENT: '/shop/payment',
     },
     REAL_ESTATE: {
         APARTMENT: '/shop/668d7116dbb560eb9a8fbbf7',
