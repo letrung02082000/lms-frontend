@@ -108,8 +108,8 @@ const router = createBrowserRouter([
         </ServiceLayout>
       },
       {
-        path: PATH.APP.ORDER_HISTORY,
-        element: <ServiceLayout pageTitle="Lịch sử đơn hàng">
+        path: PATH.APP.MY_ORDER,
+        element: <ServiceLayout pageTitle="Đơn hàng của tôi">
           <OrderHistoryPage />
         </ServiceLayout>
       },
