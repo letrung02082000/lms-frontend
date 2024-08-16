@@ -13,6 +13,7 @@ import { formatPhoneNumber, profileMsg } from "utils/commonUtils";
 
 function AccountPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const userInfo = JSON.parse(localStorage.getItem("user-info"));
   console.log(userInfo)
@@ -25,6 +26,16 @@ function AccountPage() {
     navigate(PATH.AUTH.SIGNIN);
   };
 
+  const handleLogout = async () => {
+    try {
+      await AccountApi.logout();
+      dispatch(logoutUser());
+      navigate(PATH.EXPLORE.ROOT);
+    } catch (error) {
+      console.log("Failed to logout: ", error);
+    }
+  }
+
   return (
     <Styles>
       {user.isLoggedIn ? (
@@ -35,9 +46,9 @@ function AccountPage() {
             <div><small>{formatPhoneNumber(userInfo?.zalo)}</small></div>
           </div>
           <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
-          <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
+          <Item path={PATH.APP.MY_ORDER}>Đơn hàng của tôi</Item>
           <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
-          {/* <Item onClick={handleLogout}>Đăng xuất</Item> */}
+          <Item onClick={handleLogout}>Đăng xuất</Item>
         </>
       ) : (
         <>
@@ -52,7 +63,7 @@ function AccountPage() {
           </div>
           <div className="content">
             <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
-            <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
+            <Item path={PATH.APP.MY_ORDER}>Đơn hàng của tôi</Item>
             <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
           </div>
         </>
@@ -63,9 +74,11 @@ function AccountPage() {
 export default AccountPage;
 
 const Styles = styled.div`
-  margin: 0 auto;
-  margin-bottom: 10rem;
-  width: ${({ theme }) => (theme.isDesktop ? '60%' : '95%')};
+  .content {
+    margin: 0 auto;
+    margin-bottom: 10rem;
+    width: ${({ theme }) => (theme.isDesktop ? '60%' : '95%')};
+  }
 
   .welcome {
     padding: 1rem;
