@@ -9,6 +9,7 @@ import categoryApi from 'api/store/categoryApi';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Pagination } from 'swiper';
 import CouponSlider from '../components/CouponSlider';
+import CartBar from '../components/CartBar';
 
 function CouponPage() {
   const [loading, setLoading] = React.useState(true);
@@ -89,6 +90,7 @@ function CouponPage() {
         </div>
         <CouponSlider priority={-1} />
       </StyledLayout>
+      <CartBar/>
     </>
   );
 }

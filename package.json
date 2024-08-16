@@ -46,7 +46,7 @@
     "nodemon": "^2.0.15",
     "payos-checkout": "^1.0.8",
     "prop-types": "^15.8.1",
-    "qrcode.react": "^1.0.1",
+    "qrcode.react": "^3.1.0",
     "react": "^17.0.2",
     "react-autocomplete-input": "^1.0.18",
     "react-autosuggest": "^10.1.0",

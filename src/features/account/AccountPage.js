@@ -16,7 +16,6 @@ function AccountPage() {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const userInfo = JSON.parse(localStorage.getItem("user-info"));
-  console.log(userInfo)
 
   const handleLoginClick = () => {
     navigate(PATH.AUTH.SIGNIN);

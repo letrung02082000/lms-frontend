@@ -143,7 +143,7 @@ function AppStorePage() {
           )}
         </div>
       </StyledLayout>
-      {cart?.data?.length > 0 && <CartBar bottom={isDesktop ? 0 : 5} />}
+      <CartBar/>
     </>
   );
 }
