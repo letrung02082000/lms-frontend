@@ -26,6 +26,11 @@ import GcnPage from 'features/gcn/pages/GcnPage';
 import UsshGcnPage from 'features/gcn/pages/GcnPage2';
 import CouponPage from 'features/app/pages/CouponPage';
 import PaymentPage from 'features/app/pages/PaymentPage';
+import MyStorePage from 'features/app/pages/MyStorePage';
+import StoreLayout from 'components/layout/StoreLayout';
+import MyOrderPage from 'features/app/pages/MyOrderPage';
+import MyProductPage from 'features/app/pages/MyProductPage';
+import MyStoreSettingPage from 'features/app/pages/MyStoreSettingPage';
 
 const router = createBrowserRouter([
   {
@@ -58,6 +63,27 @@ const router = createBrowserRouter([
                 element: <AccountPage />,
               },
             ],
+          },
+        ],
+      },
+      {
+        element: <StoreLayout />,
+        children: [
+          {
+            path: PATH.APP.MY_STORE.ROOT,
+            element: <MyStorePage />
+          },
+          {
+            path: PATH.APP.MY_STORE.ORDER,
+            element: <MyOrderPage />
+          },
+          {
+            path: PATH.APP.MY_STORE.PRODUCT,
+            element: <MyProductPage />
+          },
+          {
+            path: PATH.APP.MY_STORE.SETTING,
+            element: <MyStoreSettingPage />
           },
         ],
       },

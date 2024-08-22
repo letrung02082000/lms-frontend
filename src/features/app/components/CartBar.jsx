@@ -1,15 +1,15 @@
 import { PATH } from 'constants/path';
 import useMediaQuery from 'hooks/useMediaQuery';
 import React, { useMemo } from 'react';
-import { Button, Col, Offcanvas, Row } from 'react-bootstrap';
+import { Button, Col, Image, Offcanvas, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { selectCart } from 'store/cart';
 import styled from 'styled-components';
 import { formatCurrency } from 'utils/commonUtils';
 import { IoMdBasket } from 'react-icons/io';
-import zIndex from '@mui/material/styles/zIndex';
 import Cart from './Cart';
+import EmptyCartImage from 'assets/images/food/empty-cart.jpg'
 
 function CartBar({ bottom = 0 }) {
   const { state } = useLocation();
@@ -51,28 +51,41 @@ function CartBar({ bottom = 0 }) {
         <Offcanvas.Body>
           <Row>
             <Col xs={12}>
-              <Cart
-                products={state?.buyNow ? [cart.product] : []}
-                couponsByStoreId={couponsByStoreId}
-                setCouponsByStoreId={setCouponsByStoreId}
-              />
-              <Button
-                className='w-100 my-3'
-                variant='primary text-white'
-                onClick={() => {
-                  if (source === SOURCES.QR)
-                    return navigate(PATH.APP.CHECKOUT, {
-                      state: { ...orderInfo, coupon: location?.state?.coupon },
-                    });
-                  navigate(PATH.APP.CHECKOUT, {
-                    state: {
-                      coupon: location?.state?.coupon,
-                    },
-                  });
-                }}
-              >
-                Tiến hành đặt hàng
-              </Button>
+              {cart?.data?.length === 0 ? (
+                <Row>
+                  <div className='d-flex justify-content-center'>
+                    <Image src={EmptyCartImage} alt='empty-cart' height={200} />
+                  </div>
+                </Row>
+              ) : (
+                <>
+                  <Cart
+                    products={state?.buyNow ? [cart.product] : []}
+                    couponsByStoreId={couponsByStoreId}
+                    setCouponsByStoreId={setCouponsByStoreId}
+                  />
+                  <Button
+                    className='w-100 my-3'
+                    variant='primary text-white'
+                    onClick={() => {
+                      if (source === SOURCES.QR)
+                        return navigate(PATH.APP.CHECKOUT, {
+                          state: {
+                            ...orderInfo,
+                            coupon: location?.state?.coupon,
+                          },
+                        });
+                      navigate(PATH.APP.CHECKOUT, {
+                        state: {
+                          coupon: location?.state?.coupon,
+                        },
+                      });
+                    }}
+                  >
+                    Tiến hành đặt hàng
+                  </Button>
+                </>
+              )}
               <Button
                 className='w-100'
                 variant='outline-primary'
