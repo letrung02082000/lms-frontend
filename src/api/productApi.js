@@ -11,6 +11,11 @@ class StoreApi {
         });
     };
 
+    getMyProducts = async () => {
+        const url = `${API_PATH}/my`;
+        return axiosClient.get(url);
+    };
+
     getProductById = async (id) => {
         const url = `${API_PATH}/${id}`;
         return axiosClient.get(url);

@@ -54,6 +54,7 @@ export default function OtpPage() {
             JSON.stringify({
               zalo: res?.data?.zalo,
               role: res?.data?.role,
+              store: res?.data?.store,
             })
           );
           dispatch(updateUser({ isLoggedIn: true, data: { zalo: data.zalo } }));

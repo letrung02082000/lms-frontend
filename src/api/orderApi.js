@@ -13,6 +13,14 @@ class Api {
     });
   };
 
+  getMyOrders = async (page, limit, search) => {
+    return axiosClient.get(`${API_PATH}/my`, {
+      params: {
+        page,
+      },
+    });
+  };
+
   getOrderById = async (id) => {
     return axiosClient.get(`${API_PATH}/${id}`);
   }
