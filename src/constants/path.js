@@ -76,7 +76,7 @@ export const PATH = {
         MY_ORDER: '/shop/order/my',
         MY_STORE: {
             ROOT: '/shop/my',
-            PRODUCT: '/shop/my/product',
+            STATISTICS: '/shop/my/statistics',
             ORDER: '/shop/my/order',
             ORDER_DETAIL: '/shop/my/order/:orderId',
             SETTING: '/shop/my/setting',

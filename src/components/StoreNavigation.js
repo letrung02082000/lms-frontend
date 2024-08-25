@@ -1,8 +1,8 @@
 import { PATH } from 'constants/path'
 import React from 'react'
 import { Container, Nav, Navbar } from 'react-bootstrap'
-import { BiCategoryAlt, BiSolidCategoryAlt } from 'react-icons/bi'
 import { FaListAlt, FaRegListAlt } from 'react-icons/fa'
+import { IoStatsChart, IoStatsChartOutline } from 'react-icons/io5'
 import { MdOutlineSettings, MdOutlineStore, MdSettings, MdStore } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -16,7 +16,7 @@ function StoreNavigation() {
       icon: <MdStore className="navIcon" />,
       text: 'Cửa hàng',
       outlinedIcon: <MdOutlineStore className="navIcon" />,
-      path: PATH.APP.MY_STORE.ROOT,
+      path: PATH.APP.MY_STORE.ROOT
     },
     {
       icon: <FaListAlt className="navIcon" />,
@@ -25,10 +25,10 @@ function StoreNavigation() {
       path: PATH.APP.MY_STORE.ORDER
     },
     {
-      icon: <BiSolidCategoryAlt className="navIcon" />,
-      text: 'Sản phẩm',
-      outlinedIcon: <BiCategoryAlt className="navIcon" />,
-      path: PATH.APP.MY_STORE.PRODUCT
+      icon: <IoStatsChart className="navIcon" />,
+      text: 'Thống kê',
+      outlinedIcon: <IoStatsChartOutline className="navIcon" />,
+      path: PATH.APP.MY_STORE.STATISTICS,
     },
     {
       icon: <MdSettings className="navIcon" />,
@@ -44,12 +44,10 @@ function StoreNavigation() {
         <Nav className="mx-0 p-0 d-flex justify-content-around w-100" activeKey={activeKey}>
           {
             STORE_MENU.map((item, index) => {
-              return <>
-                <Nav.Link key={index} className="m-0 p-1" eventKey={item.path} onClick={() => navigate(item.path)}>
-                  {activeKey === item.path ? item.icon : item.outlinedIcon}
-                  <p className="m-0 p-0 navText">{item.text}</p>
-                </Nav.Link>
-              </>
+              return <Nav.Link key={item?.path} className="m-0 p-1" eventKey={item?.path} onClick={() => navigate(item.path)}>
+              {activeKey === item.path ? item.icon : item.outlinedIcon}
+              <p className="m-0 p-0 navText">{item.text}</p>
+            </Nav.Link>
             }
 
               
