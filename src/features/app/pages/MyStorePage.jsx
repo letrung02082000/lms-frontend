@@ -25,7 +25,7 @@ function MyStorePage() {
     //     console.log(err);
     //   });
     productApi
-      .getProductsByStoreId(storeId)
+      .getMyProducts(storeId)
       .then((res) => {
         setProducts(res?.data);
       })
