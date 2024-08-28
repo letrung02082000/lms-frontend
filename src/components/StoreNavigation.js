@@ -13,16 +13,16 @@ function StoreNavigation() {
 
   const STORE_MENU = [
     {
-      icon: <MdStore className="navIcon" />,
-      text: 'Cửa hàng',
-      outlinedIcon: <MdOutlineStore className="navIcon" />,
-      path: PATH.APP.MY_STORE.ROOT
-    },
-    {
       icon: <FaListAlt className="navIcon" />,
       text: 'Đơn hàng',
       outlinedIcon: <FaRegListAlt className="navIcon" />,
       path: PATH.APP.MY_STORE.ORDER
+    },
+    {
+      icon: <MdStore className="navIcon" />,
+      text: 'Cửa hàng',
+      outlinedIcon: <MdOutlineStore className="navIcon" />,
+      path: PATH.APP.MY_STORE.ROOT
     },
     {
       icon: <IoStatsChart className="navIcon" />,
@@ -49,8 +49,6 @@ function StoreNavigation() {
               <p className="m-0 p-0 navText">{item.text}</p>
             </Nav.Link>
             }
-
-              
             )
           }
         </Nav>

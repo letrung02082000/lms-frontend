@@ -1,7 +1,8 @@
+import Maintained from 'features/maintainance/Maintained';
 import React from 'react';
 
 function MyStatisticsPage() {
-  return <div>MyStatisticsPage</div>;
+  return <Maintained />;
 }
 
 export default MyStatisticsPage;

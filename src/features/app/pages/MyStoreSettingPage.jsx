@@ -1,7 +1,8 @@
+import Maintained from 'features/maintainance/Maintained';
 import React from 'react';
 
 function MyStoreSettingPage() {
-  return <div>MyStoreSettingPage</div>;
+  return <Maintained />;
 }
 
 export default MyStoreSettingPage;

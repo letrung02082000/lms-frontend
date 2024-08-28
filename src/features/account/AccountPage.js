@@ -10,6 +10,7 @@ import ProfileImage from "./components/ProfileImage";
 import AccountApi from "api/accountApi";
 import { PATH } from "constants/path";
 import { formatPhoneNumber, profileMsg } from "utils/commonUtils";
+import { Button } from "react-bootstrap";
 
 function AccountPage() {
   const navigate = useNavigate();
@@ -43,8 +44,8 @@ function AccountPage() {
           <div className="d-flex flex-column align-items-center justify-content-center mb-5">
             <p className="mb-1">{profileMsg(userInfo?.name)}</p>
             <div><small>{formatPhoneNumber(userInfo?.zalo)}</small></div>
+            <Button onClick={() => navigate(PATH.APP.MY_STORE.ROOT)} variant="outline-primary" className="mt-2 rounded-pill">Quản lý cửa hàng</Button>
           </div>
-          <Item path={PATH.APP.MY_STORE}>Cửa hàng của tôi</Item>
           <Item path={PATH.APP.MY_ORDER}>Đơn hàng của tôi</Item>
           <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
           <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
