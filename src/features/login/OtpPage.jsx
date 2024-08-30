@@ -14,9 +14,8 @@ import { formatPhoneNumber } from 'utils/commonUtils';
 
 export default function OtpPage() {
   const [loading, setLoading] = React.useState(false);
-  const {
-    state: { zalo },
-  } = useLocation();
+  const { state } = useLocation();
+  const zalo = state?.zalo || '';
   const dispatch = useDispatch();
   const {
     control,
@@ -54,6 +53,7 @@ export default function OtpPage() {
             JSON.stringify({
               zalo: res?.data?.zalo,
               role: res?.data?.role,
+              store: res?.data?.store,
             })
           );
           dispatch(updateUser({ isLoggedIn: true, data: { zalo: data.zalo } }));
