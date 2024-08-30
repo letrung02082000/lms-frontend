@@ -183,7 +183,7 @@ export default function DrivingInstructionPage(props) {
               <li>Số điện thoại liên hệ của bạn.</li>
               <li>Ảnh chụp 2 mặt chứng minh nhân dân/Căn cước công dân.</li>
               <li>
-                Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (ảnh tự chụp
+                Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (có thể chụp
                 bằng điện thoại, không quá 3 tháng, nếu chụp ảnh thẻ cần xin file gốc đúng theo yêu cầu): Tóc
                 không che trán, vén tóc ra sau mang tai, <b>LẤY ĐỦ 2 VAI, LẤY TỪ
                 THẮT LƯNG TRỞ LÊN QUA ĐẦU</b>, không đeo kính, trang phục lịch sự,
@@ -210,8 +210,8 @@ export default function DrivingInstructionPage(props) {
                 Đóng trực tiếp: Tại văn phòng iSinhvien
                 <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
                 (Tầng trệt Nhà khách ĐHQG)
-                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h00).
-                <br /> - Mang theo CMND/CCCD để làm thủ tục.
+                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h30).
+                <br /> - Mang theo CCCD để làm thủ tục.
                 <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0876 877 789</ZaloLink>
                 <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>
                 <br /> - Google maps:{" "}
@@ -262,8 +262,8 @@ export default function DrivingInstructionPage(props) {
                 Địa điểm: Tại văn phòng iSinhvien
                 <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
                 (Tầng trệt Nhà khách ĐHQG)
-                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h00).
-                <br /> - Mang theo CMND/CCCD để làm thủ tục.
+                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h30).
+                <br /> - Mang theo CCCD để làm thủ tục.
                 <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0876 877 789</ZaloLink>
                 <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>
                 <br /> - Google maps:{" "}
@@ -276,31 +276,16 @@ export default function DrivingInstructionPage(props) {
                 </a>
               </li>
               <li>
-                Khi đến đăng ký trực tiếp, học viên cần phải đăng ký thông tin online theo
+                Khi đến đăng ký, học viên cần đăng ký thông tin online trước hoặc trực tiếp tại văn phòng theo
                 hướng dẫn ở trên.
               </li>
             </ul>
           </div>
           <div id="mocktest">
             <h3 className={styles.sectionTitle}>
-              {"Thi thử thực hành & Tài liệu lý thuyết"}
+              {"Hướng dẫn ôn tập lý thuyết và thực hành"}
             </h3>
-            <p>Thực hành:</p>
-            <ul>
-              <li>6h30 - 7h30 đối với ngày thi sáng.</li>
-              <li>10h30 - 12h00 đối với ngày thi chiều.</li>
-              <li>Ngày thi thử: cùng ngày với ngày thi chính thức.</li>
-            </ul>
-            <p>
-              Lý thuyết: Thí sinh tải tài liệu học lý thuyết{" "}
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://drive.google.com/drive/folders/19vo_poKKXdz-tP_ZIgKdGFOwNNYMCxHZ"
-              >
-                tại đây.
-              </a>
-            </p>
+            <p>Học viên xem hướng dẫn ôn tập lý thuyết và thực hành <a rel="noreferrer noopener" target="_blank" href="https://www.langf.vn/cam-nang-lang-dai-hoc/thi-bang-lai-xe-lang-dai-hoc/#TAI_LIEU_ON_TAP_LY_THUYET_VA_THUC_HANH">tại đây.</a></p>
           </div>
         </div>
 

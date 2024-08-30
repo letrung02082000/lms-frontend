@@ -74,6 +74,13 @@ export const PATH = {
         PRODUCT_DETAIL: '/shop/product/:productId',
         PAYMENT: '/shop/payment',
         MY_ORDER: '/shop/order/my',
+        MY_STORE: {
+            ROOT: '/shop/my',
+            STATISTICS: '/shop/my/statistics',
+            ORDER: '/shop/my/order',
+            ORDER_DETAIL: '/shop/my/order/:orderId',
+            SETTING: '/shop/my/setting',
+        },
     },
     REAL_ESTATE: {
         APARTMENT: '/shop/668d7116dbb560eb9a8fbbf7',

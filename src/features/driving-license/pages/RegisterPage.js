@@ -12,7 +12,7 @@ import { convertPhoneNumber } from "utils";
 import ZaloLink from "components/link/ZaloLink";
 
 import drivingApi from "api/drivingApi";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import AccountModal from "../components/AccountModal";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import FileUploader from "components/form/FileUploader";
@@ -20,6 +20,7 @@ import InputField from "components/form/InputField";
 import { useForm } from "react-hook-form";
 import RadioField from "components/form/RadioField";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
+import { formatCurrency } from "utils/commonUtils";
 
 export default function DrivingRegisterPage() {
   const categories = [
@@ -76,6 +77,7 @@ export default function DrivingRegisterPage() {
   }
 
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
+  const [drivingTel, setDrivingTel] = useState(drivingInfo?.tel || '');
   const drivingLink = localStorage.getItem("driving-link") || '';
   const drivingDate = useMemo(()=>{
     if(drivingInfo?.date) {
@@ -199,7 +201,7 @@ export default function DrivingRegisterPage() {
   };
 
   const handleSearchChange = (e) => {
-    setSearchValue(e.target.value);
+    setSearchValue(e.target.value.trim());
   };
 
   const handleSearchPress = (e) => {
@@ -215,6 +217,7 @@ export default function DrivingRegisterPage() {
               "error"
             );
           } else {
+            setDrivingTel(searchValue);
             setSearchData(data);
           }
         })
@@ -238,53 +241,49 @@ export default function DrivingRegisterPage() {
       />
       {searchData &&
         searchData.map((child) => {
-          console.log(child)
           const date = new Date(child.createdAt);
           const processDate = new Date(date);
           processDate.setDate(date.getDate() + 1);
           let state = "";
 
-          if (child.processState === 4) {
+          if (child?.processState === 4) {
             state = "Đã hủy hồ sơ";
           } else {
-            state = "Đang chờ xử lý";
+            state = "Đang xử lý";
           }
 
           return (
-            <div className={styles.orderContainer}>
-              <p>Họ tên: {child.name}</p>
+            <Card key={child?._id} className="my-3">
+              <Card.Body>
+              <div className={styles.orderContainer}>
+              <p>Họ tên: {child?.name}</p>
               <p>Trạng thái: {state}</p>
               <p>
-                Hồ sơ của bạn sẽ được xử lý vào ngày:
+                Ngày xử lý:
                 {` ${processDate.getDate()}/${processDate.getMonth() + 1
                   }/${processDate.getFullYear()}`}
               </p>
+                  {child?.cash > 0 && <p>Đã chuyển khoản: {formatCurrency(child?.cash || 0)} VNĐ</p>}
               <p>
-                Vui lòng liên hệ Zalo{" "}
+                Vui lòng gửi biên lai qua Zalo{" "}
                 <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
                   {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
                 </ZaloLink>{" "}
-                để được hỗ trợ trong trường hợp hồ sơ của bạn chưa được xử lý.
+                trong trường hợp hồ sơ của bạn chưa được xử lý.
               </p>
-            </div>
+              {!child?.cash && <Button variant='outline-primary' onClick={() => setAccountShow(true)}><small>Thanh toán chuyển khoản</small></Button>}
+              </div>
+              </Card.Body>
+            </Card>
           );
         })}
-
-      {/* <Row>
-        <Col>
-          <LazyImage src={PortraitBanner} className='rounded'/>
-        </Col>
-      </Row> */}
         
       {drivingInfo?._id ? <div className="success-container d-flex flex-column align-items-center">
-        <Row>
+        <Row className="mb-3">
           <BsFillCheckCircleFill color='#019f91' size={45} />
         </Row>
-        <h4 className='text-center mt-2 mb-3 text-uppercase'>
-          Đăng ký hồ sơ thành công
-        </h4>
         <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
-        <p className="text-center">Bạn vui lòng hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</p>
+        <p className="text-center">Học viên vui lòng hoàn thành lệ phí và tham gia khám sức khoẻ để hoàn tất thủ tục dự thi. Danh sách và lịch khám sức khoẻ sẽ được cập nhật hàng tuần trên nhóm thi.</p>
         <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán online</Button>
         <a className="btn btn-outline-primary mb-3" href='driving-instruction#offline' target='_blank' rel="noopener noreferrer">Thanh toán trực tiếp</a>
         
@@ -454,7 +453,7 @@ export default function DrivingRegisterPage() {
           </p>
       </form>}
 
-      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingInfo?.tel} />
+      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} />
     </Styles>
   );
 }
