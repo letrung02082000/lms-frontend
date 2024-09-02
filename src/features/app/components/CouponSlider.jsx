@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-bootstrap';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { FreeMode, Grid, Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Grid, Pagination } from "swiper/modules";
 import couponApi from 'api/couponApi';
 import CouponItem from './CouponItem';
 import Loading from 'components/Loading';

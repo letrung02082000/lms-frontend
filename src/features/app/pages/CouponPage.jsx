@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import logo from 'assets/square-logo.png'
 import FilterSilder from '../components/FilterSilder';
 import categoryApi from 'api/store/categoryApi';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from "swiper/modules";
 import CouponSlider from '../components/CouponSlider';
 import CartBar from '../components/CartBar';
 

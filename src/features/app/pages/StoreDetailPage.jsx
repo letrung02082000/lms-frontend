@@ -1,8 +1,8 @@
 import storeApi from 'api/storeApi';
 import React, { useEffect } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination, Autoplay, Scrollbar } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay, Scrollbar } from "swiper/modules";
 import { Button, Col, Image, Modal, Row } from 'react-bootstrap';
 import productApi from 'api/productApi';
 import styled from 'styled-components';

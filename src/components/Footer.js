@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
-import { Scrollbar, Autoplay } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Scrollbar, Autoplay } from "swiper/modules";
 import { Col, Row } from "react-bootstrap";
 
 import useMediaQuery from "hooks/useMediaQuery";
