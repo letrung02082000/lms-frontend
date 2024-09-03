@@ -6,7 +6,7 @@ import { Alert, Button, Card, Col, Row } from 'react-bootstrap';
 import { MdPhone } from 'react-icons/md';
 import { formatCurrency, formatPhoneNumber } from 'utils/commonUtils';
 
-function OrderItem({ order, onPaymentClick }) {
+function OrderItem({ order, onDetailClick }) {
   const ORDER_STATUS = {
     0: 'Huỷ đơn',
     1: 'Nhận đơn',
@@ -90,10 +90,10 @@ function OrderItem({ order, onPaymentClick }) {
             <small>{ORDER_STATUS[order?.state || 1]}</small>
           </Button>
           <Button
-            variant='outline-success ms-3'
-            onClick={() => onPaymentClick(order)}
+            variant='primary ms-3'
+            onClick={() => onDetailClick(order)}
           >
-            <small>Thanh toán</small>
+            <small>Xem chi tiết</small>
           </Button>
         </div>
       </Card.Footer>
