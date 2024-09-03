@@ -21,6 +21,10 @@ class Api {
     });
   };
 
+  updateMyOrder = async (id, data) => {
+    return axiosClient.patch(`${API_PATH}/my/${id}`, data);
+  };
+
   getOrderById = async (id) => {
     return axiosClient.get(`${API_PATH}/${id}`);
   }

@@ -1,18 +1,40 @@
+import orderApi from 'api/orderApi';
 import ZaloImage from 'assets/images/ZaloImage';
 import CopyToClipboardButton from 'components/button/CopyToClipboardButton';
 import ZaloLink from 'components/link/ZaloLink';
 import React from 'react';
 import { Alert, Button, Card, Col, Row } from 'react-bootstrap';
 import { MdPhone } from 'react-icons/md';
+import { toastWrapper } from 'utils';
 import { formatCurrency, formatPhoneNumber } from 'utils/commonUtils';
 
 function OrderItem({ order, onDetailClick }) {
-  const ORDER_STATUS = {
-    0: 'Huỷ đơn',
+  const ORDER_STATUS_LABEL = {
+    0: 'Tiếp nhận lại',
     1: 'Nhận đơn',
-    2: 'Giao hàng',
-    3: 'Xác nhận thành công',
+    2: 'Giao đơn',
+    3: 'Đã giao đơn',
+    4: 'Đã hoàn thành',
   };
+  
+  const ORDER_STATUS = {
+    CANCELLED: 0,
+    PENDING: 1,
+    CONFIRMED: 2,
+    DELIVERED: 3,
+    COMPLETED: 4,
+  };
+  
+  const [orderStatus, setOrderStatus] = React.useState(order?.status || ORDER_STATUS.PENDING);
+
+  const updateOrder = async (id, data) => {
+    orderApi.updateMyOrder(id, data).then((res) => {
+      setOrderStatus(res?.data?.status);
+      toastWrapper('Đã cập nhật trạng thái đơn hàng', 'success');
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
 
   const remainder = order?.total - order?.discount - order?.cash;
 
@@ -81,18 +103,38 @@ function OrderItem({ order, onDetailClick }) {
       </Card.Body>
       <Card.Footer>
         <div className='d-flex justify-content-between'>
-          {order?.status !== 0 && (
-            <Button variant='outline-danger'>
+          {orderStatus !== ORDER_STATUS.CANCELLED ? (
+            <Button
+              variant='outline-danger'
+              onClick={() =>
+                updateOrder(order?._id, { status: ORDER_STATUS.CANCELLED })
+              }
+            >
               <small>Huỷ đơn</small>
             </Button>
+          ) : (
+            <Button variant='danger'>
+              <small>Đã huỷ</small>
+            </Button>
           )}
-          <Button variant='outline-primary ms-3'>
-            <small>{ORDER_STATUS[order?.state || 1]}</small>
-          </Button>
-          <Button
-            variant='primary ms-3'
-            onClick={() => onDetailClick(order)}
-          >
+
+          {orderStatus !== ORDER_STATUS.COMPLETED ? (
+            <Button
+              variant='outline-primary ms-3'
+              onClick={() => {
+                if (orderStatus === ORDER_STATUS.COMPLETED) return;
+
+                updateOrder(order?._id, { status: orderStatus + 1 });
+              }}
+            >
+              <small>{ORDER_STATUS_LABEL[orderStatus]}</small>
+            </Button>
+          ) : (
+            <Button variant='success'>
+              <small>Đã hoàn thành</small>
+            </Button>
+          )}
+          <Button variant='primary ms-3' onClick={() => onDetailClick(order)}>
             <small>Xem chi tiết</small>
           </Button>
         </div>
