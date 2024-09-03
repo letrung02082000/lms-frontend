@@ -23,13 +23,10 @@ function CouponItem({ coupon }) {
         <div className='w-100 mb-2'>
           <Image src={coupon?.image} className='w-100 rounded' />
         </div>
-        <h6
-          style={{
-            fontSize: '0.9rem',
-          }}
-        >
-          {coupon?.title}
-        </h6>
+        <small className='text-primary' style={{
+          fontSize: '0.8rem',
+        }}>{coupon?.store?.name}</small>
+        <h6>{coupon?.title}</h6>
       </div>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>

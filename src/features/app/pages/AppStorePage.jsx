@@ -10,14 +10,15 @@ import { addToCart, selectCart } from 'store/cart';
 import ProductItem from '../components/ProductItem';
 import LocationSlider from '../components/LocationSlider';
 import CategoryBar from '../components/CategoryBar';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination, Scrollbar } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Scrollbar } from "swiper/modules";
 import storeApi from 'api/storeApi';
 import productApi from 'api/productApi';
 import categoryApi from 'api/store/categoryApi';
 import Loading from 'components/Loading';
 import ServiceBar from '../components/ServiceBar';
 import FilterSilder from '../components/FilterSilder';
+import CouponSlider from '../components/CouponSlider';
 
 function AppStorePage() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -107,7 +108,11 @@ function AppStorePage() {
           <h2 className='m-0'>Danh mục</h2>
         </div>
         <CategoryBar categories={storeCategories} />
-        <StoreSlider slidesPerColumn={1}/>
+        <StoreSlider slidesPerColumn={2} freeMode={true}/>
+        <div className='d-flex justify-content-between my-2 align-items-end'>
+          <h2>Ưu đãi mới</h2>
+        </div>
+        <CouponSlider />
         <LocationSlider />
         <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
           <h2 className='m-0'>Sản phẩm nổi bật</h2>
@@ -138,7 +143,7 @@ function AppStorePage() {
           )}
         </div>
       </StyledLayout>
-      {cart?.data?.length > 0 && <CartBar bottom={isDesktop ? 0 : 5} />}
+      <CartBar/>
     </>
   );
 }

@@ -134,8 +134,6 @@ function CheckoutPage() {
     );
   }
 
-  console.log('first', state)
-
   return (
     <Styles>
       <Row>

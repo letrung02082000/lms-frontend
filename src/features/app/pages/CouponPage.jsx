@@ -6,9 +6,10 @@ import styled from 'styled-components';
 import logo from 'assets/square-logo.png'
 import FilterSilder from '../components/FilterSilder';
 import categoryApi from 'api/store/categoryApi';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from "swiper/modules";
 import CouponSlider from '../components/CouponSlider';
+import CartBar from '../components/CartBar';
 
 function CouponPage() {
   const [loading, setLoading] = React.useState(true);
@@ -73,7 +74,7 @@ function CouponPage() {
         <div className='d-flex justify-content-between my-2 align-items-end'>
           <h2>Ưu đãi mới</h2>
         </div>
-        <CouponSlider />
+        <CouponSlider slidesPerColumn={2}/>
         <div className='d-flex justify-content-between my-2 align-items-end'>
           <h2>Danh mục</h2>
         </div>
@@ -89,6 +90,7 @@ function CouponPage() {
         </div>
         <CouponSlider priority={-1} />
       </StyledLayout>
+      <CartBar/>
     </>
   );
 }

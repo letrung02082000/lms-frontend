@@ -54,7 +54,7 @@ export const PATH = {
         ROOT: '/pool-info',
     },
     GUEST_HOUSE: {
-        ROOT: '/guest-house',
+        ROOT: '/shop/66a6617be063722bc1af0f47',
     },
     QR_SCAN: {
         ROOT: '/qr-scan',
@@ -73,6 +73,15 @@ export const PATH = {
         STORE_BY_CATEGORY: '/shop/category/:categoryId',
         STORE_BY_LOCATION: '/shop/location/:locationId',
         PRODUCT_DETAIL: '/shop/product/:productId',
+        PAYMENT: '/shop/payment',
+        MY_ORDER: '/shop/order/my',
+        MY_STORE: {
+            ROOT: '/shop/my',
+            STATISTICS: '/shop/my/statistics',
+            ORDER: '/shop/my/order',
+            ORDER_DETAIL: '/shop/my/order/:orderId',
+            SETTING: '/shop/my/setting',
+        },
     },
     REAL_ESTATE: {
         APARTMENT: '/shop/668d7116dbb560eb9a8fbbf7',

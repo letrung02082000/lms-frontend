@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { Pagination, Autoplay, Scrollbar } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
+import { Pagination, Autoplay, Scrollbar } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import CouponApi from "api/couponApi";

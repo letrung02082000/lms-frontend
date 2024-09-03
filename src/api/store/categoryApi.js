@@ -14,6 +14,10 @@ class CategoryApi {
     getStoreCategories = async () => {
         return axiosClient.get(`${API_PATH}/store`);
     };
+
+    getMyCategories = async () => {
+        return axiosClient.get(`${API_PATH}/my`);
+    }
 }
 
 export default new CategoryApi();

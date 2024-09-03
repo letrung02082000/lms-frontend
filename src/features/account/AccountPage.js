@@ -10,12 +10,13 @@ import ProfileImage from "./components/ProfileImage";
 import AccountApi from "api/accountApi";
 import { PATH } from "constants/path";
 import { formatPhoneNumber, profileMsg } from "utils/commonUtils";
+import { Button } from "react-bootstrap";
 
 function AccountPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const userInfo = JSON.parse(localStorage.getItem("user-info"));
-  console.log(userInfo)
 
   const handleLoginClick = () => {
     navigate(PATH.AUTH.SIGNIN);
@@ -25,6 +26,16 @@ function AccountPage() {
     navigate(PATH.AUTH.SIGNIN);
   };
 
+  const handleLogout = async () => {
+    try {
+      await AccountApi.logout();
+      dispatch(logoutUser());
+      navigate(PATH.EXPLORE.ROOT);
+    } catch (error) {
+      console.log("Failed to logout: ", error);
+    }
+  }
+
   return (
     <Styles>
       {user.isLoggedIn ? (
@@ -33,11 +44,12 @@ function AccountPage() {
           <div className="d-flex flex-column align-items-center justify-content-center mb-5">
             <p className="mb-1">{profileMsg(userInfo?.name)}</p>
             <div><small>{formatPhoneNumber(userInfo?.zalo)}</small></div>
+            <Button onClick={() => navigate(PATH.APP.MY_STORE.ROOT)} variant="outline-primary" className="mt-2 rounded-pill">Quản lý cửa hàng</Button>
           </div>
+          <Item path={PATH.APP.MY_ORDER}>Đơn hàng của tôi</Item>
           <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
-          <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
           <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
-          {/* <Item onClick={handleLogout}>Đăng xuất</Item> */}
+          <Item onClick={handleLogout}>Đăng xuất</Item>
         </>
       ) : (
         <>
@@ -52,7 +64,7 @@ function AccountPage() {
           </div>
           <div className="content">
             <Item path={PATH.EXPLORE.ROOT}>Ưu đãi</Item>
-            <Item path={PATH.APP.ORDER_SUCCESS}>Đơn hàng của bạn</Item>
+            <Item path={PATH.APP.MY_ORDER}>Đơn hàng của tôi</Item>
             <Item path={PATH.SUPPORT.ROOT}>Hỗ trợ</Item>
           </div>
         </>
@@ -63,9 +75,11 @@ function AccountPage() {
 export default AccountPage;
 
 const Styles = styled.div`
-  margin: 0 auto;
-  margin-bottom: 10rem;
-  width: ${({ theme }) => (theme.isDesktop ? '60%' : '95%')};
+  .content {
+    margin: 0 auto;
+    margin-bottom: 10rem;
+    width: ${({ theme }) => (theme.isDesktop ? '60%' : '95%')};
+  }
 
   .welcome {
     padding: 1rem;

@@ -14,7 +14,7 @@ import StoreCouponModal from './StoreCouponModal';
 function Cart({ couponsByStoreId, setCouponsByStoreId, products=[] }) {
   const [showStoreCoupons, setShowStoreCoupons] = useState(false);
   const buyNow = products.length > 0;
-  const [storeId, setStoreId] = useState({});
+  const [storeId, setStoreId] = useState(null);
   const cart = useSelector(selectCart);
   const location = useLocation();
   const [coupons, setCoupons] = useState([]);
@@ -39,9 +39,11 @@ function Cart({ couponsByStoreId, setCouponsByStoreId, products=[] }) {
   }, [cart]);
 
   useEffect(() => {
-    couponApi.getCouponById(location?.state?.coupon?._id).then((res) => {
-      setCoupons([res?.data]);
-    });
+    if(location?.state?.coupon?._id) {
+      couponApi.getCouponById(location?.state?.coupon?._id).then((res) => {
+        setCoupons([res?.data]);
+      });
+    }
   }, [location?.state?.coupon])
 
   useEffect(() => {
@@ -235,7 +237,7 @@ export default Cart;
 
 const Styles = styled.div`
   border: ${(props) => `1px solid ${props.theme.colors.teal}`};
-  height: 100%;
+  /* height: 100%; */
   border-radius: 0.5rem;
   padding: 0 0.5rem;
 

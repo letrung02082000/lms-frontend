@@ -9,17 +9,19 @@ function StoreCouponModal({ show, setShow, storeId, addCoupon }) {
   const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
-    couponApi
-      .queryCoupons({ store: storeId })
-      .then((res) => {
-        setCoupons(res?.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if(storeId) {
+      couponApi
+        .queryCoupons({ store: storeId })
+        .then((res) => {
+          setCoupons(res?.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }, [storeId]);
 
   const handleCouponButtonClick = (coupon) => {
@@ -29,7 +31,15 @@ function StoreCouponModal({ show, setShow, storeId, addCoupon }) {
 
   return (
     <>
-      <Modal show={show} closeButton onHide={() => setShow(false)} scrollable>
+      <Modal
+        show={show}
+        closeButton
+        onHide={() => setShow(false)}
+        scrollable
+        style={{
+          zIndex: 10000,
+        }}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Ưu đãi cửa hàng</Modal.Title>
         </Modal.Header>

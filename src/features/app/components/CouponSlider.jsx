@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-bootstrap';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { FreeMode, Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Grid, Pagination } from "swiper/modules";
 import couponApi from 'api/couponApi';
 import CouponItem from './CouponItem';
 import Loading from 'components/Loading';
@@ -36,25 +36,28 @@ function CouponSlider({
   }, [storeCategory]);
 
   return (
-    <Styles slidesPerColumn={slidesPerColumn}>
+    <Styles>
       <Swiper
-        modules={[Pagination, FreeMode]}
-        freeMode={freeMode}
-        slidesPerView={3.2}
+        modules={[Pagination, FreeMode, Grid]}
+        grid={{
+          fill: 'row',
+          rows: slidesPerColumn,
+        }}
+        slidesPerView={3.5}
         loop={false}
         spaceBetween={10}
         breakpoints={{
           0: {
-            slidesPerView: 2.2,
+            slidesPerView: 2.5,
           },
           700: {
-            slidesPerView: 3.2,
+            slidesPerView: 3.5,
           },
           1000: {
-            slidesPerView: 4.2,
+            slidesPerView: 4.5,
           },
           1500: {
-            slidesPerView: 5.2,
+            slidesPerView: 5.5,
           },
         }}
       >
@@ -77,14 +80,4 @@ function CouponSlider({
 export default CouponSlider;
 
 const Styles = styled.div`
-  .swiper-wrapper {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: ${({ slidesPerColumn }) => `repeat(${slidesPerColumn}, auto)`};
-    grid-auto-flow: column;
-
-    & > .swiper-slide {
-      height: fit-content;
-    }
-  }
 `;

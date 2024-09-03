@@ -25,6 +25,12 @@ import OtpPage from 'features/login/OtpPage';
 import GcnPage from 'features/gcn/pages/GcnPage';
 import UsshGcnPage from 'features/gcn/pages/GcnPage2';
 import CouponPage from 'features/app/pages/CouponPage';
+import PaymentPage from 'features/app/pages/PaymentPage';
+import MyStorePage from 'features/app/pages/MyStorePage';
+import StoreLayout from 'components/layout/StoreLayout';
+import MyOrderPage from 'features/app/pages/MyOrderPage';
+import MyStoreSettingPage from 'features/app/pages/MyStoreSettingPage';
+import MyStatisticsPage from 'features/app/pages/MyStatisticsPage';
 
 const router = createBrowserRouter([
   {
@@ -57,6 +63,27 @@ const router = createBrowserRouter([
                 element: <AccountPage />,
               },
             ],
+          },
+        ],
+      },
+      {
+        element: <StoreLayout />,
+        children: [
+          {
+            path: PATH.APP.MY_STORE.ROOT,
+            element: <MyStorePage />
+          },
+          {
+            path: PATH.APP.MY_STORE.ORDER,
+            element: <MyOrderPage />
+          },
+          {
+            path: PATH.APP.MY_STORE.STATISTICS,
+            element: <MyStatisticsPage />
+          },
+          {
+            path: PATH.APP.MY_STORE.SETTING,
+            element: <MyStoreSettingPage />
           },
         ],
       },
@@ -101,8 +128,14 @@ const router = createBrowserRouter([
         </ServiceLayout>
       },
       {
-        path: PATH.APP.ORDER_HISTORY,
-        element: <ServiceLayout pageTitle="Lịch sử đơn hàng">
+        path: PATH.APP.PAYMENT,
+        element: <ServiceLayout pageTitle="Thanh toán">
+          <PaymentPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.APP.MY_ORDER,
+        element: <ServiceLayout pageTitle="Đơn hàng của tôi">
           <OrderHistoryPage />
         </ServiceLayout>
       },
@@ -221,12 +254,6 @@ const router = createBrowserRouter([
   </ServiceLayout>
   },
   {
-    path: PATH.UNIFORM.ROOT,
-    element: <ServiceLayout pageTitle="Đặt đồng phục">
-      <UniformRegistrationPage />
-    </ServiceLayout>
-  },
-  {
     path: PATH.PHOTOCOPY.ROOT,
     element: <ServiceLayout pageTitle="In ấn" backTo={PATH.HOME}>
       <PhotocopyPage />
@@ -236,12 +263,6 @@ const router = createBrowserRouter([
     path: PATH.SWIMMING_POOL.ROOT,
     element: <ServiceLayout pageTitle="Hồ bơi">
       <PoolInfoPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.GUEST_HOUSE.ROOT,
-    element: <ServiceLayout pageTitle="Đặt phòng nhà khách">
-      <GuestHouseInfoPage />
     </ServiceLayout>
   },
   {

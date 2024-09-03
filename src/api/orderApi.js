@@ -13,6 +13,14 @@ class Api {
     });
   };
 
+  getMyOrders = async (page, limit, search) => {
+    return axiosClient.get(`${API_PATH}/my`, {
+      params: {
+        page,
+      },
+    });
+  };
+
   getOrderById = async (id) => {
     return axiosClient.get(`${API_PATH}/${id}`);
   }
@@ -48,9 +56,18 @@ class Api {
   };
 
   queryOrder = async (data) => {
-    console.log(data)
     return axiosClient.get(`${API_PATH}/query`, { params: data });
   };
+
+  createPaymentLink = async (data) => {
+    return axiosClient.post(`${API_PATH}/create-payment-link`, data);
+  };
+
+  getPaymentLink = async (paymentCode) => {
+    return axiosClient.get(`${API_PATH}/get-payment-link`, {
+      params: { paymentCode },
+    });
+  }
 }
 
 export default new Api();
