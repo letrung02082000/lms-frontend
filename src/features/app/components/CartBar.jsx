@@ -114,7 +114,7 @@ function CartBar({ bottom = 0 }) {
           <IoMdBasket size={35} />
           <span
             className='position-absolute fw-bold'
-            style={{ top: 6, right: 20 }}
+            style={{ top: 6, right: 15 }}
           >
             {cart?.data?.length || 0}
           </span>

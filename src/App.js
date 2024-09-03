@@ -8,7 +8,7 @@ import router from "routes";
 import useMediaQuery from "hooks/useMediaQuery";
 
 const App = () => {
-  const [selectedTheme, setSelectedTheme] = useState(light);
+  const [selectedTheme] = useState(light);
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   useEffect(() => {

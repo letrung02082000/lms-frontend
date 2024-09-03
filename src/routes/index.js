@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { PATH } from 'constants/path';
 import { ADMIN_DRIVING_MENU } from 'constants/menu';
-import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, ExplorePage, GuestHouseInfoPage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, UniformRegistrationPage, PhotocopyPage, DrivingTestPage, DrivingHealthPage } from 'features';
+import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, PhotocopyPage, DrivingTestPage, DrivingHealthPage } from 'features';
 import { AppStorePage, CheckoutPage, OrderPage, ProductDetailPage, StoreDetailPage } from 'features/app';
 import MainGuard from 'components/guard/MainGuard';
 import MainLayout from 'components/layout/MainLayout';
@@ -13,7 +13,6 @@ import AdminPage from 'features/admin/pages/AdminPage';
 import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDrivingDatePage';
 import AdminDrivingA1Page from 'features/admin/driving-license/pages/AdminDrivingPage';
 import DrivingAdminPage from 'features/admin/driving-license/DrivingAdminPage';
-import YenSharePage from 'features/yenshare/pages/YenSharePage';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
 import StoreByCategory from 'features/app/pages/StoreByCategory';
@@ -269,12 +268,6 @@ const router = createBrowserRouter([
     path: PATH.QR_SCAN.ROOT,
     element: <ServiceLayout pageTitle="Quét mã">
       <QrScanPage />
-    </ServiceLayout>
-  },
-  {
-    path: PATH.YEN_SHARE.ROOT,
-    element: <ServiceLayout pageTitle="Yên share">
-      <YenSharePage />
     </ServiceLayout>
   },
   {
