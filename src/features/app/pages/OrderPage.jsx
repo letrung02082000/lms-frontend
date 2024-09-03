@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import OrderInfo from '../components/OrderInfo';
 import { Container } from 'react-bootstrap';
+import { QRCodeSVG } from 'qrcode.react';
 
 function OrderPage() {
   const orderId = useParams().orderId;
@@ -38,7 +39,10 @@ function OrderPage() {
 
   return (
     <Container>
-      <OrderInfo order={order} storeOrders={storeOrders}/>
+      <div className='w-100 d-flex justify-content-center mb-3'>
+        <QRCodeSVG value={window.location.href}/>
+      </div>
+      <OrderInfo order={order} storeOrders={storeOrders} />
     </Container>
   );
 }

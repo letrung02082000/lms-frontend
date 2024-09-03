@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Image } from 'react-bootstrap';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination, FreeMode } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, FreeMode, Grid } from "swiper/modules";
 import storeApi from 'api/storeApi';
 import productApi from 'api/productApi';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +25,7 @@ function StoreSlider({ slidesPerColumn = 1, freeMode = false }) {
   }, []);
 
   return (
-    <Styles slidesPerColumn={slidesPerColumn}>
+    <Styles>
       <div className='d-flex justify-content-between mt-4 mb-2 align-items-end'>
         <h2 className='m-0'>Cửa hàng</h2>
         <button
@@ -36,23 +36,26 @@ function StoreSlider({ slidesPerColumn = 1, freeMode = false }) {
         </button>
       </div>
       <Swiper
-        modules={[Pagination, FreeMode]}
-        freeMode={true}
-        slidesPerView={3.2}
-        loop={false}
+        modules={[Grid, Pagination, FreeMode]}
+        grid={{
+          fill: 'row',
+          rows: slidesPerColumn,
+        }}
+        freeMode={freeMode}
+        slidesPerView={3.5}
         spaceBetween={10}
         breakpoints={{
           0: {
-            slidesPerView: 2.2,
+            slidesPerView: 2.5,
           },
           700: {
-            slidesPerView: 3.2,
+            slidesPerView: 3.5,
           },
           1000: {
-            slidesPerView: 4.2,
+            slidesPerView: 4.5,
           },
           1500: {
-            slidesPerView: 5.2,
+            slidesPerView: 5.5,
           },
         }}
       >
@@ -71,14 +74,4 @@ function StoreSlider({ slidesPerColumn = 1, freeMode = false }) {
 export default StoreSlider;
 
 const Styles = styled.div`
-    .swiper-wrapper {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: ${({ slidesPerColumn }) => `repeat(${slidesPerColumn}, auto)`};
-    grid-auto-flow: column;
-
-    & > .swiper-slide {
-      height: fit-content;
-    }
-  }
-`
+`;

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 //swiper
-import { FreeMode } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
-import 'swiper/swiper-bundle.min.css'
+import { FreeMode } from "swiper/modules"
+import { Swiper, SwiperSlide } from 'swiper/react'
+
 
 //styles
 import styles from './categorySlider.module.css'

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Image } from 'react-bootstrap';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination, Scrollbar } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Scrollbar } from "swiper/modules";
 import storeApi from 'api/storeApi';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from 'constants/path';

@@ -1,7 +1,7 @@
 import { PATH } from 'constants/path';
 import React, { useEffect } from 'react';
 import { Button, Col, Image, Row } from 'react-bootstrap';
-import { BsCartCheckFill, BsCartPlus } from 'react-icons/bs';
+import { FaCartPlus } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { formatCurrency } from 'utils/commonUtils';
 
@@ -22,7 +22,7 @@ function ProductItem({
   }, [addedToCart]);
 
   return (
-    <div>
+    <div className='h-100 d-flex flex-column justify-content-between'>
       <div
         onClick={() =>
           navigate(
@@ -37,7 +37,7 @@ function ProductItem({
           <div className='w-100 mb-2'>
             <Image src={product.image} className='w-100 rounded' />
           </div>
-          <h6>{product.name}</h6>
+          <h6 className='text-center'>{product.name}</h6>
         </div>
       </div>
       <div className='d-flex justify-content-between align-items-end'>
@@ -50,7 +50,9 @@ function ProductItem({
                 </div>
               )}
             <div className='text-danger'>
-              <small>{formatCurrency(product.price)} đ</small>
+              <p className='fw-bold p-0 m-0 h6'>
+                {formatCurrency(product.price)} đ
+              </p>
             </div>
           </div>
         )}
@@ -58,20 +60,20 @@ function ProductItem({
           <div>
             {addedToCart ? (
               <Button
-                variant='outline-danger'
+                variant='outline-primary'
                 onClick={() => handleAddToCartButton(product)}
               >
-                <BsCartCheckFill color='red' />
+                <FaCartPlus />
               </Button>
             ) : (
               <Button
-                variant='outline-danger'
+                variant='outline-primary'
                 onClick={() => {
                   handleAddToCartButton(product);
                   setAddedToCart(true);
                 }}
               >
-                <BsCartPlus color='red' />
+                <FaCartPlus />
               </Button>
             )}
           </div>

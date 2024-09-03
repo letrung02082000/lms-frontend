@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Offcanvas, Pagination, Row } from 'react-bootstrap';
-import { MdClear, MdEdit, MdFilterList, MdRotateLeft, MdSearch, MdQrCodeScanner } from 'react-icons/md';
+import { MdClear, MdEdit, MdFilterList, MdRotateLeft, MdSearch, MdQrCodeScanner, MdFlipCameraAndroid } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
 import SelectField from 'components/form/SelectField';
@@ -10,11 +10,27 @@ import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
 import { ToastWrapper, toastWrapper } from 'utils';
 import Select from 'react-select';
-import { QrReader } from 'react-qr-reader';
+import cryptojs from 'crypto-js'
+import { Scanner } from '@yudiel/react-qr-scanner';
+import CopyButton from 'components/button/CopyButton';
 
 function AdminDrivingA1Page() {
+  const PROCESS_STATE = {
+    CREATED: 0,
+    WAITING_FOR_UPDATE: 1,
+    WAITING_FOR_PAYMENT: 2,
+    COMPLETED: 3,
+    CANCELLED: 4,
+  }
+  const key = 'aes123456789101112131415';
+  const [updateParams, setUpdateParams] = useState({
+    date: undefined,
+    processState: undefined,
+  });
   const [query, setQuery] = useState({});
+  const [facingMode, setFacingMode] = useState('environment');
   const [searchText, setSearchText] = useState('');
+  const [searchData, setSearchData] = useState({});
   const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
@@ -141,33 +157,6 @@ function AdminDrivingA1Page() {
     },
     { field: 'cash', headerName: 'Chuyển khoản', flex: 1 },
     {
-      field: 'isPaid',
-      headerName: 'Thanh toán',
-      flex: 1,
-      cellRenderer: PaymentCheckbox,
-      valueGetter: rowDataGetter,
-    },
-    {
-      field: 'healthChecked',
-      headerName: 'Đã khám sức khoẻ',
-      flex: 1,
-      cellRenderer: HealthCheckbox,
-      valueGetter: rowDataGetter,
-    },
-    {
-      field: 'hasFile',
-      headerName: 'Đã có hồ sơ',
-      flex: 1,
-      cellRenderer: FileCheckbox,
-      valueGetter: rowDataGetter,
-    },
-    {
-      field: 'processState',
-      headerName: 'Trạng thái',
-      flex: 1,
-      // cellRenderer: FileCheckbox,
-    },
-    {
       field: 'action',
       headerName: 'Thao tác',
       cellRenderer: ActionButton,
@@ -196,12 +185,68 @@ function AdminDrivingA1Page() {
   }, [page, query]);
 
   useEffect(() => {
-    if(qrData) {
+    if (qrData) {
       const qrDataArr = qrData.split('|');
-      const searchText = qrDataArr[2] || qrDataArr[0];
+      const searchText =
+        qrDataArr[2] ||
+        cryptojs.AES.decrypt(qrDataArr[0], key).toString(cryptojs.enc.Utf8);
       setSearchText(searchText);
-      setShowQRModal(false);
-      fetchDrivings(query, searchText, 1);
+      drivingApi
+        .getDrivings(query, searchText, 1)
+        .then((res) => {
+          setRowData(res.data);
+          setPagination(res.pagination);
+
+          if(res.data.length === 0) {
+            toastWrapper('Không tìm thấy hồ sơ', 'error');
+          }
+
+          if (updateParams?.date != undefined || updateParams?.processState != undefined) {
+            for (let i = 0; i < res.data.length; i++) {
+              setSelectedRow(res.data[i]);
+              if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
+                drivingApi
+                    .updateDriving(res.data[i]._id, updateParams)
+                    .then((res) => {
+                      if(updateParams?.date != undefined) {
+                        toastWrapper(
+                          'Đã cập nhật thành ngày ' +
+                            new Date(updateParams.date).toLocaleDateString(
+                              'en-GB'
+                            ),
+                          'success'
+                        );
+                      }
+
+                      if (updateParams?.processState != undefined) {
+                        toastWrapper(
+                          `${
+                            updateParams.processState === 0
+                              ? 'Đã tạo'
+                              : updateParams.processState === 1
+                              ? 'Chờ cập nhật'
+                              : updateParams.processState === 2
+                              ? 'Chờ thanh toán'
+                              : updateParams.processState === 3
+                              ? 'Đã hoàn tất'
+                              : 'Đã huỷ'
+                          }`,
+                          'success'
+                        );
+                      }
+                      fetchDrivings(query, searchText, 1);
+                    })
+                    .catch((err) => {
+                      toastWrapper(err.toString(), 'error');
+                    });
+  
+              }
+            }
+          }
+        })
+        .catch((err) => {
+          toastWrapper(err.toString(), 'error');
+        });
     }
   }, [qrData]);
 
@@ -318,10 +363,7 @@ function AdminDrivingA1Page() {
         height: '100vh',
       }}
     >
-      <div
-        style={{ height: '9%' }}
-        className='d-flex align-items-center ps-3 pe-5'
-      >
+      <div style={{ height: '9%' }} className='d-flex align-items-center ps-3'>
         <div className='w-100 position-relative'>
           <Form.Control
             type='text'
@@ -339,13 +381,13 @@ function AdminDrivingA1Page() {
             <MdClear />
           </button>
         </div>
-        <button className='btn ms-3' onClick={handleSearchButton}>
+        <button className='btn ms-2' onClick={handleSearchButton}>
           <MdSearch size={25} />
         </button>
-        <button className='btn ms-3' onClick={() => setShow(true)}>
+        <button className='btn ms-2' onClick={() => setShow(true)}>
           <MdFilterList size={25} />
         </button>
-        <button className='btn ms-3' onClick={() => setShowQRModal(true)}>
+        <button className='btn ms-2' onClick={() => setShowQRModal(true)}>
           <MdQrCodeScanner size={25} />
         </button>
       </div>
@@ -480,12 +522,52 @@ function AdminDrivingA1Page() {
           <Modal.Title>Cập nhật hồ sơ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className='d-flex justify-content-center mb-3'>
-           <Button onClick={() => updateProcessState(selectedRow?._id, 0)} variant={selectedRow?.processState === 0 ? 'primary' : 'outline-primary'} className='mx-3'>Đã tạo</Button> 
-           <Button onClick={() => updateProcessState(selectedRow?._id, 1)} variant={selectedRow?.processState === 1 ? 'primary' : 'outline-primary'} className='mx-3'>Chờ cập nhật</Button> 
-           <Button onClick={() => updateProcessState(selectedRow?._id, 2)} variant={selectedRow?.processState === 2 ? 'primary' : 'outline-primary'} className='mx-3'>Chờ thanh toán</Button> 
-           <Button onClick={() => updateProcessState(selectedRow?._id, 3)} variant={selectedRow?.processState === 3 ? 'success' : 'outline-primary'} className='mx-3'>Đã hoàn tất</Button> 
-           <Button onClick={() => updateProcessState(selectedRow?._id, 4)} variant={selectedRow?.processState === 4 ? 'danger' : 'outline-primary'} className='mx-3'>Đã huỷ</Button> 
+          <div className='d-flex flex-wrap justify-content-center mb-3'>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 0)}
+              variant={
+                selectedRow?.processState === 0 ? 'primary' : 'outline-primary'
+              }
+              className='m-2'
+            >
+              Đã tạo
+            </Button>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 1)}
+              variant={
+                selectedRow?.processState === 1 ? 'primary' : 'outline-primary'
+              }
+              className='m-2'
+            >
+              Chờ cập nhật
+            </Button>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 2)}
+              variant={
+                selectedRow?.processState === 2 ? 'primary' : 'outline-primary'
+              }
+              className='m-2'
+            >
+              Chờ thanh toán
+            </Button>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 3)}
+              variant={
+                selectedRow?.processState === 3 ? 'success' : 'outline-primary'
+              }
+              className='m-2'
+            >
+              Đã hoàn tất
+            </Button>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 4)}
+              variant={
+                selectedRow?.processState === 4 ? 'danger' : 'outline-primary'
+              }
+              className='m-2'
+            >
+              Đã huỷ
+            </Button>
           </div>
           <div>
             <Row className='mb-3'>
@@ -689,21 +771,75 @@ function AdminDrivingA1Page() {
       </Modal>
       <Modal show={showQRModal} onHide={() => setShowQRModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Quét hồ sơ</Modal.Title>
+          <Modal.Title>
+            <span className='me-3'>Quét hồ sơ</span>
+            <Button
+              variant='outline-primary'
+              onClick={() =>
+                setFacingMode(
+                  facingMode === 'environment' ? 'user' : 'environment'
+                )
+              }
+            >
+              <MdFlipCameraAndroid size={25} />
+            </Button>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <QrReader
-            onResult={(result, error) => {
-              if (!!result) {
-                console.log(result);
-                setQrData(result?.text);
-              }
-
-              if (!!error) {
-                ToastWrapper(error, 'error');
-              }
+          <Scanner
+            constraints={{ facingMode: facingMode }}
+            onScan={(result) => {
+              setQrData(result[0]?.rawValue);
             }}
           />
+          <Form.Group className='my-3' as={Row}>
+            <Form.Label className='text-center'>
+              {rowData?.[0]?.name}
+            </Form.Label>
+            <Form.Text className='text-center'>
+              {rowData?.[0]?.tel} <CopyButton text={rowData?.[0]?.tel} />
+            </Form.Text>
+          </Form.Group>
+          <Form.Group className='my-3' as={Row}>
+            <Form.Label column sm='4'>
+              Ngày dự thi
+            </Form.Label>
+            <Col>
+              <Select
+                isClearable
+                options={visibleDate}
+                onChange={(val) => {
+                  setUpdateParams({
+                    ...updateParams,
+                    date: val?.value || undefined,
+                  });
+                }}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group className='mb-3' as={Row}>
+            <Form.Label column sm='4'>
+              Trạng thái
+            </Form.Label>
+            <Col>
+              <Select
+                isClearable
+                options={[
+                  { label: 'Đã tạo', value: 0 },
+                  { label: 'Chờ cập nhật', value: 1 },
+                  { label: 'Chờ thanh toán', value: 2 },
+                  { label: 'Đã hoàn tất', value: 3 },
+                  { label: 'Đã huỷ', value: 4 },
+                ]}
+                onChange={(val) =>
+                  setUpdateParams({
+                    ...updateParams,
+                    processState: val?.value,
+                  })
+                }
+              />
+            </Col>
+          </Form.Group>
         </Modal.Body>
       </Modal>
     </div>

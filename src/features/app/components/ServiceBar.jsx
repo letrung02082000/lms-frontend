@@ -34,9 +34,9 @@ function ServiceBar() {
       },
       {
         _id: '4',
-        name: 'Nhà trọ',
+        name: 'Nhà khách',
         icon: HouseIcon,
-        path: PATH.REAL_ESTATE.HOUSE
+        path: PATH.GUEST_HOUSE.ROOT
       },
     ],
     []
