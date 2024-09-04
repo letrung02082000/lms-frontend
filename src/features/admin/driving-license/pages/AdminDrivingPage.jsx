@@ -262,53 +262,57 @@ function AdminDrivingA1Page() {
       });
   }
 
-  useEffect( async() => {
+  useEffect( () => {
     setValue('name', selectedRow.name);
     setValue('tel', selectedRow.tel);
     setValue('zalo', selectedRow.zalo);
     setValue('feedback', selectedRow.feedback);
 
     if(showEditModal) {
-      const portraitResponse = await fetch(selectedRow.portraitUrl);
-      const portraitBlob = await portraitResponse.blob();
-      const portraitReader = new FileReader();
-      portraitReader.readAsDataURL(portraitBlob);
-      portraitReader.onloadend = () => {
-        const portraitElement = document.getElementById(`portrait`);
-        portraitElement.src = portraitReader.result;
-        portraitElement.style.objectFit = 'contain';
-        document.getElementById('portrait-link').href = portraitReader.result;
-        portraitElement.height = 350;
-        portraitElement.style.objectFit = 'contain';
-      }
-
-      const frontResponse = await fetch(selectedRow.frontUrl);
-      const frontBlob = await frontResponse.blob();
-      const frontReader = new FileReader();
-      frontReader.readAsDataURL(frontBlob);
-      frontReader.onloadend = () => {
-        const frontElement = document.getElementById(`front-card`);
-        frontElement.src = frontReader.result;
-        frontElement.style.objectFit = 'contain';
-        document.getElementById('front-link').href = frontReader.result;
-        frontElement.height = 250;
-        frontElement.style.objectFit = 'contain';
-      }
-
-      const backResponse = await fetch(selectedRow.backUrl);
-      const backBlob = await backResponse.blob();
-      const backReader = new FileReader();
-      backReader.readAsDataURL(backBlob);
-      backReader.onloadend = () => {
-        const backElement = document.getElementById(`back-card`);
-        backElement.src = backReader.result;
-        backElement.style.objectFit = 'contain';
-        document.getElementById('back-link').href = backReader.result;
-        backElement.height = 250;
-        backElement.style.objectFit = 'contain';
-      }
+      fetchImage();
     }
   }, [selectedRow, showEditModal]);
+
+  const fetchImage = async () => {
+    const portraitResponse = await fetch(selectedRow.portraitUrl);
+    const portraitBlob = await portraitResponse.blob();
+    const portraitReader = new FileReader();
+    portraitReader.readAsDataURL(portraitBlob);
+    portraitReader.onloadend = () => {
+      const portraitElement = document.getElementById(`portrait`);
+      portraitElement.src = portraitReader.result;
+      portraitElement.style.objectFit = 'contain';
+      document.getElementById('portrait-link').href = portraitReader.result;
+      portraitElement.height = 350;
+      portraitElement.style.objectFit = 'contain';
+    };
+
+    const frontResponse = await fetch(selectedRow.frontUrl);
+    const frontBlob = await frontResponse.blob();
+    const frontReader = new FileReader();
+    frontReader.readAsDataURL(frontBlob);
+    frontReader.onloadend = () => {
+      const frontElement = document.getElementById(`front-card`);
+      frontElement.src = frontReader.result;
+      frontElement.style.objectFit = 'contain';
+      document.getElementById('front-link').href = frontReader.result;
+      frontElement.height = 250;
+      frontElement.style.objectFit = 'contain';
+    };
+
+    const backResponse = await fetch(selectedRow.backUrl);
+    const backBlob = await backResponse.blob();
+    const backReader = new FileReader();
+    backReader.readAsDataURL(backBlob);
+    backReader.onloadend = () => {
+      const backElement = document.getElementById(`back-card`);
+      backElement.src = backReader.result;
+      backElement.style.objectFit = 'contain';
+      document.getElementById('back-link').href = backReader.result;
+      backElement.height = 250;
+      backElement.style.objectFit = 'contain';
+    };
+  };
 
   const handleClose = () => setShowEditModal(false);
 

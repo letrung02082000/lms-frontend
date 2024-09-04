@@ -3,18 +3,16 @@ import React, { useState } from "react";
 import DrivingAdminLayout from "components/layouts/DrivingAdminLayout";
 import A1Driving from "./A1Driving";
 import DrivingDate from "./DrivingDate";
-import DrivingLogin from "./DrivingLogin";
 import A2Driving from "./A2Driving";
 import B2Driving from "./B2Driving";
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
-import { selectUser, logoutUser } from "store/userSlice";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "store/userSlice";
 
 import AccountApi from "api/accountApi";
 
 function DrivingAdminPage() {
-  const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
   const [navigation, setNavigation] = useState("/all");
