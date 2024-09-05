@@ -13,7 +13,7 @@ import CopyButton from 'components/button/CopyButton';
 import styled from 'styled-components';
 import { copyText, formatCurrency } from 'utils/commonUtils';
 
-function AccountModal({ show, setShow, tel }) {
+function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
   const [copied, setCopied] = useState(false);
   const [contentCopied, setContentCopied] = useState(false);
   const [bankCode, setBankCode] = useState('MB');
@@ -33,6 +33,14 @@ function AccountModal({ show, setShow, tel }) {
 
   useEffect(() => {
     if (drivingClass === 'A1') {
+      if (!hasCheckup && aPrice) {
+        return setAmount(aPrice);
+      }
+
+      if (hasCheckup && bPrice) {
+        return setAmount(bPrice);
+      }
+
       if (isStudent) {
         if (hasCheckup) {
           if (group === 1) {
@@ -52,6 +60,7 @@ function AccountModal({ show, setShow, tel }) {
           setAmount(690000);
         }
       }
+
     }
 
     if (drivingClass === 'A2') {
@@ -73,7 +82,7 @@ function AccountModal({ show, setShow, tel }) {
     } else if (group === 3) {
       setDesc('GPLX <SĐT1> <SĐT2> <SĐT3>');
     }
-  }, [drivingClass, isStudent, hasCheckup, group, tel]);
+  }, [drivingClass, isStudent, hasCheckup, group, tel, aPrice, bPrice]);
 
   return (
     <Modal
@@ -183,7 +192,7 @@ function AccountModal({ show, setShow, tel }) {
                       Tự khám sức khoẻ
                     </Button>
                   </ButtonGroup>
-                  <ButtonGroup className='m-1' size='sm'>
+                  {/* <ButtonGroup className='m-1' size='sm'>
                     <Button
                       onClick={() => setGroup(1)}
                       variant={group === 1 ? 'secondary' : 'outline-secondary'}
@@ -205,7 +214,7 @@ function AccountModal({ show, setShow, tel }) {
                     >
                       Nhóm 3
                     </Button>
-                  </ButtonGroup>
+                  </ButtonGroup> */}
                 </ButtonToolbar>
               </Row>
               <Row>

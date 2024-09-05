@@ -77,6 +77,7 @@ export default function DrivingRegisterPage() {
   }
 
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
+  const drivingDateInfo = JSON.parse(localStorage.getItem('driving-date') || '{}');
   const [drivingTel, setDrivingTel] = useState(drivingInfo?.tel || '');
   const drivingLink = localStorage.getItem("driving-link") || '';
   const drivingDate = useMemo(()=>{
@@ -113,7 +114,7 @@ export default function DrivingRegisterPage() {
     drivingApi.getFormVisible().then((res) => {
       let dates = res?.data || [];
       dates = dates.map((child) => {
-        return { label: child?.description, value: child?._id, link: child?.link, date: new Date(child?.date) };
+        return { label: child?.description, value: child?._id, link: child?.link, date: new Date(child?.date), aPrice: child?.aPrice, bPrice: child?.bPrice };
       });
 
       setDateList(dates);
@@ -127,13 +128,13 @@ export default function DrivingRegisterPage() {
       setIsLoading(true);
 
     if(!frontData) {
-      toastWrapper('Vui lòng tải lên mặt trước CCCD/CMND', 'error');
+      toastWrapper('Vui lòng tải lên mặt trước CCCD', 'error');
       setIsLoading(false);
       return;
     }
 
     if(!backData) {
-      toastWrapper('Vui lòng tải lên mặt sau CCCD/CMND', 'error');
+      toastWrapper('Vui lòng tải lên mặt sau CCCD', 'error');
       setIsLoading(false);
       return;
     }
@@ -156,9 +157,12 @@ export default function DrivingRegisterPage() {
       const dateObj = dateList.filter((child) => child.value == date)[0];
       drivingLink = dateObj?.link;
       localStorage.setItem('driving-link', drivingLink || '');
+      localStorage.setItem('driving-date', JSON.stringify(dateObj));
+      localStorage.setItem('driving-type', drivingType);
       formData.date = dateObj?.date?.getTime();
     } else {
       localStorage.setItem('driving-link', '');
+      localStorage.setItem('driving-type', drivingType);
     }
 
     const data = {
@@ -266,7 +270,6 @@ export default function DrivingRegisterPage() {
                 </ZaloLink>{" "}
                 trong trường hợp hồ sơ của bạn chưa được xử lý.
               </p>
-              {!child?.cash && <Button variant='outline-primary' onClick={() => setAccountShow(true)}><small>Thanh toán chuyển khoản</small></Button>}
               </div>
               </Card.Body>
             </Card>
@@ -365,13 +368,13 @@ export default function DrivingRegisterPage() {
 
         <Row className="mb-3">
             <Col>
-              <FileUploader fileName={frontData?.originalName} onResponse={(res) => setFrontData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+              <FileUploader fileName={frontData?.originalName} onResponse={(res) => setFrontData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
             </Col>
         </Row>
 
         <Row className="mb-3">
             <Col>
-              <FileUploader fileName={backData?.originalName} onResponse={res => setBackData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD/CMND' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+              <FileUploader fileName={backData?.originalName} onResponse={res => setBackData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
             </Col>
         </Row>
 
@@ -448,7 +451,7 @@ export default function DrivingRegisterPage() {
           </p>
       </form>}
 
-      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} />
+      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} aPrice={drivingDateInfo?.aPrice} bPrice={drivingDateInfo?.bPrice}/>
     </Styles>
   );
 }
