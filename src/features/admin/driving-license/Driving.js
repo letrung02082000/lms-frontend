@@ -156,15 +156,11 @@ function Driving(props) {
     setFeedback(e.target.value);
   };
 
-  const handleTelCopy = () => {
-    navigator.clipboard.writeText(tel);
-    setCopied(true);
-  };
-
   const updateProcessState = (state) => {
     setLoading(true);
     DrivingApi.updateProcessState(props.id, state)
       .then((res) => {
+        console.log(res)
         setProcessState(res.data.processState);
         setLoading(false);
       })

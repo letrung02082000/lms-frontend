@@ -176,11 +176,6 @@ export default function DrivingRegisterPage() {
     drivingApi.addDriving(data)
     .then((res) => {
       localStorage.setItem('driving-info', JSON.stringify(res?.data));
-      toastWrapper(
-        `Đăng ký thành công. Trung tâm sẽ liên hệ với bạn trong thời gian sớm nhất. Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ zalo OA để được xử lý.`,
-        "success",
-        { autoClose: 10000 }
-      );
     })
     .catch((error) => {
       toastWrapper(`${error.toString()}`, "error");
