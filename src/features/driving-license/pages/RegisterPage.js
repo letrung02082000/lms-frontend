@@ -12,7 +12,7 @@ import { convertPhoneNumber } from "utils";
 import ZaloLink from "components/link/ZaloLink";
 
 import drivingApi from "api/drivingApi";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import AccountModal from "../components/AccountModal";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import FileUploader from "components/form/FileUploader";
@@ -410,6 +410,7 @@ export default function DrivingRegisterPage() {
               onClear={handleClearButton}
               onChange={handleDateChange}
             />
+              <Form.Text>Xem hướng dẫn chi tiết điểm thi và các gói thi <a href="/driving-instruction" target="_blank" rel="noopener noreferrer">tại đây.</a></Form.Text>
           </Col>
         </Row>}
 

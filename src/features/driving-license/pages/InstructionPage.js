@@ -190,7 +190,7 @@ export default function DrivingInstructionPage(props) {
                 bằng điện thoại, không quá 3 tháng, nếu chụp ảnh thẻ cần xin file gốc đúng theo yêu cầu): Tóc
                 không che trán, vén tóc ra sau mang tai, <b>LẤY ĐỦ 2 VAI, LẤY TỪ
                 THẮT LƯNG TRỞ LÊN QUA ĐẦU</b>, không đeo kính, trang phục lịch sự,
-                lấy nền tường. Vui lòng không sử dụng filter hay chỉnh sửa làm
+                lấy nền tường/xanh. Vui lòng không sử dụng filter hay chỉnh sửa làm
                 mất đặc điểm nhận dạng. Xem ảnh mẫu{" "}
                 <a
                   href="https://i.imgur.com/pfjgD5m.jpg"

@@ -32,6 +32,14 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
   };
 
   useEffect(() => {
+    if (group === 1) {
+      setDesc('GPLX ' + (tel || '<Số điện thoại>'));
+    } else if (group === 2) {
+      setDesc('GPLX <SĐT1> <SĐT2>');
+    } else if (group === 3) {
+      setDesc('GPLX <SĐT1> <SĐT2> <SĐT3>');
+    }
+    
     if (drivingClass === 'A1') {
       if (!hasCheckup && aPrice) {
         return setAmount(aPrice);
@@ -60,7 +68,6 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
           setAmount(690000);
         }
       }
-
     }
 
     if (drivingClass === 'A2') {
@@ -73,14 +80,6 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
 
     if (drivingClass === '') {
       setAmount(0);
-    }
-
-    if (group === 1) {
-      setDesc('GPLX ' + (tel || '<Số điện thoại>'));
-    } else if (group === 2) {
-      setDesc('GPLX <SĐT1> <SĐT2>');
-    } else if (group === 3) {
-      setDesc('GPLX <SĐT1> <SĐT2> <SĐT3>');
     }
   }, [drivingClass, isStudent, hasCheckup, group, tel, aPrice, bPrice]);
 
