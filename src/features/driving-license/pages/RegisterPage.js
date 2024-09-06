@@ -103,12 +103,12 @@ export default function DrivingRegisterPage() {
   const [backData, setBackData] = useState(null);
   const [portraitData, setPortraitData] = useState(null);
 
-  const imageExtensions = [
-    "image/jpeg",
-    "image/png",
-    "image/svg+xml",
-    "image/webp",
-  ];
+  // const imageExtensions = [
+  //   "image/jpeg",
+  //   "image/png",
+  //   "image/svg+xml",
+  //   "image/webp",
+  // ];
 
   useEffect(() => {
     drivingApi.getFormVisible().then((res) => {
@@ -231,6 +231,7 @@ export default function DrivingRegisterPage() {
 
   return (
     <Styles className={styles.drivingRegisterContainer}>
+      <p className="text-center">Xem hướng dẫn đăng ký dự thi <a href="/driving-instruction" target="_blank" rel="noopener noreferrer">tại đây.</a></p>
       <SearchBar
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
