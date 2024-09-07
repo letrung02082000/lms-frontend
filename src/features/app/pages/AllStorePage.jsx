@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import StoreItem from '../components/StoreItem';
 import useMediaQuery from 'hooks/useMediaQuery';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { FreeMode, Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Pagination } from "swiper/modules";
 import Loading from 'components/Loading';
 
 function AllStorePage() {

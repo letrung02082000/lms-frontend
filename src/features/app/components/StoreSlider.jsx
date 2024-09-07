@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Image } from 'react-bootstrap';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination, FreeMode, Grid } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, FreeMode, Grid } from "swiper/modules";
 import storeApi from 'api/storeApi';
 import productApi from 'api/productApi';
 import { useNavigate } from 'react-router-dom';

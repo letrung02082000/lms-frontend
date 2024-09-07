@@ -47,7 +47,11 @@ function Driving(props) {
   const [imageVisible, setImageVisible] = useState(false);
   createdAt = new Date(createdAt);
 
-  useEffect(async () => {
+  useEffect(() => {
+    fetchImage();
+  }, [imageVisible])
+
+  const fetchImage = async () => {
     if (imageVisible) {
       setFrontLoading(true);
       setBackLoading(true);
@@ -100,7 +104,7 @@ function Driving(props) {
       document.getElementById(`back_${_id}`).height = 0;
       document.getElementById(`portrait_${_id}`).height = 0;
     }
-  }, [imageVisible])
+  }
   
   if (date) {
     date = new Date(date);
@@ -152,15 +156,11 @@ function Driving(props) {
     setFeedback(e.target.value);
   };
 
-  const handleTelCopy = () => {
-    navigator.clipboard.writeText(tel);
-    setCopied(true);
-  };
-
   const updateProcessState = (state) => {
     setLoading(true);
     DrivingApi.updateProcessState(props.id, state)
       .then((res) => {
+        console.log(res)
         setProcessState(res.data.processState);
         setLoading(false);
       })

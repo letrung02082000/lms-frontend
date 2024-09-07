@@ -1,14 +1,10 @@
 import styled from 'styled-components';
-import accountApi from 'api/accountApi';
 import motobikeApi from 'api/motobikeApi';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { toastWrapper } from 'utils';
 import MotobikeItem from '../components/MotobikeItem';
 import Pagination from 'components/footer/Pagination';
 import { Button, Col, Row } from 'react-bootstrap';
-import SelectField from 'components/form/SelectField';
-import { useForm } from 'react-hook-form';
 import { BsCardList, BsPencilSquare } from 'react-icons/bs';
 import PostModal from '../components/PostModal';
 import ListModal from '../components/ListModal';
@@ -18,21 +14,6 @@ function YenSharePage() {
   const [data, setData] = useState([]);
   const [showPostModal, setShowPostModal] = useState(false);
   const [showListModal, setShowListModal] = useState(false);
-  const token = localStorage.getItem('user-jwt-tk');
-  const { handleSubmit, control, setValue, watch } = useForm({
-    mode: "onBlur",
-    reValidateMode: "onChange",
-    defaultValues: {
-      filter: 'isDriver=both'
-    },
-    resolver: undefined,
-    context: undefined,
-    criteriaMode: "firstError",
-    shouldFocusError: true,
-    shouldUnregister: true,
-    shouldUseNativeValidation: false,
-    delayError: undefined,
-  });
 
   useEffect(() => {
     motobikeApi
@@ -43,7 +24,6 @@ function YenSharePage() {
       .catch((e) => {
         const errMsg = e?.response?.data?.message || 'Đã có lỗi xảy ra';
         console.log(errMsg)
-        // toastWrapper(errMsg, 'error');
       });
   }, [page, showPostModal, showListModal]);
 
@@ -51,20 +31,6 @@ function YenSharePage() {
     if(value < 0) return;
     return setPage(value)
   }
-  const filterOptions = [
-    {
-      label: 'Vừa tài xế vừa yên sau',
-      value: 'isDriver=both'
-    },
-    {
-      label: 'Tìm tài xế',
-      value: 'isDriver=false'
-    },
-    {
-      label: 'Tìm yên sau',
-      value: 'isDriver=true'
-    },
-  ]
 
   return (
     <Styles>

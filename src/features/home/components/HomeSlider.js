@@ -1,11 +1,7 @@
 import React from 'react'
 //swiper
-import { Pagination, Autoplay } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
-import 'swiper/swiper-bundle.min.css'
-import 'swiper/swiper.min.css'
-//styles
-import './homeSlider.css'
+import { Pagination, Autoplay } from "swiper/modules"
+import { Swiper, SwiperSlide } from 'swiper/react'
 //media query
 import useMediaQuery from '../../../hooks/useMediaQuery'
 //banner images

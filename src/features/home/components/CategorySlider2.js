@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
 //swiper
-import { Grid, FreeMode, Scrollbar } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
-import 'swiper/swiper-bundle.min.css'
+import { Grid, FreeMode, Scrollbar } from "swiper/modules"
+import { Swiper, SwiperSlide } from 'swiper/react'
+
 
 //styles
 import './categorySlider2.css'

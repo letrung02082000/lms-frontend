@@ -20,7 +20,6 @@ function PostModal({ show, setShow }) {
   const [time2, setTime2] = useState(Date.now());
   const [posting, setPosting] = useState(false);
   const user = useSelector(selectUser)
-  const navigate = useNavigate();
 
   useEffect(()=> {
     checkLogin();
@@ -31,7 +30,7 @@ function PostModal({ show, setShow }) {
     return retDate.setDate(retDate.getDate() - 3);
   }, [time1]);
 
-  const { handleSubmit, control, setValue, watch, setFocus } = useForm({
+  const { handleSubmit, control, setValue, setFocus } = useForm({
     mode: 'onBlur',
     reValidateMode: 'onChange',
     defaultValues: {

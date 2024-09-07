@@ -30,7 +30,6 @@ function AdminDrivingA1Page() {
   const [query, setQuery] = useState({});
   const [facingMode, setFacingMode] = useState('environment');
   const [searchText, setSearchText] = useState('');
-  const [searchData, setSearchData] = useState({});
   const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
@@ -40,9 +39,6 @@ function AdminDrivingA1Page() {
   const [qrData, setQrData] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [visibleDate, setVisibleDate] = useState([{}]);
-  const [portraitUploading, setPortraitUploading] = useState(false);
-  const [frontUploading, setFrontUploading] = useState(false);
-  const [backUploading, setBackUploading] = useState(false);
   const {
     control,
     setValue,
@@ -80,57 +76,6 @@ function AdminDrivingA1Page() {
   const rowDataGetter = function (params) {
     return params.data;
   };
-
-  const PaymentCheckbox = (props) => {
-    return (
-      <div className='d-flex justify-content-center pt-2'>
-        <Form.Check type='switch' defaultChecked={props.data.isPaid} onClick={(e) => {
-          drivingApi
-            .updateDriving(props.data._id, { isPaid: e.target.checked })
-            .then((res) => {
-              toastWrapper('Cập nhật thành công', 'success');
-            })
-            .catch((err) => {
-              toastWrapper(err.response.data.message, 'error');
-            });
-        }}/>
-      </div>
-    );
-  }
-
-  const HealthCheckbox = (props) => {
-    return (
-      <div className='d-flex justify-content-center pt-2'>
-        <Form.Check type='switch' defaultChecked={props.data.healthChecked} onClick={(e) => {
-          drivingApi
-            .updateDriving(props.data._id, { healthChecked: e.target.checked })
-            .then((res) => {
-              toastWrapper('Cập nhật thành công', 'success');
-            })
-            .catch((err) => {
-              toastWrapper(err.response.data.message, 'error');
-            });
-        }}/>
-      </div>
-    );
-  }
-
-  const FileCheckbox = (props) => {
-    return (
-      <div className='d-flex justify-content-center pt-2'>
-        <Form.Check type='switch' defaultChecked={props.data.hasFile} onClick={(e) => {
-          drivingApi
-            .updateDriving(props.data._id, { hasFile: e.target.checked })
-            .then((res) => {
-              toastWrapper('Cập nhật thành công', 'success');
-            })
-            .catch((err) => {
-              toastWrapper(err.response.data.message, 'error');
-            });
-        }}/>
-      </div>
-    );
-  }
 
   const [colDefs, setColDefs] = useState([
     {
@@ -262,53 +207,57 @@ function AdminDrivingA1Page() {
       });
   }
 
-  useEffect( async() => {
+  useEffect( () => {
     setValue('name', selectedRow.name);
     setValue('tel', selectedRow.tel);
     setValue('zalo', selectedRow.zalo);
     setValue('feedback', selectedRow.feedback);
 
     if(showEditModal) {
-      const portraitResponse = await fetch(selectedRow.portraitUrl);
-      const portraitBlob = await portraitResponse.blob();
-      const portraitReader = new FileReader();
-      portraitReader.readAsDataURL(portraitBlob);
-      portraitReader.onloadend = () => {
-        const portraitElement = document.getElementById(`portrait`);
-        portraitElement.src = portraitReader.result;
-        portraitElement.style.objectFit = 'contain';
-        document.getElementById('portrait-link').href = portraitReader.result;
-        portraitElement.height = 350;
-        portraitElement.style.objectFit = 'contain';
-      }
-
-      const frontResponse = await fetch(selectedRow.frontUrl);
-      const frontBlob = await frontResponse.blob();
-      const frontReader = new FileReader();
-      frontReader.readAsDataURL(frontBlob);
-      frontReader.onloadend = () => {
-        const frontElement = document.getElementById(`front-card`);
-        frontElement.src = frontReader.result;
-        frontElement.style.objectFit = 'contain';
-        document.getElementById('front-link').href = frontReader.result;
-        frontElement.height = 250;
-        frontElement.style.objectFit = 'contain';
-      }
-
-      const backResponse = await fetch(selectedRow.backUrl);
-      const backBlob = await backResponse.blob();
-      const backReader = new FileReader();
-      backReader.readAsDataURL(backBlob);
-      backReader.onloadend = () => {
-        const backElement = document.getElementById(`back-card`);
-        backElement.src = backReader.result;
-        backElement.style.objectFit = 'contain';
-        document.getElementById('back-link').href = backReader.result;
-        backElement.height = 250;
-        backElement.style.objectFit = 'contain';
-      }
+      fetchImage();
     }
   }, [selectedRow, showEditModal]);
+
+  const fetchImage = async () => {
+    const portraitResponse = await fetch(selectedRow.portraitUrl);
+    const portraitBlob = await portraitResponse.blob();
+    const portraitReader = new FileReader();
+    portraitReader.readAsDataURL(portraitBlob);
+    portraitReader.onloadend = () => {
+      const portraitElement = document.getElementById(`portrait`);
+      portraitElement.src = portraitReader.result;
+      portraitElement.style.objectFit = 'contain';
+      document.getElementById('portrait-link').href = portraitReader.result;
+      portraitElement.height = 350;
+      portraitElement.style.objectFit = 'contain';
+    };
+
+    const frontResponse = await fetch(selectedRow.frontUrl);
+    const frontBlob = await frontResponse.blob();
+    const frontReader = new FileReader();
+    frontReader.readAsDataURL(frontBlob);
+    frontReader.onloadend = () => {
+      const frontElement = document.getElementById(`front-card`);
+      frontElement.src = frontReader.result;
+      frontElement.style.objectFit = 'contain';
+      document.getElementById('front-link').href = frontReader.result;
+      frontElement.height = 250;
+      frontElement.style.objectFit = 'contain';
+    };
+
+    const backResponse = await fetch(selectedRow.backUrl);
+    const backBlob = await backResponse.blob();
+    const backReader = new FileReader();
+    backReader.readAsDataURL(backBlob);
+    backReader.onloadend = () => {
+      const backElement = document.getElementById(`back-card`);
+      backElement.src = backReader.result;
+      backElement.style.objectFit = 'contain';
+      document.getElementById('back-link').href = backReader.result;
+      backElement.height = 250;
+      backElement.style.objectFit = 'contain';
+    };
+  };
 
   const handleClose = () => setShowEditModal(false);
 

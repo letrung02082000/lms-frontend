@@ -2,7 +2,7 @@ import motobikeApi from 'api/motobikeApi';
 import ZaloImage from 'assets/images/ZaloImage';
 import React, { useEffect, useState } from 'react';
 import { useRef } from 'react';
-import { Button, Col, Container, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Modal, Row } from 'react-bootstrap';
 import { BiPhoneCall } from 'react-icons/bi';
 import {
   BsArrowLeftRight,
@@ -36,7 +36,7 @@ function MotobikeItem({
   const switchRef = useRef(isVisble);
 
   useEffect(() => {
-    if (switchRef.current != isVisble) {
+    if (switchRef.current !== isVisble) {
       switchRef.current = isVisble;
       motobikeApi
         .updateMotobikeRequest(_id, { visible: isVisble })

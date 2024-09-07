@@ -105,6 +105,9 @@ export default function DrivingInstructionPage(props) {
           <a className={styles.fastTitle} href="#offline">
             Quy trình đăng ký trực tiếp
           </a>
+          <a className={styles.fastTitle} href="#fee-instruction">
+            Hướng dẫn thanh toán lệ phí
+          </a>
           <a className={styles.fastTitle} href="#mocktest">
             Tài liệu lý thuyết và thi thử thực hành
           </a>
@@ -187,7 +190,7 @@ export default function DrivingInstructionPage(props) {
                 bằng điện thoại, không quá 3 tháng, nếu chụp ảnh thẻ cần xin file gốc đúng theo yêu cầu): Tóc
                 không che trán, vén tóc ra sau mang tai, <b>LẤY ĐỦ 2 VAI, LẤY TỪ
                 THẮT LƯNG TRỞ LÊN QUA ĐẦU</b>, không đeo kính, trang phục lịch sự,
-                lấy nền tường. Vui lòng không sử dụng filter hay chỉnh sửa làm
+                lấy nền tường/xanh. Vui lòng không sử dụng filter hay chỉnh sửa làm
                 mất đặc điểm nhận dạng. Xem ảnh mẫu{" "}
                 <a
                   href="https://i.imgur.com/pfjgD5m.jpg"
@@ -201,7 +204,7 @@ export default function DrivingInstructionPage(props) {
                 Ảnh chụp chân dung không đúng chuẩn sẽ làm ảnh hưởng đến quá trình xử lý hồ sơ của bạn.
               </li>
             </ul>
-            <p>3. Thanh toán lệ phí</p>
+            <p id="fee-instruction">3. Thanh toán lệ phí</p>
             <ul>
               <li>Chuyển khoản ngân hàng</li>
               <Button className="my-3" variant='outline-primary' onClick={() => setAccountShow(true)}><small>Xem hướng dẫn chuyển khoản</small></Button>

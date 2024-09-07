@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styles from "./drivingLogin.module.css";
 
 import { useNavigate, useLocation } from "react-router-dom";
-import GoogleLogin from "react-google-login";
 
 //icons
 import { IoMdClose } from "react-icons/io";

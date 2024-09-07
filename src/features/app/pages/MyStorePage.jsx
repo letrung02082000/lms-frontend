@@ -11,19 +11,7 @@ function MyStorePage() {
   const [products, setProducts] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
 
-  useEffect(() => {
-    if (!storeId) {
-      // Redirect to store creation page
-    }
-
-    // storeApi
-    //   .getStoreById(storeId)
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+  useEffect(() => {    
     productApi
       .getMyProducts(storeId)
       .then((res) => {

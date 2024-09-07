@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from "swiper/modules";
 import styled from 'styled-components';
 
 function FilterSilder({ setCategoryId, categories, categoryId, hasAll=false }) {

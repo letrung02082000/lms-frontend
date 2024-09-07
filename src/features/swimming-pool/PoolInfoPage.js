@@ -5,15 +5,12 @@ import { updateShow } from 'store/navSlice'
 import styles from './swimmingPoolInfoPage.module.css'
 
 //swiper
-import TitleBar from 'components/TitleBar'
-import { Pagination } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
-import 'swiper/swiper-bundle.min.css'
-import 'swiper/swiper.min.css'
+import { Pagination } from "swiper/modules"
+import { Swiper, SwiperSlide } from 'swiper/react'
+
 import { SWIMMING_POOL_URL } from 'constants/routes'
 
 function SwimmingPoolInfoPage() {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   useEffect(() => {

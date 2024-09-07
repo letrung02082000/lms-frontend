@@ -25,12 +25,6 @@ function StoreNavigation() {
       path: PATH.APP.MY_STORE.ROOT
     },
     {
-      icon: <IoStatsChart className="navIcon" />,
-      text: 'Thống kê',
-      outlinedIcon: <IoStatsChartOutline className="navIcon" />,
-      path: PATH.APP.MY_STORE.STATISTICS,
-    },
-    {
       icon: <MdSettings className="navIcon" />,
       text: 'Cài đặt',
       outlinedIcon: <MdOutlineSettings className="navIcon" />,
