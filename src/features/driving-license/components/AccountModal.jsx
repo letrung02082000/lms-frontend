@@ -18,7 +18,7 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
   const [contentCopied, setContentCopied] = useState(false);
   const [bankCode, setBankCode] = useState('MB');
   const [accountNumber, setAccountNumber] = useState('7899996886');
-  const [desc, setDesc] = useState('GPLX <Số điện thoại>');
+  const [desc, setDesc] = useState(`GPLX ${tel}` || 'GPLX <Số điện thoại>');
   const [accountName, setAccountName] = useState('NGUYỄN NGỌC HUÂN');
   const [bankName, setBankName] = useState('Ngân hàng Quân đội MB');
   const [amount, setAmount] = useState(690000);

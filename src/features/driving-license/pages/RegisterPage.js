@@ -180,6 +180,7 @@ export default function DrivingRegisterPage() {
     drivingApi.addDriving(data)
     .then((res) => {
       localStorage.setItem('driving-info', JSON.stringify(res?.data));
+      setDrivingTel(res?.data?.tel);
     })
     .catch((error) => {
       toastWrapper(`${error.toString()}`, "error");
