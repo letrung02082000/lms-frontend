@@ -232,7 +232,7 @@ export default function DrivingRegisterPage() {
 
   return (
     <Styles className={styles.drivingRegisterContainer}>
-      <p className="text-center">Xem hướng dẫn đăng ký dự thi <a href="/driving-instruction" target="_blank" rel="noopener noreferrer">tại đây.</a></p>
+      <p className="text-center"><a href="/driving-instruction" target="_blank" rel="noopener noreferrer">Xem hướng dẫn đăng ký dự thi tại đây</a></p>
       <SearchBar
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
