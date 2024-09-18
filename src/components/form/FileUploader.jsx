@@ -7,8 +7,8 @@ import { Button, Form, Row } from 'react-bootstrap'
 import axiosClient from 'api/axiosClient'
 import Asterisk from './Asterisk'
 
-function FileUploader({ className, hasAsterisk, hasLabel=true, hasText=true, ...props }) {
-  const FILE_MAX_SIZE = 50 * 1024 * 1024
+function FileUploader({ className, hasAsterisk, hasLabel=true, hasText=true, accept, ...props }) {
+  const FILE_MAX_SIZE = 10 * 1024 * 1024
   const [uploadPercent, setUploadPercent] = useState(false)
 
   const onDropAccepted = useCallback(files => {
@@ -45,7 +45,7 @@ function FileUploader({ className, hasAsterisk, hasLabel=true, hasText=true, ...
     if (file.size > FILE_MAX_SIZE) {
       return {
         code: 'file-too-large',
-        message: `Kích thước tệp không được vượt quá ${FILE_MAX_SIZE / 1024 / 1024}M`
+        message: `Kích thước tệp không được vượt quá ${FILE_MAX_SIZE / 1024 / 1024}MB`
       }
     }
 
@@ -56,8 +56,9 @@ function FileUploader({ className, hasAsterisk, hasLabel=true, hasText=true, ...
     onDropAccepted,
     onDropRejected,
     multiple: false,
-    validator: fileSizeValidator
-  })
+    validator: fileSizeValidator,
+    ...(accept && { accept }),
+  });
 
   return (
     <div>

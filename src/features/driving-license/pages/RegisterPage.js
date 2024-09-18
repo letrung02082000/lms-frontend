@@ -2,8 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import SearchBar from "components/SearchBar";
 import styles from "./registerPage.module.css";
-import LazyImage from "components/LazyImage";
-import PortraitBanner from "assets/images/driving-license/portrait.jpg";
 import styled from "styled-components";
 import { toastWrapper } from "utils";
 
@@ -36,17 +34,6 @@ export default function DrivingRegisterPage() {
       value: 2,
       label: "Bằng B1/B2 (Bằng lái xe ô tô, trung tâm liên hệ hướng dẫn qua điện thoại)",
     }
-  ]
-
-  const paymentMethods = [
-    {
-      value: 0,
-      label: "Đóng trực tiếp tại Nhà khách ĐHQG-HCM",
-    },
-    {
-      value: 1,
-      label: "Chuyển khoản ngân hàng",
-    },
   ]
 
   const {
@@ -102,13 +89,6 @@ export default function DrivingRegisterPage() {
   const [frontData, setFrontData] = useState(null);
   const [backData, setBackData] = useState(null);
   const [portraitData, setPortraitData] = useState(null);
-
-  // const imageExtensions = [
-  //   "image/jpeg",
-  //   "image/png",
-  //   "image/svg+xml",
-  //   "image/webp",
-  // ];
 
   useEffect(() => {
     drivingApi.getFormVisible().then((res) => {
@@ -283,7 +263,7 @@ export default function DrivingRegisterPage() {
           <BsFillCheckCircleFill color='#019f91' size={45} />
         </Row>
         <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
-        <p className="text-center">Học viên vui lòng hoàn thành lệ phí và tham gia khám sức khoẻ để hoàn tất thủ tục dự thi. Danh sách và lịch khám sức khoẻ sẽ được cập nhật hàng tuần trên nhóm thi.</p>
+        <p className="text-center">Học viên vui lòng hoàn thành lệ phí trong vòng 1 ngày và tham gia khám sức khoẻ để hoàn tất thủ tục dự thi. Danh sách và lịch khám sức khoẻ sẽ được cập nhật hàng tuần trên nhóm thi.</p>
         <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán online</Button>
         <a className="btn btn-outline-primary mb-3" href='driving-instruction#offline' target='_blank' rel="noopener noreferrer">Thanh toán trực tiếp</a>
         
@@ -370,19 +350,28 @@ export default function DrivingRegisterPage() {
 
         <Row className="mb-3">
             <Col>
-              <FileUploader fileName={frontData?.originalName} onResponse={(res) => setFrontData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+              <FileUploader fileName={frontData?.originalName} onResponse={(res) => setFrontData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc' accept={{
+                'image/png': ['.png'], 
+                'image/jpeg': ['.jpg', '.jpeg'],
+              }}/>
             </Col>
         </Row>
 
         <Row className="mb-3">
             <Col>
-              <FileUploader fileName={backData?.originalName} onResponse={res => setBackData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc'/>
+              <FileUploader fileName={backData?.originalName} onResponse={res => setBackData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc' accept={{
+                'image/png': ['.png'], 
+                'image/jpeg': ['.jpg', '.jpeg'] 
+              }}/>
             </Col>
         </Row>
 
         <Row className="mb-3">
             <Col>
-              <FileUploader fileName={portraitData?.originalName} onResponse={res => setPortraitData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={portraitUploading} setUploading={setPortraitUploading} label='Ảnh chân dung' hasAsterisk={true} subLabel='Lấy đủ 2 vai từ thắt lưng, không đeo kính, tóc không che trán, nhìn rõ và không quá 3 tháng' />
+              <FileUploader fileName={portraitData?.originalName} onResponse={res => setPortraitData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={portraitUploading} setUploading={setPortraitUploading} label='Ảnh chân dung' hasAsterisk={true} subLabel='Lấy đủ 2 vai từ thắt lưng, không đeo kính, tóc không che trán, nhìn rõ và không quá 3 tháng' accept={{
+                'image/png': ['.png'],
+                'image/jpeg': ['.jpg', '.jpeg'] 
+              }} />
             </Col>
         </Row>
 
