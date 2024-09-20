@@ -46,13 +46,13 @@ function CartBar({ bottom = 0 }) {
         style={{ zIndex: 10000 }}
       >
         <Offcanvas.Header closeButton>
+          Giỏ hàng
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Row>
             <Col xs={12}>
               {cart?.data?.length === 0 ? (
                 <Row>
-                  <h2 className='text-center mb-3'>Giỏ hàng trống</h2>
                   <div className='d-flex justify-content-center'>
                     <Image src={EmptyCartImage} alt='empty-cart' height={200} />
                   </div>
@@ -119,9 +119,6 @@ function CartBar({ bottom = 0 }) {
             {cart?.data?.length || 0}
           </span>
         </Button>
-        {/* <span className='fw-bold text-primary bg-white rounded px-2 mt-2'>
-          Giỏ hàng
-        </span> */}
       </div>
     </Styles>
   );
