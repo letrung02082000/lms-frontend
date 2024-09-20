@@ -76,9 +76,9 @@ class DrivingApi {
     });
   };
 
-  updateDrivingDate = async (_id, date) => {
-    const url = `${API_PATH}/update`;
-    return axiosClient.put(url, { _id, date }, authHeader());
+  updateDrivingDate = async (_id, body) => {
+    const url = `${API_PATH}/date`;
+    return axiosClient.put(url, { _id, ...body }, authHeader());
   };
 
   updateDrivingFeedback = async (_id, feedback) => {
@@ -114,6 +114,14 @@ class DrivingApi {
     });
   };
 
+  getDrivingDate = async (params) => {
+    const url = `${API_PATH}/date`;
+    return axiosClient.get(url, {
+      params,
+      ...authHeader(),
+    });
+  };
+
   handleVisibleButton = async (_id, date, isVisible, formVisible = false) => {
     const url = `${API_PATH}/date`;
     return axiosClient.put(
@@ -132,6 +140,15 @@ class DrivingApi {
         isVisible,
         description,
       },
+      authHeader()
+    );
+  };
+
+  addDrivingDate = async (body) => {
+    const url = `${API_PATH}/date`;
+    return axiosClient.post(
+      url,
+      body,
       authHeader()
     );
   };
