@@ -31,6 +31,26 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
     setShow(false);
   };
 
+  const DRIVING_PRICES = {
+    A1: {
+      student: {
+        checkup: 730000,
+        noCheckup: 650000,
+      },
+      normal: {
+        checkup: 770000,
+        noCheckup: 690000,
+      },
+    },
+
+    A2: {
+      checkup: 1590000,
+      noCheckup: 1450000,
+    },
+
+    other : 0,
+    }
+
   useEffect(() => {
     if (group === 1) {
       setDesc('GPLX ' + (tel || '<Số điện thoại>'));
@@ -52,34 +72,34 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
       if (isStudent) {
         if (hasCheckup) {
           if (group === 1) {
-            setAmount(690000);
+            setAmount(DRIVING_PRICES.A1.student.checkup);
           } else if (group === 2) {
-            setAmount(680000);
+            setAmount(DRIVING_PRICES.A1.student.checkup);
           } else if (group === 3) {
-            setAmount(660000);
+            setAmount(DRIVING_PRICES.A1.student.checkup);
           }
         } else {
-          setAmount(650000);
+          setAmount(DRIVING_PRICES.A1.student.noCheckup);
         }
       } else {
         if (hasCheckup) {
-          setAmount(720000);
+          setAmount(DRIVING_PRICES.A1.normal.checkup);
         } else {
-          setAmount(690000);
+          setAmount(DRIVING_PRICES.A1.normal.noCheckup);
         }
       }
     }
 
     if (drivingClass === 'A2') {
       if (hasCheckup) {
-        setAmount(1590000);
+        setAmount(DRIVING_PRICES.A2.checkup);
       } else {
-        setAmount(1450000);
+        setAmount(DRIVING_PRICES.A2.noCheckup);
       }
     }
 
     if (drivingClass === '') {
-      setAmount(0);
+      setAmount(DRIVING_PRICES.other);
     }
   }, [drivingClass, isStudent, hasCheckup, group, tel, aPrice, bPrice]);
 

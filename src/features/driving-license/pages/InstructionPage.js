@@ -56,7 +56,6 @@ export default function DrivingInstructionPage(props) {
 
   return (
     <div className={styles.container}>
-      {/* <TitleBar title="Hướng dẫn dự thi" navigation="driving-test" /> */}
       <div className={styles.topHeader}>
         <img
           src="/drivingbanner.jpg"
@@ -83,7 +82,7 @@ export default function DrivingInstructionPage(props) {
             target="_blank"
             rel="noreferer noreferrer"
           >
-            Zalo
+            Zalo OA
           </a>
         </div>
       </div>
@@ -153,16 +152,13 @@ export default function DrivingInstructionPage(props) {
             </p>
             <p>
               Thí sinh tự chuẩn bị: Giấy khám sức khỏe tại các
-              bệnh viện tuyến huyện trở lên. Thời gian có hiệu lực của giấy khám sức khỏe là 06 tháng. Đăng ký trực tiếp tại nhà
-              khách ĐHQG-HCM, học viên có thể đóng lệ phí trực tiếp hoặc chuyển khoản. Vui lòng xem hướng dẫn đăng ký trực tiếp tại mục ĐĂNG KÝ TRỰC TIẾP bên dưới.
+              bệnh viện tuyến huyện trở lên. Thời gian có hiệu lực của giấy khám sức khỏe là 06 tháng. Đăng ký trực tiếp tại văn phòng Isinhvien. Vui lòng xem hướng dẫn tại mục ĐĂNG KÝ TRỰC TIẾP bên dưới.
             </p>
             <p>
-              <strong>Gói B:</strong> 690.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 720.000đ.
+              <strong>Gói B:</strong> 730.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 770.000đ.
             </p>
             <p>
-              Trung tâm hỗ trợ làm hồ sơ và khám sức khỏe tại trung tâm. Đăng
-              ký hoàn toàn online, có thể đóng lệ phí trực tiếp hoặc chuyển
-              khoản.
+              Trung tâm hỗ trợ làm hồ sơ và khám sức khỏe tại trung tâm. Lệ phí thi đã bao gồm khám sức khoẻ, không phát sinh chi phí khi nhận bằng.
             </p>
           </div>
           <div id="date">
@@ -176,7 +172,6 @@ export default function DrivingInstructionPage(props) {
                   return <li key={child._id}>{child.description}</li>;
                 })}
             </ul>
-            <p>Thí sinh được phép thay đổi ngày dự thi trước ngày thi chính thức 15 ngày.</p>
           </div>
           <div id="online">
             <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký online</h3>
@@ -226,7 +221,7 @@ export default function DrivingInstructionPage(props) {
                   Văn phòng iSinhvien
                 </a>
               </li>
-              <li>Hoàn thành lệ phí thi trước ngày dự thi 15 ngày.</li>
+              <li>Học viên đăng ký hoàn thành lệ phí thi trong vòng 24h từ khi đăng ký, hồ sơ sẽ được xử lý và cập nhật danh sách trên nhóm thi Zalo.</li>
             </ul>
             <p>4. Chờ duyệt hồ sơ:</p>
             <ul>
@@ -250,11 +245,8 @@ export default function DrivingInstructionPage(props) {
                 thông tin mới nhất.
               </li>
               <li>
-                Khi đi thi thí sinh cần mang theo chứng minh nhân dân hoặc căn
-                cước công dân bản gốc để đối chiếu.
-              </li>
-              <li>
-                Thí sinh được phép thay đổi ngày dự thi trước ngày thi chính thức 15 ngày.
+                Khi đi thi thí sinh cần mang theo căn
+                cước công dân bản chính để đối chiếu.
               </li>
             </ul>
           </div>
@@ -335,7 +327,7 @@ export default function DrivingInstructionPage(props) {
           </p>
         </div>
       </div>
-    <AccountModal show={accountShow} setShow={setAccountShow} amount={690000} tel={drivingInfo?.tel}/>
+    <AccountModal show={accountShow} setShow={setAccountShow} amount={730000} tel={drivingInfo?.tel}/>
     </div>
 
   );
