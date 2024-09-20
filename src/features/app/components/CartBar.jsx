@@ -46,7 +46,7 @@ function CartBar({ bottom = 0 }) {
         style={{ zIndex: 10000 }}
       >
         <Offcanvas.Header closeButton>
-          Giỏ hàng
+          <h3>Giỏ hàng</h3>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Row>
