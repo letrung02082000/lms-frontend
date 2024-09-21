@@ -133,7 +133,9 @@ function Driving(props) {
   const updateDate = () => {
     const tmpDate = new Date(selectedDate);
 
-    DrivingApi.updateDrivingDate(_id, tmpDate)
+    DrivingApi.updateDriving(_id, {
+      date: tmpDate,
+    })
       .then((res) => {
         if (res.data) {
           toastWrapper("Đã cập nhật ngày thành " + new Date(res?.data?.date).toLocaleDateString(), "success")
