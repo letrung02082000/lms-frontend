@@ -147,6 +147,16 @@ function AdminDrivingA1Page() {
           }
 
           if (updateParams?.date != undefined || updateParams?.processState != undefined) {
+            const count = res.data.reduce((acc, cur) => {
+              return (
+                acc + (cur.processState != PROCESS_STATE.CANCELLED ? 1 : 0)
+              );
+            }, 0);
+
+            if(count > 1) {
+              toastWrapper(`Tìm thấy ${count} hồ sơ cần xem xét, đã cập nhật hồ sơ gần nhất`, 'warning');
+            }
+
             for (let i = 0; i < res.data.length; i++) {
               setSelectedRow(res.data[i]);
               if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
@@ -184,7 +194,7 @@ function AdminDrivingA1Page() {
                     .catch((err) => {
                       toastWrapper(err.toString(), 'error');
                     });
-                    
+
                 break;
               }
             }
