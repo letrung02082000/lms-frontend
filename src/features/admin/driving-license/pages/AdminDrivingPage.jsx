@@ -134,7 +134,7 @@ function AdminDrivingA1Page() {
       const qrDataArr = qrData.split('|');
       const searchText =
         qrDataArr[2] ||
-        cryptojs.AES.decrypt(qrDataArr[0], key).toString(cryptojs.enc.Utf8);
+        cryptojs.AES.decrypt(qrDataArr[0], key).toString(cryptojs.enc.Utf8).split('.')[0];
       setSearchText(searchText);
       drivingApi
         .getDrivings(query, searchText, 1)
@@ -184,7 +184,8 @@ function AdminDrivingA1Page() {
                     .catch((err) => {
                       toastWrapper(err.toString(), 'error');
                     });
-  
+                    
+                break;
               }
             }
           }
