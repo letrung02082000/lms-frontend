@@ -212,7 +212,7 @@ export default function DrivingRegisterPage() {
 
   return (
     <Styles className={styles.drivingRegisterContainer}>
-      <p className="text-center"><a href="/driving-instruction" target="_blank" rel="noopener noreferrer">Xem hướng dẫn đăng ký dự thi tại đây</a></p>
+      {/* <p className="text-center"><a href="/driving-instruction" target="_blank" rel="noopener noreferrer">Xem hướng dẫn đăng ký dự thi tại đây</a></p> */}
       <SearchBar
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
@@ -415,11 +415,21 @@ export default function DrivingRegisterPage() {
                 as='textarea'
                 rules={{
                   required: false,
+                  maxLength: {
+                    value: 500,
+                    message: 'Độ dài không vượt quá 500 ký tự',
+                  }
                 }}
                 onClear={handleClearButton}
               />
           </Col>
         </Row>
+
+        <p style={{ margin: "1rem 0" }}>
+            Bằng cách bấm Đăng ký, khách hàng đã đồng ý với <a href="https://file.uniapp.vn/-qpj6E9YEQH" target='_blank' rel='noopener noreferrer'>Điều khoản sử dụng dữ liệu</a> của chúng tôi, mọi thắc mắc vui lòng liên hệ Zalo Offical Account{" "}
+            <ZaloLink tel='4013961016678131109'>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>{' '}
+            để được hỗ trợ nhanh nhất.
+          </p>
 
         {isLoading ? (
           <>
@@ -435,12 +445,6 @@ export default function DrivingRegisterPage() {
             Đăng ký
           </button>
         )}
-          <p style={{ margin: "1rem 0" }}>
-            Trong quá trình đăng ký, nếu xảy ra lỗi hệ thống, vui lòng chụp màn
-            hình lỗi gửi về Zalo OA:{" "}
-            <ZaloLink tel='4013961016678131109'>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>{' '}
-            để được hỗ trợ nhanh nhất.
-          </p>
       </form>}
 
       <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} aPrice={drivingDateInfo?.aPrice} bPrice={drivingDateInfo?.bPrice}/>
