@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from "react";
 import Driving from "./Driving";
-import styles from "./allDriving.module.css";
-import ImagePad from "./ImagePad";
+import {
+  Menu,
+  MenuItem,
+  ProSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SubMenu,
+} from "react-pro-sidebar";
 import { updateDrivingData } from "../../../store/drivingAdminSlice";
 import { useDispatch } from "react-redux";
 
 import DrivingApi from "api/drivingApi";
+import { Button } from "react-bootstrap";
+import { DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
 
 function AllDriving() {
+
+
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -167,104 +178,43 @@ function AllDriving() {
 
   return (
     <div>
-      {image ? <ImagePad onClose={hideImage} image={image} /> : null}
-      <div className={styles.dateFilter}>
+      <div className="d-flex flex-wrap justify-content-center">
         {dates.map((child, index) => {
           return (
-            <button
+            <Button
+              variant={dateSelected === index ? "primary" : "text-secondary"}
+              className="mx-2 my-1 rounded-pill border-primary border-2 px-2 py-1"
               onClick={() => handleDateButton(index)}
-              className={styles.dateButton}
               key={child._id}
-              style={
-                dateSelected === index
-                  ? { backgroundColor: "var(--primary)", color: "white" }
-                  : null
-              }
+              style={{ width: '100px' }}
             >
-              {child.date.toLocaleDateString()}
-            </button>
+              <span>{child.date.toLocaleDateString()}</span>
+            </Button>
           );
         })}
-
-        {/* <button
-          onClick={() => handleAllDatesButton()}
-          className={styles.dateButton}
-          style={
-            isAll ? { backgroundColor: 'var(--primary)', color: 'white' } : null
-          }
-        >
-          Tất cả
-        </button> */}
-        <span>Tổng: {data.length} hồ sơ</span>
       </div>
-      <div className={styles.stateButtonContainer}>
-        <button
+      <p className="text-center my-1">Tổng: {data.length} hồ sơ</p>
+      <div className='d-flex justify-content-center pb-2'>
+        <Button
+          className="mx-2"
           onClick={() => handleStateButton(null)}
-          className={styles.dateButton}
-          style={
-            state == null
-              ? { backgroundColor: "var(--primary)", color: "white" }
-              : null
-          }
+          variant={state === null ? 'primary' : 'outline-primary'}
         >
           Tất cả
-        </button>
+        </Button>
 
-        <button
-          onClick={() => handleStateButton(0)}
-          className={styles.dateButton}
-          style={
-            state === 0
-              ? { backgroundColor: "var(--primary)", color: "white" }
-              : null
-          }
-        >
-          Đã tạo
-        </button>
-        <button
-          onClick={() => handleStateButton(1)}
-          className={styles.dateButton}
-          style={
-            state === 1
-              ? { backgroundColor: "var(--primary)", color: "white" }
-              : null
-          }
-        >
-          Chờ cập nhật
-        </button>
-        <button
-          onClick={() => handleStateButton(2)}
-          className={styles.dateButton}
-          style={
-            state === 2
-              ? { backgroundColor: "var(--primary)", color: "white" }
-              : null
-          }
-        >
-          Chờ thanh toán
-        </button>
-        <button
-          onClick={() => handleStateButton(3)}
-          className={styles.dateButton}
-          style={
-            state === 3
-              ? { backgroundColor: "var(--primary)", color: "white" }
-              : null
-          }
-        >
-          Đã hoàn tất
-        </button>
-        <button
-          onClick={() => handleStateButton(4)}
-          className={styles.dateButton}
-          style={
-            state === 4
-              ? { backgroundColor: "var(--primary)", color: "white" }
-              : null
-          }
-        >
-          Đã hủy
-        </button>
+        {Object.keys(DRIVING_STATE).map((key) => {
+          return (
+            <Button
+              className="mx-2"
+              onClick={() => handleStateButton(DRIVING_STATE[key])}
+              variant={state === DRIVING_STATE[key] ? 'primary' : 'outline-secondary'}
+              key={key}
+            >
+              {DRIVING_STATE_LABEL[DRIVING_STATE[key]]}
+            </Button>
+          );
+        })}
       </div>
 
       {data.length <= 0 ? <p>Không có dữ liệu</p> : null}
