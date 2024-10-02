@@ -263,43 +263,40 @@ function Driving(props) {
               </Row>
             </Col>
             <Col xs={6}>
-            <Row>
+              <Row>
                 <p>Ngày thi</p>
               </Row>
-              {date ? (
-                <Row>
-                  <Col xs={8}>
-                    <select
-                      className="w-100 form-control"
-                      onChange={handleDateChange}
-                      defaultValue={selectedDate}
-                    >
-                      {props.dateList ? (
-                        <>
-                          {props.dateList.map((child) => {
-                            let tmpDate = new Date(child.date);
-                            return (
-                              <option value={tmpDate}>
-                                {tmpDate.toLocaleDateString("en-GB")}
-                              </option>
-                            );
-                          })}
-                        </>
-                      ) : null}
-                    </select>
-                  </Col>
-                  <Col>
-                    <Button
-                      className="w-100"
-                      variant="outline-primary"
-                      onClick={updateDate}
-                    >
-                      Cập nhật
-                    </Button>
-                  </Col>
-                </Row>
-
-              ) : null}
+              <Row>
+                <Col xs={8}>
+                  <select
+                    className="w-100 form-control"
+                    onChange={handleDateChange}
+                    defaultValue={selectedDate}
+                  >
+                    {props.dateList ? (
+                      <>
+                        {props.dateList.map((child) => {
+                          let tmpDate = new Date(child.date);
+                          return (
+                            <option value={tmpDate}>
+                              {tmpDate.toLocaleDateString("en-GB")}
+                            </option>
+                          );
+                        })}
+                      </>
+                    ) : null}
+                  </select>
+                </Col>
+                <Col>
+                  <Button
+                    className="w-100"
+                    variant="outline-primary"
+                    onClick={updateDate}
+                  >
+                    Cập nhật
+                  </Button>
+                </Col>
+              </Row>
             </Col>
           </Row>
           <Row className="mt-2">
