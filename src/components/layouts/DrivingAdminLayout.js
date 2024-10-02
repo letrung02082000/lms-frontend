@@ -6,12 +6,24 @@ import styles from './drivingAdminLayout.module.css'
 //redux
 import { selectDrivingData } from '../../store/drivingAdminSlice'
 import { useSelector } from 'react-redux'
-import drivingApi from 'api/drivingApi'
 import JSZip from 'jszip'
+import { AiFillEyeInvisible } from 'react-icons/ai'
+import { IoMdExit } from 'react-icons/io'
+import { FaDownload, FaList } from "react-icons/fa";
+import {
+  Menu,
+  MenuItem,
+  ProSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+} from "react-pro-sidebar";
+import { BiSolidFileExport } from 'react-icons/bi'
 
 function DrivingAdminLayout({ children, onNavigate, onLogout }) {
-  const [visible, setVisible] = useState(true)
-  const data = useSelector(selectDrivingData)
+  const [visible, setVisible] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+  const data = useSelector(selectDrivingData);
 
   const exportToCSV = (csvData, fileName) => {
     csvData = csvData.map((child, index) => {
@@ -105,51 +117,43 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
 
   return (
     <div className={styles.container}>
-      {visible ? (
-        <div className={styles.leftNav}>
-          <h3 className={styles.pageTitle}>
-            Quản lý
-            <br />
-            hồ sơ lái xe
-          </h3>
-          <div className={styles.navItems}>
-            <div>
-              <div className={styles.navItem} onClick={() => onNavigate('/a1')}>
-                <p>Quản lý hồ sơ A1</p>
-              </div>
-              <div className={styles.navItem} onClick={() => onNavigate('/a2')}>
-                <p>Quản lý hồ sơ A2</p>
-              </div>
-              <div className={styles.navItem} onClick={() => onNavigate('/b2')}>
-                <p>Quản lý hồ sơ B2</p>
-              </div>
-              <div className={styles.navItem} onClick={() => onNavigate('/date')}>
-                <p>Quản lý ngày thi</p>
-              </div>
-              <div className={styles.navItem} onClick={() => exportToCSV(data, 'data')}>
-                <p>Tạo File Excel</p>
-              </div>
-              <div className={styles.navItem} onClick={() => zipFile(data)}>
-                <p>Tải xuống</p>
-              </div>
-              <div className={styles.navItem} onClick={() => setVisible(false)}>
-                <p>Ẩn</p>
-              </div>
-            </div>
-            <div className={styles.navItem} onClick={() => onLogout()}>
-              <p>Đăng xuất</p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <button
-          onClick={() => {
-            setVisible(true)
-          }}
-        >
-          Hiện
-        </button>
-      )}
+      <ProSidebar className="side-bar" collapsed={collapsed}>
+        {!collapsed && <SidebarHeader className="header d-flex justify-content-center">
+          <div className="my-4 fs-5 text-uppercase fw-bold">Quản lý sát hạch</div>
+        </SidebarHeader>}
+        <SidebarContent className="nav-bar-left">
+          <Menu iconShape="circle">
+            <MenuItem className="mb-3" onClick={() => onNavigate('/a1')} icon={<FaList/>}>
+              Quản lý hồ sơ A1
+            </MenuItem>
+            <MenuItem className="mb-3" onClick={() => onNavigate('/a2')} icon={<FaList/>}>
+              Quản lý hồ sơ A2
+            </MenuItem>
+            <MenuItem className="mb-3" onClick={() => exportToCSV(data, 'data')} icon={<BiSolidFileExport />}>
+              Xuất danh sách
+            </MenuItem>
+            <MenuItem className="mb-3" onClick={() => zipFile(data)} icon={<FaDownload />}>
+              Tải xuống
+            </MenuItem>
+            <MenuItem
+              className="mb-3"
+              icon={<AiFillEyeInvisible />}
+              onClick={() => {
+                setCollapsed(!collapsed);
+              }}
+            >
+              Ẩn thanh bên
+            </MenuItem>
+          </Menu>
+        </SidebarContent>
+        <SidebarFooter>
+          <Menu>
+            <MenuItem icon={<IoMdExit />}>
+              <div onClick={() => onLogout()}>Đăng xuất</div>
+            </MenuItem>
+          </Menu>
+        </SidebarFooter>
+      </ProSidebar>
       <div className={styles.mainBoard}>{children}</div>
     </div>
   )

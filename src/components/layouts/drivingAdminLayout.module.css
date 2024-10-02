@@ -1,7 +1,6 @@
 .container {
   display: flex;
-  /* border: 1px solid black; */
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .pageTitle {
