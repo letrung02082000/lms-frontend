@@ -244,24 +244,6 @@ function Driving(props) {
             </div>
           </Row>
           <Row>
-            <Col>
-              <Row>
-                <p>Ghi chú</p>
-              </Row>
-              <Row>
-                <Col xs={8}>
-                  <FormControl type="text" value={feedback} onChange={handleFeedbackChange} className="w-100" />
-                </Col>
-                <Col>
-                  <Button
-                    variant="outline-primary w-100"
-                    onClick={updateFeedback}
-                  >
-                    Lưu lại
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
             <Col xs={6}>
               <Row>
                 <p>Ngày thi</p>
@@ -294,6 +276,24 @@ function Driving(props) {
                     onClick={updateDate}
                   >
                     Cập nhật
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+            <Col>
+              <Row>
+                <p>Ghi chú</p>
+              </Row>
+              <Row>
+                <Col xs={8}>
+                  <FormControl type="text" value={feedback} onChange={handleFeedbackChange} className="w-100" />
+                </Col>
+                <Col>
+                  <Button
+                    variant="outline-primary w-100"
+                    onClick={updateFeedback}
+                  >
+                    Lưu lại
                   </Button>
                 </Col>
               </Row>
