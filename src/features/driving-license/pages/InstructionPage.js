@@ -151,8 +151,7 @@ export default function DrivingInstructionPage(props) {
               <strong>Gói A:</strong> 650.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 690.000đ.
             </p>
             <p>
-              Thí sinh tự chuẩn bị: Giấy khám sức khỏe tại các
-              bệnh viện tuyến huyện trở lên. Thời gian có hiệu lực của giấy khám sức khỏe là 06 tháng. Đăng ký trực tiếp tại văn phòng Isinhvien. Vui lòng xem hướng dẫn tại mục ĐĂNG KÝ TRỰC TIẾP bên dưới.
+              Thí sinh tự chuẩn bị giấy khám sức khoẻ nộp về trung tâm, học viên vui lòng liên hệ trước khi đi khám để được hướng dẫn về chuẩn khám sức khoẻ hợp lệ. Đăng ký trực tiếp tại văn phòng Isinhvien. Vui lòng xem hướng dẫn tại mục ĐĂNG KÝ TRỰC TIẾP bên dưới.
             </p>
             <p>
               <strong>Gói B:</strong> 730.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 770.000đ.
@@ -181,8 +180,7 @@ export default function DrivingInstructionPage(props) {
               <li>Số điện thoại liên hệ của bạn.</li>
               <li>Ảnh chụp 2 mặt chứng minh nhân dân/Căn cước công dân.</li>
               <li>
-                Ảnh chụp chân dung để làm hồ sơ và in trên bằng lái (có thể chụp
-                bằng điện thoại, không quá 3 tháng, nếu chụp ảnh thẻ cần xin file gốc đúng theo yêu cầu): Tóc
+                Ảnh chụp chân dung để làm hồ sơ (ảnh chụp không quá 3 tháng, có thể tự chụp bằng điện thoại, nếu chụp ảnh thẻ cần xin file gốc đúng theo yêu cầu): Tóc
                 không che trán, vén tóc ra sau mang tai, <b>LẤY ĐỦ 2 VAI, LẤY TỪ
                 THẮT LƯNG TRỞ LÊN QUA ĐẦU</b>, không đeo kính, trang phục lịch sự,
                 lấy nền tường/xanh. Vui lòng không sử dụng filter hay chỉnh sửa làm
