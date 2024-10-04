@@ -12,14 +12,14 @@ export const ROLE = {
     },
 
     UNIFORM: {
-        ADMIN: 3,
+        ADMIN: 30,
     },
 
     REAL_ESTATE: {
-        ADMIN: 4,
+        ADMIN: 40,
     },
 
     STORE: {
-        ADMIN: 5,
+        ADMIN: 50,
     },
 }

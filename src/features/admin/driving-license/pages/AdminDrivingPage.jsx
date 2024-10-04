@@ -13,12 +13,15 @@ import Select from 'react-select';
 import cryptojs from 'crypto-js'
 import { Scanner } from '@yudiel/react-qr-scanner';
 import CopyButton from 'components/button/CopyButton';
+import { ROLE } from 'constants/role';
 
 function AdminDrivingA1Page() {
+  const userRole = JSON.parse(localStorage.getItem('user-info')).role;
   const PROCESS_STATE = {
     CREATED: 0,
     WAITING_FOR_UPDATE: 1,
     WAITING_FOR_PAYMENT: 2,
+    APPROVED: 5,
     COMPLETED: 3,
     CANCELLED: 4,
   }
@@ -89,7 +92,6 @@ function AdminDrivingA1Page() {
       },
     },
     { field: 'name', headerName: 'Họ và tên', flex: 2 },
-    { field: 'zalo', headerName: 'Zalo', flex: 1 },
     {
       field: 'date',
       headerName: 'Ngày dự thi',
@@ -102,12 +104,26 @@ function AdminDrivingA1Page() {
     },
     { field: 'cash', headerName: 'Chuyển khoản', flex: 1 },
     {
-      field: 'action',
-      headerName: 'Thao tác',
-      cellRenderer: ActionButton,
+      field: 'processState',
+      headerName: 'Tình trạng',
       flex: 1,
-      valueGetter: rowDataGetter,
+      cellRenderer: (data) => {
+        if(data.value === PROCESS_STATE.CREATED) {
+          return 'Vừa tạo';
+        } else if(data.value === PROCESS_STATE.WAITING_FOR_UPDATE) {
+          return 'Chờ cập nhật';
+        } else if(data.value === PROCESS_STATE.WAITING_FOR_PAYMENT) {
+          return 'Chờ thanh toán';
+        } else if(data.value === PROCESS_STATE.APPROVED) {
+          return 'Đã duyệt';
+        } else if(data.value === PROCESS_STATE.COMPLETED) {
+          return 'Đã hoàn tất';
+        }
+
+        return 'Đã huỷ';
+      },
     },
+    ...(userRole === ROLE.DRIVING.ADMIN || userRole === ROLE.ADMIN) ? [{ field: 'action', headerName: 'Thao tác', flex: 1, cellRenderer: ActionButton, valueGetter: rowDataGetter }] : [],
   ]);
 
   useEffect(() => {
@@ -118,8 +134,8 @@ function AdminDrivingA1Page() {
       .then((res) => {
         const date = res.data.map((item) => {
           return {
-            label: new Date(item.date).toLocaleDateString('en-GB'),
-            value: item.date,
+            label: new Date(item?.date).toLocaleDateString('en-GB'),
+            value: item?.date,
           };
         });
         setVisibleDate(date);
@@ -166,7 +182,7 @@ function AdminDrivingA1Page() {
                       if(updateParams?.date != undefined) {
                         toastWrapper(
                           'Đã cập nhật thành ngày ' +
-                            new Date(updateParams.date).toLocaleDateString(
+                            new Date(updateParams?.date).toLocaleDateString(
                               'en-GB'
                             ),
                           'success'
@@ -219,10 +235,10 @@ function AdminDrivingA1Page() {
   }
 
   useEffect( () => {
-    setValue('name', selectedRow.name);
-    setValue('tel', selectedRow.tel);
-    setValue('zalo', selectedRow.zalo);
-    setValue('feedback', selectedRow.feedback);
+    setValue('name', selectedRow?.name);
+    setValue('tel', selectedRow?.tel);
+    setValue('zalo', selectedRow?.zalo);
+    setValue('feedback', selectedRow?.feedback);
 
     if(showEditModal) {
       fetchImage();
@@ -274,10 +290,10 @@ function AdminDrivingA1Page() {
 
   const handleUpdateDrivingButton = async () => {
     await handleSubmit(async (data) => {
-      if (data.date === undefined) {
-        delete data.date;
+      if (data?.date === undefined) {
+        delete data?.date;
       } else {
-        data.date = data.date.value;
+        data.date = data?.date?.value;
       }
 
       drivingApi.updateDriving(selectedRow._id, data).then((res) => {
@@ -459,7 +475,7 @@ function AdminDrivingA1Page() {
               <Col sm='8'>
                 <Select
                   defaultValue={visibleDate.find(
-                    (item) => item.value === query.date
+                    (item) => item.value === query?.date
                   )}
                   isClearable
                   options={visibleDate}
@@ -509,6 +525,15 @@ function AdminDrivingA1Page() {
               className='m-2'
             >
               Chờ thanh toán
+            </Button>
+            <Button
+              onClick={() => updateProcessState(selectedRow?._id, 5)}
+              variant={
+                selectedRow?.processState === 5 ? 'primary' : 'outline-primary'
+              }
+              className='m-2'
+            >
+              Đã duyệt
             </Button>
             <Button
               onClick={() => updateProcessState(selectedRow?._id, 3)}
@@ -604,7 +629,7 @@ function AdminDrivingA1Page() {
                   }}
                   options={visibleDate}
                   label={`Ngày dự thi hiện tại: ${new Date(
-                    selectedRow.date
+                    selectedRow?.date
                   ).toLocaleDateString('en-GB')}`}
                   control={control}
                   name='date'
@@ -788,6 +813,7 @@ function AdminDrivingA1Page() {
                   { label: 'Đã tạo', value: 0 },
                   { label: 'Chờ cập nhật', value: 1 },
                   { label: 'Chờ thanh toán', value: 2 },
+                  { label: 'Đã duyệt', value: 5 },
                   { label: 'Đã hoàn tất', value: 3 },
                   { label: 'Đã huỷ', value: 4 },
                 ]}

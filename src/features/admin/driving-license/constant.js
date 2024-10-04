@@ -11,7 +11,7 @@ export const DRIVING_STATE_LABEL = {
     [DRIVING_STATE.CREATED]: "Đã tạo",
     [DRIVING_STATE.WAITING_CHANGE]: "Chờ cập nhật",
     [DRIVING_STATE.WAITING_PAYMENT]: "Chờ thanh toán",
+    [DRIVING_STATE.APPROVED]: "Đã duyệt",
     [DRIVING_STATE.FINISHED]: "Đã hoàn tất",
     [DRIVING_STATE.CANCELED]: "Đã hủy",
-    [DRIVING_STATE.APPROVED]: "Đã duyệt",
 }

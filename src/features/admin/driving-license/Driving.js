@@ -12,11 +12,6 @@ import { DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
 function Driving(props) {
   let {
     name,
-    portraitId,
-    frontsideId,
-    backsideId,
-    paymentMethod,
-    isPaid,
     date,
     createdAt,
     zalo,
@@ -210,9 +205,6 @@ function Driving(props) {
             <div className="d-flex justify-content-between">
               <div>
                 <p className="form-text">{createdAt.toLocaleDateString("en-GB")}</p>
-                <p className="text-warning">
-                  Nguồn: {sourceText}
-                </p>
               </div>
 
               <div>

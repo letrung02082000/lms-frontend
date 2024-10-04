@@ -4,8 +4,10 @@ import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
 import { MdEdit, MdAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
+import { ROLE } from 'constants/role';
 
 function AdminDrivingDatePage() {
+  const userRole = JSON.parse(localStorage.getItem('user-info'))?.role;
   const [query, setQuery] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
   const [page, setPage] = useState(1);
@@ -35,17 +37,21 @@ function AdminDrivingDatePage() {
           : '';
       },
     },
-    {
-      field: 'description',
-      headerName: 'Mô tả',
-      flex: 6,
-      editable: true,
-    },
-    {
-      field: 'formVisible',
-      headerName: 'Hiển thị',
-      editable: true,
-    },
+    ...(userRole === ROLE.ADMIN || userRole === ROLE.DRIVING.ADMIN
+      ? [
+          {
+            field: 'description',
+            headerName: 'Mô tả',
+            flex: 6,
+            editable: true,
+          },
+          {
+            field: 'formVisible',
+            headerName: 'Hiển thị',
+            editable: true,
+          },
+        ]
+      : []),
   ]);
 
   const fetchDrivingDates = async () => {
@@ -99,64 +105,72 @@ function AdminDrivingDatePage() {
       }}
     >
       <div className='ag-theme-quartz' style={{ height: '100%' }}>
-        <AgGridReact rowData={rowData} columnDefs={colDefs} onCellValueChanged={onCellValueChanged}/>
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={colDefs}
+          onCellValueChanged={onCellValueChanged}
+        />
       </div>
-      <Modal
-        show={showAddModal}
-        onHide={() => setShowAddModal(false)}
-        size='lg'
-        backdrop='static'
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Thêm ngày thi mới</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Row>
-              <Col>
-                <FormControl
-                  className='mb-3'
-                  type='date'
-                  id='drivingDate'
-                  name='drivingDate'
-                  defaultValue={drivingDate}
-                  onChange={(e) => setDrivingDate(e.target.value)}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <FormControl
-                  className='mb-3'
-                  type='text'
-                  placeholder='Mô tả'
-                  onChange={(e) => setDescription(e.target.value)}
-                  as={'textarea'}
-                />
-              </Col>
-            </Row>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant='primary' onClick={handleAddDateButton}>
-            Thêm
+      {(userRole === ROLE.ADMIN || userRole === ROLE.DRIVING.ADMIN) && (
+        <>
+          <Modal
+            show={showAddModal}
+            onHide={() => setShowAddModal(false)}
+            size='lg'
+            backdrop='static'
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Thêm ngày thi mới</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Row>
+                  <Col>
+                    <FormControl
+                      className='mb-3'
+                      type='date'
+                      id='drivingDate'
+                      name='drivingDate'
+                      defaultValue={drivingDate}
+                      onChange={(e) => setDrivingDate(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <FormControl
+                      className='mb-3'
+                      type='text'
+                      placeholder='Mô tả'
+                      onChange={(e) => setDescription(e.target.value)}
+                      as={'textarea'}
+                    />
+                  </Col>
+                </Row>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant='primary' onClick={handleAddDateButton}>
+                Thêm
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          <Button
+            className='rounded-circle'
+            style={{
+              width: '50px',
+              height: '50px',
+              position: 'fixed',
+              bottom: '50px',
+              right: '50px',
+              zIndex: 1000,
+            }}
+            onClick={() => setShowAddModal(true)}
+          >
+            <MdAdd />
           </Button>
-        </Modal.Footer>
-      </Modal>
-      <Button
-        className='rounded-circle'
-        style={{
-          width: '50px',
-          height: '50px',
-          position: 'fixed',
-          bottom: '50px',
-          right: '50px',
-          zIndex: 1000,
-        }}
-        onClick={() => setShowAddModal(true)}
-      >
-        <MdAdd />
-      </Button>
+        </>
+      )}
     </div>
   );
 }

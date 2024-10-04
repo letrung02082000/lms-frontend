@@ -208,7 +208,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    element: <AdminGuard />,
+    element: <AdminDrivingGuard />,
     errorElement: <NotFoundPage />,
     children: [
       {
