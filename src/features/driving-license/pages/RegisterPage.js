@@ -24,7 +24,7 @@ export default function DrivingRegisterPage() {
   const categories = [
     {
       value: 0,
-      label: "Bằng A1 (Mô tô 2 bánh có dung tích xi lanh từ 50cc cho đến dưới 175cc, chọn ngày thi ở mục bên dưới)",
+      label: "Bằng A1",
     },
     {
       value: 1,
