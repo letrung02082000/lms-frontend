@@ -32,7 +32,7 @@ export default function DrivingRegisterPage() {
     },
     {
       value: 2,
-      label: "Bằng B1/B2 (Bằng lái xe ô tô, trung tâm liên hệ hướng dẫn qua điện thoại)",
+      label: "Bằng B1/B2/C (Bằng lái xe ô tô, trung tâm liên hệ hướng dẫn qua điện thoại)",
     }
   ]
 
