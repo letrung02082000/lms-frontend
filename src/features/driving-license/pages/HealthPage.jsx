@@ -343,7 +343,7 @@ function DrivingHealthPage() {
         </Form.Group> */}
         <Row className='mb-3'>
           <Col>
-            <Form.Text className='text-danger'>
+            <Form.Text className='text-warning'>
               Điều kiện tham gia khám sức khoẻ: Học viên phải đủ 18 tuổi theo ngày sinh tính đến ngày thực hiện khám sức khỏe.
             </Form.Text>
           </Col>
