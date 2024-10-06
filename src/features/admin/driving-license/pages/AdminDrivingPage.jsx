@@ -22,6 +22,7 @@ function AdminDrivingA1Page() {
     WAITING_FOR_UPDATE: 1,
     WAITING_FOR_PAYMENT: 2,
     APPROVED: 5,
+    HEALTH_CHECKED: 6,
     COMPLETED: 3,
     CANCELLED: 4,
   }
@@ -116,6 +117,8 @@ function AdminDrivingA1Page() {
           return 'Chờ thanh toán';
         } else if(data.value === PROCESS_STATE.APPROVED) {
           return 'Đã duyệt';
+        } else if(data.value === PROCESS_STATE.HEALTH_CHECKED) {
+          return 'Đã khám sức khoẻ';
         } else if(data.value === PROCESS_STATE.COMPLETED) {
           return 'Đã hoàn tất';
         }
@@ -198,6 +201,10 @@ function AdminDrivingA1Page() {
                               ? 'Chờ cập nhật'
                               : updateParams.processState === 2
                               ? 'Chờ thanh toán'
+                              : updateParams.processState === 5
+                              ? 'Đã duyệt'
+                              : updateParams.processState === 6
+                              ? 'Đã khám sức khoẻ'
                               : updateParams.processState === 3
                               ? 'Đã hoàn tất'
                               : 'Đã huỷ'
@@ -814,8 +821,10 @@ function AdminDrivingA1Page() {
                   { label: 'Chờ cập nhật', value: 1 },
                   { label: 'Chờ thanh toán', value: 2 },
                   { label: 'Đã duyệt', value: 5 },
+                  { label: 'Đã khám sức khoẻ', value: 6 },
                   { label: 'Đã hoàn tất', value: 3 },
                   { label: 'Đã huỷ', value: 4 },
+
                 ]}
                 onChange={(val) =>
                   setUpdateParams({
