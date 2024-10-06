@@ -129,7 +129,6 @@ function DrivingHealthPage() {
 
   const handleSubmitButton = async () => {
     await handleSubmit((formData) => {
-      console.log(data);
 
       if(!healthDate) {
         return toastWrapper('Vui lòng chọn ngày khám sức khoẻ', 'error');
@@ -145,10 +144,10 @@ function DrivingHealthPage() {
       drivingApi
         .updateDrivingHealth(data?._id, drivingHealthData)
         .then((res) => {
-          toastWrapper('Đăng ký thành công', 'success');
+          toastWrapper('Bạn đã đăng ký thông tin khám sức khoẻ thành công', 'success');
         })
         .catch((e) => {
-          toastWrapper('Đăng ký thất bại', 'error');
+          toastWrapper('Đăng ký thất bại, vui lòng liên hệ Admin để được hỗ trợ', 'error');
         });
     })();
   }
