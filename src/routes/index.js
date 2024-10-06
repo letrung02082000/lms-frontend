@@ -147,6 +147,12 @@ const router = createBrowserRouter([
         element: <ShortLinkPage />
       },
       {
+        path: PATH.DRIVING.HEALTH_CHECK,
+        element: <ServiceLayout pageTitle="Đăng ký khám sức khoẻ" backTo={PATH.HOME}>
+          <DrivingHealthPage />
+        </ServiceLayout>
+      },
+      {
         path: PATH.DRIVING.ROOT,
         element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
           <DrivingInfoPage />
@@ -162,12 +168,6 @@ const router = createBrowserRouter([
         path: PATH.DRIVING.REGISTRATION,
         element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
           <DrivingRegisterPage />
-        </ServiceLayout>
-      },
-      {
-        path: PATH.DRIVING.HEALTH_CHECK,
-        element: <ServiceLayout pageTitle="Đăng ký thông tin khám sức khoẻ" backTo={PATH.HOME}>
-          <DrivingHealthPage />
         </ServiceLayout>
       },
       {

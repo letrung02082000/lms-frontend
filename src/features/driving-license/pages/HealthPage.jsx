@@ -1,16 +1,19 @@
 import drivingApi from 'api/drivingApi';
 import InputField from 'components/form/InputField';
+import RadioField from 'components/form/RadioField';
 import SelectField from 'components/form/SelectField';
-import React, { useState } from 'react';
+import { DRIVING_STATE } from 'features/admin/driving-license/constant';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { toastWrapper } from 'utils';
 
 function DrivingHealthPage() {
   const [disabled, setDisabled] = useState(true);
+  const [healthDates, setHealthDates] = useState([]);
+  const [healthDate, setHealthDate] = useState('');
   const [phone, setPhone] = useState('');
   const [data, setData] = useState({});
-  console.log(data)
   const {
     control,
     setValue,
@@ -65,6 +68,31 @@ function DrivingHealthPage() {
     },
   ]
 
+  useEffect(() => {
+    if(!data?.date) return;
+
+    setValue('name', data?.name);
+    
+    drivingApi
+      .getHealthDates(data?.date)
+      .then((res) => {
+        let healthDates = res.data.map((date) => {
+          return {
+            value: date?.healthDate,
+            label: date?.description,
+          };
+        });
+        setHealthDates(healthDates);
+      })
+      .catch((e) => {
+        toastWrapper('Lỗi lấy danh sách ngày khám sức khỏe', 'error');
+      });
+  }, [data]);
+
+  const handleHealthDateChange = (healthDate) => {
+    setHealthDate(healthDate);
+  }
+
   const handleSearchButton = () => {
     if(isNaN(phone) || phone.length !== 10) {
       return toastWrapper('Số điện thoại không hợp lệ', 'error');
@@ -78,9 +106,17 @@ function DrivingHealthPage() {
               "error"
             );
           } else {
-            toastWrapper("Nhập hồ sơ thành công", "success");
+            const drivingList = res?.data?.filter(driving => driving?.processState !== DRIVING_STATE.CANCELED);
+            if(drivingList?.length === 0) {
+              toastWrapper(
+                'Không tìm thấy hồ sơ nào khớp với số điện thoại ' + phone,
+                'error'
+              );
+              return;
+            }
+            setData(drivingList.at(-1));
+            toastWrapper('Nhập thông tin thành công', 'success');
             setDisabled(false);
-            setData(res.data.at(-1));
           }
         })
         .catch((e) => {
@@ -91,16 +127,42 @@ function DrivingHealthPage() {
         });
   }
 
+  const handleSubmitButton = async () => {
+    await handleSubmit((formData) => {
+      console.log(data);
+
+      if(!healthDate) {
+        return toastWrapper('Vui lòng chọn ngày khám sức khoẻ', 'error');
+      }
+
+      const drivingHealthData = {
+        ...formData,
+        healthDate,
+        gender: data?.gender?.value
+      }
+
+      console.log(drivingHealthData)
+      drivingApi
+        .updateDrivingHealth(data?._id, drivingHealthData)
+        .then((res) => {
+          toastWrapper('Đăng ký thành công', 'success');
+        })
+        .catch((e) => {
+          toastWrapper('Đăng ký thất bại', 'error');
+        });
+    })();
+  }
+
   return (
     <div>
       <Form>
         <Form.Group className='my-3' as={Row}>
           <Col>
-          <Form.Control
-            placeholder='Nhập số điện thoại đã đăng ký hồ sơ'
-            type='text'
-            onChange={e => setPhone(e.target.value)}
-          />
+            <Form.Control
+              placeholder='Nhập số điện thoại đã đăng ký hồ sơ'
+              type='text'
+              onChange={(e) => setPhone(e.target.value)}
+            />
           </Col>
         </Form.Group>
         <Row>
@@ -110,17 +172,24 @@ function DrivingHealthPage() {
               variant='primary'
               onClick={handleSearchButton}
             >
-              Nhập hồ sơ
+              Lấy thông tin hồ sơ
             </Button>
           </Col>
         </Row>
+        {data?.healthDate && (
+          <Row className='mb-3'>
+            <Col>
+              <Form.Text className='text-success'>Bạn đã đăng ký tham gia khám sức khoẻ vào ngày {new Date(data?.healthDate).toLocaleDateString('en-GB')}.</Form.Text>
+            </Col>
+          </Row>
+        )}
         <Form.Group className='mb-3' as={Row}>
           <Col>
             <InputField
               hasAsterisk={true}
               label='Tên của bạn'
               control={control}
-              value={data?.name}
+              // value={data?.name}
               name='name'
               disabled={true}
               rules={{
@@ -134,13 +203,6 @@ function DrivingHealthPage() {
             />
           </Col>
         </Form.Group>
-        <Row>
-          <Col>
-            <Button className='mb-3' variant='outline-primary'>
-              Quét mã QR trên CCCD để nhập
-            </Button>
-          </Col>
-        </Row>
         <Form.Group className='mb-3' as={Row}>
           <Col>
             <InputField
@@ -158,6 +220,13 @@ function DrivingHealthPage() {
             />
           </Col>
         </Form.Group>
+        {/* <Row>
+          <Col>
+            <Button className='mb-3' variant='outline-primary'>
+              Quét mã QR trên CCCD để nhập tự động
+            </Button>
+          </Col>
+        </Row> */}
         <Form.Group className='mb-3' as={Row}>
           <Col>
             <SelectField
@@ -167,7 +236,7 @@ function DrivingHealthPage() {
               options={genderOptions}
               label={'Giới tính'}
               control={control}
-              name='date'
+              name='gender'
             />
           </Col>
         </Form.Group>
@@ -188,7 +257,7 @@ function DrivingHealthPage() {
                 minLength: {
                   value: 12,
                   message: 'Số Căn cước công dân gồm 12 chữ số',
-                }
+                },
               }}
             />
           </Col>
@@ -206,6 +275,7 @@ function DrivingHealthPage() {
               rules={{
                 required: 'Vui lòng nhập trường này',
               }}
+              noClear={true}
             />
           </Col>
         </Form.Group>
@@ -241,7 +311,21 @@ function DrivingHealthPage() {
             />
           </Col>
         </Form.Group>
-        <Form.Group className='mb-3' as={Row}>
+        <Row className='mb-3'>
+          <Col>
+            <RadioField
+              hasAsterisk={true}
+              options={healthDates}
+              label='Chọn ngày thực hiện khám sức khỏe'
+              control={control}
+              name='healthDate'
+              onClear={handleClearButton}
+              onChange={handleHealthDateChange}
+              defaultChecked={0}
+            />
+          </Col>
+        </Row>
+        {/* <Form.Group className='mb-3' as={Row}>
           <Col>
             <SelectField
               rules={{
@@ -254,22 +338,15 @@ function DrivingHealthPage() {
               hasAsterisk={true}
             />
           </Col>
-        </Form.Group>
-        <Row className='mb-3'>
-          <Col>
-            <Form.Text className='text-primary'>
-              Lưu ý: Học viên cần đảm bảo đủ 18 tuổi theo ngày, tháng, năm sinh tính đến
-              ngày thực hiện khám sức khoẻ.
-            </Form.Text>
-          </Col>
-        </Row>
+        </Form.Group> */}
         <Row>
           <Col>
             <Button
               className='w-100 fw-bold'
               variant='primary'
-              type='submit'
+              type='button'
               disabled={isSubmitting}
+              onClick={handleSubmitButton}
             >
               {isSubmitting ? 'Đang xử lý...' : 'Đăng ký thông tin'}
             </Button>

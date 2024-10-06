@@ -38,7 +38,7 @@ export const PATH = {
         B2_TEST: '/driving-test/b2',
         REGISTRATION: '/driving-registration',
         INSTRUCTION: '/driving-instruction',
-        HEALTH_CHECK: '/health-check',
+        HEALTH_CHECK: '/driving/health-check',
         ADMIN: {
             ROOT: '/driving/admin',
             DATE: '/driving/admin/date',

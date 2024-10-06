@@ -20,6 +20,11 @@ class DrivingApi {
     return axiosClient.patch(url, data);
   }
 
+  updateDrivingHealth = async (_id, data) => {
+    const url = `${API_PATH}/health/${_id}`;
+    return axiosClient.patch(url, data);
+  }
+
   getAllDrivings = async (state) => {
     const url = `${API_PATH}/all`;
     return axiosClient.get(url, {
@@ -190,6 +195,13 @@ class DrivingApi {
     const url = `/driving-test`;
     return axiosClient.get(url, {
       params: { type },
+    });
+  };
+
+  getHealthDates = async (drivingDate) => {
+    const url = `/driving/health/date`;
+    return axiosClient.get(url, {
+      params: { drivingDate },
     });
   };
 }
