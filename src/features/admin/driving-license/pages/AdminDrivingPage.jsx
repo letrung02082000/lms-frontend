@@ -543,6 +543,15 @@ function AdminDrivingA1Page() {
               Đã duyệt
             </Button>
             <Button
+              onClick={() => updateProcessState(selectedRow?._id, 6)}
+              variant={
+                selectedRow?.processState === 6 ? 'primary' : 'outline-primary'
+              }
+              className='m-2'
+            >
+              Đã khám sức khoẻ
+            </Button>
+            <Button
               onClick={() => updateProcessState(selectedRow?._id, 3)}
               variant={
                 selectedRow?.processState === 3 ? 'success' : 'outline-primary'
