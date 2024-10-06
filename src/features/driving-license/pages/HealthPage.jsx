@@ -179,7 +179,10 @@ function DrivingHealthPage() {
         {data?.healthDate && (
           <Row className='mb-3'>
             <Col>
-              <Form.Text className='text-success'>Bạn đã đăng ký tham gia khám sức khoẻ vào ngày {new Date(data?.healthDate).toLocaleDateString('en-GB')}.</Form.Text>
+              <Form.Text className='text-success'>
+                Bạn đã đăng ký tham gia khám sức khoẻ vào ngày{' '}
+                {new Date(data?.healthDate).toLocaleDateString('en-GB')}.
+              </Form.Text>
             </Col>
           </Row>
         )}
@@ -339,6 +342,13 @@ function DrivingHealthPage() {
             />
           </Col>
         </Form.Group> */}
+        <Row className='mb-3'>
+          <Col>
+            <Form.Text className='text-danger'>
+              Điều kiện tham gia khám sức khoẻ: Học viên phải đủ 18 tuổi theo ngày sinh tính đến ngày thực hiện khám sức khỏe.
+            </Form.Text>
+          </Col>
+        </Row>
         <Row>
           <Col>
             <Button
