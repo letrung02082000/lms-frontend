@@ -25,6 +25,7 @@ function Driving(props) {
     portraitUrl,
     frontUrl,
     backUrl,
+    healthDate,
   } = props.info;
 
   const showImage = props.showImage;
@@ -291,7 +292,7 @@ function Driving(props) {
               </Row>
             </Col>
           </Row>
-          <Row className="mt-2">
+          <Row className="my-2">
             <div className="d-flex">
               {drivingType === 0 ? (
                 <span className="fw-bold">
@@ -312,8 +313,11 @@ function Driving(props) {
               ) : null}
             </div>
           </Row>
+          <Row>
+            {healthDate ? <p className="text-success">Đăng ký khám sức khoẻ ngày: {new Date(healthDate).toLocaleDateString('en-GB')}</p> : <p>Chưa đăng ký khám sức khoẻ</p>}
+          </Row>
           {dup > 1 ? (
-            <p style={{ color: "red", textAlign: "center" }}>
+            <p className="text-danger">
               Danh sách này có 1 hồ sơ tương tự
             </p>
           ) : null}
