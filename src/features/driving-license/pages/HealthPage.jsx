@@ -137,10 +137,9 @@ function DrivingHealthPage() {
       const drivingHealthData = {
         ...formData,
         healthDate,
-        gender: data?.gender?.value
+        gender: formData?.gender?.value
       }
 
-      console.log(drivingHealthData)
       drivingApi
         .updateDrivingHealth(data?._id, drivingHealthData)
         .then((res) => {
