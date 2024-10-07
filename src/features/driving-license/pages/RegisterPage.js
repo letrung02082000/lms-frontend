@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import RadioField from "components/form/RadioField";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { formatCurrency } from "utils/commonUtils";
+import { DRIVING_STATE, DRIVING_STATE_LABEL } from "features/admin/driving-license/constant";
 
 export default function DrivingRegisterPage() {
   const categories = [
@@ -225,20 +226,13 @@ export default function DrivingRegisterPage() {
           const date = new Date(child.createdAt);
           const processDate = new Date(date);
           processDate.setDate(date.getDate() + 1);
-          let state = "";
-
-          if (child?.processState === 4) {
-            state = "Đã hủy hồ sơ";
-          } else {
-            state = "Đang xử lý";
-          }
 
           return (
             <Card key={child?._id} className="my-3">
               <Card.Body>
               <div className={styles.orderContainer}>
               <p>Họ tên: {child?.name}</p>
-              <p>Trạng thái: {state}</p>
+              <p>Trạng thái: {DRIVING_STATE_LABEL[child.processState]}</p>
               <p>
                 Ngày xử lý:
                 {` ${processDate.getDate()}/${processDate.getMonth() + 1

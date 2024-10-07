@@ -314,7 +314,7 @@ function Driving(props) {
             </div>
           </Row>
           <Row>
-            {healthDate ? <p className="text-success">Đăng ký khám sức khoẻ ngày: {new Date(healthDate).toLocaleDateString('en-GB')}</p> : <p>Chưa đăng ký khám sức khoẻ</p>}
+            {healthDate ? <p className="text-success">Đăng ký khám sức khoẻ ngày: {new Date(healthDate).toLocaleDateString('en-GB')}</p> : <p className="">Chưa đăng ký khám sức khoẻ</p>}
           </Row>
           {dup > 1 ? (
             <p className="text-danger">
