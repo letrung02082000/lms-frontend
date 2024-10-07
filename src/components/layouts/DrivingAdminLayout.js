@@ -24,6 +24,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   const [visible, setVisible] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
   const data = useSelector(selectDrivingData);
+  console.log(data)
 
   const exportToCSV = (csvData, fileName) => {
     csvData = csvData.map((child, index) => {
@@ -61,6 +62,14 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         PhuongThucThanhToan,
         TrangThai,
         GhiChu: child?.feedback || '',
+        Cash: child.cash,
+        NgaySinh: child.dob,
+        GioiTinh: child.gender,
+        DiaChi: child.address,
+        SoCCCD: child.cardNumber,
+        NoiCap: child.cardProvider,
+        NgayCap: child.cardProvidedDate,
+        NgayKhamSucKhoe: child.healthDate,
       }
     })
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
