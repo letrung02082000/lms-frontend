@@ -1,12 +1,15 @@
+import { Scanner } from '@yudiel/react-qr-scanner';
 import drivingApi from 'api/drivingApi';
 import InputField from 'components/form/InputField';
 import RadioField from 'components/form/RadioField';
 import SelectField from 'components/form/SelectField';
 import { DRIVING_STATE } from 'features/admin/driving-license/constant';
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
+import { MdFlipCameraAndroid } from 'react-icons/md';
 import { toastWrapper } from 'utils';
+import CccdQrcode from 'assets/images/driving-license/cccd-qrcode.jpeg'
 
 function DrivingHealthPage() {
   const [disabled, setDisabled] = useState(true);
@@ -14,6 +17,10 @@ function DrivingHealthPage() {
   const [healthDate, setHealthDate] = useState('');
   const [phone, setPhone] = useState('');
   const [data, setData] = useState({});
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [facingMode, setFacingMode] = useState('environment');
+  const [qrData, setQrData] = useState('');
+
   const {
     control,
     setValue,
@@ -88,6 +95,24 @@ function DrivingHealthPage() {
         toastWrapper('Lỗi lấy danh sách ngày khám sức khỏe', 'error');
       });
   }, [data]);
+
+  useEffect(() => {
+    if(qrData) {
+      const userQrData = qrData.split('|');
+      const gender = userQrData[4].toLowerCase() === genderOptions[0].label.toLowerCase() ? genderOptions[0] : genderOptions[1];
+      const dobText = userQrData[3].slice(4, 8) + '-' + userQrData[3].slice(2, 4) + '-' + userQrData[3].slice(0, 2);
+      const cardProvidedDateText = userQrData[6].slice(4, 8) + '-' + userQrData[6].slice(2, 4) + '-' + userQrData[6].slice(0, 2);
+      setValue('cardNumber', userQrData[0]);
+      setValue('dob', dobText);
+      setValue('gender', gender);
+      setValue('address', userQrData[5]);
+      setValue('cardProvidedDate', cardProvidedDateText);
+
+      setShowQRModal(false);
+      toastWrapper('Nhập thông tin từ mã QR thành công', 'success');
+    }
+  }, [qrData]);
+
 
   const handleHealthDateChange = (healthDate) => {
     setHealthDate(healthDate);
@@ -190,7 +215,6 @@ function DrivingHealthPage() {
               hasAsterisk={true}
               label='Tên của bạn'
               control={control}
-              // value={data?.name}
               name='name'
               disabled={true}
               rules={{
@@ -204,6 +228,24 @@ function DrivingHealthPage() {
             />
           </Col>
         </Form.Group>
+        <Row>
+          <Col>
+            <Button
+              className='mb-3'
+              variant='outline-primary'
+              onClick={() => {
+                if (disabled)
+                  return toastWrapper(
+                    'Vui lòng nhập số điện thoại để tìm kiếm hồ sơ',
+                    'error'
+                  );
+                setShowQRModal(true);
+              }}
+            >
+              Quét mã QR trên CCCD để nhập tự động
+            </Button>
+          </Col>
+        </Row>
         <Form.Group className='mb-3' as={Row}>
           <Col>
             <InputField
@@ -221,13 +263,6 @@ function DrivingHealthPage() {
             />
           </Col>
         </Form.Group>
-        {/* <Row>
-          <Col>
-            <Button className='mb-3' variant='outline-primary'>
-              Quét mã QR trên CCCD để nhập tự động
-            </Button>
-          </Col>
-        </Row> */}
         <Form.Group className='mb-3' as={Row}>
           <Col>
             <SelectField
@@ -343,7 +378,8 @@ function DrivingHealthPage() {
         <Row className='mb-3'>
           <Col>
             <Form.Text className='text-warning'>
-              Điều kiện tham gia khám sức khoẻ: Học viên phải đủ 18 tuổi theo ngày sinh tính đến ngày thực hiện khám sức khỏe.
+              Điều kiện tham gia khám sức khoẻ: Học viên phải đủ 18 tuổi theo
+              ngày sinh tính đến ngày thực hiện khám sức khỏe.
             </Form.Text>
           </Col>
         </Row>
@@ -361,6 +397,36 @@ function DrivingHealthPage() {
           </Col>
         </Row>
       </Form>
+      <Modal show={showQRModal} onHide={() => setShowQRModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <span className='me-3'>Quét mã</span>
+            <Button
+              variant='outline-primary'
+              onClick={() =>
+                setFacingMode(
+                  facingMode === 'environment' ? 'user' : 'environment'
+                )
+              }
+            >
+              <MdFlipCameraAndroid size={25} />
+            </Button>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Scanner
+            constraints={{ facingMode: facingMode }}
+            onScan={(result) => {
+              setQrData(result[0]?.rawValue);
+            }}
+          />
+          <div className='text-center mt-3'>
+            <p>Quét mã QR trên Căn cước/căn cước công dân để nhập tự động</p>
+            <img src={CccdQrcode} alt='cccd-qrcode' width='200' />
+            <p className='my-2'>Vị trí mã QR</p>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
