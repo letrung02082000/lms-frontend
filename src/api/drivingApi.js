@@ -201,7 +201,7 @@ class DrivingApi {
   getHealthDates = async (drivingDate) => {
     const url = `/driving/health/date`;
     return axiosClient.get(url, {
-      params: { drivingDate },
+      params: { drivingDate, visible: true },
     });
   };
 }
