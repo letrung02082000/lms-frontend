@@ -64,13 +64,13 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         TrangThai: DRIVING_STATE_LABEL[child?.processState],
         GhiChu: child?.feedback || '',
         Cash: child.cash,
-        NgaySinh: child.dob,
+        NgaySinh: new Date(child.dob).toLocaleDateString("en-GB"),
         GioiTinh: child.gender,
         DiaChi: child.address,
         SoCCCD: child.cardNumber,
         NoiCap: child.cardProvider,
-        NgayCap: child.cardProvidedDate,
-        NgayKhamSucKhoe: child.healthDate,
+        NgayCap: new Date(child.cardProvidedDate).toLocaleDateString("en-GB"),
+        NgayKhamSucKhoe: new Date(child.healthDate).toLocaleDateString("en-GB"),
       }
     })
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
