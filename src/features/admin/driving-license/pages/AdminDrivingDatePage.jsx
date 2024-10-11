@@ -12,7 +12,6 @@ function AdminDrivingDatePage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
-  const [selectedRow, setSelectedRow] = useState({});
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
 
@@ -47,6 +46,11 @@ function AdminDrivingDatePage() {
           },
           {
             field: 'formVisible',
+            headerName: 'Hiển thị trên website',
+            editable: true,
+          },
+          {
+            field: 'isVisible',
             headerName: 'Hiển thị',
             editable: true,
           },
@@ -83,11 +87,11 @@ function AdminDrivingDatePage() {
   }
 
   const onCellValueChanged = (event) => {
-    console.log(event);
     const { data } = event;
     const body = {
       description: data.description,
       formVisible: data.formVisible,
+      isVisible: data.isVisible,
     };
 
     drivingApi.updateDrivingDate(data?._id, body).then((res) => {
