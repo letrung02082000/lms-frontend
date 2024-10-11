@@ -19,6 +19,7 @@ import {
   SidebarHeader,
 } from "react-pro-sidebar";
 import { BiSolidFileExport } from 'react-icons/bi'
+import { DRIVING_STATE_LABEL } from 'features/admin/driving-license/constant'
 
 function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   const [visible, setVisible] = useState(true);
@@ -60,7 +61,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         MatTruoc: `https://drive.google.com/file/d/${child.frontsideId}/view`,
         MatSau: `https://drive.google.com/file/d/${child.backsideId}/view`,
         PhuongThucThanhToan,
-        TrangThai,
+        TrangThai: DRIVING_STATE_LABEL[child?.processState],
         GhiChu: child?.feedback || '',
         Cash: child.cash,
         NgaySinh: child.dob,
