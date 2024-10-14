@@ -96,7 +96,6 @@ function AdminDrivingDatePage() {
 
     drivingApi.updateDrivingDate(data?._id, body).then((res) => {
       toastWrapper('Cập nhật thành công', 'success');
-      fetchDrivingDates();
     }).catch((err) => {
       toastWrapper(err.response.data.message, 'error');
     });
