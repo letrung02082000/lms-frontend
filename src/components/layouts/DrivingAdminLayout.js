@@ -67,12 +67,20 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   }
 
   const zipFile = async (data) => {
+    const portraitZip = new JSZip()
     const portraitClipZip = new JSZip()
     const frontZip = new JSZip()
     const backZip = new JSZip()
 
     for (let index = 0; index < data.length; index++) {
       const drivingInfo = data[index];
+
+      if(drivingInfo.portraitUrl) {
+        const fileMimeType = drivingInfo.portraitUrl.split('.').pop();
+        const portraitResponse = await fetch(drivingInfo.portraitUrl);
+        const portraitBlob = await portraitResponse.blob();
+        portraitZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, portraitBlob, { binary: true });
+      }
 
       if(drivingInfo.portraitClipUrl) {
         const fileMimeType = drivingInfo.portraitClipUrl.split('.').pop();
@@ -95,6 +103,10 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         backZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, backBlob, { binary: true });
       }
     }
+
+    portraitZip.generateAsync({ type: "blob" }).then(function (content) {
+      FileSaver.saveAs(content, "portrait.zip");
+    });
 
     portraitClipZip.generateAsync({ type: "blob" }).then(function (content) {
       FileSaver.saveAs(content, "portrait-clip.zip");
