@@ -11,7 +11,7 @@ import AdminLayout from 'components/layout/AdminLayout';
 import AdminGuard from 'components/guard/AdminGuard';
 import AdminPage from 'features/admin/pages/AdminPage';
 import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDrivingDatePage';
-import AdminDrivingA1Page from 'features/admin/driving-license/pages/AdminDrivingPage';
+import AdminDrivingPage from 'features/admin/driving-license/pages/AdminDrivingPage';
 import DrivingAdminPage from 'features/admin/driving-license/DrivingAdminPage';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
@@ -30,6 +30,9 @@ import StoreLayout from 'components/layout/StoreLayout';
 import MyOrderPage from 'features/app/pages/MyOrderPage';
 import MyStoreSettingPage from 'features/app/pages/MyStoreSettingPage';
 import MyStatisticsPage from 'features/app/pages/MyStatisticsPage';
+import AdminB12DrivingPage from 'features/admin/driving-license/pages/AdminB12DrivingPage';
+import AdminA1DrivingPage from 'features/admin/driving-license/pages/AdminA1DrivingPage';
+import AdminA2DrivingPage from 'features/admin/driving-license/pages/AdminA2DrivingPage';
 
 const router = createBrowserRouter([
   {
@@ -220,7 +223,19 @@ const router = createBrowserRouter([
           },
           {
             path: PATH.DRIVING.ADMIN.ROOT,
-            element: <AdminDrivingA1Page />,
+            element: <AdminDrivingPage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.A1,
+            element: <AdminA1DrivingPage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.A2,
+            element: <AdminA2DrivingPage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.B12,
+            element: <AdminB12DrivingPage />,
           },
         ],
       },

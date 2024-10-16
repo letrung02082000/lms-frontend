@@ -23,11 +23,11 @@ function A2Driving() {
     <>
       {loading ? <p>Đang tải dữ liệu...</p> : null}
       {data.length <= 0 ? <p>Không có dữ liệu</p> : null}
-      <div>
+      <>
         {data.map((child) => {
           return <Driving info={child} key={child._id} id={child._id} />;
         })}
-      </div>
+      </>
     </>
   );
 }

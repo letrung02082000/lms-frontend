@@ -30,25 +30,9 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   const exportToCSV = (csvData, fileName) => {
     csvData = csvData.map((child, index) => {
       let NgayThi = new Date(child.date)
-      let TimeStamp = new Date(child.createdAt)
       NgayThi = NgayThi.toLocaleDateString()
       let Timestamp = new Date(child.createdAt)
       Timestamp = `${Timestamp.toLocaleDateString('en-GB')} ${Timestamp.toLocaleTimeString('en-GB')}`
-
-      const PhuongThucThanhToan = child.paymentMethod === 0 ? 'Trực tiếp' : 'Chuyển khoản'
-
-      let TrangThai = ''
-      if (child.processState == 0) {
-        TrangThai = 'Đã tạo'
-      } else if (child.processState == 1) {
-        TrangThai = 'Chờ cập nhật thông tin'
-      } else if (child.processState == 2) {
-        TrangThai = 'Chờ thanh toán'
-      } else if (child.processState == 3) {
-        TrangThai = 'Đã hoàn tất'
-      } else if (child.processState == 4) {
-        TrangThai = 'Đã hủy'
-      }
 
       return {
         STT: index + 1,
@@ -57,10 +41,10 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         NgayThi,
         SoDienThoai: child.tel,
         Zalo: child.zalo,
-        ChanDung: `https://drive.google.com/file/d/${child.portraitId}/view`,
-        MatTruoc: `https://drive.google.com/file/d/${child.frontsideId}/view`,
-        MatSau: `https://drive.google.com/file/d/${child.backsideId}/view`,
-        PhuongThucThanhToan,
+        ChanDung: child?.portraitUrl,
+        ChanDungCat: child?.portraitClipUrl,
+        MatTruoc: child?.frontUrl,
+        MatSau: child?.backUrl,
         TrangThai: DRIVING_STATE_LABEL[child?.processState],
         GhiChu: child?.feedback || '',
         Cash: child.cash,
@@ -83,18 +67,18 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   }
 
   const zipFile = async (data) => {
-    const portraitZip = new JSZip()
+    const portraitClipZip = new JSZip()
     const frontZip = new JSZip()
     const backZip = new JSZip()
 
     for (let index = 0; index < data.length; index++) {
       const drivingInfo = data[index];
 
-      if(drivingInfo.portraitUrl) {
-        const fileMimeType = drivingInfo.portraitUrl.split('.').pop();
-        const portraitResponse = await fetch(drivingInfo.portraitUrl);
-        const portraitBlob = await portraitResponse.blob();
-        portraitZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, portraitBlob, { binary: true });
+      if(drivingInfo.portraitClipUrl) {
+        const fileMimeType = drivingInfo.portraitClipUrl.split('.').pop();
+        const portraitClipResponse = await fetch(drivingInfo.portraitClipUrl);
+        const portraitClipBlob = await portraitClipResponse.blob();
+        portraitClipZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, portraitClipBlob, { binary: true });
       }
 
       if(drivingInfo.frontUrl) {
@@ -112,8 +96,8 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
       }
     }
 
-    portraitZip.generateAsync({ type: "blob" }).then(function (content) {
-      FileSaver.saveAs(content, "portrait.zip");
+    portraitClipZip.generateAsync({ type: "blob" }).then(function (content) {
+      FileSaver.saveAs(content, "portrait-clip.zip");
     });
 
     frontZip.generateAsync({ type: "blob" }).then(function (content) {

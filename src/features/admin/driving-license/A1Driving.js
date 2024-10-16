@@ -16,9 +16,7 @@ import DrivingApi from "api/drivingApi";
 import { Button } from "react-bootstrap";
 import { DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
 
-function AllDriving() {
-
-
+function A1Driving() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -177,7 +175,7 @@ function AllDriving() {
   };
 
   return (
-    <div>
+    <>
       <div className="d-flex flex-wrap justify-content-center">
         {dates.map((child, index) => {
           return (
@@ -236,8 +234,8 @@ function AllDriving() {
           })}
         </div>
       )}
-    </div>
+    </>
   );
 }
 
-export default AllDriving;
+export default A1Driving;

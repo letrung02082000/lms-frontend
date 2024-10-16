@@ -55,7 +55,7 @@ const AdminLayout = ({ menu, children, title, root }) => {
                   <SubMenu
                     title={item.label}
                     className="mb-3"
-                    icon={item.icons}
+                    icon={item.icon}
                     key={item.path}
                   >
                     {item?.children.map((submenu) => {

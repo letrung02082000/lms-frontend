@@ -204,6 +204,11 @@ class DrivingApi {
       params: { drivingDate, visible: true },
     });
   };
+
+  clipPortrait = async (id) => {
+    const url = `/driving/clipping/${id}`;
+    return axiosClient.post(url, { id });
+  }
 }
 
 export default new DrivingApi();
