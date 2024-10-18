@@ -199,8 +199,8 @@ export default function DrivingInstructionPage(props) {
             </ul>
             <p id="fee-instruction">3. Thanh toán lệ phí</p>
             <ul>
-              {/* <li>Chuyển khoản ngân hàng</li>
-              <Button className="my-3" variant='outline-primary' onClick={() => setAccountShow(true)}><small>Xem hướng dẫn chuyển khoản</small></Button> */}
+              <li>Chuyển khoản ngân hàng</li>
+              <Button className="my-3" variant='outline-primary' onClick={() => setAccountShow(true)}><small>Xem hướng dẫn chuyển khoản</small></Button>
 
               <li>
                 Đóng trực tiếp: Tại văn phòng iSinhvien
