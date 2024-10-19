@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import DrivingApi from "api/drivingApi";
 import { formatCurrency } from "utils/commonUtils";
-import { Button, Col, FormControl, Row } from "react-bootstrap";
+import { Button, Col, FormControl, Image, Modal, Row } from "react-bootstrap";
 import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
 import { MdRotateLeft } from "react-icons/md";
 import { DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
-import faceapi from "@vladmandic/face-api";
 
 function Driving(props) {
   let {
@@ -28,8 +27,10 @@ function Driving(props) {
     backUrl,
     healthDate,
   } = props.info;
-
-  const showImage = props.showImage;
+  const IDENTITY_CARD_TYPE = {
+    CHIP_ID_CARD_FRONT: 'chip_id_card_front',
+    CHIP_ID_CARD_BACK: 'chip_id_card_back',
+  }
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [sent, setSent] = useState(messageSent);
@@ -45,6 +46,9 @@ function Driving(props) {
   const [imageVisible, setImageVisible] = useState(false);
   const [portraitClipUrl, setPortraitClipUrl] = useState(props?.info?.portraitClipUrl);
   const [clipping, setClipping] = useState(false);
+  const [extracting, setExtracting] = useState(false);
+  const [identityInfo, setIdentityInfo] = useState(JSON.parse(props?.info?.identityInfo || '[]'));
+  const [showIdentityInfo, setShowIdentityInfo] = useState(false);
   createdAt = new Date(createdAt);
 
   useEffect(() => {
@@ -111,7 +115,7 @@ function Driving(props) {
         setBackLoading(false);
       }
 
-      if(portraitClipUrl) {
+      if (portraitClipUrl) {
         fetchPortraitClip(portraitClipUrl);
       }
     } else {
@@ -233,6 +237,18 @@ function Driving(props) {
       toastWrapper(e.toString(), 'error')
     }).finally(() => {
       setClipping(false);
+    });
+  }
+
+  const extractIdentity = async () => {
+    setExtracting(true);
+    DrivingApi.extractIdentity(_id).then(res => {
+      setIdentityInfo(res?.data);
+      toastWrapper('Đọc CCCD thành công', 'success')
+    }).catch(e => {
+      toastWrapper(e.toString(), 'error')
+    }).finally(() => {
+      setExtracting(false);
     });
   }
 
@@ -382,18 +398,20 @@ function Driving(props) {
                     {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`portrait_clip_${_id}`} />
                   </a>
+
                 </div>
                 <div className="d-flex">
-                  {
-                    processState === DRIVING_STATE.APPROVED && <>
-                      {!portraitClipUrl && <Button disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách...' : 'Tách nền'}</Button>}
-                      <Button className='mx-2' variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>Cắt 3x4</Button>
-                    </>
-                  }
                   <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url })} />
                   <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`portrait_${_id}`)}>
                     <MdRotateLeft />
                   </Button>
+                  <div className="d-flex justify-content-start">
+                {
+                  processState === DRIVING_STATE.APPROVED && <>
+                    {<Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách...' : 'Tách nền'}</Button>}
+                  </>
+                }
+              </div>
                 </div>
               </div>
               <div>
@@ -413,6 +431,11 @@ function Driving(props) {
                   <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`front_${_id}`)}>
                     <MdRotateLeft />
                   </Button>
+                  {
+                    processState === DRIVING_STATE.APPROVED && <>
+                      {identityInfo?.length ? <Button className="ms-2" variant="outline-primary" onClick={() => setShowIdentityInfo(true)}>Xem thông tin trích xuất</Button> :  <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc CCCD...' : 'Đọc CCCD'}</Button>}
+                    </>
+                  }
                 </div>
               </div>
 
@@ -436,8 +459,8 @@ function Driving(props) {
                 </div>
               </div>
             </div>
-            <div className="d-flex justify-content-end">
-              <Button variant="outline-primary" className="mt-2" onClick={() => setImageVisible(!imageVisible)}>Ẩn/Hiện</Button>
+            <div className="d-flex justify-content-end mt-2">
+              <Button variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>Ẩn/Hiện</Button>
             </div>
           </Row>
         </Col>
@@ -482,7 +505,38 @@ function Driving(props) {
           </Row>
         </Col>
       </Row>
+      {showIdentityInfo && <Modal show={showIdentityInfo} onHide={() => setShowIdentityInfo(false)} scrollable backdrop="static" size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Thông tin trích xuất</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row>
+            <Col xs={6}>{identityInfo[1]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT && <div>
+              <p>Họ tên:<br/><b>{identityInfo[1]?.info?.name}</b></p>
+              <p>Ngày sinh: <b>{identityInfo[1]?.info?.dob}</b></p>
+              <p>Số CCCD: <b>{identityInfo[1]?.info?.id}</b></p>
+              <p>Địa chỉ:<br/><b>{identityInfo[1]?.info?.address}</b></p>
+              <p>Giới tính: <b>{identityInfo[1]?.info?.gender}</b></p>
+            </div>}
+              {identityInfo[0]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_BACK && <div>
+                <p>Ngày cấp: <b>{identityInfo[0]?.info?.issue_date}</b></p>
+                <p>Nơi cấp:<br/><b>{identityInfo[0]?.info?.issued_at}</b></p>
+                <p>Ngày hết hạn: <b>{identityInfo[0]?.info?.due_date}</b></p>
+              </div>}</Col>
+            <Col xs={6}>
+              <Image className="mb-2" width='100%' src={`data:image/jpeg;base64,${identityInfo[1]?.info?.image}`} />
+              <Image width='100%' src={`data:image/jpeg;base64,${identityInfo[0]?.info?.image}`} />
+            </Col>
+          </Row>
 
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowIdentityInfo(false)}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>}
     </div>
   );
 }

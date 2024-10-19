@@ -209,6 +209,11 @@ class DrivingApi {
     const url = `/driving/clipping/${id}`;
     return axiosClient.post(url, { id });
   }
+
+  extractIdentity = async (id) => {
+    const url = `/driving/extract/${id}`;
+    return axiosClient.get(url);
+  }
 }
 
 export default new DrivingApi();
