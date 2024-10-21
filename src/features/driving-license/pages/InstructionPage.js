@@ -121,7 +121,7 @@ export default function DrivingInstructionPage(props) {
           <div id="address">
             <h3 className={styles.sectionTitle}>Địa điểm dự thi</h3>
             <p>Thí sinh được chọn địa điểm thi khi điền link đăng ký.</p>
-            <p className="my-2"><strong>Trường Đại học Thể dục Thể thao TP HCM</strong></p>
+            {/* <p className="my-2"><strong>Trường Đại học Thể dục Thể thao TP HCM</strong></p>
             <li>
               Địa chỉ: KP 6, P Linh Trung, TP Thủ Đức, TP HCM.
             </li>
@@ -136,7 +136,7 @@ export default function DrivingInstructionPage(props) {
               <li>Mượn xe số tập vòng số 8 tại nhà khách ĐHQG-HCM (miễn phí) và tập xe cảm biến trước ngày thi (miễn phí).</li>
               <li>Cách ký túc xá khu B ~3 km, ký túc xá Khu A ~4.2 km. Có xe đưa rước tại Kí túc xá Khu B vào ngày thi.</li>
               <li>Xem bản đồ: <a href="https://maps.app.goo.gl/fqtCLDRyLKf6Eo3u7" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
-            </p>
+            </p> */}
             <p className="my-2"><strong>Trung Tâm Sát Hạch Loại 3</strong></p>
             <p>
               <li>Địa chỉ: 21 Bis Đường số 9, P Trường Thọ, TP Thủ Đức, TP HCM.</li>
