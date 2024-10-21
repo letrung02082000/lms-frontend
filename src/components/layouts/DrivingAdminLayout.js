@@ -71,9 +71,20 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
     const portraitClipZip = new JSZip()
     const frontZip = new JSZip()
     const backZip = new JSZip()
+    const frontCropZip = new JSZip()
+    const backCropZip = new JSZip()
 
     for (let index = 0; index < data.length; index++) {
       const drivingInfo = data[index];
+
+      if (drivingInfo?.identityInfo) {
+        const frontFileName = `${drivingInfo.name}-${drivingInfo.tel}-1.jpg`;
+        const backFileName = `${drivingInfo.name}-${drivingInfo.tel}-2.jpg`;
+        const identityInfo = JSON.parse(drivingInfo.identityInfo);
+        console.log(identityInfo)
+        backCropZip.file(backFileName, identityInfo[0]?.info?.image, { base64: true });
+        frontCropZip.file(frontFileName, identityInfo[1]?.info?.image, { base64: true });
+      }
 
       if(drivingInfo.portraitUrl) {
         const fileMimeType = drivingInfo.portraitUrl.split('.').pop();
@@ -118,6 +129,14 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
 
     backZip.generateAsync({ type: "blob" }).then(function (content) {
       FileSaver.saveAs(content, "back-source.zip");
+    });
+
+    frontCropZip.generateAsync({ type: "blob" }).then(function (content) {
+      FileSaver.saveAs(content, "front-crop.zip");
+    });
+
+    backCropZip.generateAsync({ type: "blob" }).then(function (content) {
+      FileSaver.saveAs(content, "back-crop.zip");
     });
   }
 
