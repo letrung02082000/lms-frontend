@@ -796,7 +796,7 @@ function AdminDrivingA1Page() {
           />
           <Form.Group className='my-3' as={Row}>
             <Form.Label className='text-center'>
-              {rowData?.[0]?.name}
+              {rowData?.[0]?.name} {' - '} {new Date(rowData?.[0]?.date).toLocaleDateString('en-GB')}
             </Form.Label>
             <Form.Text className='text-center'>
               {rowData?.[0]?.tel} <CopyButton text={rowData?.[0]?.tel} />
