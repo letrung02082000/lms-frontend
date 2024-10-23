@@ -178,7 +178,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
               Tải ảnh chân dung
             </MenuItem>
             <MenuItem className="mb-3" onClick={() => zipCard(data)} icon={<FaDownload />}>
-              Tải CCCD
+              Tải Căn cước công dân
             </MenuItem>
             <MenuItem
               className="mb-3"
