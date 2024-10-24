@@ -13,6 +13,7 @@ import CccdQrcode from 'assets/images/driving-license/cccd-qrcode.jpeg'
 
 function DrivingHealthPage() {
   const [disabled, setDisabled] = useState(true);
+  const [infoRequired, setInfoRequired] = useState(false);
   const [healthDates, setHealthDates] = useState([]);
   const [healthDate, setHealthDate] = useState('');
   const [phone, setPhone] = useState('');
@@ -199,16 +200,6 @@ function DrivingHealthPage() {
             </Button>
           </Col>
         </Row>
-        {data?.healthDate && (
-          <Row className='mb-3'>
-            <Col>
-              <Form.Text className='text-success'>
-                Bạn đã đăng ký tham gia khám sức khoẻ vào ngày{' '}
-                {new Date(data?.healthDate).toLocaleDateString('en-GB')}.
-              </Form.Text>
-            </Col>
-          </Row>
-        )}
         <Form.Group className='mb-3' as={Row}>
           <Col>
             <InputField
@@ -228,125 +219,139 @@ function DrivingHealthPage() {
             />
           </Col>
         </Form.Group>
-        <Row>
-          <Col>
-            <Button
-              className='mb-3'
-              variant='outline-primary'
-              onClick={() => {
-                if (disabled)
-                  return toastWrapper(
-                    'Vui lòng nhập số điện thoại để tìm kiếm hồ sơ',
-                    'error'
-                  );
-                setShowQRModal(true);
-              }}
-            >
-              Quét mã QR trên CCCD để nhập tự động
-            </Button>
-          </Col>
-        </Row>
-        <Form.Group className='mb-3' as={Row}>
-          <Col>
-            <InputField
-              hasAsterisk={true}
-              label='Ngày sinh'
-              control={control}
-              name='dob'
-              type='date'
-              defaultValue='2001-01-01'
-              disabled={disabled}
-              rules={{
-                required: 'Vui lòng nhập trường này',
-              }}
-              noClear={true}
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group className='mb-3' as={Row}>
-          <Col>
-            <SelectField
-              rules={{
-                required: true,
-              }}
-              options={genderOptions}
-              label={'Giới tính'}
-              control={control}
-              name='gender'
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group className='mb-3' as={Row}>
-          <Col>
-            <InputField
-              hasAsterisk={true}
-              label='Số Căn cước công dân'
-              control={control}
-              name='cardNumber'
-              disabled={disabled}
-              rules={{
-                required: 'Vui lòng nhập trường này',
-                maxLength: {
-                  value: 12,
-                  message: 'Số Căn cước công dân gồm 12 chữ số',
-                },
-                minLength: {
-                  value: 12,
-                  message: 'Số Căn cước công dân gồm 12 chữ số',
-                },
-              }}
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group className='mb-3' as={Row}>
-          <Col>
-            <InputField
-              hasAsterisk={true}
-              label='Ngày cấp'
-              control={control}
-              name='cardProvidedDate'
-              type='date'
-              defaultValue='2021-01-01'
-              disabled={disabled}
-              rules={{
-                required: 'Vui lòng nhập trường này',
-              }}
-              noClear={true}
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group className='mb-3' as={Row}>
-          <Col>
-            <InputField
-              as='textarea'
-              label='Nơi cấp'
-              placeholder='Nếu bỏ trống, nơi cấp sẽ là "Cục trưởng Cục Cảnh sát Quản lý hành chính về trật tự xã hội"'
-              control={control}
-              name='cardProvider'
-              defaultValue='Cục trưởng Cục Cảnh sát Quản lý hành chính về trật tự xã hội'
-              disabled={disabled}
-              onClear={handleClearButton}
-              rules={{
-                required: false,
-              }}
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group className='mb-3' as={Row}>
-          <Col>
-            <InputField
-              as='textarea'
-              rows={3}
-              hasAsterisk={true}
-              label='Địa chỉ thường trú'
-              placeholder='Ghi rõ ấp/xóm/tổ/khu phố, xã/phường/thị trấn, quận/huyện, tỉnh/thành phố theo Căn cước công dân'
-              control={control}
-              name='address'
-              disabled={disabled}
-              onClear={handleClearButton}
-            />
-          </Col>
-        </Form.Group>
+        {data?.healthDate && (
+          <Row className='mb-3'>
+            <Col>
+              <Form.Text className='text-success'>
+                Bạn đã đăng ký tham gia khám sức khoẻ vào ngày{' '}
+                {new Date(data?.healthDate).toLocaleDateString('en-GB')}.
+              </Form.Text>
+            </Col>
+          </Row>
+        )}
+        {infoRequired && (
+          <>
+            <Row>
+              <Col>
+                <Button
+                  className='mb-3'
+                  variant='outline-primary'
+                  onClick={() => {
+                    if (disabled)
+                      return toastWrapper(
+                        'Vui lòng nhập số điện thoại để tìm kiếm hồ sơ',
+                        'error'
+                      );
+                    setShowQRModal(true);
+                  }}
+                >
+                  Quét mã QR trên CCCD để nhập tự động
+                </Button>
+              </Col>
+            </Row>
+            <Form.Group className='mb-3' as={Row}>
+              <Col>
+                <InputField
+                  hasAsterisk={true}
+                  label='Ngày sinh'
+                  control={control}
+                  name='dob'
+                  type='date'
+                  defaultValue='2001-01-01'
+                  disabled={disabled}
+                  rules={{
+                    required: 'Vui lòng nhập trường này',
+                  }}
+                  noClear={true}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group className='mb-3' as={Row}>
+              <Col>
+                <SelectField
+                  rules={{
+                    required: true,
+                  }}
+                  options={genderOptions}
+                  label={'Giới tính'}
+                  control={control}
+                  name='gender'
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group className='mb-3' as={Row}>
+              <Col>
+                <InputField
+                  hasAsterisk={true}
+                  label='Số Căn cước công dân'
+                  control={control}
+                  name='cardNumber'
+                  disabled={disabled}
+                  rules={{
+                    required: 'Vui lòng nhập trường này',
+                    maxLength: {
+                      value: 12,
+                      message: 'Số Căn cước công dân gồm 12 chữ số',
+                    },
+                    minLength: {
+                      value: 12,
+                      message: 'Số Căn cước công dân gồm 12 chữ số',
+                    },
+                  }}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group className='mb-3' as={Row}>
+              <Col>
+                <InputField
+                  hasAsterisk={true}
+                  label='Ngày cấp'
+                  control={control}
+                  name='cardProvidedDate'
+                  type='date'
+                  defaultValue='2021-01-01'
+                  disabled={disabled}
+                  rules={{
+                    required: 'Vui lòng nhập trường này',
+                  }}
+                  noClear={true}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group className='mb-3' as={Row}>
+              <Col>
+                <InputField
+                  as='textarea'
+                  label='Nơi cấp'
+                  placeholder='Nếu bỏ trống, nơi cấp sẽ là "Cục trưởng Cục Cảnh sát Quản lý hành chính về trật tự xã hội"'
+                  control={control}
+                  name='cardProvider'
+                  defaultValue='Cục trưởng Cục Cảnh sát Quản lý hành chính về trật tự xã hội'
+                  disabled={disabled}
+                  onClear={handleClearButton}
+                  rules={{
+                    required: false,
+                  }}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group className='mb-3' as={Row}>
+              <Col>
+                <InputField
+                  as='textarea'
+                  rows={3}
+                  hasAsterisk={true}
+                  label='Địa chỉ thường trú'
+                  placeholder='Ghi rõ ấp/xóm/tổ/khu phố, xã/phường/thị trấn, quận/huyện, tỉnh/thành phố theo Căn cước công dân'
+                  control={control}
+                  name='address'
+                  disabled={disabled}
+                  onClear={handleClearButton}
+                />
+              </Col>
+            </Form.Group>
+          </>
+        )}
         <Row className='mb-3'>
           <Col>
             <RadioField
@@ -361,20 +366,6 @@ function DrivingHealthPage() {
             />
           </Col>
         </Row>
-        {/* <Form.Group className='mb-3' as={Row}>
-          <Col>
-            <SelectField
-              rules={{
-                required: true,
-              }}
-              options={purposeOptions}
-              label={'Mục đích khám sức khỏe'}
-              control={control}
-              name='purpose'
-              hasAsterisk={true}
-            />
-          </Col>
-        </Form.Group> */}
         <Row className='mb-3'>
           <Col>
             <Form.Text className='text-warning'>

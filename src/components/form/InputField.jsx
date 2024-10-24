@@ -25,7 +25,7 @@ function InputField({ noLabel, label, children, control, name, rules, defaultVal
             {hasAsterisk && <Asterisk />}
           </Form.Label>
         )}
-        <Form.Text className='d-block mb-2'>{props?.subLabel}</Form.Text>
+        {props?.subLabel && <Form.Text className='d-block mb-2'>{props?.subLabel}</Form.Text>}
         <div className='input-wrapper'>
           {!error && !noClear && (
             <button

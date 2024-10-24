@@ -109,6 +109,7 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
       onHide={() => setShow(false)}
       scrollable={true}
       keyboard={false}
+      size='lg'
     >
       <Modal.Header closeButton>
         <Modal.Title>Thông tin chuyển khoản</Modal.Title>
@@ -127,20 +128,6 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
                 alt='vietqr'
                 className='w-100'
               />
-              <p className='text-center text-primary m-0'>
-                Lệ phí thi hạng {drivingClass}{' '}
-                {isStudent ? 'đối với sinh viên' : ''} khi{' '}
-                {hasCheckup
-                  ? 'khám sức khoẻ tại trung tâm.'
-                  : 'tự khám sức khoẻ.'}
-              </p>
-              <p className='text-center'>
-                <strong>{formatCurrency(amount)}</strong> VNĐ
-                {group === 1 ? '' : ` x ${group} người`}
-              </p>
-              {group > 1 && (
-                <p className='text-center text-danger'>Ưu đãi đăng ký theo nhóm {group} người chỉ áp dụng khi đăng ký trực tiếp.</p>
-              )}
             </Col>
 
             <Col>
@@ -211,6 +198,7 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
                       Tự khám sức khoẻ
                     </Button>
                   </ButtonGroup>
+
                   {/* <ButtonGroup className='m-1' size='sm'>
                     <Button
                       onClick={() => setGroup(1)}
@@ -237,17 +225,36 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
                 </ButtonToolbar>
               </Row>
               <Row>
+                <p className='text-center text-primary m-0'>
+                  Lệ phí thi hạng {drivingClass}{' '}
+                  {isStudent ? 'đối với sinh viên' : ''} khi{' '}
+                  {hasCheckup
+                    ? 'khám sức khoẻ tại trung tâm.'
+                    : 'tự khám sức khoẻ.'}
+                </p>
+                <p className='text-center'>
+                  <strong>{formatCurrency(amount)}</strong> VNĐ
+                  {group === 1 ? '' : ` x ${group} người`}
+                </p>
+                {group > 1 && (
+                  <p className='text-center text-danger'>
+                    Ưu đãi đăng ký theo nhóm {group} người chỉ áp dụng khi đăng
+                    ký trực tiếp.
+                  </p>
+                )}
+              </Row>
+              <Row>
                 <div className='text-uppercase fw-bold mb-3'>{bankName}</div>
                 <div className='mb-2'>
                   <small>Chủ tài khoản</small>
-                  <br/>
+                  <br />
                   <b>{accountName?.toUpperCase()}</b>
                 </div>
                 <Row className='mb-2'>
                   <Col xs={12}>
                     <small>Số tài khoản</small>
-                    <br/>
-                    <b>{accountNumber}{' '}</b>
+                    <br />
+                    <b>{accountNumber} </b>
                     <CopyButton
                       text={accountNumber}
                       copied={copied}
@@ -260,8 +267,8 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
                 <Row className='mb-2'>
                   <Col xs={12}>
                     <small>Nội dung</small>
-                    <br/>
-                    <b>{desc}{' '}</b>
+                    <br />
+                    <b>{desc} </b>
                     <CopyButton
                       text={desc}
                       copied={contentCopied}

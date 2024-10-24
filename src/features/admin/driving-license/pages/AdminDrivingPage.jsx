@@ -8,12 +8,13 @@ import InputField from 'components/form/InputField';
 import SelectField from 'components/form/SelectField';
 import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
-import { ToastWrapper, toastWrapper } from 'utils';
+import { toastWrapper } from 'utils';
 import Select from 'react-select';
 import cryptojs from 'crypto-js'
 import { Scanner } from '@yudiel/react-qr-scanner';
 import CopyButton from 'components/button/CopyButton';
 import { ROLE } from 'constants/role';
+import AccountModal from 'features/driving-license/components/AccountModal';
 
 function AdminDrivingA1Page() {
   const userRole = JSON.parse(localStorage.getItem('user-info')).role;
@@ -42,6 +43,7 @@ function AdminDrivingA1Page() {
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrData, setQrData] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAccountModal, setShowAccountModal] = useState(false);
   const [visibleDate, setVisibleDate] = useState([{}]);
   const {
     control,
@@ -247,6 +249,7 @@ function AdminDrivingA1Page() {
     setValue('tel', selectedRow?.tel);
     setValue('zalo', selectedRow?.zalo);
     setValue('feedback', selectedRow?.feedback);
+    setValue('cash', selectedRow?.cash);
 
     if(showEditModal) {
       fetchImage();
@@ -499,8 +502,8 @@ function AdminDrivingA1Page() {
       <Modal
         show={showEditModal}
         onHide={handleClose}
-        size='lg'
-        backdrop='static'
+        size={'lg'}
+        backdrop={'static'}
       >
         <Modal.Header closeButton>
           <Modal.Title>Cập nhật hồ sơ</Modal.Title>
@@ -654,6 +657,27 @@ function AdminDrivingA1Page() {
               </Col>
             </Row>
 
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  noClear={true}
+                  label='Đã thanh toán'
+                  control={control}
+                  name='cash'
+                  type='number'
+                  disabled={true}
+                />
+              </Col>
+              <Col xs={5}>
+                <label className='d-block form-label' style={{marginBottom: '0.5rem'}}>Chuyển khoản</label>
+                <Button className='w-100' onClick={() => setShowAccountModal(true)}>
+                  Mã QR chuyển khoản
+                </Button>
+              </Col>
+            </Row>
+
+            <Row className='mb-3'></Row>
+
             <Row className='mb-5'>
               <Col>
                 <InputField
@@ -671,26 +695,57 @@ function AdminDrivingA1Page() {
 
             <Row className='mb-5'>
               <Col>
-                <a id='front-link' download={`${selectedRow?.name}_front.png`}>
-                  <img id='front-card' alt='front-card' />
-                </a>
+                <div>
+                  <a
+                    id='front-link'
+                    download={`${selectedRow?.name}_front.png`}
+                  >
+                    <img id='front-card' alt='front-card' />
+                  </a>
+                </div>
+                <Button
+                  variant='outline-primary'
+                  className='mt-2'
+                  onClick={() => rotateImage('front-card')}
+                >
+                  <MdRotateLeft /> Xoay ảnh mặt trước
+                </Button>
+              </Col>
+
+              <Col>
+                <div>
+                  <a id='back-link' download={`${selectedRow?.name}_back.png`}>
+                    <img id='back-card' alt='back-card' />
+                  </a>
+                </div>
+                <Button
+                  variant='outline-primary'
+                  className='mt-2'
+                  onClick={() => rotateImage('back-card')}
+                >
+                  <MdRotateLeft /> Xoay ảnh mặt sau
+                </Button>
               </Col>
               <Col>
-                <a id='back-link' download={`${selectedRow?.name}_back.png`}>
-                  <img id='back-card' alt='back-card' />
-                </a>
+                <div>
+                  <a
+                    id='portrait-link'
+                    download={`${selectedRow.name}_portrait.png`}
+                  >
+                    <img id='portrait' alt='portrait' />
+                  </a>
+                </div>
+                <Button
+                  variant='outline-primary'
+                  className='mt-2'
+                  onClick={() => rotateImage('portrait')}
+                >
+                  <MdRotateLeft /> Xoay ảnh chân dung
+                </Button>
               </Col>
             </Row>
 
             <Row>
-              <Col>
-                <a
-                  id='portrait-link'
-                  download={`${selectedRow.name}_portrait.png`}
-                >
-                  <img id='portrait' alt='portrait' />
-                </a>
-              </Col>
               <Col>
                 <Row>
                   <Col>
@@ -706,13 +761,6 @@ function AdminDrivingA1Page() {
                         })
                       }
                     /> */}
-                    <Button
-                      variant='outline-primary'
-                      className='mt-2'
-                      onClick={() => rotateImage('portrait')}
-                    >
-                      <MdRotateLeft /> Xoay ảnh chân dung
-                    </Button>
                   </Col>
                 </Row>
                 <Row className='mt-3'>
@@ -729,13 +777,6 @@ function AdminDrivingA1Page() {
                         })
                       }
                     /> */}
-                    <Button
-                      variant='outline-primary'
-                      className='mt-2'
-                      onClick={() => rotateImage('front-card')}
-                    >
-                      <MdRotateLeft /> Xoay ảnh mặt trước
-                    </Button>
                   </Col>
                 </Row>
                 <Row className='mt-3'>
@@ -752,13 +793,6 @@ function AdminDrivingA1Page() {
                         })
                       }
                     /> */}
-                    <Button
-                      variant='outline-primary'
-                      className='mt-2'
-                      onClick={() => rotateImage('back-card')}
-                    >
-                      <MdRotateLeft /> Xoay ảnh mặt sau
-                    </Button>
                   </Col>
                 </Row>
               </Col>
@@ -796,7 +830,8 @@ function AdminDrivingA1Page() {
           />
           <Form.Group className='my-3' as={Row}>
             <Form.Label className='text-center'>
-              {rowData?.[0]?.name} {' - '} {new Date(rowData?.[0]?.date).toLocaleDateString('en-GB')}
+              {rowData?.[0]?.name} {' - '}{' '}
+              {new Date(rowData?.[0]?.date).toLocaleDateString('en-GB')}
             </Form.Label>
             <Form.Text className='text-center'>
               {rowData?.[0]?.tel} <CopyButton text={rowData?.[0]?.tel} />
@@ -834,7 +869,6 @@ function AdminDrivingA1Page() {
                   { label: 'Đã khám sức khoẻ', value: 6 },
                   { label: 'Đã hoàn tất', value: 3 },
                   { label: 'Đã huỷ', value: 4 },
-
                 ]}
                 onChange={(val) =>
                   setUpdateParams({
@@ -847,6 +881,11 @@ function AdminDrivingA1Page() {
           </Form.Group>
         </Modal.Body>
       </Modal>
+      <AccountModal
+        show={showAccountModal}
+        setShow={() => setShowAccountModal(false)}
+        tel={selectedRow?.tel}
+      />
     </div>
   );
 }
