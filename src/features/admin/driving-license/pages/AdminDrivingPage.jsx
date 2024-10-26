@@ -129,6 +129,7 @@ function AdminDrivingA1Page() {
         return 'Đã huỷ';
       },
     },
+    { field: 'source', headerName: 'Nguồn', flex: 1 },
     ...(userRole === ROLE.DRIVING.ADMIN || userRole === ROLE.ADMIN) ? [{ field: 'action', headerName: 'Thao tác', flex: 1, cellRenderer: ActionButton, valueGetter: rowDataGetter }] : [],
   ]);
 
