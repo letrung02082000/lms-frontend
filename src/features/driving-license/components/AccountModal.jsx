@@ -17,9 +17,9 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
   const [copied, setCopied] = useState(false);
   const [contentCopied, setContentCopied] = useState(false);
   const [bankCode, setBankCode] = useState('MB');
-  const [accountNumber, setAccountNumber] = useState('7899996886');
+  const [accountNumber, setAccountNumber] = useState('0866799899');
   const [desc, setDesc] = useState(`GPLX ${tel}` || 'GPLX <Số điện thoại>');
-  const [accountName, setAccountName] = useState('NGUYỄN NGỌC HUÂN');
+  const [accountName, setAccountName] = useState('TRAN VAN THO');
   const [bankName, setBankName] = useState('Ngân hàng Quân đội MB');
   const [amount, setAmount] = useState(690000);
   const [drivingClass, setDrivingClass] = useState('A1');
@@ -34,18 +34,18 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
   const DRIVING_PRICES = {
     A1: {
       student: {
-        checkup: 730000,
-        noCheckup: 650000,
+        checkup: 740000,
+        noCheckup: 640000,
       },
       normal: {
-        checkup: 770000,
-        noCheckup: 690000,
+        checkup: 760000,
+        noCheckup: 640000,
       },
     },
 
     A2: {
-      checkup: 1590000,
-      noCheckup: 1450000,
+      checkup: 2000000,
+      noCheckup: 2000000,
     },
 
     other : 0,

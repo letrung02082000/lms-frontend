@@ -258,15 +258,15 @@ export default function DrivingRegisterPage() {
         </Row>
         <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <p className="text-center">Học viên vui lòng tham gia khám sức khoẻ để hoàn tất thủ tục dự thi. Danh sách và lịch khám sức khoẻ sẽ được cập nhật hàng tuần trên nhóm thi.</p>
-        {/* <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán online</Button> */}
+        <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán online</Button>
         <a className="btn btn-outline-primary mb-3" href='driving-instruction#offline' target='_blank' rel="noopener noreferrer">Thanh toán trực tiếp</a>
         
-        <p className="text-center">
+        {/* <p className="text-center">
             Zalo hỗ trợ:<br/>
             <ZaloLink tel='4013961016678131109'>
               Trung tâm dịch vụ sinh viên iStudent
             </ZaloLink>
-          </p>
+          </p> */}
           <Button className="mb-3" variant='outline-primary' onClick={() => {
           localStorage.removeItem('driving-info');
           window.location.reload();
@@ -441,7 +441,7 @@ export default function DrivingRegisterPage() {
         )}
       </form>}
 
-      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} aPrice={drivingDateInfo?.aPrice} bPrice={drivingDateInfo?.bPrice}/>
+      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='0866799899' accountName='TRAN VAN THO' tel={drivingTel} aPrice={drivingDateInfo?.aPrice} bPrice={drivingDateInfo?.bPrice}/>
     </Styles>
   );
 }
