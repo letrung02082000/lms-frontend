@@ -88,6 +88,7 @@ function DrivingHealthPage() {
           return {
             value: date?.healthDate,
             label: date?.description,
+            infoRequired: date?.infoRequired,
           };
         });
         setHealthDates(healthDates);
@@ -96,6 +97,16 @@ function DrivingHealthPage() {
         toastWrapper('Lỗi lấy danh sách ngày khám sức khỏe', 'error');
       });
   }, [data]);
+
+  useEffect(() => {
+    if(healthDate) {
+      const healthDateObj = healthDates.find(date => date.value === healthDate);
+      if(healthDateObj) {
+        setInfoRequired(healthDateObj?.infoRequired || false);
+      }
+    }
+  }, [healthDate]);
+    
 
   useEffect(() => {
     if(qrData) {
@@ -117,6 +128,7 @@ function DrivingHealthPage() {
 
   const handleHealthDateChange = (healthDate) => {
     setHealthDate(healthDate);
+    setInfoRequired(healthDate?.infoRequired);
   }
 
   const handleSearchButton = () => {
@@ -198,6 +210,20 @@ function DrivingHealthPage() {
             >
               Lấy thông tin hồ sơ
             </Button>
+          </Col>
+        </Row>
+        <Row className='mb-3'>
+          <Col>
+            <RadioField
+              hasAsterisk={true}
+              options={healthDates}
+              label='Chọn ngày thực hiện khám sức khỏe'
+              control={control}
+              name='healthDate'
+              onClear={handleClearButton}
+              onChange={handleHealthDateChange}
+              defaultChecked={0}
+            />
           </Col>
         </Row>
         <Form.Group className='mb-3' as={Row}>
@@ -352,28 +378,16 @@ function DrivingHealthPage() {
             </Form.Group>
           </>
         )}
+
         <Row className='mb-3'>
           <Col>
-            <RadioField
-              hasAsterisk={true}
-              options={healthDates}
-              label='Chọn ngày thực hiện khám sức khỏe'
-              control={control}
-              name='healthDate'
-              onClear={handleClearButton}
-              onChange={handleHealthDateChange}
-              defaultChecked={0}
-            />
-          </Col>
-        </Row>
-        <Row className='mb-3'>
-          <Col>
-            <Form.Text className='text-warning'>
-              Điều kiện tham gia khám sức khoẻ: Học viên phải đủ 18 tuổi theo
-              ngày sinh tính đến ngày thực hiện khám sức khỏe.
+            <Form.Text className='text-warning fw-bold'>
+              Điều kiện tham gia khám sức khoẻ: Học viên đảm bảo đủ 18 tuổi theo ngày sinh tính đến ngày thực hiện
+              khám sức khỏe.
             </Form.Text>
           </Col>
         </Row>
+
         <Row>
           <Col>
             <Button
