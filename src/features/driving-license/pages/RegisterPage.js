@@ -420,7 +420,7 @@ export default function DrivingRegisterPage() {
 
         <p style={{ margin: "1rem 0" }}>
             Bằng cách bấm Đăng ký, khách hàng đã đồng ý với <a href="https://file.uniapp.vn/-ff2ZVv45XH" target='_blank' rel='noopener noreferrer'>Điều khoản sử dụng dữ liệu</a> của chúng tôi, mọi thắc mắc vui lòng liên hệ Zalo{" "}
-            <ZaloLink tel='4013961016678131109'>Trung tâm đào tạo lái xe Bách Việt</ZaloLink>{' '}
+            <ZaloLink tel={DRIVING_LICENSE_NUMBER}>Trung tâm đào tạo lái xe Bách Việt</ZaloLink>{' '}
             để được hỗ trợ nhanh nhất.
           </p>
 
