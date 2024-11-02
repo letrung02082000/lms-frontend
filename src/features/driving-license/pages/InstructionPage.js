@@ -148,13 +148,13 @@ export default function DrivingInstructionPage(props) {
           <div id="fee">
             <h3 className={styles.sectionTitle}>Lệ phí thi</h3>
             <p>
-              <strong>Gói A:</strong> 640.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 690.000đ.
+              <strong>Gói A:</strong> 640.000đ.
             </p>
             <p>
               Thí sinh tự chuẩn bị giấy khám sức khoẻ nộp về trung tâm, học viên vui lòng liên hệ trước khi đi khám để được hướng dẫn về chuẩn khám sức khoẻ hợp lệ. Đăng ký trực tiếp tại văn phòng Bách Việt. Vui lòng xem hướng dẫn tại mục ĐĂNG KÝ TRỰC TIẾP bên dưới.
             </p>
             <p>
-              <strong>Gói B:</strong> 730.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 770.000đ.
+              <strong>Gói B:</strong> 740.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 760.000đ.
             </p>
             <p>
               Trung tâm hỗ trợ làm hồ sơ và khám sức khỏe tại trung tâm. Lệ phí thi đã bao gồm khám sức khoẻ, không phát sinh chi phí khi nhận bằng.
@@ -208,7 +208,7 @@ export default function DrivingInstructionPage(props) {
                 <br /> - Giờ làm việc: Từ Thứ Hai - Thứ Sáu (Sáng: 08:00-12:00, Chiều: 13:30-17:00), Thứ bảy (08:00-12:00).
                 <br /> - Mang theo CCCD để làm thủ tục.
                 <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0963 868 632</ZaloLink>
-                <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>
+                <br/> - Zalo tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}></ZaloLink>
                 <br /> - Google maps:{" "}
                 <a
                   href={MAP_URL}
@@ -227,12 +227,11 @@ export default function DrivingInstructionPage(props) {
               </li>
               <li>
                 Nếu không nhận được đường link tham gia nhóm thi Zalo, học viên vui lòng liên hệ Zalo OA:{" "}
-                <ZaloLink tel={ZALO_OA_NUMBER}>
-                  Trung tâm dịch vụ sinh viên iStudent
+                <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
+                  Trung tâm đào tạo lái xe Bách Việt
                 </ZaloLink>{" "}
                 để được hỗ trợ.
               </li>
-              <li>Khung giờ phản hồi: 8h30-11h30, 13h30-17h00.</li>
             </ul>
             <p>5. Đi thi</p>
             <ul>
@@ -252,12 +251,11 @@ export default function DrivingInstructionPage(props) {
             <ul>
               <li>
                 Địa điểm: Tại văn phòng Bách Việt
-                <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
-                (Tầng trệt Nhà khách ĐHQG)
-                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h30).
+                <br /> - Địa chỉ: 36 Đường số 6, Phường Linh Trung, Tp Thủ Đức, Hồ Chí Minh.
+                <br /> - Giờ làm việc: Từ Thứ Hai - Thứ Sáu (Sáng: 08:00-12:00, Chiều: 13:30-17:00), Thứ bảy (08:00-12:00).
                 <br /> - Mang theo CCCD để làm thủ tục.
-                <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0876 877 789</ZaloLink>
-                <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>
+                <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0963 868 632</ZaloLink>
+                <br/> - Zalo tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm đào tạo lái xe Bách Việt</ZaloLink>
                 <br /> - Google maps:{" "}
                 <a
                   href={MAP_URL}
@@ -297,17 +295,6 @@ export default function DrivingInstructionPage(props) {
             <dd>
               Trả lời: Được tập xe cảm biến giống với thi thật trước khi thi. Phí tập xe cảm biến do điểm thi quy định.
             </dd>
-            {/* <dt>Hỏi: Mình muốn tập vòng số 8 có thể tập ở đâu?</dt>
-            <dd>
-              Trả lời: Học viên có thể tập vòng số 8 tại cửa trước <a
-                  href={MAP_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Văn phòng Bách Việt
-                </a> - Nhà khách ĐHQG-HCM, ra vào tự do, không giới hạn khung giờ.
-            </dd> */}
-
             <dt>Hỏi: Điểm đậu lý thuyết là bao nhiêu?</dt>
             <dd>Trả lời: 21/25 câu hỏi và không được sai câu điểm liệt.</dd>
           </dl>
