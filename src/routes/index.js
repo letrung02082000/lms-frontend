@@ -46,7 +46,7 @@ const router = createBrowserRouter([
       },
       {
         path: PATH.HOME,
-        element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
+        element: <ServiceLayout pageTitle="Trung tâm đào tạo lái xe Bách Việt" backTo={PATH.HOME}>
           <DrivingInfoPage />
         </ServiceLayout>
       },
