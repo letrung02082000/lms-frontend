@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import styles from "./instructionPage.module.css";
-
 import { DRIVING_LICENSE_NUMBER, ZALO_OA_NUMBER } from "constants/contact";
 import ZaloLink from "components/link/ZaloLink";
-import { convertPhoneNumber } from "utils";
-
 import DrivingApi from "api/drivingApi";
 import AccountModal from "../components/AccountModal";
 import { useMemo } from "react";
@@ -78,11 +74,11 @@ export default function DrivingInstructionPage(props) {
 
           <a
             className={styles.contactButtonTop}
-            href={`https://zalo.me/${ZALO_OA_NUMBER}`}
+            href={`https://zalo.me/${DRIVING_LICENSE_NUMBER}`}
             target="_blank"
             rel="noreferer noreferrer"
           >
-            Zalo OA
+            Zalo
           </a>
         </div>
       </div>
@@ -121,27 +117,10 @@ export default function DrivingInstructionPage(props) {
           <div id="address">
             <h3 className={styles.sectionTitle}>Địa điểm dự thi</h3>
             <p>Thí sinh được chọn địa điểm thi khi điền link đăng ký.</p>
-            {/* <p className="my-2"><strong>Trường Đại học Thể dục Thể thao TP HCM</strong></p>
-            <li>
-              Địa chỉ: KP 6, P Linh Trung, TP Thủ Đức, TP HCM.
-            </li>
-            <li>Khám sức khoẻ tập trung tại Trường Đại học Thể dục Thể thao TP.HCM.</li>
-            <li>Mượn xe số tập vòng số 8 tại nhà khách ĐHQG-HCM (miễn phí) và tập xe cảm biến trước ngày thi (20.000đ/2 vòng).</li>
-            <li>Cách ký túc xá Khu B ~4.1 km, ký túc xá Khu A ~3.8 km.</li>
-            <li>Xem bản đồ: <a href="https://maps.app.goo.gl/t3MdSZzysRQyA3fR9" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
-            <p className="my-2"><strong>Trung Tâm Kỹ Năng Thực Hành Cơ Giới GTVT Thuận An</strong></p>
-            <p>
-              <li>Địa chỉ: ĐT743A, P Bình Thắng, TP Dĩ An, Bình Dương.</li>
-              <li>Khám sức khoẻ tập trung tại Nhà khách ĐHQG-HCM.</li>
-              <li>Mượn xe số tập vòng số 8 tại nhà khách ĐHQG-HCM (miễn phí) và tập xe cảm biến trước ngày thi (miễn phí).</li>
-              <li>Cách ký túc xá khu B ~3 km, ký túc xá Khu A ~4.2 km. Có xe đưa rước tại Kí túc xá Khu B vào ngày thi.</li>
-              <li>Xem bản đồ: <a href="https://maps.app.goo.gl/fqtCLDRyLKf6Eo3u7" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
-            </p> */}
             <p className="my-2"><strong>Trung Tâm Sát Hạch Loại 3</strong></p>
             <p>
-              <li>Địa chỉ: 21 Bis Đường số 9, P Trường Thọ, TP Thủ Đức, TP HCM.</li>
+              <li>Địa chỉ: 23 Đường số 9, P Trường Thọ, TP Thủ Đức, TP HCM.</li>
               <li>Khám sức khoẻ tập trung tại điểm thi.</li>
-              {/* <li>Mượn xe số tập vòng số 8 tại nhà khách ĐHQG-HCM (miễn phí) và tập xe cảm biến trước ngày thi (30.000đ/2 vòng).</li> */}
               <li>Xem bản đồ: <a href="https://maps.app.goo.gl/eg89QWCSEwH2F8bQA" rel="noopenner noreferer" target="_blank">Mở Google Maps.</a></li>
             </p>
           </div>
@@ -208,7 +187,6 @@ export default function DrivingInstructionPage(props) {
                 <br /> - Giờ làm việc: Từ Thứ Hai - Thứ Sáu (Sáng: 08:00-12:00, Chiều: 13:30-17:00), Thứ bảy (08:00-12:00).
                 <br /> - Mang theo CCCD để làm thủ tục.
                 <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0963 868 632</ZaloLink>
-                <br/> - Zalo tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}></ZaloLink>
                 <br /> - Google maps:{" "}
                 <a
                   href={MAP_URL}
@@ -226,7 +204,7 @@ export default function DrivingInstructionPage(props) {
                 Sau khi đăng ký thành công, học viên sẽ nhận được đường link tham gia nhóm thi Zalo tại màn hình hoàn tất. Mọi thủ tục đăng ký dự thi cần hoàn tất trước ngày thi 15 ngày.
               </li>
               <li>
-                Nếu không nhận được đường link tham gia nhóm thi Zalo, học viên vui lòng liên hệ Zalo OA:{" "}
+                Nếu không nhận được đường link tham gia nhóm thi Zalo, học viên vui lòng liên hệ Zalo:{" "}
                 <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
                   Trung tâm đào tạo lái xe Bách Việt
                 </ZaloLink>{" "}
@@ -255,7 +233,6 @@ export default function DrivingInstructionPage(props) {
                 <br /> - Giờ làm việc: Từ Thứ Hai - Thứ Sáu (Sáng: 08:00-12:00, Chiều: 13:30-17:00), Thứ bảy (08:00-12:00).
                 <br /> - Mang theo CCCD để làm thủ tục.
                 <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0963 868 632</ZaloLink>
-                <br/> - Zalo tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm đào tạo lái xe Bách Việt</ZaloLink>
                 <br /> - Google maps:{" "}
                 <a
                   href={MAP_URL}

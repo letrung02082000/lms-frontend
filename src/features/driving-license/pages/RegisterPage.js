@@ -213,7 +213,6 @@ export default function DrivingRegisterPage() {
 
   return (
     <Styles className={styles.drivingRegisterContainer}>
-      <p className="text-center"><a href="/driving-instruction" target="_blank" rel="noopener noreferrer">Xem hướng dẫn đăng ký dự thi tại đây</a></p>
       <SearchBar
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
@@ -389,7 +388,7 @@ export default function DrivingRegisterPage() {
             <RadioField
               hasAsterisk={true}
               options={dateList}
-              label='Chọn ngày dự thi'
+              label='Chọn điểm thi/ngày dự thi'
               control={control}
               name='date'
               onClear={handleClearButton}
@@ -420,8 +419,8 @@ export default function DrivingRegisterPage() {
         </Row>
 
         <p style={{ margin: "1rem 0" }}>
-            Bằng cách bấm Đăng ký, khách hàng đã đồng ý với <a href="https://file.uniapp.vn/-ff2ZVv45XH" target='_blank' rel='noopener noreferrer'>Điều khoản sử dụng dữ liệu</a> của chúng tôi, mọi thắc mắc vui lòng liên hệ Zalo Offical Account{" "}
-            <ZaloLink tel='4013961016678131109'>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>{' '}
+            Bằng cách bấm Đăng ký, khách hàng đã đồng ý với <a href="https://file.uniapp.vn/-ff2ZVv45XH" target='_blank' rel='noopener noreferrer'>Điều khoản sử dụng dữ liệu</a> của chúng tôi, mọi thắc mắc vui lòng liên hệ Zalo{" "}
+            <ZaloLink tel='4013961016678131109'>Trung tâm đào tạo lái xe Bách Việt</ZaloLink>{' '}
             để được hỗ trợ nhanh nhất.
           </p>
 

@@ -15,6 +15,7 @@ import { Scanner } from '@yudiel/react-qr-scanner';
 import CopyButton from 'components/button/CopyButton';
 import { ROLE } from 'constants/role';
 import AccountModal from 'features/driving-license/components/AccountModal';
+import { DRIVING_STATE, DRIVING_STATE_LABEL } from '../constant';
 
 function AdminDrivingA1Page() {
   const userRole = JSON.parse(localStorage.getItem('user-info')).role;
@@ -24,6 +25,7 @@ function AdminDrivingA1Page() {
     WAITING_FOR_PAYMENT: 2,
     APPROVED: 5,
     HEALTH_CHECKED: 6,
+    WAITING_FOR_SCHEDULE: 7,
     COMPLETED: 3,
     CANCELLED: 4,
   }
@@ -112,21 +114,7 @@ function AdminDrivingA1Page() {
       headerName: 'Tình trạng',
       flex: 1,
       cellRenderer: (data) => {
-        if(data.value === PROCESS_STATE.CREATED) {
-          return 'Vừa tạo';
-        } else if(data.value === PROCESS_STATE.WAITING_FOR_UPDATE) {
-          return 'Chờ cập nhật';
-        } else if(data.value === PROCESS_STATE.WAITING_FOR_PAYMENT) {
-          return 'Chờ thanh toán';
-        } else if(data.value === PROCESS_STATE.APPROVED) {
-          return 'Đã duyệt';
-        } else if(data.value === PROCESS_STATE.HEALTH_CHECKED) {
-          return 'Đã khám sức khoẻ';
-        } else if(data.value === PROCESS_STATE.COMPLETED) {
-          return 'Đã hoàn tất';
-        }
-
-        return 'Đã huỷ';
+        return DRIVING_STATE_LABEL[data.value];
       },
     },
     { field: 'source', headerName: 'Nguồn', flex: 1 },
@@ -198,21 +186,7 @@ function AdminDrivingA1Page() {
 
                       if (updateParams?.processState != undefined) {
                         toastWrapper(
-                          `${
-                            updateParams.processState === 0
-                              ? 'Đã tạo'
-                              : updateParams.processState === 1
-                              ? 'Chờ cập nhật'
-                              : updateParams.processState === 2
-                              ? 'Chờ thanh toán'
-                              : updateParams.processState === 5
-                              ? 'Đã duyệt'
-                              : updateParams.processState === 6
-                              ? 'Đã khám sức khoẻ'
-                              : updateParams.processState === 3
-                              ? 'Đã hoàn tất'
-                              : 'Đã huỷ'
-                          }`,
+                          `${DRIVING_STATE_LABEL[updateParams.processState]}`,
                           'success'
                         );
                       }
@@ -329,8 +303,7 @@ function AdminDrivingA1Page() {
 
   const updateProcessState = (id, processState) => {
     drivingApi.updateProcessState(id, processState).then((res) => {
-      const message = processState === 0 ? 'Đã tạo' : processState === 1 ? 'Chờ cập nhật' : processState === 2 ? 'Chờ thanh toán' : processState === 3 ? 'Đã hoàn tất' : 'Đã huỷ';
-      toastWrapper('Đã cập nhật thành ' + message, 'success');
+      toastWrapper('Đã cập nhật thành ' + DRIVING_STATE_LABEL[processState], 'success');
       fetchDrivings(query, searchText, page);
       setShowEditModal(false);
     }).catch((err) => {
@@ -511,69 +484,22 @@ function AdminDrivingA1Page() {
         </Modal.Header>
         <Modal.Body>
           <div className='d-flex flex-wrap justify-content-center mb-3'>
-            <Button
-              onClick={() => updateProcessState(selectedRow?._id, 0)}
-              variant={
-                selectedRow?.processState === 0 ? 'primary' : 'outline-primary'
-              }
-              className='m-2'
-            >
-              Đã tạo
-            </Button>
-            <Button
-              onClick={() => updateProcessState(selectedRow?._id, 1)}
-              variant={
-                selectedRow?.processState === 1 ? 'primary' : 'outline-primary'
-              }
-              className='m-2'
-            >
-              Chờ cập nhật
-            </Button>
-            <Button
-              onClick={() => updateProcessState(selectedRow?._id, 2)}
-              variant={
-                selectedRow?.processState === 2 ? 'primary' : 'outline-primary'
-              }
-              className='m-2'
-            >
-              Chờ thanh toán
-            </Button>
-            <Button
-              onClick={() => updateProcessState(selectedRow?._id, 5)}
-              variant={
-                selectedRow?.processState === 5 ? 'primary' : 'outline-primary'
-              }
-              className='m-2'
-            >
-              Đã duyệt
-            </Button>
-            <Button
-              onClick={() => updateProcessState(selectedRow?._id, 6)}
-              variant={
-                selectedRow?.processState === 6 ? 'primary' : 'outline-primary'
-              }
-              className='m-2'
-            >
-              Đã khám sức khoẻ
-            </Button>
-            <Button
-              onClick={() => updateProcessState(selectedRow?._id, 3)}
-              variant={
-                selectedRow?.processState === 3 ? 'success' : 'outline-primary'
-              }
-              className='m-2'
-            >
-              Đã hoàn tất
-            </Button>
-            <Button
-              onClick={() => updateProcessState(selectedRow?._id, 4)}
-              variant={
-                selectedRow?.processState === 4 ? 'danger' : 'outline-primary'
-              }
-              className='m-2'
-            >
-              Đã huỷ
-            </Button>
+            {Object.keys(DRIVING_STATE).map((key) => {
+              return (
+                <Button
+                  key={key}
+                  onClick={() => updateProcessState(selectedRow?._id, DRIVING_STATE[key])}
+                  variant={
+                    selectedRow?.processState === DRIVING_STATE[key]    
+                      ? 'primary'
+                      : 'outline-primary'
+                  }
+                  className='m-2'
+                >
+                  {DRIVING_STATE_LABEL[DRIVING_STATE[key]]}
+                </Button>
+              );
+            })}
           </div>
           <div>
             <Row className='mb-3'>
@@ -662,7 +588,7 @@ function AdminDrivingA1Page() {
               <Col>
                 <InputField
                   noClear={true}
-                  label='Đã thanh toán'
+                  label='Đã chuyển khoản'
                   control={control}
                   name='cash'
                   type='number'
@@ -670,9 +596,9 @@ function AdminDrivingA1Page() {
                 />
               </Col>
               <Col xs={5}>
-                <label className='d-block form-label' style={{marginBottom: '0.5rem'}}>Chuyển khoản</label>
+                <label className='d-block form-label' style={{marginBottom: '0.5rem'}}>Mã thanh toán</label>
                 <Button className='w-100' onClick={() => setShowAccountModal(true)}>
-                  Mã QR chuyển khoản
+                  Hiện mã thanh toán
                 </Button>
               </Col>
             </Row>
@@ -862,15 +788,12 @@ function AdminDrivingA1Page() {
             <Col>
               <Select
                 isClearable
-                options={[
-                  { label: 'Đã tạo', value: 0 },
-                  { label: 'Chờ cập nhật', value: 1 },
-                  { label: 'Chờ thanh toán', value: 2 },
-                  { label: 'Đã duyệt', value: 5 },
-                  { label: 'Đã khám sức khoẻ', value: 6 },
-                  { label: 'Đã hoàn tất', value: 3 },
-                  { label: 'Đã huỷ', value: 4 },
-                ]}
+                options={Object.keys(DRIVING_STATE).map((key) => {
+                  return {
+                    label: DRIVING_STATE_LABEL[DRIVING_STATE[key]],
+                    value: DRIVING_STATE[key],
+                  };
+                })}
                 onChange={(val) =>
                   setUpdateParams({
                     ...updateParams,
