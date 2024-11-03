@@ -183,6 +183,8 @@ function Driving(props) {
   };
 
   const updateProcessState = (state) => {
+    if(processState === DRIVING_STATE.CANCELED)
+      return toastWrapper('Không thể cập nhật hồ sơ đã bị huỷ', 'error');
     setLoading(true);
     DrivingApi.updateProcessState(props.id, state)
       .then((res) => {
