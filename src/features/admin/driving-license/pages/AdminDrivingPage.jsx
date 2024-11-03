@@ -302,6 +302,10 @@ function AdminDrivingA1Page() {
   }
 
   const updateProcessState = (id, processState) => {
+    if(selectedRow?.processState === DRIVING_STATE.CANCELED) {
+      return toastWrapper('Không thể cập nhật hồ sơ đã bị hủy', 'error');
+    }
+
     drivingApi.updateProcessState(id, processState).then((res) => {
       toastWrapper('Đã cập nhật thành ' + DRIVING_STATE_LABEL[processState], 'success');
       fetchDrivings(query, searchText, page);
