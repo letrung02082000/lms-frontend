@@ -25,5 +25,13 @@ const profileMsg = (name) => {
 
 }
 
+const blobToBase64 = (blob) => {
+    return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+    });
+}
 
-export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg }
+
+export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64 }

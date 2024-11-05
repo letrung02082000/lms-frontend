@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DrivingApi from "api/drivingApi";
-import { formatCurrency } from "utils/commonUtils";
+import { blobToBase64, formatCurrency } from "utils/commonUtils";
 import { Button, Col, FormControl, Image, Modal, Row } from "react-bootstrap";
 import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
@@ -8,8 +8,20 @@ import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
 import { MdRotateLeft } from "react-icons/md";
 import { DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
+import * as canvas from 'canvas';
+import * as faceapi from '@vladmandic/face-api';
+import jimp from 'jimp';
 
 function Driving(props) {
+  faceapi.env.monkeyPatch({
+    Canvas: HTMLCanvasElement,
+    Image: HTMLImageElement,
+    ImageData: ImageData,
+    Video: HTMLVideoElement,
+    createCanvasElement: () => document.createElement('canvas'),
+    createImageElement: () => document.createElement('img')
+  })
+  
   let {
     name,
     date,
@@ -49,10 +61,23 @@ function Driving(props) {
   const [extracting, setExtracting] = useState(false);
   const [identityInfo, setIdentityInfo] = useState(JSON.parse(props?.info?.identityInfo || '[]'));
   const [showIdentityInfo, setShowIdentityInfo] = useState(false);
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+  const [portraitClip, setPortraitClip] = useState(null);
+  const [portraitCrop, setPortraitCrop] = useState(null);
   createdAt = new Date(createdAt);
 
   useEffect(() => {
     fetchImage();
+    const loadModels = async () => {
+      const MODEL_URL =  '/models';
+
+      Promise.all([
+        faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+      ]).then(setModelsLoaded(true)).catch(e => console.log(e));
+    }
+    loadModels();
   }, [imageVisible])
 
   const fetchPortraitClip = async (portraitClipUrl) => {
@@ -64,10 +89,27 @@ function Driving(props) {
       document.getElementById(`portrait_clip_${_id}`).src = portraitClipImage;
       document.getElementById(`portrait_clip_${_id}`).height = 250;
       document.getElementById(`portrait_clip_${_id}`).style.objectFit = 'contain';
+      setPortraitClip(await blobToBase64(portraitClipBlob));
       setPortraitClipLoading(false);
     } catch (error) {
       setPortraitClipLoading(false);
     }
+  }
+
+  const cropPortrait = async () => {
+    if(!modelsLoaded) return toastWrapper('Đang tải mô hình, vui lòng thử lại sau', 'info');
+
+    if(!portraitClip) return toastWrapper('Ảnh chưa được tách nền', 'error');
+
+    const input = document.getElementById(`portrait_clip_${_id}`);
+    const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1, maxResults: 10 }); // set model options
+    const result = await faceapi.detectSingleFace(input, options);
+    console.log(result);
+    const x = result.box.x - (result.box._width * 0.68); //0.86
+    const y = result.box.y - (result.box._height * 0.6); //0.8
+    const height = result.box.height * 2.5; //2.8
+    const width = height * 0.75;
+    console.log(x, y, width, height);
   }
 
   const fetchImage = async () => {
@@ -134,22 +176,6 @@ function Driving(props) {
     date = new Date(date);
   } else {
     date = null;
-  }
-
-  let sourceText = "Không có";
-
-  if (source === 1) {
-    sourceText = "Langf";
-  } else if (source === 2) {
-    sourceText = "UEL";
-  } else if (source === 3) {
-    sourceText = "Anh Long";
-  } else if (source === 4) {
-    sourceText = "Thư quán UEL";
-  } else if (source === 5) {
-    sourceText = "5";
-  } else if (source === 7) {
-    sourceText = "Thủ Đức";
   }
 
   const [selectedDate, setSelectedDate] = useState(date);
@@ -411,6 +437,7 @@ function Driving(props) {
                 {
                   processState === DRIVING_STATE.APPROVED && <>
                     {<Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách...' : 'Tách nền'}</Button>}
+                    {<Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => cropPortrait()}>Cắt ảnh</Button>}
                   </>
                 }
               </div>
