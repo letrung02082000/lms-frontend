@@ -155,10 +155,11 @@ function Driving(props) {
     const input = document.getElementById(`portrait_clip_${_id}`)
     const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1, maxResults: 10 }); // set model options
     const result = await faceapi.detectSingleFace(input, options);
-    const x = result.box.x - (result.box._width * 0.6); //0.86
-    const y = result.box.y - (result.box._height * 0.6); //0.8
-    const height = result.box.height * 2.5; //2.8
-    const width = height * 0.75;
+    console.log(result)
+    const x = result.box.x - (result.box._width * 0.75);
+    const y = result.box.y - (result.box._height * 0.8);
+    const width = result.box.width * 2.5;
+    const height = width * 4 / 3;
     const img = await Jimp.read(portraitClip);
     const portraitCrop = await img.crop({ x, y, w: width, h: height }).getBase64('image/jpeg');
     setPortraitCrop(portraitCrop);
@@ -442,7 +443,9 @@ function Driving(props) {
                     {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`portrait_clip_${_id}`} />
                   </a>
-                  <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} />
+                  <a href={portraitCrop} download={`${name}-${tel}_cropped.jpg`}>
+                    <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} />
+                  </a>
 
                 </div>
                 <div className="d-flex">
