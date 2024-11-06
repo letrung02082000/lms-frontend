@@ -66,6 +66,8 @@ function Driving(props) {
   const [portraitClip, setPortraitClip] = useState(null);
   const [portraitCrop, setPortraitCrop] = useState(null);
   const [portrait, setPortrait] = useState(null);
+  const [front, setFront] = useState(null);
+  const [back, setBack] = useState(null);
   createdAt = new Date(createdAt);
 
   useEffect(() => {
@@ -126,6 +128,7 @@ function Driving(props) {
       document.getElementById(`front_${_id}`).height = 250;
       document.getElementById(`front_${_id}`).style.objectFit = 'contain';
       setFrontLoading(false);
+      setFront(frontImage);
     } catch (error) {
       setFrontLoading(false);
     }
@@ -140,6 +143,7 @@ function Driving(props) {
       document.getElementById(`back_${_id}`).src = backImage;
       document.getElementById(`back_${_id}`).height = 250;
       document.getElementById(`back_${_id}`).style.objectFit = 'contain';
+      setBack(backImage);
       setBackLoading(false);
     } catch (error) {
       setBackLoading(false);
@@ -427,18 +431,18 @@ function Driving(props) {
 
                   <a
                     className='btn btn-outline-primary p-0 mb-2 border-0'
-                    href={portraitUrl}
-                    target="_blank"
+                    href={portrait}
                     rel="noopener noreferrer"
+                    download={`${name}-${tel}_portrait.jpg`}
                   >
                     {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`portrait_${_id}`} />
                   </a>
                   <a
                     className='btn btn-outline-primary p-0 mb-2 ms-2 border-0'
-                    href={portraitClipUrl}
-                    target="_blank"
+                    href={portraitClip}
                     rel="noopener noreferrer"
+                    download={`${name}-${tel}_clipped.jpg`}
                   >
                     {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`portrait_clip_${_id}`} />
@@ -446,7 +450,6 @@ function Driving(props) {
                   <a href={portraitCrop} download={`${name}-${tel}_cropped.jpg`}>
                     <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} />
                   </a>
-
                 </div>
                 <div className="d-flex">
                   <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url })} />
@@ -467,9 +470,9 @@ function Driving(props) {
                 <div className='d-flex'>
                   <a
                     className='btn btn-outline-primary p-0 mb-2 border-0'
-                    href={frontUrl}
-                    target="_blank"
+                    href={front}
                     rel="noopener noreferrer"
+                    download={`${name}-${tel}_front.jpg`}
                   >
                     {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`front_${_id}`} />
@@ -494,9 +497,9 @@ function Driving(props) {
                 <div className='d-flex'>
                   <a
                     className='btn btn-outline-primary p-0 mb-2 border-0'
-                    href={backUrl}
-                    target="_blank"
+                    href={back}
                     rel="noopener noreferrer"
+                    download={`${name}-${tel}_back.jpg`}
                   >
                     {backLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`back_${_id}`} />
