@@ -10,7 +10,7 @@ import { MdRotateLeft } from "react-icons/md";
 import { DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
 import * as canvas from 'canvas';
 import * as faceapi from '@vladmandic/face-api';
-import jimp from 'jimp';
+import { Jimp } from 'jimp';
 
 function Driving(props) {
   faceapi.env.monkeyPatch({
@@ -58,26 +58,30 @@ function Driving(props) {
   const [imageVisible, setImageVisible] = useState(false);
   const [portraitClipUrl, setPortraitClipUrl] = useState(props?.info?.portraitClipUrl);
   const [clipping, setClipping] = useState(false);
+  const [cropping, setCropping] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [identityInfo, setIdentityInfo] = useState(JSON.parse(props?.info?.identityInfo || '[]'));
   const [showIdentityInfo, setShowIdentityInfo] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [portraitClip, setPortraitClip] = useState(null);
   const [portraitCrop, setPortraitCrop] = useState(null);
+  const [portrait, setPortrait] = useState(null);
   createdAt = new Date(createdAt);
 
   useEffect(() => {
-    fetchImage();
-    const loadModels = async () => {
-      const MODEL_URL =  '/models';
-
-      Promise.all([
-        faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-      ]).then(setModelsLoaded(true)).catch(e => console.log(e));
+    if(imageVisible) {
+      fetchImage();
+      const loadModels = async () => {
+        const MODEL_URL =  '/models';
+  
+        Promise.all([
+          faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+          faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+          faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+        ]).then(setModelsLoaded(true)).catch(e => console.log(e));
+      }
+      loadModels();
     }
-    loadModels();
   }, [imageVisible])
 
   const fetchPortraitClip = async (portraitClipUrl) => {
@@ -89,27 +93,76 @@ function Driving(props) {
       document.getElementById(`portrait_clip_${_id}`).src = portraitClipImage;
       document.getElementById(`portrait_clip_${_id}`).height = 250;
       document.getElementById(`portrait_clip_${_id}`).style.objectFit = 'contain';
-      setPortraitClip(await blobToBase64(portraitClipBlob));
+      setPortraitClip(portraitClipImage);
       setPortraitClipLoading(false);
     } catch (error) {
       setPortraitClipLoading(false);
     }
   }
 
+  const fetchPortrait = async (portraitUrl) => {
+    try {
+      const urlCreator = window.URL || window.webkitURL;
+      const portraitResponse = await fetch(portraitUrl);
+      const portraitBlob = await portraitResponse.blob();
+      const portraitImage = urlCreator.createObjectURL(portraitBlob);
+      document.getElementById(`portrait_${_id}`).src = portraitImage;
+      document.getElementById(`portrait_${_id}`).height = 250;
+      document.getElementById(`portrait_${_id}`).style.objectFit = 'contain';
+      setPortrait(portraitImage);
+      setPortraitLoading(false);
+    } catch (error) {
+      setPortraitLoading(false);
+    }
+  }
+
+  const fetchFront = async (frontUrl) => {
+    try {
+      const urlCreator = window.URL || window.webkitURL;
+      const frontResponse = await fetch(frontUrl);
+      const frontBlob = await frontResponse.blob();
+      const frontImage = urlCreator.createObjectURL(frontBlob);
+      document.getElementById(`front_${_id}`).src = frontImage;
+      document.getElementById(`front_${_id}`).height = 250;
+      document.getElementById(`front_${_id}`).style.objectFit = 'contain';
+      setFrontLoading(false);
+    } catch (error) {
+      setFrontLoading(false);
+    }
+  }
+
+  const fetchBack = async (backUrl) => {
+    try {
+      const urlCreator = window.URL || window.webkitURL;
+      const backResponse = await fetch(backUrl);
+      const backBlob = await backResponse.blob();
+      const backImage = urlCreator.createObjectURL(backBlob);
+      document.getElementById(`back_${_id}`).src = backImage;
+      document.getElementById(`back_${_id}`).height = 250;
+      document.getElementById(`back_${_id}`).style.objectFit = 'contain';
+      setBackLoading(false);
+    } catch (error) {
+      setBackLoading(false);
+    }
+  }
+
   const cropPortrait = async () => {
     if(!modelsLoaded) return toastWrapper('Đang tải mô hình, vui lòng thử lại sau', 'info');
 
-    if(!portraitClip) return toastWrapper('Ảnh chưa được tách nền', 'error');
+    if(!portraitClip) return toastWrapper('Chưa tách nền ảnh', 'error');
 
-    const input = document.getElementById(`portrait_clip_${_id}`);
+    setCropping(true);
+    const input = document.getElementById(`portrait_clip_${_id}`)
     const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1, maxResults: 10 }); // set model options
     const result = await faceapi.detectSingleFace(input, options);
-    console.log(result);
-    const x = result.box.x - (result.box._width * 0.68); //0.86
+    const x = result.box.x - (result.box._width * 0.6); //0.86
     const y = result.box.y - (result.box._height * 0.6); //0.8
     const height = result.box.height * 2.5; //2.8
     const width = height * 0.75;
-    console.log(x, y, width, height);
+    const img = await Jimp.read(portraitClip);
+    const portraitCrop = await img.crop({ x, y, w: width, h: height }).getBase64('image/jpeg');
+    setPortraitCrop(portraitCrop);
+    setCropping(false);
   }
 
   const fetchImage = async () => {
@@ -117,45 +170,9 @@ function Driving(props) {
       setFrontLoading(true);
       setBackLoading(true);
       setPortraitLoading(true);
-
-      try {
-        const urlCreator = window.URL || window.webkitURL;
-        const portraitResponse = await fetch(portraitUrl);
-        const portraitBlob = await portraitResponse.blob();
-        const portraitImage = urlCreator.createObjectURL(portraitBlob);
-        document.getElementById(`portrait_${_id}`).src = portraitImage;
-        document.getElementById(`portrait_${_id}`).height = 250;
-        document.getElementById(`portrait_${_id}`).style.objectFit = 'contain';
-        setPortraitLoading(false);
-      } catch (error) {
-        setPortraitLoading(false);
-      }
-
-      try {
-        const urlCreator = window.URL || window.webkitURL;
-        const frontResponse = await fetch(frontUrl);
-        const frontBlob = await frontResponse.blob();
-        const frontImage = urlCreator.createObjectURL(frontBlob);
-        document.getElementById(`front_${_id}`).src = frontImage;
-        document.getElementById(`front_${_id}`).height = 250;
-        document.getElementById(`front_${_id}`).style.objectFit = 'contain';
-        setFrontLoading(false);
-      } catch (error) {
-        setFrontLoading(false);
-      }
-
-      try {
-        const urlCreator = window.URL || window.webkitURL;
-        const backResponse = await fetch(backUrl);
-        const backBlob = await backResponse.blob();
-        const backImage = urlCreator.createObjectURL(backBlob);
-        document.getElementById(`back_${_id}`).src = backImage;
-        document.getElementById(`back_${_id}`).height = 250;
-        document.getElementById(`back_${_id}`).style.objectFit = 'contain';
-        setBackLoading(false);
-      } catch (error) {
-        setBackLoading(false);
-      }
+      fetchPortrait(portraitUrl);
+      fetchFront(frontUrl);
+      fetchBack(backUrl);
 
       if (portraitClipUrl) {
         fetchPortraitClip(portraitClipUrl);
@@ -214,7 +231,6 @@ function Driving(props) {
     setLoading(true);
     DrivingApi.updateProcessState(props.id, state)
       .then((res) => {
-        console.log(res)
         setProcessState(res.data.processState);
         setLoading(false);
       })
@@ -403,7 +419,7 @@ function Driving(props) {
               Danh sách này có 1 hồ sơ tương tự
             </p>
           ) : null}
-          <Row>
+          {imageVisible && <Row>
             <div className='d-flex justify-content-between'>
               <div>
                 <div className='d-flex align-items-start'>
@@ -426,6 +442,7 @@ function Driving(props) {
                     {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`portrait_clip_${_id}`} />
                   </a>
+                  <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} />
 
                 </div>
                 <div className="d-flex">
@@ -434,13 +451,13 @@ function Driving(props) {
                     <MdRotateLeft />
                   </Button>
                   <div className="d-flex justify-content-start">
-                {
-                  processState === DRIVING_STATE.APPROVED && <>
-                    {<Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách...' : 'Tách nền'}</Button>}
-                    {<Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => cropPortrait()}>Cắt ảnh</Button>}
-                  </>
-                }
-              </div>
+                    {
+                      imageVisible && processState === DRIVING_STATE.APPROVED && <>
+                        <Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách...' : 'Tách nền'}</Button>
+                        <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button>
+                      </>
+                    }
+                  </div>
                 </div>
               </div>
               <div>
@@ -490,10 +507,10 @@ function Driving(props) {
                 </div>
               </div>
             </div>
-            <div className="d-flex justify-content-end mt-2">
+          </Row>}
+          <div className="d-flex justify-content-end mt-2">
               <Button variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>Ẩn/Hiện</Button>
-            </div>
-          </Row>
+          </div>
         </Col>
         <Col>
           <Row>
