@@ -125,7 +125,6 @@ function DrivingHealthPage() {
     }
   }, [qrData]);
 
-
   const handleHealthDateChange = (healthDate) => {
     setHealthDate(healthDate);
     setInfoRequired(healthDate?.infoRequired);
@@ -169,22 +168,24 @@ function DrivingHealthPage() {
     await handleSubmit((formData) => {
 
       if(!healthDate) {
-        return toastWrapper('Vui lòng chọn ngày khám sức khoẻ', 'error');
+        return toastWrapper('Vui lòng chọn lịch thi hoặc ngày khám sức khoẻ', 'error');
       }
 
       const drivingHealthData = {
         ...formData,
         healthDate,
-        gender: formData?.gender?.value
-      }
+        ...(infoRequired && { gender: formData?.gender?.value }),
+      };
+
+      console.log(drivingHealthData);
 
       drivingApi
         .updateDrivingHealth(data?._id, drivingHealthData)
         .then((res) => {
-          toastWrapper('Bạn đã đăng ký thông tin khám sức khoẻ thành công', 'success');
+          toastWrapper('Đăng ký thông tin thành công', 'success');
         })
         .catch((e) => {
-          toastWrapper('Đăng ký thất bại, vui lòng liên hệ Admin để được hỗ trợ', 'error');
+          toastWrapper('Đăng ký thất bại, vui lòng liên hệ admin để được hỗ trợ', 'error');
         });
     })();
   }
@@ -197,7 +198,7 @@ function DrivingHealthPage() {
             <Form.Control
               placeholder='Nhập số điện thoại đã đăng ký hồ sơ'
               type='text'
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => setPhone(e.target.value?.trim())}
             />
           </Col>
         </Form.Group>
@@ -217,7 +218,7 @@ function DrivingHealthPage() {
             <RadioField
               hasAsterisk={true}
               options={healthDates}
-              label='Chọn ngày thực hiện khám sức khỏe'
+              label='Chọn lịch thi/ngày khám sức khỏe'
               control={control}
               name='healthDate'
               onClear={handleClearButton}
@@ -245,16 +246,6 @@ function DrivingHealthPage() {
             />
           </Col>
         </Form.Group>
-        {data?.healthDate && (
-          <Row className='mb-3'>
-            <Col>
-              <Form.Text className='text-success'>
-                Bạn đã đăng ký tham gia khám sức khoẻ vào ngày{' '}
-                {new Date(data?.healthDate).toLocaleDateString('en-GB')}.
-              </Form.Text>
-            </Col>
-          </Row>
-        )}
         {infoRequired && (
           <>
             <Row>
@@ -378,15 +369,6 @@ function DrivingHealthPage() {
             </Form.Group>
           </>
         )}
-
-        <Row className='mb-3'>
-          <Col>
-            <Form.Text className='text-warning fw-bold'>
-              Điều kiện tham gia khám sức khoẻ: Học viên đảm bảo đủ 18 tuổi theo ngày sinh tính đến ngày thực hiện
-              khám sức khỏe.
-            </Form.Text>
-          </Col>
-        </Row>
 
         <Row>
           <Col>

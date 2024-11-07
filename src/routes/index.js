@@ -151,7 +151,7 @@ const router = createBrowserRouter([
       },
       {
         path: PATH.DRIVING.HEALTH_CHECK,
-        element: <ServiceLayout pageTitle="Đăng ký khám sức khoẻ" backTo={PATH.HOME}>
+        element: <ServiceLayout pageTitle="Đăng ký thông tin" backTo={PATH.HOME}>
           <DrivingHealthPage />
         </ServiceLayout>
       },

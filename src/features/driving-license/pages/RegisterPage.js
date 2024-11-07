@@ -389,7 +389,7 @@ export default function DrivingRegisterPage() {
             <RadioField
               hasAsterisk={true}
               options={dateList}
-              label='Chọn ngày dự thi'
+              label='Chọn điểm thi/ngày dự thi'
               control={control}
               name='date'
               onClear={handleClearButton}
