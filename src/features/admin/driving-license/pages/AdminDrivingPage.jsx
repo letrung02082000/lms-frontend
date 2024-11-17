@@ -168,9 +168,9 @@ function AdminDrivingA1Page() {
               toastWrapper(`Tìm thấy ${count} hồ sơ cần xem xét, đã cập nhật hồ sơ gần nhất`, 'warning');
             }
 
-            for (let i = 0; i < res.data.length; i++) {
-              setSelectedRow(res.data[i]);
+            for (let i = 0; i < res.data.length; i++) {              
               if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
+                setSelectedRow(res.data[i]);
                 drivingApi
                     .updateDriving(res.data[i]._id, updateParams)
                     .then((res) => {
@@ -190,6 +190,7 @@ function AdminDrivingA1Page() {
                           'success'
                         );
                       }
+
                       fetchDrivings(query, searchText, 1);
                     })
                     .catch((err) => {
