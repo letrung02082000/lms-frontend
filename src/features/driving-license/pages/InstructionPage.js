@@ -199,8 +199,8 @@ export default function DrivingInstructionPage(props) {
             </ul>
             <p id="fee-instruction">3. Thanh toán lệ phí</p>
             <ul>
-              {/* <li>Chuyển khoản ngân hàng</li> */}
-              {/* <Button className="my-3" variant='outline-primary' onClick={() => setAccountShow(true)}><small>Xem hướng dẫn chuyển khoản</small></Button> */}
+              <li>Chuyển khoản ngân hàng</li>
+              <Button className="my-3" variant='outline-primary' onClick={() => setAccountShow(true)}><small>Xem hướng dẫn chuyển khoản</small></Button>
               <li>
                 Đóng trực tiếp: Tại văn phòng iSinhvien
                 <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
@@ -218,7 +218,7 @@ export default function DrivingInstructionPage(props) {
                   Văn phòng iSinhvien
                 </a>
               </li>
-              {/* <li>Học viên đăng ký hoàn thành lệ phí thi trong vòng 24h từ khi đăng ký, hồ sơ sẽ được xử lý và cập nhật danh sách trên nhóm thi Zalo.</li> */}
+              <li>Học viên đăng ký hoàn thành lệ phí thi trong vòng 24h từ khi đăng ký, hồ sơ sẽ được xử lý và cập nhật danh sách trên nhóm thi Zalo.</li>
             </ul>
             <p>4. Chờ duyệt hồ sơ:</p>
             <ul>
