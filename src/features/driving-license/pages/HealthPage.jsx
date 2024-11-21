@@ -370,6 +370,8 @@ function DrivingHealthPage() {
           </>
         )}
 
+        <Form.Group className='text-danger mb-3'>Học viên đảm bảo đủ 18 tuổi theo ngày tháng năm sinh tính đến ngày khám sức khoẻ.</Form.Group>
+
         <Row>
           <Col>
             <Button
