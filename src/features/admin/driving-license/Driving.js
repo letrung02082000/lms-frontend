@@ -51,10 +51,6 @@ function Driving(props) {
   const [showIdentityInfo, setShowIdentityInfo] = useState(false);
   createdAt = new Date(createdAt);
 
-  useEffect(() => {
-    fetchImage();
-  }, [imageVisible])
-
   const fetchPortraitClip = async (portraitClipUrl) => {
     try {
       const urlCreator = window.URL || window.webkitURL;
@@ -376,45 +372,45 @@ function Driving(props) {
             </p>
           ) : null}
           <Row>
-            <div className='d-flex justify-content-between'>
-              <div>
-                <div className='d-flex align-items-start'>
-
-                  <a
-                    className='btn btn-outline-primary p-0 mb-2 border-0'
-                    href={portraitUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`portrait_${_id}`} />
-                  </a>
-                  <a
-                    className='btn btn-outline-primary p-0 mb-2 ms-2 border-0'
-                    href={portraitClipUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`portrait_clip_${_id}`} />
-                  </a>
-
-                </div>
+            <Row>
+              <Col xs={3}>
+                <Row>
+                  <Col>
+                    <a
+                      className='btn btn-outline-primary p-0 mb-2 border-0'
+                      href={portraitUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
+                      <img id={`portrait_${_id}`} src={portraitUrl} width={'100%'} style={{ maxHeight: '250px' }} />
+                    </a>
+                  </Col>
+                </Row>
                 <div className="d-flex">
                   <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url })} />
                   <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`portrait_${_id}`)}>
                     <MdRotateLeft />
                   </Button>
                   <div className="d-flex justify-content-start">
-                {
-                  processState === DRIVING_STATE.APPROVED && <>
-                    {<Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách...' : 'Tách nền'}</Button>}
-                  </>
-                }
-              </div>
+                    {
+                      processState === DRIVING_STATE.APPROVED && <>
+                        {<Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách' : 'Tách nền'}</Button>}
+                      </>
+                    }
+                  </div>
                 </div>
-              </div>
-              <div>
+              </Col>
+              {portraitClipUrl && <Col><a
+                className='btn btn-outline-primary p-0 mb-2 ms-2 border-0'
+                href={portraitClipUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
+                <img id={`portrait_clip_${_id}`} src={portraitClipUrl} width={'100%'} style={{ maxHeight: '250px' }} />
+              </a></Col>}
+              <Col>
                 <div className='d-flex'>
                   <a
                     className='btn btn-outline-primary p-0 mb-2 border-0'
@@ -423,7 +419,7 @@ function Driving(props) {
                     rel="noopener noreferrer"
                   >
                     {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`front_${_id}`} />
+                    <img id={`front_${_id}`} src={frontUrl} width={'100%'} style={{maxHeight: '250px'}}/>
                   </a>
                 </div>
                 <div className="d-flex">
@@ -439,9 +435,8 @@ function Driving(props) {
                     </>
                   }
                 </div>
-              </div>
-
-              <div>
+              </Col>
+              <Col>
                 <div className='d-flex'>
                   <a
                     className='btn btn-outline-primary p-0 mb-2 border-0'
@@ -450,7 +445,7 @@ function Driving(props) {
                     rel="noopener noreferrer"
                   >
                     {backLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`back_${_id}`} />
+                    <img id={`back_${_id}`} src={backUrl} width={'100%'} style={{maxHeight: '250px'}}/>
                   </a>
                 </div>
                 <div className="d-flex">
@@ -459,11 +454,11 @@ function Driving(props) {
                     <MdRotateLeft />
                   </Button>
                 </div>
-              </div>
-            </div>
-            <div className="d-flex justify-content-end mt-2">
+              </Col>
+            </Row>
+            {/* <div className="d-flex justify-content-end mt-2">
               <Button variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>Ẩn/Hiện</Button>
-            </div>
+            </div> */}
           </Row>
         </Col>
         <Col>

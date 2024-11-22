@@ -226,9 +226,9 @@ function AdminDrivingA1Page() {
     setValue('feedback', selectedRow?.feedback);
     setValue('cash', selectedRow?.cash);
 
-    if(showEditModal) {
-      fetchImage();
-    }
+    // if(showEditModal) {
+    //   fetchImage();
+    // }
   }, [selectedRow, showEditModal]);
 
   const fetchImage = async () => {
@@ -621,18 +621,18 @@ function AdminDrivingA1Page() {
             </Row>
 
             <Row className='mb-5'>
-              <Col>
+              <Col xs={12}>
                 <div>
                   <a
                     id='front-link'
                     download={`${selectedRow?.name}_front.png`}
                   >
-                    <img id='front-card' alt='front-card' />
+                    <img width={'100%'} id='front-card' alt='front-card' src={selectedRow?.frontUrl}/>
                   </a>
                 </div>
                 <Button
                   variant='outline-primary'
-                  className='mt-2'
+                  className='my-2'
                   onClick={() => rotateImage('front-card')}
                 >
                   <MdRotateLeft /> Xoay ảnh mặt trước
@@ -642,7 +642,7 @@ function AdminDrivingA1Page() {
               <Col>
                 <div>
                   <a id='back-link' download={`${selectedRow?.name}_back.png`}>
-                    <img id='back-card' alt='back-card' />
+                    <img width={'100%'} id='back-card' alt='back-card' src={selectedRow?.backUrl}/>
                   </a>
                 </div>
                 <Button
@@ -659,7 +659,7 @@ function AdminDrivingA1Page() {
                     id='portrait-link'
                     download={`${selectedRow.name}_portrait.png`}
                   >
-                    <img id='portrait' alt='portrait' />
+                    <img width='100%' id='portrait' alt='portrait' src={selectedRow?.portraitUrl}/>
                   </a>
                 </div>
                 <Button
