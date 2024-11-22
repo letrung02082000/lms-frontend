@@ -168,9 +168,9 @@ function AdminDrivingA1Page() {
               toastWrapper(`Tìm thấy ${count} hồ sơ cần xem xét, đã cập nhật hồ sơ gần nhất`, 'warning');
             }
 
-            for (let i = 0; i < res.data.length; i++) {              
+            for (let i = 0; i < res.data.length; i++) {
+              setSelectedRow(res.data[i]);
               if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
-                setSelectedRow(res.data[i]);
                 drivingApi
                     .updateDriving(res.data[i]._id, updateParams)
                     .then((res) => {
@@ -190,7 +190,6 @@ function AdminDrivingA1Page() {
                           'success'
                         );
                       }
-
                       fetchDrivings(query, searchText, 1);
                     })
                     .catch((err) => {
@@ -303,10 +302,6 @@ function AdminDrivingA1Page() {
   }
 
   const updateProcessState = (id, processState) => {
-    if(selectedRow?.processState === DRIVING_STATE.CANCELED) {
-      return toastWrapper('Không thể cập nhật hồ sơ đã bị hủy', 'error');
-    }
-
     drivingApi.updateProcessState(id, processState).then((res) => {
       toastWrapper('Đã cập nhật thành ' + DRIVING_STATE_LABEL[processState], 'success');
       fetchDrivings(query, searchText, page);
