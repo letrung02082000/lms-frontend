@@ -379,8 +379,7 @@ function Driving(props) {
                     <a
                       className='btn btn-outline-primary p-0 mb-2 border-0'
                       href={portraitUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      download={`${name}_portrait.jpg`}
                     >
                       {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
                       <img id={`portrait_${_id}`} src={portraitUrl} width={'100%'} style={{ maxHeight: '250px' }} />
@@ -404,8 +403,7 @@ function Driving(props) {
               {portraitClipUrl && <Col><a
                 className='btn btn-outline-primary p-0 mb-2 ms-2 border-0'
                 href={portraitClipUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                download={`${name}_portrait_clip.jpg`}
               >
                 {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
                 <img id={`portrait_clip_${_id}`} src={portraitClipUrl} width={'100%'} style={{ maxHeight: '250px' }} />
@@ -415,8 +413,7 @@ function Driving(props) {
                   <a
                     className='btn btn-outline-primary p-0 mb-2 border-0'
                     href={frontUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    download={`${name}_front.jpg`}
                   >
                     {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`front_${_id}`} src={frontUrl} width={'100%'} style={{maxHeight: '250px'}}/>
@@ -441,8 +438,7 @@ function Driving(props) {
                   <a
                     className='btn btn-outline-primary p-0 mb-2 border-0'
                     href={backUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    download={`${name}_back.jpg`}
                   >
                     {backLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`back_${_id}`} src={backUrl} width={'100%'} style={{maxHeight: '250px'}}/>
