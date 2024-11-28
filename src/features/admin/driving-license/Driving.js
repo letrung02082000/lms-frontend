@@ -6,7 +6,7 @@ import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
-import { MdRotateLeft } from "react-icons/md";
+import { MdError, MdErrorOutline, MdRotateLeft } from "react-icons/md";
 import { DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
 import * as canvas from 'canvas';
 import * as faceapi from '@vladmandic/face-api';
@@ -69,6 +69,8 @@ function Driving(props) {
   const [portrait, setPortrait] = useState(null);
   const [front, setFront] = useState(null);
   const [back, setBack] = useState(null);
+  const [invalidPortrait, setInvalidPortrait] = useState(props?.info?.invalidPortrait || false);
+  const [invalidCard, setInvalidCard] = useState(props?.info?.invalidCard || false);
   createdAt = new Date(createdAt);
   const [isValidDob, setIsValidDob] = useState(true);
 
@@ -287,6 +289,32 @@ function Driving(props) {
       });
   };
 
+  const handleInvalidCard = () => {
+    DrivingApi.updateDriving(_id, {
+      invalidCard: !invalidCard
+    })
+      .then((res) => {
+        setInvalidCard(res.data.invalidCard);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      });
+  };
+
+  const handleInvalidPortrait = () => {
+    DrivingApi.updateDriving(_id, {
+      invalidPortrait: !invalidPortrait
+    })
+      .then((res) => {
+        setInvalidPortrait(res.data.invalidPortrait);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      });
+  };
+
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
   };
@@ -489,10 +517,12 @@ function Driving(props) {
                   </Button>
                   <div className="d-flex justify-content-start">
                     {
-                      imageVisible && processState === DRIVING_STATE.APPROVED && <>
+                      imageVisible && processState === DRIVING_STATE.APPROVED ? <>
                         <Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách...' : 'Tách nền'}</Button>
                         <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button>
-                      </>
+                      </> : <Button className="ms-2" variant={invalidPortrait ? 'danger' : 'outline-primary'} onClick={handleInvalidPortrait}>
+                        <MdErrorOutline />
+                      </Button>
                     }
                   </div>
                 </div>
@@ -518,6 +548,9 @@ function Driving(props) {
                     processState === DRIVING_STATE.APPROVED ? <>
                       {identityInfo?.length ? <Button className="ms-2" variant="outline-primary" onClick={() => setShowIdentityInfo(true)}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc CCCD...' : 'Đọc CCCD'}</Button>}
                     </> : <>
+                      <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
+                        <MdErrorOutline />
+                      </Button>
                       {identityInfo?.length > 0 && <Button className="ms-2" variant="outline-primary" onClick={() => setShowIdentityInfo(true)}>Xem thông tin trích xuất</Button>}
                     </>
                   }

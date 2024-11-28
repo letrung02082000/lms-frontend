@@ -1,8 +1,6 @@
 export const DRIVING_STATE = {
     CREATED: 0,
-    INVALID_PORTRAIT: 1,
-    INVALID_CARD: 10,
-    INVALID_AGE: 9,
+    WAITING_CHANGE: 1,
     WAITING_PAYMENT: 2,
     APPROVED: 5,
     HAS_FILE: 8,
@@ -14,9 +12,7 @@ export const DRIVING_STATE = {
 
 export const DRIVING_STATE_LABEL = {
     [DRIVING_STATE.CREATED]: "Đã tạo",
-    [DRIVING_STATE.INVALID_PORTRAIT]: "Chân dung chưa hợp lệ",
-    [DRIVING_STATE.INVALID_CARD]: "CCCD chưa hợp lệ",
-    [DRIVING_STATE.INVALID_AGE]: "Chưa đủ tuổi",
+    [DRIVING_STATE.WAITING_CHANGE]: "Chờ cập nhật",
     [DRIVING_STATE.WAITING_PAYMENT]: "Chờ thanh toán",
     [DRIVING_STATE.APPROVED]: "Đã duyệt",
     [DRIVING_STATE.HAS_FILE]: "Đã có hồ sơ",
