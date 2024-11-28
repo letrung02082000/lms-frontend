@@ -76,9 +76,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
     FileSaver.saveAs(data, fileName + fileExtension)
   }
 
-  const zipCard = async (data) => {
-    const frontZip = new JSZip()
-    const backZip = new JSZip()
+  const zipCroppedCard = async (data) => {
     const frontCropZip = new JSZip()
     const backCropZip = new JSZip()
 
@@ -89,10 +87,26 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         const frontFileName = `${drivingInfo.name}-${drivingInfo.tel}-1.jpg`;
         const backFileName = `${drivingInfo.name}-${drivingInfo.tel}-2.jpg`;
         const identityInfo = JSON.parse(drivingInfo.identityInfo);
-        console.log(identityInfo)
-        backCropZip.file(backFileName, identityInfo[0]?.info?.image, { base64: true });
         frontCropZip.file(frontFileName, identityInfo[1]?.info?.image, { base64: true });
+        backCropZip.file(backFileName, identityInfo[0]?.info?.image, { base64: true });
       }
+    }
+
+    frontCropZip.generateAsync({ type: "blob" }).then(function (content) {
+      FileSaver.saveAs(content, "front-target.zip");
+    });
+
+    backCropZip.generateAsync({ type: "blob" }).then(function (content) {
+      FileSaver.saveAs(content, "back-target.zip");
+    });
+  }
+
+  const zipCard = async (data) => {
+    const frontZip = new JSZip()
+    const backZip = new JSZip()
+
+    for (let index = 0; index < data.length; index++) {
+      const drivingInfo = data[index];
 
       if(drivingInfo.frontUrl) {
         const fileMimeType = drivingInfo.frontUrl.split('.').pop();
@@ -115,14 +129,6 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
 
     backZip.generateAsync({ type: "blob" }).then(function (content) {
       FileSaver.saveAs(content, "back-source.zip");
-    });
-
-    frontCropZip.generateAsync({ type: "blob" }).then(function (content) {
-      FileSaver.saveAs(content, "front-target.zip");
-    });
-
-    backCropZip.generateAsync({ type: "blob" }).then(function (content) {
-      FileSaver.saveAs(content, "back-target.zip");
     });
   }
 
@@ -178,7 +184,10 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
               Tải ảnh chân dung
             </MenuItem>
             <MenuItem className="mb-3" onClick={() => zipCard(data)} icon={<FaDownload />}>
-              Tải Căn cước công dân
+              Tải CCCD
+            </MenuItem>
+            <MenuItem className="mb-3" onClick={() => zipCroppedCard(data)} icon={<FaDownload />}>
+              Tải CCCD đã cắt
             </MenuItem>
             <MenuItem
               className="mb-3"
