@@ -551,7 +551,6 @@ function Driving(props) {
                       <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
                         <MdErrorOutline />
                       </Button>
-                      {identityInfo?.length > 0 && <Button className="ms-2" variant="outline-primary" onClick={() => setShowIdentityInfo(true)}>Xem thông tin trích xuất</Button>}
                     </>
                   }
                 </div>
@@ -581,8 +580,9 @@ function Driving(props) {
               </div>
             </div>
           </Row>}
-          <div className="d-flex justify-content-end mt-2">
-              <Button variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>Ẩn/Hiện</Button>
+          <div className="d-flex justify-content-end align-items-center mt-2">
+            <span className="me-2">{identityInfo?.length > 0 ? "Đã trích xuất thông tin" : "Chưa trích xuất thông tin"}</span>
+            <Button variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>Ẩn/Hiện</Button>
           </div>
         </Col>
         <Col>
