@@ -11,6 +11,7 @@ import { DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
 import * as canvas from 'canvas';
 import * as faceapi from '@vladmandic/face-api';
 import { Jimp } from 'jimp';
+import moment from 'moment'
 
 function Driving(props) {
   faceapi.env.monkeyPatch({
@@ -69,6 +70,36 @@ function Driving(props) {
   const [front, setFront] = useState(null);
   const [back, setBack] = useState(null);
   createdAt = new Date(createdAt);
+  const [isValidDob, setIsValidDob] = useState(true);
+
+  useEffect(() => {
+    const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
+    const today = new Date();
+
+    if (identityInfo?.length > 0) {
+      if (today.getFullYear() - dob.getFullYear() === 18) {
+        if (today.getMonth() - dob.getMonth() > 0) {
+          setIsValidDob(true);
+        }
+
+        if (today.getMonth() - dob.getMonth() === 0) {
+          if (today.getDate() - dob.getDate() >= 0) {
+            setIsValidDob(true);
+          } else {
+            setIsValidDob(false);
+          }
+        }
+
+        if (today.getMonth() - dob.getMonth() < 0) {
+          setIsValidDob(false);
+        }
+      } else if (today.getFullYear() - dob.getFullYear() < 18) {
+        setIsValidDob(false);
+      } else {
+        setIsValidDob(true);
+      }
+    }
+  }, [identityInfo]);
 
   useEffect(() => {
     if(imageVisible) {
@@ -159,7 +190,6 @@ function Driving(props) {
     const input = document.getElementById(`portrait_clip_${_id}`)
     const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1, maxResults: 10 }); // set model options
     const result = await faceapi.detectSingleFace(input, options);
-    console.log(result)
     const x = result.box.x - (result.box._width * 0.75);
     const y = result.box.y - (result.box._height * 0.8);
     const width = result.box.width * 2.5;
@@ -327,6 +357,7 @@ function Driving(props) {
                 <div className="mb-2">
                   <span>CK</span>
                   <span className='text-center fw-bold'> {formatCurrency(cash)} VNĐ</span>
+                  {!isValidDob && <p className='text-danger fw-bold text-center'>Chưa đủ tuổi</p>}
                 </div>
                 <Button
                   variant={sent ? "warning" : "outline-primary"}
