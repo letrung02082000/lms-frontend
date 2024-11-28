@@ -574,6 +574,9 @@ function Driving(props) {
                   <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`back_${_id}`)}>
                     <MdRotateLeft />
                   </Button>
+                  {processState !== DRIVING_STATE.APPROVED && <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
+                    <MdErrorOutline />
+                  </Button>}
                 </div>
               </div>
             </div>

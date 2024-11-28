@@ -33,7 +33,8 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
       NgayThi = NgayThi.toLocaleDateString()
       let Timestamp = new Date(child.createdAt)
       Timestamp = `${Timestamp.toLocaleDateString('en-GB')} ${Timestamp.toLocaleTimeString('en-GB')}`
-      let NgaySinh, GioiTinh, DiaChi, SoCCCD, NoiCap, NgayCap;
+      let NgaySinh, GioiTinh, DiaChi, SoCCCD, NoiCap, NgayCap, CapNhat, SoDienThoai2;
+      SoDienThoai2 = child.tel?.slice(0, 4) + '***' + child.tel?.slice(-3);
 
       if (identityInfo.length > 0) {
         NgaySinh = identityInfo[1]?.info?.dob;
@@ -44,20 +45,32 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         NgayCap = identityInfo[0]?.info?.issue_date;
       }
 
+      if(child?.invalidCard && child?.invalidPortrait) {
+        CapNhat = 'Chân dung, CCCD không hợp lệ';
+      } else if(child?.invalidPortrait) {
+        CapNhat = 'Chân dung không hợp lệ';
+      } else if(child?.invalidCard) {
+        CapNhat = 'CCCD không hợp lệ';
+      } else {
+        CapNhat = '';
+      }
+
       return {
         STT: index + 1,
         Timestamp,
         HoTen: child.name,
         NgayThi,
         SoDienThoai: child.tel,
+        SoDienThoai2,
+        TinhTrang: DRIVING_STATE_LABEL[child?.processState],
+        CapNhat,
+        ChuyenKhoan: child.cash,
+        GhiChu: child?.feedback || '',
         Zalo: child.zalo,
         ChanDung: child?.portraitUrl,
         ChanDungCat: child?.portraitClipUrl,
         MatTruoc: child?.frontUrl,
         MatSau: child?.backUrl,
-        TrangThai: DRIVING_STATE_LABEL[child?.processState],
-        GhiChu: child?.feedback || '',
-        Cash: child.cash,
         NgaySinh: NgaySinh || new Date(child.dob).toLocaleDateString("en-GB"),
         GioiTinh: GioiTinh || child.gender,
         DiaChi: DiaChi || child.address,
