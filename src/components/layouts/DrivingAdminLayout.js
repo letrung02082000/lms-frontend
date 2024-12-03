@@ -35,6 +35,9 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
       Timestamp = `${Timestamp.toLocaleDateString('en-GB')} ${Timestamp.toLocaleTimeString('en-GB')}`
       let NgaySinh, GioiTinh, DiaChi, SoCCCD, NoiCap, NgayCap, CapNhat, SoDienThoai2;
       SoDienThoai2 = child.tel?.slice(0, 4) + '***' + child.tel?.slice(-3);
+      let nameParts = child.name?.trim().split(' ');
+      let lastName = nameParts.pop();
+      let firstName = nameParts.join(' ');
 
       if (identityInfo.length > 0) {
         NgaySinh = identityInfo[1]?.info?.dob;
@@ -58,6 +61,8 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
       return {
         STT: index + 1,
         Timestamp,
+        HoVaTenDem: firstName,
+        Ten: lastName,
         HoTen: child.name,
         NgayThi,
         SoDienThoai: child.tel,
