@@ -169,8 +169,8 @@ function AdminDrivingA1Page() {
             }
 
             for (let i = 0; i < res.data.length; i++) {
-              setSelectedRow(res.data[i]);
               if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
+                setSelectedRow(res.data[i]);
                 drivingApi
                     .updateDriving(res.data[i]._id, updateParams)
                     .then((res) => {
