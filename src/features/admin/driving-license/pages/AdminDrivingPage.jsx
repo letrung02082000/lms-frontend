@@ -65,6 +65,8 @@ function AdminDrivingA1Page() {
     shouldUseNativeValidation: false,
     delayError: false,
   });
+
+  console.log(selectedRow)
   
   const ActionButton = (props) => {
     return (
@@ -165,7 +167,8 @@ function AdminDrivingA1Page() {
             }, 0);
 
             if(count > 1) {
-              toastWrapper(`Tìm thấy ${count} hồ sơ cần xem xét, đã cập nhật hồ sơ gần nhất`, 'warning');
+              setShowQRModal(false);
+              return toastWrapper(`Tìm thấy ${count} hồ sơ cần xem xét`, 'warning');
             }
 
             for (let i = 0; i < res.data.length; i++) {
@@ -196,6 +199,13 @@ function AdminDrivingA1Page() {
                       toastWrapper(err.toString(), 'error');
                     });
 
+                break;
+              }
+            }
+          } else {
+            for (let i = 0; i < res.data.length; i++) {
+              if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
+                setSelectedRow(res.data[i]);
                 break;
               }
             }
@@ -488,9 +498,11 @@ function AdminDrivingA1Page() {
               return (
                 <Button
                   key={key}
-                  onClick={() => updateProcessState(selectedRow?._id, DRIVING_STATE[key])}
+                  onClick={() =>
+                    updateProcessState(selectedRow?._id, DRIVING_STATE[key])
+                  }
                   variant={
-                    selectedRow?.processState === DRIVING_STATE[key]    
+                    selectedRow?.processState === DRIVING_STATE[key]
                       ? 'primary'
                       : 'outline-primary'
                   }
@@ -596,8 +608,16 @@ function AdminDrivingA1Page() {
                 />
               </Col>
               <Col xs={5}>
-                <label className='d-block form-label' style={{marginBottom: '0.5rem'}}>Mã thanh toán</label>
-                <Button className='w-100' onClick={() => setShowAccountModal(true)}>
+                <label
+                  className='d-block form-label'
+                  style={{ marginBottom: '0.5rem' }}
+                >
+                  Mã thanh toán
+                </label>
+                <Button
+                  className='w-100'
+                  onClick={() => setShowAccountModal(true)}
+                >
                   Hiện mã thanh toán
                 </Button>
               </Col>
@@ -756,13 +776,21 @@ function AdminDrivingA1Page() {
             }}
           />
           <Form.Group className='my-3' as={Row}>
-            <Form.Label className='text-center'>
-              {selectedRow?.name} {' - '}{' '}
-              {new Date(selectedRow?.date).toLocaleDateString('en-GB')}
-            </Form.Label>
-            <Form.Text className='text-center'>
-              {selectedRow?.tel} <CopyButton text={rowData?.[0]?.tel} />
-            </Form.Text>
+            {selectedRow?.name && (
+              <>
+                <Form.Label className='text-center'>
+                  {selectedRow?.name} {' - '}{' '}
+                  {new Date(selectedRow?.date).toLocaleDateString('en-GB')}
+                </Form.Label>
+                <Form.Text className='text-center'>
+                  {selectedRow?.tel}
+                  {' - '}
+                  {DRIVING_STATE_LABEL[selectedRow?.processState]}
+                  {' '}
+                  <CopyButton text={rowData?.[0]?.tel} />
+                </Form.Text>
+              </>
+            )}
           </Form.Group>
           <Form.Group className='my-3' as={Row}>
             <Form.Label column sm='4'>
