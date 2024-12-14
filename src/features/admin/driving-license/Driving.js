@@ -31,7 +31,6 @@ function Driving(props) {
     tel,
     messageSent,
     drivingType,
-    source,
     dup,
     _id,
     cash,
@@ -47,6 +46,7 @@ function Driving(props) {
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [sent, setSent] = useState(messageSent);
+  const [isPaid, setIsPaid] = useState(props?.info?.isPaid || false);
   const [feedback, setFeedback] = useState(props.info.feedback || "");
   const [processState, setProcessState] = useState(props.info.processState);
   const [frontUploading, setFrontUploading] = useState(false);
@@ -289,6 +289,17 @@ function Driving(props) {
       });
   };
 
+  const handlePaidButton = () => {
+    DrivingApi.updateDriving(_id, {
+      isPaid: !isPaid
+    }).then(res => {
+      setIsPaid(res?.data?.isPaid);
+    }).catch(e => {
+      console.log(e);
+      alert(e);
+    });
+  }
+
   const handleInvalidCard = () => {
     DrivingApi.updateDriving(_id, {
       invalidCard: !invalidCard
@@ -364,39 +375,46 @@ function Driving(props) {
       <Row>
         <Col xs={10}>
           <Row className="mb-2">
-            <div className="d-flex justify-content-between">
-              <div>
-                <p className="form-text">{createdAt.toLocaleDateString("en-GB")}</p>
+            <Col>
+              <p className="form-text">{createdAt.toLocaleDateString("en-GB")}</p>
+            </Col>
+            <Col>
+              <p>{name}</p>
+              {!isValidDob && <p className='text-danger fw-bold text-center'>Chưa đủ tuổi</p>}
+            </Col>
+            <Col>
+              <div className="mb-2 d-flex justify-content-between">
+                <span><b>Di động:</b> {tel}</span>
+                <CopyToClipboardButton value={tel} className='btn btn-outline-primary ms-2' /></div>
+              <div className="mb-2 d-flex justify-content-between">
+                <span><b>Zalo:</b> {zalo}</span>
+                <CopyToClipboardButton value={zalo} className='btn btn-outline-primary ms-2' />
               </div>
-
-              <div>
-                <p>{name}</p>
-              </div>
-              <div>
-                <div className="mb-2 d-flex justify-content-between">
-                  <span><b>Di động:</b> {tel}</span>
-                  <CopyToClipboardButton value={tel} className='btn btn-outline-primary ms-2' /></div>
-                <div className="mb-2 d-flex justify-content-between">
-                  <span><b>Zalo:</b> {zalo}</span>
-                  <CopyToClipboardButton value={zalo} className='btn btn-outline-primary ms-2' />
-                </div>
-              </div>
-              <div>
-                <div className="mb-2">
-                  <span>CK</span>
-                  <span className='text-center fw-bold'> {formatCurrency(cash)} VNĐ</span>
-                  {!isValidDob && <p className='text-danger fw-bold text-center'>Chưa đủ tuổi</p>}
-                </div>
-                <Button
-                  variant={sent ? "warning" : "outline-primary"}
-                  className="w-100"
-                  onClick={handleMessageSent}
-                >
-                  Đã gửi tin nhắn
-                </Button>
-              </div>
-
-            </div>
+            </Col>
+            <Col>
+              <Row className="mb-2">
+                <Col>Chuyển khoản</Col>
+                <Col className='text-center fw-bold'> {formatCurrency(cash)} VNĐ</Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Button
+                    variant={sent ? "warning" : "outline-primary"}
+                    onClick={handleMessageSent}
+                  >
+                    Đã vào nhóm
+                  </Button></Col>
+                <Col>
+                  <Button
+                    variant={isPaid ? "success" : "outline-primary"}
+                    onClick={handlePaidButton}
+                    className="ms-2"
+                  >
+                    Đã thanh toán
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
           </Row>
           <Row>
             <Col xs={6}>
