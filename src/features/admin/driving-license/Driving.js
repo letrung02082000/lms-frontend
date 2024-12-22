@@ -12,6 +12,8 @@ import * as canvas from 'canvas';
 import * as faceapi from '@vladmandic/face-api';
 import { Jimp } from 'jimp';
 import moment from 'moment'
+import { FaQrcode } from "react-icons/fa";
+import QRCode from "react-qr-code";
 
 function Driving(props) {
   faceapi.env.monkeyPatch({
@@ -63,6 +65,7 @@ function Driving(props) {
   const [extracting, setExtracting] = useState(false);
   const [identityInfo, setIdentityInfo] = useState(JSON.parse(props?.info?.identityInfo || '[]'));
   const [showIdentityInfo, setShowIdentityInfo] = useState(false);
+  const [showQrCode, setShowQrCode] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [portraitClip, setPortraitClip] = useState(null);
   const [portraitCrop, setPortraitCrop] = useState(null);
@@ -73,6 +76,7 @@ function Driving(props) {
   const [invalidCard, setInvalidCard] = useState(props?.info?.invalidCard || false);
   createdAt = new Date(createdAt);
   const [isValidDob, setIsValidDob] = useState(true);
+  const [qrData, setQrData] = useState(null);
 
   useEffect(() => {
     const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
@@ -102,6 +106,8 @@ function Driving(props) {
       }
     }
   }, [identityInfo]);
+
+  console.log(qrData);
 
   useEffect(() => {
     if(imageVisible) {
@@ -385,10 +391,19 @@ function Driving(props) {
             <Col>
               <div className="mb-2 d-flex justify-content-between">
                 <span><b>Di động:</b> {tel}</span>
-                <CopyToClipboardButton value={tel} className='btn btn-outline-primary ms-2' /></div>
+                <CopyToClipboardButton value={tel} className='btn btn-outline-primary ms-2' />
+                <button className="m-0 p-0 border-0 text-primary bg-white" onClick={() => {
+                  setShowQrCode(true);
+                  setQrData(tel);
+                }}><FaQrcode /></button>
+              </div>
               <div className="mb-2 d-flex justify-content-between">
                 <span><b>Zalo:</b> {zalo}</span>
                 <CopyToClipboardButton value={zalo} className='btn btn-outline-primary ms-2' />
+                <button className="m-0 p-0 border-0 text-primary bg-white" onClick={() => {
+                  setShowQrCode(true);
+                  setQrData(`https://zalo.me/${zalo}`);
+                }}><FaQrcode /></button>
               </div>
             </Col>
             <Col>
@@ -676,6 +691,21 @@ function Driving(props) {
           </Button>
         </Modal.Footer>
       </Modal>}
+      <Modal show={showQrCode} onHide={() => setShowQrCode(false)} scrollable backdrop="static" size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Mã QR</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row>
+            <QRCode value={qrData} />
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowQrCode(false)}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

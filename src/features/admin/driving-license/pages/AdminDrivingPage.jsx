@@ -47,6 +47,7 @@ function AdminDrivingA1Page() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [visibleDate, setVisibleDate] = useState([{}]);
+  const [fixedDate, setFixedDate] = useState(null);
   const {
     control,
     setValue,
@@ -66,8 +67,6 @@ function AdminDrivingA1Page() {
     delayError: false,
   });
 
-  console.log(selectedRow)
-  
   const ActionButton = (props) => {
     return (
       <div className='w-100 d-flex justify-content-center'>
@@ -143,41 +142,63 @@ function AdminDrivingA1Page() {
   }, [page, query]);
 
   useEffect(() => {
-    if (qrData) {
-      const qrDataArr = qrData.split('|');
-      const searchText =
-        qrDataArr[2] ||
-        cryptojs.AES.decrypt(qrDataArr[0], key).toString(cryptojs.enc.Utf8).split('.')[0];
-      setSearchText(searchText);
-      drivingApi
-        .getDrivings(query, searchText, 1)
-        .then((res) => {
-          setRowData(res.data);
-          setPagination(res.pagination);
+    const readQrData = async () => {
+      if (qrData) {
+        const qrText = qrData?.trim();
+        const qrDataArr = qrText?.split('|');
+        const searchText =
+          qrText?.length === 10
+            ? qrText
+            : qrDataArr[2] ||
+              cryptojs.AES.decrypt(qrDataArr[0], key)
+                ?.toString(cryptojs.enc.Utf8)
+                ?.split('.')[0] || '';
 
-          if(res.data.length === 0) {
-            toastWrapper('Không tìm thấy hồ sơ', 'error');
-          }
+        if (searchText?.length === 0) {
+          return toastWrapper('Mã QR không hợp lệ', 'error');
+        }
 
-          if (updateParams?.date != undefined || updateParams?.processState != undefined) {
-            const count = res.data.reduce((acc, cur) => {
-              return (
-                acc + (cur.processState != PROCESS_STATE.CANCELLED ? 1 : 0)
-              );
-            }, 0);
+        setSearchText(searchText);
+        drivingApi
+          .getDrivings(query, searchText, 1)
+          .then((res) => {
+            setRowData(res.data);
+            setPagination(res.pagination);
 
-            if(count > 1) {
-              setShowQRModal(false);
-              return toastWrapper(`Tìm thấy ${count} hồ sơ cần xem xét`, 'warning');
+            if (res.data.length === 0) {
+              toastWrapper('Không tìm thấy hồ sơ', 'error');
             }
 
-            for (let i = 0; i < res.data.length; i++) {
-              if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
-                setSelectedRow(res.data[i]);
-                drivingApi
+            if (
+              updateParams?.date != undefined ||
+              updateParams?.processState != undefined
+            ) {
+              const count = res.data.reduce((acc, cur) => {
+                return (
+                  acc + (cur.processState != PROCESS_STATE.CANCELLED ? 1 : 0)
+                );
+              }, 0);
+
+              if (count > 1) {
+                setShowQRModal(false);
+                return toastWrapper(
+                  `Tìm thấy ${count} hồ sơ cần xem xét`,
+                  'warning'
+                );
+              }
+
+              for (let i = 0; i < res.data.length; i++) {
+                if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
+                  setSelectedRow(res.data[i]);
+
+                  if (fixedDate && fixedDate !== res.data[i].date) {
+                    return toastWrapper('Không khớp ngày cố định', 'error');
+                  }
+
+                  drivingApi
                     .updateDriving(res.data[i]._id, updateParams)
                     .then((res) => {
-                      if(updateParams?.date != undefined) {
+                      if (updateParams?.date != undefined) {
                         toastWrapper(
                           'Đã cập nhật thành ngày ' +
                             new Date(updateParams?.date).toLocaleDateString(
@@ -199,22 +220,29 @@ function AdminDrivingA1Page() {
                       toastWrapper(err.toString(), 'error');
                     });
 
-                break;
+                  break;
+                }
+              }
+            } else {
+              for (let i = 0; i < res.data.length; i++) {
+                if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
+                  setSelectedRow(res.data[i]);
+
+                  if (fixedDate && fixedDate !== res.data[i].date) {
+                    return toastWrapper('Không khớp ngày cố định', 'error');
+                  }
+
+                  break;
+                }
               }
             }
-          } else {
-            for (let i = 0; i < res.data.length; i++) {
-              if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
-                setSelectedRow(res.data[i]);
-                break;
-              }
-            }
-          }
-        })
-        .catch((err) => {
-          toastWrapper(err.toString(), 'error');
-        });
-    }
+          })
+          .catch((err) => {
+            toastWrapper(err.toString(), 'error');
+          });
+      }
+    };
+    readQrData();
   }, [qrData]);
 
   const fetchDrivings = async (query, searchText, page) => {
@@ -779,15 +807,16 @@ function AdminDrivingA1Page() {
             {selectedRow?.name && (
               <>
                 <Form.Label className='text-center'>
-                  {selectedRow?.name} {' - '}{' '}
-                  {new Date(selectedRow?.date).toLocaleDateString('en-GB')}
-                </Form.Label>
-                <Form.Text className='text-center'>
-                  {selectedRow?.tel}
+                  {selectedRow?.name}
                   {' - '}
-                  {DRIVING_STATE_LABEL[selectedRow?.processState]}
+                  {selectedRow?.tel}
                   {' '}
                   <CopyButton text={rowData?.[0]?.tel} />
+                </Form.Label>
+                <Form.Text className='text-center'>
+                  {new Date(selectedRow?.date).toLocaleDateString('en-GB')}
+                  {' - '}
+                  {DRIVING_STATE_LABEL[selectedRow?.processState]}
                 </Form.Text>
               </>
             )}
@@ -828,6 +857,18 @@ function AdminDrivingA1Page() {
                     processState: val?.value,
                   })
                 }
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group className='my-3' as={Row}>
+            <Form.Label column sm='4'>
+              Ngày cố định
+            </Form.Label>
+            <Col>
+              <Select
+                isClearable
+                options={visibleDate}
+                onChange={(val) => setFixedDate(val?.value || undefined)}
               />
             </Col>
           </Form.Group>
