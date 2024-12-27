@@ -7,7 +7,7 @@ function CopyToClipboardButton({ value, children, className, ...props }) {
 
   return (
     <button
-      className={`m-0 p-0 border-0 text-primary bg-white ${className}`}
+      className={className}
       onClick={() => {
         navigator.clipboard.writeText(value);
         setCopied(true);
