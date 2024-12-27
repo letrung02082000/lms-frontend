@@ -25,3 +25,15 @@ export const DRIVING_STATE_LABEL = {
     [DRIVING_STATE.FINISHED]: "Đã hoàn tất",
     [DRIVING_STATE.CANCELED]: "Đã hủy hồ sơ",
 }
+
+export const DRIVING_TYPE = {
+    A1: 0,
+    A: 1,
+    OTHER: 2,
+}
+
+export const DRIVING_TYPE_LABEL = {
+    [DRIVING_TYPE.A1]: "A1",
+    [DRIVING_TYPE.A]: "A",
+    [DRIVING_TYPE.OTHER]: "Khác",
+}

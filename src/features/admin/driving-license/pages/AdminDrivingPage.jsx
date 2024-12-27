@@ -16,6 +16,8 @@ import CopyButton from 'components/button/CopyButton';
 import { ROLE } from 'constants/role';
 import AccountModal from 'features/driving-license/components/AccountModal';
 import { DRIVING_STATE, DRIVING_STATE_LABEL } from '../constant';
+import { FaQrcode } from "react-icons/fa";
+import QRCode from "react-qr-code";
 
 function AdminDrivingA1Page() {
   const userRole = JSON.parse(localStorage.getItem('user-info')).role;
@@ -265,7 +267,7 @@ function AdminDrivingA1Page() {
     setValue('cash', selectedRow?.cash);
 
     if(showEditModal) {
-      fetchImage();
+      // fetchImage();
     }
   }, [selectedRow, showEditModal]);
 
@@ -561,7 +563,7 @@ function AdminDrivingA1Page() {
               </Col>
             </Row>
 
-            <Row className='mb-3'>
+            <Row className='mb-3 align-items-end'>
               <Col>
                 <InputField
                   hasAsterisk={true}
@@ -583,9 +585,9 @@ function AdminDrivingA1Page() {
                   onClear={handleClearButton}
                 />
               </Col>
-            </Row>
-
-            <Row className='mb-3'>
+              <Col xs={1}>
+                <QRCode value={selectedRow?.tel} size={41}/>
+              </Col>
               <Col>
                 <InputField
                   hasAsterisk={true}
@@ -607,6 +609,12 @@ function AdminDrivingA1Page() {
                   onClear={handleClearButton}
                 />
               </Col>
+              <Col xs={1}>
+                <QRCode
+                  value={`https://zalo.me/${selectedRow?.zalo}`}
+                  size={41}
+                />
+              </Col>
             </Row>
             <Row className='mb-3'>
               <Col>
@@ -622,9 +630,6 @@ function AdminDrivingA1Page() {
                   name='date'
                 />
               </Col>
-            </Row>
-
-            <Row className='mb-3'>
               <Col>
                 <InputField
                   noClear={true}
@@ -635,18 +640,18 @@ function AdminDrivingA1Page() {
                   disabled={true}
                 />
               </Col>
-              <Col xs={5}>
+              <Col xs={2}>
                 <label
                   className='d-block form-label'
                   style={{ marginBottom: '0.5rem' }}
                 >
-                  Mã thanh toán
+                  Thanh toán
                 </label>
                 <Button
                   className='w-100'
                   onClick={() => setShowAccountModal(true)}
                 >
-                  Hiện mã thanh toán
+                  Hiện mã
                 </Button>
               </Col>
             </Row>
@@ -673,9 +678,9 @@ function AdminDrivingA1Page() {
                 <div>
                   <a
                     id='front-link'
-                    download={`${selectedRow?.name}_front.png`}
+                    download={`${selectedRow?.name}-${selectedRow?.tel}-front.png`}
                   >
-                    <img id='front-card' alt='front-card' />
+                    <img id='front-card' alt={selectedRow?.frontUrl}/>
                   </a>
                 </div>
                 <Button
@@ -689,8 +694,8 @@ function AdminDrivingA1Page() {
 
               <Col>
                 <div>
-                  <a id='back-link' download={`${selectedRow?.name}_back.png`}>
-                    <img id='back-card' alt='back-card' />
+                  <a id='back-link' download={`${selectedRow?.name}-${selectedRow?.tel}-back.png`}>
+                    <img id='back-card' alt={selectedRow?.backUrl} />
                   </a>
                 </div>
                 <Button
@@ -705,9 +710,9 @@ function AdminDrivingA1Page() {
                 <div>
                   <a
                     id='portrait-link'
-                    download={`${selectedRow.name}_portrait.png`}
+                    download={`${selectedRow.name}-${selectedRow?.tel}-portrait.png`}
                   >
-                    <img id='portrait' alt='portrait' />
+                    <img id='portrait' alt={selectedRow?.portraitUrl} />
                   </a>
                 </div>
                 <Button
@@ -809,9 +814,7 @@ function AdminDrivingA1Page() {
                 <Form.Label className='text-center'>
                   {selectedRow?.name}
                   {' - '}
-                  {selectedRow?.tel}
-                  {' '}
-                  <CopyButton text={rowData?.[0]?.tel} />
+                  {selectedRow?.tel} <CopyButton text={rowData?.[0]?.tel} />
                 </Form.Label>
                 <Form.Text className='text-center'>
                   {new Date(selectedRow?.date).toLocaleDateString('en-GB')}

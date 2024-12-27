@@ -186,7 +186,7 @@ function A1Driving() {
               key={child._id}
               style={{ width: '100px' }}
             >
-              <span>{child.date.toLocaleDateString()}</span>
+              <span>{child.date.toLocaleDateString('en-GB')}</span>
             </Button>
           );
         })}
