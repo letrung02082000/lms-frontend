@@ -267,7 +267,7 @@ function AdminDrivingA1Page() {
     setValue('cash', selectedRow?.cash);
 
     if(showEditModal) {
-      // fetchImage();
+      fetchImage();
     }
   }, [selectedRow, showEditModal]);
 
