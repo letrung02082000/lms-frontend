@@ -400,7 +400,7 @@ function Driving(props) {
             </Col>
             <Col xs={2}>
               <div className="d-flex align-items-center mb-3">
-                <MdPhone size={25} className='text-primary' />
+                <div><MdPhone size={25} className='text-primary' /></div>
                 <span className="ms-3">{tel}</span>
                 <button className="m-0 ms-3 p-0 border-0 text-primary bg-white" onClick={() => {
                   setShowQrCode(true);
@@ -409,7 +409,7 @@ function Driving(props) {
                 <CopyToClipboardButton value={tel} className='btn btn-outline-primary ms-3' />
               </div>
               <div className="d-flex align-items-center mb-3">
-                <ZaloImage />
+                <div><ZaloImage /></div>
                 <span className='ms-3'>{zalo}</span>
                 <button className="m-0 ms-3 p-0 border-0 text-primary bg-white" onClick={() => {
                   setShowQrCode(true);
@@ -428,12 +428,6 @@ function Driving(props) {
                 </Col>
                 <Col xs={3} className="text-center">
                   <p className="mb-2">
-                  Chuyển khoản
-                  </p>
-                  <p className="fw-bold">{formatCurrency(cash)} VNĐ</p>
-                </Col>
-                <Col xs={3} className="text-center">
-                  <p className="mb-2">
                     {sent ? 'Đã' : 'Chưa'} vào nhóm
                   </p>
                   <Form.Check
@@ -441,6 +435,12 @@ function Driving(props) {
                     type="switch"
                     checked={sent}
                     onClick={handleMessageSent} />
+                </Col>
+                <Col xs={3} className="text-center">
+                  <p className="mb-2">
+                  Chuyển khoản
+                  </p>
+                  <p className="fw-bold">{formatCurrency(cash)} VNĐ</p>
                 </Col>
                 <Col xs={3} className="text-center">
                   <p className="mb-2">
@@ -508,24 +508,27 @@ function Driving(props) {
                   </Button>
                 </Col>
               </Row>
-              <Row>
-
-              </Row>
             </Col>
           </Row>
-          <Row className="my-2">
-            {healthDate ? <p className="text-success">Đăng ký lịch thi/khám sức khoẻ ngày {new Date(healthDate).toLocaleDateString('en-GB')}</p> : <p className="">Chưa đăng ký khám sức khoẻ</p>}
-          </Row>
-          {dup > 1 ? (
-            <p className="text-danger">
-              Danh sách này có 1 hồ sơ tương tự
-            </p>
-          ) : null}
+          <div className="mt-3 d-flex justify-content-between">
+            <div>
+              {invalidCard && <p className="text-danger">Căn cước không hợp lệ</p>}
+              {invalidPortrait && <p className="text-danger">Chân dung không hợp lệ</p>}
+            </div>
+            <div>
+              {healthDate ? <p className="text-success text-end">Đăng ký lịch thi/khám sức khoẻ ngày {new Date(healthDate).toLocaleDateString('en-GB')}</p> : <p className="text-end">Chưa đăng ký khám sức khoẻ</p>}
+              {dup > 1 ? (
+                <p className="text-danger text-end">
+                  Danh sách này có 1 hồ sơ tương tự
+                </p>
+              ) : null}
+              <p className="text-end">{identityInfo?.length > 0 ? "Đã trích xuất thông tin" : "Chưa trích xuất thông tin"}</p>
+            </div>
+          </div>
           {imageVisible && <Row>
             <div className='d-flex justify-content-between'>
               <div>
-                <div className='d-flex align-items-start'>
-
+                <div>
                   <a
                     className='btn btn-outline-primary p-0 mb-2 border-0'
                     href={portrait}
@@ -535,7 +538,7 @@ function Driving(props) {
                     {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`portrait_${_id}`} />
                   </a>
-                  <a
+                  {portraitClip && <a
                     className='btn btn-outline-primary p-0 mb-2 ms-2 border-0'
                     href={portraitClip}
                     rel="noopener noreferrer"
@@ -543,10 +546,10 @@ function Driving(props) {
                   >
                     {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
                     <img id={`portrait_clip_${_id}`} />
-                  </a>
-                  <a href={portraitCrop} download={`${name}-${tel}-cropped.jpg`}>
+                  </a>}
+                  {portraitCrop && <a href={portraitCrop} download={`${name}-${tel}-cropped.jpg`}>
                     <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} />
-                  </a>
+                  </a>}
                 </div>
                 <div className="d-flex justify-content-center">
                   <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url })} />
@@ -619,7 +622,6 @@ function Driving(props) {
             </div>
           </Row>}
           <div className="d-flex justify-content-end align-items-center mt-2">
-            <span className="me-2">{identityInfo?.length > 0 ? "Đã trích xuất thông tin" : "Chưa trích xuất thông tin"}</span>
             <Button variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>Ẩn/Hiện</Button>
           </div>
         </Col>
