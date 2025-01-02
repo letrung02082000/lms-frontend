@@ -14,6 +14,7 @@ function AdminDrivingDatePage() {
   const [rowData, setRowData] = useState([]);
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
+  const [groupLink, setGroupLink] = useState('');
 
   const [colDefs] = useState([
     {
@@ -42,6 +43,11 @@ function AdminDrivingDatePage() {
             field: 'description',
             headerName: 'Mô tả',
             flex: 6,
+            editable: true,
+          },
+          {
+            field: 'link',
+            headerName: 'Nhóm thi',
             editable: true,
           },
           {
@@ -75,6 +81,7 @@ function AdminDrivingDatePage() {
       date: new Date(drivingDate).getTime(),
       isVisible: true,
       description,
+      link: groupLink,
     };
 
     drivingApi.addDrivingDate(body).then((res) => {
@@ -92,6 +99,7 @@ function AdminDrivingDatePage() {
       description: data.description,
       formVisible: data.formVisible,
       isVisible: data.isVisible,
+      link: data.link,
     };
 
     drivingApi.updateDrivingDate(data?._id, body).then((res) => {
@@ -147,6 +155,16 @@ function AdminDrivingDatePage() {
                       placeholder='Mô tả'
                       onChange={(e) => setDescription(e.target.value)}
                       as={'textarea'}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <FormControl
+                      className='mb-3'
+                      type='text'
+                      placeholder='Nhóm thi'
+                      onChange={(e) => setGroupLink(e.target.value)}
                     />
                   </Col>
                 </Row>

@@ -24,7 +24,7 @@ export const DRIVING_STATE_LABEL = {
     [DRIVING_STATE.WAITING_FOR_SCHEDULE]: "Chờ xếp lịch",
     [DRIVING_STATE.FINISHED]: "Đã hoàn tất",
     [DRIVING_STATE.RECEIVED]: "Đã nhận bằng",
-    [DRIVING_STATE.CANCELED]: "Đã hủy hồ sơ",
+    [DRIVING_STATE.CANCELED]: "Đã hủy",
 }
 
 export const DRIVING_TYPE = {

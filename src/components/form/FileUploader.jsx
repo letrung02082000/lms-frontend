@@ -61,7 +61,7 @@ function FileUploader({ className, hasAsterisk, hasLabel=true, hasText=true, acc
   });
 
   return (
-    <div>
+    <div className={className}>
       {hasLabel && (
         <>
           <Form.Label className='d-block'>
@@ -80,7 +80,7 @@ function FileUploader({ className, hasAsterisk, hasLabel=true, hasText=true, acc
       >
         <input {...getInputProps()} />
         <div>
-          <BsCloudUpload size={25}/>
+          <BsCloudUpload/>
           {hasText && (
             <span className='ms-2'>{props?.text || 'Tải tệp lên'}</span>
           )}

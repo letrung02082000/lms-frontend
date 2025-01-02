@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import DrivingApi from "api/drivingApi";
-import { blobToBase64, formatCurrency } from "utils/commonUtils";
+import { formatCurrency } from "utils/commonUtils";
 import { Button, Col, Form, FormControl, Image, Modal, Row } from "react-bootstrap";
 import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
-import { MdErrorOutline, MdInfo, MdPhone, MdRotateLeft } from "react-icons/md";
+import { MdMoreVert, MdPhone, MdRotateLeft } from "react-icons/md";
 import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL } from "./constant";
-import * as canvas from 'canvas';
 import * as faceapi from '@vladmandic/face-api';
 import { Jimp } from 'jimp';
 import moment from 'moment'
 import { FaQrcode } from "react-icons/fa";
 import QRCode from "react-qr-code";
 import ZaloImage from "assets/images/ZaloImage";
+import { IoIosCloseCircle } from "react-icons/io";
+import { IoClose } from "react-icons/io5";
 
 function Driving(props) {
   faceapi.env.monkeyPatch({
@@ -25,7 +26,7 @@ function Driving(props) {
     createCanvasElement: () => document.createElement('canvas'),
     createImageElement: () => document.createElement('img')
   })
-  
+
   let {
     name,
     date,
@@ -112,11 +113,11 @@ function Driving(props) {
   }, [identityInfo]);
 
   useEffect(() => {
-    if(imageVisible) {
+    if (imageVisible) {
       fetchImage();
       const loadModels = async () => {
-        const MODEL_URL =  '/models';
-  
+        const MODEL_URL = '/models';
+
         Promise.all([
           faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
           faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
@@ -126,9 +127,6 @@ function Driving(props) {
       loadModels();
     }
   }, [imageVisible]);
-
-  console.log(selectedDate)
-  console.log(props?.dateList)
 
   const fetchPortraitClip = async (portraitClipUrl) => {
     try {
@@ -195,9 +193,9 @@ function Driving(props) {
   }
 
   const cropPortrait = async () => {
-    if(!modelsLoaded) return toastWrapper('Đang tải mô hình, vui lòng thử lại sau', 'info');
+    if (!modelsLoaded) return toastWrapper('Đang tải mô hình, vui lòng thử lại sau', 'info');
 
-    if(!portraitClip) return toastWrapper('Chưa tách nền ảnh', 'error');
+    if (!portraitClip) return toastWrapper('Chưa tách nền ảnh', 'error');
 
     setCropping(true);
     const input = document.getElementById(`portrait_clip_${_id}`)
@@ -272,7 +270,7 @@ function Driving(props) {
   };
 
   const updateProcessState = (state) => {
-    if(processState === DRIVING_STATE.CANCELED)
+    if (processState === DRIVING_STATE.CANCELED)
       return toastWrapper('Không thể cập nhật hồ sơ đã bị huỷ', 'error');
     setLoading(true);
     DrivingApi.updateProcessState(props.id, state)
@@ -341,13 +339,20 @@ function Driving(props) {
 
   const handleDateInfoButton = () => {
     const dateInfo = props?.dateList?.find(d => new Date(d.date).toISOString() === new Date(selectedDate).toISOString());
-    console.log(dateInfo)
     setDateInfo(dateInfo);
     setShowDateInfo(true);
   }
 
-  const handleUpdateButton = (id, data) => {
+  const handleUpdateButton = (id, data, type) => {
     DrivingApi.updateDriving(id, data).then(res => {
+      if(type === 'portrait') {
+        fetchPortrait(res?.data?.portraitUrl);
+      } else if(type === 'front') {
+        fetchFront(res?.data?.frontUrl);
+      } else if(type === 'back') {
+        fetchBack(res?.data?.backUrl);
+      }
+
       toastWrapper('Cập nhật thành công', 'success')
     }).catch(e => {
       toastWrapper('Cập nhật thất bại', 'error')
@@ -391,7 +396,7 @@ function Driving(props) {
       <Row>
         <Col xs={10}>
           <Row className="mb-2">
-            <Col xs={1}>
+            <Col xs={2}>
               <span className="form-text">{createdAt.toLocaleDateString("en-GB")}</span>
             </Col>
             <Col xs={2}>
@@ -402,63 +407,66 @@ function Driving(props) {
               <div className="d-flex align-items-center mb-3">
                 <div><MdPhone size={25} className='text-primary' /></div>
                 <span className="ms-3">{tel}</span>
-                <button className="m-0 ms-3 p-0 border-0 text-primary bg-white" onClick={() => {
+                <Button variant="outline-primary" className="ms-3" onClick={() => {
                   setShowQrCode(true);
-                  setQrData(tel);
-                }}><FaQrcode/></button>
+                  setQrData({
+                    label: 'Mã QR số điện thoại',
+                    value: `tel:${tel}`
+                  });
+                }}><FaQrcode /></Button>
                 <CopyToClipboardButton value={tel} className='btn btn-outline-primary ms-3' />
               </div>
               <div className="d-flex align-items-center mb-3">
                 <div><ZaloImage /></div>
                 <span className='ms-3'>{zalo}</span>
-                <button className="m-0 ms-3 p-0 border-0 text-primary bg-white" onClick={() => {
+                <Button variant="outline-primary" className="ms-3" onClick={() => {
                   setShowQrCode(true);
-                  setQrData(`https://zalo.me/${zalo}`);
-                }}><FaQrcode/></button>
+                  setQrData({
+                    label: 'Mã QR Zalo',
+                    value: `https://zalo.me/${zalo}`
+                  });
+                }}><FaQrcode /></Button>
                 <CopyToClipboardButton value={zalo} className='btn btn-outline-primary ms-3' />
               </div>
             </Col>
-            <Col>
-              <Row>
-                <Col xs={3} className="text-center">
-                  <p className="mb-2">
-                    Hạng thi
-                  </p>
-                  <p className="fw-bold">{DRIVING_TYPE_LABEL[drivingType]}</p>
-                </Col>
-                <Col xs={3} className="text-center">
-                  <p className="mb-2">
-                    {sent ? 'Đã' : 'Chưa'} vào nhóm
-                  </p>
-                  <Form.Check
-                    className="w-100 mb-2"
-                    type="switch"
-                    checked={sent}
-                    onClick={handleMessageSent} />
-                </Col>
-                <Col xs={3} className="text-center">
-                  <p className="mb-2">
-                  Chuyển khoản
-                  </p>
-                  <p className="fw-bold">{formatCurrency(cash)} VNĐ</p>
-                </Col>
-                <Col xs={3} className="text-center">
-                  <p className="mb-2">
-                    {isPaid ? 'Đã' : 'Chưa'} thanh toán
-                  </p>
-                  <Form.Check
-                    className="w-100"
-                    type="switch"
-                    checked={isPaid}
-                    onClick={handlePaidButton} />
-                </Col>
-              </Row>
+            <Col xs={2} className="text-center">
+              <p className="mb-2">
+                Hạng thi
+              </p>
+              <p className="fw-bold">{DRIVING_TYPE_LABEL[drivingType]}</p>
+            </Col>
+            <Col xs={1} className="text-center">
+              <p className="mb-2">
+                {sent ? 'Đã' : 'Chưa'} vào nhóm
+              </p>
+              <Form.Check
+                className="w-100 mb-2"
+                type="switch"
+                checked={sent}
+                onClick={handleMessageSent} />
+            </Col>
+            <Col xs={2} className="text-center">
+              <p className="mb-2">
+                Chuyển khoản
+              </p>
+              <p className="fw-bold">{formatCurrency(cash)} VNĐ</p>
+            </Col>
+            <Col xs={1} className="text-center">
+              <p className="mb-2">
+                {isPaid ? 'Đã' : 'Chưa'} thanh toán
+              </p>
+              <Form.Check
+                className="w-100"
+                type="switch"
+                checked={isPaid}
+                onClick={handlePaidButton} />
             </Col>
           </Row>
           <Row>
-            <Col xs={5}>
+            <Col xs={4}>
+              <p>Ngày thi</p>
               <Row>
-                <Col xs={6}>
+                <Col xs={7}>
                   <select
                     className="w-100 form-control"
                     onChange={handleDateChange}
@@ -479,27 +487,28 @@ function Driving(props) {
                   </select>
                 </Col>
                 <Col xs={3}>
-                  <Row>
-                    <Button variant="outline-primary" onClick={handleDateInfoButton}>Chi tiết</Button>
-                  </Row>
-                </Col>
-                <Col>
                   <Button
                     className="w-100"
                     variant="outline-primary"
                     onClick={updateDate}
                   >
-                    Cập nhật
+                    Lưu lại
+                  </Button>
+                </Col>
+                <Col xs={2}>
+                  <Button variant='outline-primary' onClick={handleDateInfoButton}>
+                    <MdMoreVert />
                   </Button>
                 </Col>
               </Row>
             </Col>
             <Col>
+              <p>Ghi chú</p>
               <Row>
-                <Col xs={9}>
+                <Col>
                   <FormControl type="text" value={feedback} onChange={handleFeedbackChange} className="w-100" />
                 </Col>
-                <Col>
+                <Col xs={2}>
                   <Button
                     variant="outline-primary w-100"
                     onClick={updateFeedback}
@@ -512,117 +521,112 @@ function Driving(props) {
           </Row>
           <div className="mt-3 d-flex justify-content-between">
             <div>
-              {invalidCard && <p className="text-danger">Căn cước không hợp lệ</p>}
-              {invalidPortrait && <p className="text-danger">Chân dung không hợp lệ</p>}
+              {healthDate ? <p className="text-success">Đăng ký khám sức khoẻ ngày {new Date(healthDate).toLocaleDateString('en-GB')}</p> : <p>Chưa đăng ký khám sức khoẻ</p>}
+              {identityInfo?.length > 0 && <p className="text-success">Đã trích xuất thông tin</p>}
             </div>
             <div>
-              {healthDate ? <p className="text-success text-end">Đăng ký lịch thi/khám sức khoẻ ngày {new Date(healthDate).toLocaleDateString('en-GB')}</p> : <p className="text-end">Chưa đăng ký khám sức khoẻ</p>}
+              {invalidCard && <p className="text-danger">CCCD không hợp lệ</p>}
+              {invalidPortrait && <p className="text-danger">Chân dung không hợp lệ</p>}
               {dup > 1 ? (
-                <p className="text-danger text-end">
+                <p className="text-danger">
                   Danh sách này có 1 hồ sơ tương tự
                 </p>
               ) : null}
-              <p className="text-end">{identityInfo?.length > 0 ? "Đã trích xuất thông tin" : "Chưa trích xuất thông tin"}</p>
             </div>
           </div>
-          {imageVisible && <Row>
-            <div className='d-flex justify-content-between'>
-              <div>
-                <div>
+          {imageVisible && <>
+            <Row>
+              <Col xs={4}>
+                <div className='d-flex justify-content-center mb-2'>
                   <a
-                    className='btn btn-outline-primary p-0 mb-2 border-0'
                     href={portrait}
                     rel="noopener noreferrer"
                     download={`${name}-${tel}-portrait.jpg`}
                   >
                     {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`portrait_${_id}`} />
+                    <img id={`portrait_${_id}`} width='100%'/>
                   </a>
                   {portraitClip && <a
-                    className='btn btn-outline-primary p-0 mb-2 ms-2 border-0'
                     href={portraitClip}
                     rel="noopener noreferrer"
                     download={`${name}-${tel}-clipped.jpg`}
                   >
                     {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`portrait_clip_${_id}`} />
+                    <img id={`portrait_clip_${_id}`} width='100%'/>
                   </a>}
                   {portraitCrop && <a href={portraitCrop} download={`${name}-${tel}-cropped.jpg`}>
-                    <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} />
+                    <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} width='100%'/>
                   </a>}
                 </div>
                 <div className="d-flex justify-content-center">
-                  <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url })} />
-                  <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`portrait_${_id}`)}>
+                  <Button variant="outline-primary" onClick={() => rotateImage(`portrait_${_id}`)}>
                     <MdRotateLeft />
                   </Button>
-                  <div className="d-flex justify-content-start">
+                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url }, 'portrait')} />
+                  <div>
                     {
                       imageVisible && processState === DRIVING_STATE.APPROVED ? <>
                         <Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách' : 'Tách nền'}</Button>
                         <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button>
                       </> : <Button className="ms-2" variant={invalidPortrait ? 'danger' : 'outline-primary'} onClick={handleInvalidPortrait}>
-                        <MdErrorOutline />
+                        <IoClose />
                       </Button>
                     }
                   </div>
                 </div>
-              </div>
-              <div>
-                <div className='d-flex'>
+              </Col>
+              <Col xs={4}>
+                <div className='d-flex justify-content-center mb-2'>
                   <a
-                    className='btn btn-outline-primary p-0 mb-2 border-0'
                     href={front}
                     rel="noopener noreferrer"
                     download={`${name}-${tel}-front.jpg`}
                   >
                     {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`front_${_id}`} />
+                    <img id={`front_${_id}`} width='100%'/>
                   </a>
                 </div>
                 <div className="d-flex justify-content-center">
-                  <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={frontUploading} setUploading={setFrontUploading} onResponse={res => handleUpdateButton(_id, { frontUrl: res?.data?.url })} />
-                  <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`front_${_id}`)}>
+                  <Button variant="outline-primary" onClick={() => rotateImage(`front_${_id}`)}>
                     <MdRotateLeft />
                   </Button>
+                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={frontUploading} setUploading={setFrontUploading} onResponse={res => handleUpdateButton(_id, { frontUrl: res?.data?.url }, 'front')} />
                   {
                     processState === DRIVING_STATE.APPROVED ? <>
-                      {identityInfo?.length ? <Button className="ms-2" variant="outline-primary" onClick={() => setShowIdentityInfo(true)}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc CCCD...' : 'Đọc CCCD'}</Button>}
+                      {identityInfo?.length ? <Button className="ms-2" variant="outline-primary" onClick={() => setShowIdentityInfo(true)}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc' : 'Đọc CCCD'}</Button>}
                     </> : <>
                       <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
-                        <MdErrorOutline />
+                        <IoClose />
                       </Button>
                     </>
                   }
                 </div>
-              </div>
-
-              <div>
-                <div className='d-flex'>
+              </Col>
+              <Col xs={4}>
+                <div className="d-flex justify-content-center mb-2">
                   <a
-                    className='btn btn-outline-primary p-0 mb-2 border-0'
                     href={back}
                     rel="noopener noreferrer"
                     download={`${name}-${tel}-back.jpg`}
                   >
                     {backLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`back_${_id}`} />
+                    <img id={`back_${_id}`} width='100%'/>
                   </a>
                 </div>
                 <div className="d-flex justify-content-center">
-                  <FileUploader name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={backUploading} setUploading={setBackUploading} onResponse={res => handleUpdateButton(_id, { backUrl: res?.data?.url })} />
-                  <Button variant="outline-primary" className="ms-2" onClick={() => rotateImage(`back_${_id}`)}>
+                  <Button variant="outline-primary" onClick={() => rotateImage(`back_${_id}`)}>
                     <MdRotateLeft />
                   </Button>
+                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={backUploading} setUploading={setBackUploading} onResponse={res => handleUpdateButton(_id, { backUrl: res?.data?.url }, 'back')} />
                   {processState !== DRIVING_STATE.APPROVED && <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
-                    <MdErrorOutline />
+                    <IoClose />
                   </Button>}
                 </div>
-              </div>
-            </div>
-          </Row>}
+              </Col>
+            </Row>
+          </>}
           <div className="d-flex justify-content-end align-items-center mt-2">
-            <Button variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>Ẩn/Hiện</Button>
+            <Button variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>{imageVisible ? 'Ẩn đi' : 'Xem ảnh'}</Button>
           </div>
         </Col>
         <Col>
@@ -673,15 +677,15 @@ function Driving(props) {
         <Modal.Body>
           <Row>
             <Col xs={6}>{identityInfo[1]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT && <div>
-              <p>Họ tên:<br/><b>{identityInfo[1]?.info?.name}</b></p>
+              <p>Họ tên:<br /><b>{identityInfo[1]?.info?.name}</b></p>
               <p>Ngày sinh: <b>{identityInfo[1]?.info?.dob}</b></p>
               <p>Số CCCD: <b>{identityInfo[1]?.info?.id}</b></p>
-              <p>Địa chỉ:<br/><b>{identityInfo[1]?.info?.address}</b></p>
+              <p>Địa chỉ:<br /><b>{identityInfo[1]?.info?.address}</b></p>
               <p>Giới tính: <b>{identityInfo[1]?.info?.gender}</b></p>
             </div>}
               {identityInfo[0]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_BACK && <div>
                 <p>Ngày cấp: <b>{identityInfo[0]?.info?.issue_date}</b></p>
-                <p>Nơi cấp:<br/><b>{identityInfo[0]?.info?.issued_at}</b></p>
+                <p>Nơi cấp:<br /><b>{identityInfo[0]?.info?.issued_at}</b></p>
                 <p>Ngày hết hạn: <b>{identityInfo[0]?.info?.due_date}</b></p>
               </div>}</Col>
             <Col xs={6}>
@@ -700,11 +704,11 @@ function Driving(props) {
       </Modal>}
       <Modal show={showQrCode} onHide={() => setShowQrCode(false)} scrollable backdrop="static" size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Mã QR</Modal.Title>
+          <Modal.Title>{qrData?.label}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <QRCode value={qrData} />
+            <QRCode value={qrData?.value} />
           </Row>
         </Modal.Body>
         <Modal.Footer>
@@ -725,7 +729,7 @@ function Driving(props) {
               <p>Link nhóm: <a target="_blank" rel='noreferrer noopener' href={dateInfo?.link || ''}>{dateInfo?.link || ''}</a><CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={dateInfo?.link || ''} /></p>
             </Col>
             <Col xs={3}>
-              {dateInfo?.link && <QRCode value={dateInfo?.link} size={100}/>}
+              {dateInfo?.link && <QRCode value={dateInfo?.link} size={100} />}
             </Col>
           </Row>
         </Modal.Body>
