@@ -26,11 +26,11 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   const [collapsed, setCollapsed] = useState(false);
   const data = useSelector(selectDrivingData);
 
-  const exportToCSV = (csvData, fileName) => {
+  const exportToCSV = (csvData) => {
     csvData = csvData.map((child, index) => {
       const identityInfo = JSON.parse(child?.identityInfo || '[]');
       let NgayThi = new Date(child.date)
-      NgayThi = NgayThi.toLocaleDateString()
+      NgayThi = NgayThi.toLocaleDateString('en-GB')
       let Timestamp = new Date(child.createdAt)
       Timestamp = `${Timestamp.toLocaleDateString('en-GB')} ${Timestamp.toLocaleTimeString('en-GB')}`
       let NgaySinh, GioiTinh, DiaChi, SoCCCD, NoiCap, NgayCap, CapNhat, SoDienThoai2;
@@ -38,6 +38,10 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
       let nameParts = child.name?.trim().split(' ');
       let lastName = nameParts.pop();
       let firstName = nameParts.join(' ');
+
+      if (child?.cardProvidedDate) {
+        NgayCap = new Date(child.cardProvidedDate).toLocaleDateString("en-GB");
+      }
 
       if (identityInfo.length > 0) {
         NgaySinh = identityInfo[1]?.info?.dob;
@@ -70,6 +74,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         TinhTrang: DRIVING_STATE_LABEL[child?.processState],
         CapNhat,
         ChuyenKhoan: child.cash,
+        ThanhToan: child.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán',
         GhiChu: child?.feedback || '',
         Zalo: child.zalo,
         ChanDung: child?.portraitUrl,
@@ -81,7 +86,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
         DiaChi: DiaChi || child.address,
         SoCCCD: SoCCCD || child.cardNumber,
         NoiCap: NoiCap || child.cardProvider,
-        NgayCap: NgayCap || new Date(child.cardProvidedDate).toLocaleDateString("en-GB"),
+        NgayCap: NgayCap,
         NgayKhamSucKhoe: child?.healthDate && new Date(child.healthDate).toLocaleDateString("en-GB"),
       }
     })
@@ -91,6 +96,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] }
     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
     const data = new Blob([excelBuffer], { type: fileType })
+    const fileName = `Danh_sach_${csvData[0]?.NgayThi}_${csvData?.length}`
     FileSaver.saveAs(data, fileName + fileExtension)
   }
 
@@ -195,7 +201,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
             <MenuItem className="mb-3" onClick={() => onNavigate('/a2')} icon={<FaList/>}>
               Quản lý hồ sơ A2
             </MenuItem>
-            <MenuItem className="mb-3" onClick={() => exportToCSV(data, 'data')} icon={<BiSolidFileExport />}>
+            <MenuItem className="mb-3" onClick={() => exportToCSV(data)} icon={<BiSolidFileExport />}>
               Xuất danh sách
             </MenuItem>
             <MenuItem className="mb-3" onClick={() => zipPortrait(data)} icon={<FaDownload />}>
