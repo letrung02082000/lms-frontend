@@ -396,14 +396,14 @@ function Driving(props) {
       <Row>
         <Col xs={10}>
           <Row className="mb-2">
-            <Col xs={2}>
+            <Col xs={1}>
               <span className="form-text">{createdAt.toLocaleDateString("en-GB")}</span>
             </Col>
             <Col xs={2}>
               <p>{name}</p>
               {!isValidDob && <p className='text-danger fw-bold text-center'>Chưa đủ tuổi</p>}
             </Col>
-            <Col xs={2}>
+            <Col xs={3}>
               <div className="d-flex align-items-center mb-3">
                 <div><MdPhone size={25} className='text-primary' /></div>
                 <span className="ms-3">{tel}</span>
