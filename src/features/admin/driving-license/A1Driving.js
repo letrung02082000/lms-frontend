@@ -215,10 +215,10 @@ function A1Driving() {
         })}
       </div>
 
-      {data.length <= 0 ? <p>Không có dữ liệu</p> : null}
+      {data.length <= 0 && !loading && <p className="text-center mt-5">Không có dữ liệu</p>}
 
       {loading ? (
-        <p>Đang tải dữ liệu...</p>
+        <p className="text-center mt-5">Đang tải dữ liệu...</p>
       ) : (
         <div>
           {data.map((child) => {

@@ -6,16 +6,17 @@ import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
-import { MdMoreVert, MdPhone, MdRotateLeft } from "react-icons/md";
-import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL } from "./constant";
+import { MdLink, MdMoreVert, MdPhone, MdRotateLeft, MdWeb } from "react-icons/md";
+import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, IDENTITY_CARD_TYPE } from "./constant";
 import * as faceapi from '@vladmandic/face-api';
 import { Jimp } from 'jimp';
 import moment from 'moment'
 import { FaQrcode } from "react-icons/fa";
 import QRCode from "react-qr-code";
 import ZaloImage from "assets/images/ZaloImage";
-import { IoIosCloseCircle } from "react-icons/io";
+import { IoIosCloseCircle, IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
+import { CiGlobe } from "react-icons/ci";
 
 function Driving(props) {
   faceapi.env.monkeyPatch({
@@ -43,10 +44,9 @@ function Driving(props) {
     backUrl,
     healthDate,
   } = props.info;
-  const IDENTITY_CARD_TYPE = {
-    CHIP_ID_CARD_FRONT: 'chip_id_card_front',
-    CHIP_ID_CARD_BACK: 'chip_id_card_back',
-  }
+
+  const ZALO_LINK = `https://zalo.me/${zalo}`;
+  const TEL_LINK = `tel:${tel}`;
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [sent, setSent] = useState(messageSent);
@@ -405,25 +405,27 @@ function Driving(props) {
             </Col>
             <Col xs={3}>
               <div className="d-flex align-items-center mb-3">
-                <div><MdPhone size={25} className='text-primary' /></div>
+                <div><IoMdPhonePortrait/></div>
                 <span className="ms-3">{tel}</span>
+                <a className="btn btn-outline-primary ms-3" href={TEL_LINK} target="_blank" rel='noopener noreferrer'><MdPhone/></a>
                 <Button variant="outline-primary" className="ms-3" onClick={() => {
                   setShowQrCode(true);
                   setQrData({
                     label: 'Mã QR số điện thoại',
-                    value: `tel:${tel}`
+                    value: TEL_LINK
                   });
                 }}><FaQrcode /></Button>
                 <CopyToClipboardButton value={tel} className='btn btn-outline-primary ms-3' />
               </div>
               <div className="d-flex align-items-center mb-3">
-                <div><ZaloImage /></div>
+                <div><ZaloImage width='1em' height='1em'/></div>
                 <span className='ms-3'>{zalo}</span>
+                <a className="btn btn-outline-primary ms-3"a href={ZALO_LINK} target="_blank" rel='noopener noreferrer'><IoMdGlobe/></a>
                 <Button variant="outline-primary" className="ms-3" onClick={() => {
                   setShowQrCode(true);
                   setQrData({
                     label: 'Mã QR Zalo',
-                    value: `https://zalo.me/${zalo}`
+                    value: ZALO_LINK
                   });
                 }}><FaQrcode /></Button>
                 <CopyToClipboardButton value={zalo} className='btn btn-outline-primary ms-3' />
@@ -626,7 +628,7 @@ function Driving(props) {
             </Row>
           </>}
           <div className="d-flex justify-content-end align-items-center mt-2">
-            <Button variant="outline-primary" onClick={() => setImageVisible(!imageVisible)}>{imageVisible ? 'Ẩn đi' : 'Xem ảnh'}</Button>
+            <Button variant="primary" onClick={() => setImageVisible(!imageVisible)}>{imageVisible ? 'Ẩn đi' : 'Xem ảnh'}</Button>
           </div>
         </Col>
         <Col>
@@ -676,33 +678,49 @@ function Driving(props) {
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col xs={6}>{identityInfo[1]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT && <div>
-              <p>Họ tên:<br /><b>{identityInfo[1]?.info?.name}</b></p>
-              <p>Ngày sinh: <b>{identityInfo[1]?.info?.dob}</b></p>
-              <p>Số CCCD: <b>{identityInfo[1]?.info?.id}</b></p>
-              <p>Địa chỉ:<br /><b>{identityInfo[1]?.info?.address}</b></p>
-              <p>Giới tính: <b>{identityInfo[1]?.info?.gender}</b></p>
-            </div>}
-              {identityInfo[0]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_BACK && <div>
+            {
+              identityInfo[1]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT && <Col xs={6}><div>
+                <p>Họ tên: <b>{identityInfo[1]?.info?.name}</b></p>
+                <p>Ngày sinh: <b>{identityInfo[1]?.info?.dob}</b></p>
+                <p>Số CCCD: <b>{identityInfo[1]?.info?.id}</b></p>
+                <p>Địa chỉ: <b>{identityInfo[1]?.info?.address}</b></p>
+                <p>Giới tính: <b>{identityInfo[1]?.info?.gender}</b></p>
                 <p>Ngày cấp: <b>{identityInfo[0]?.info?.issue_date}</b></p>
-                <p>Nơi cấp:<br /><b>{identityInfo[0]?.info?.issued_at}</b></p>
+                <p>Nơi cấp: <b>{identityInfo[0]?.info?.issued_at}</b></p>
                 <p>Ngày hết hạn: <b>{identityInfo[0]?.info?.due_date}</b></p>
-              </div>}</Col>
+              </div>
+              </Col>
+            }
+            {
+              identityInfo[1]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_2024_FRONT && <Col xs={6}><div>
+                <p>Họ tên: <b>{identityInfo[1]?.info?.name}</b></p>
+                <p>Ngày sinh: <b>{identityInfo[1]?.info?.dob}</b></p>
+                <p>Số CCCD: <b>{identityInfo[1]?.info?.id}</b></p>
+                <p>Địa chỉ: <b>{identityInfo[0]?.info?.address}</b></p>
+                <p>Giới tính: <b>{identityInfo[1]?.info?.gender}</b></p>
+                <p>Ngày cấp: <b>{identityInfo[0]?.info?.issue_date}</b></p>
+                <p>Nơi cấp: <b>{identityInfo[0]?.info?.issued_at}</b></p>
+                <p>Ngày hết hạn: <b>{identityInfo[0]?.info?.due_date}</b></p>
+              </div>
+              </Col>
+            }
             <Col xs={6}>
-              <Image className="mb-2" width='100%' src={`data:image/jpeg;base64,${identityInfo[1]?.info?.image}`} />
+              <Image className="mb-3" width='100%' src={`data:image/jpeg;base64,${identityInfo[1]?.info?.image}`} />
+              <p className="text-center">Mặt trước</p>
               <Image width='100%' src={`data:image/jpeg;base64,${identityInfo[0]?.info?.image}`} />
+              <p className="text-center">Mặt sau</p>
             </Col>
           </Row>
 
 
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowIdentityInfo(false)}>
+          <Button onClick={() => setShowIdentityInfo(false)}>
             Đóng
           </Button>
         </Modal.Footer>
       </Modal>}
-      <Modal show={showQrCode} onHide={() => setShowQrCode(false)} scrollable backdrop="static" size="lg">
+      <Modal show={showQrCode} onHide={() => setShowQrCode(false)} scrollable size="lg">
         <Modal.Header closeButton>
           <Modal.Title>{qrData?.label}</Modal.Title>
         </Modal.Header>
@@ -712,12 +730,12 @@ function Driving(props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowQrCode(false)}>
+          <Button onClick={() => setShowQrCode(false)}>
             Đóng
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={showDateInfo} onHide={() => setShowDateInfo(false)} scrollable backdrop="static" size="lg">
+      <Modal show={showDateInfo} onHide={() => setShowDateInfo(false)} scrollable size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Thông tin ngày thi</Modal.Title>
         </Modal.Header>
@@ -734,7 +752,7 @@ function Driving(props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDateInfo(false)}>
+          <Button onClick={() => setShowDateInfo(false)}>
             Đóng
           </Button>
         </Modal.Footer>
