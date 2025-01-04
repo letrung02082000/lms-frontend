@@ -38,3 +38,10 @@ export const DRIVING_TYPE_LABEL = {
     [DRIVING_TYPE.A]: "A",
     [DRIVING_TYPE.OTHER]: "Khác",
 }
+
+export const IDENTITY_CARD_TYPE = {
+    CHIP_ID_CARD_FRONT: 'chip_id_card_front',
+    CHIP_ID_CARD_BACK: 'chip_id_card_back',
+    CHIP_ID_CARD_2024_FRONT: 'chip_id_card_2024_front',
+    CHIP_ID_CARD_2024_BACK: 'chip_id_card_2024_back',
+  }
