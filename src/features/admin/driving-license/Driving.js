@@ -17,6 +17,7 @@ import ZaloImage from "assets/images/ZaloImage";
 import { IoIosCloseCircle, IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { CiGlobe } from "react-icons/ci";
+import ocrApi from "api/ocrApi";
 
 function Driving(props) {
   faceapi.env.monkeyPatch({
@@ -65,7 +66,8 @@ function Driving(props) {
   const [clipping, setClipping] = useState(false);
   const [cropping, setCropping] = useState(false);
   const [extracting, setExtracting] = useState(false);
-  const [identityInfo, setIdentityInfo] = useState(JSON.parse(props?.info?.identityInfo || '[]'));
+  const [identityInfo, setIdentityInfo] = useState({_id: props?.info?.identityInfo || null, info: []});
+  const [identityImage, setIdentityImage] = useState({_id: props?.info?.identityInfo || null, image: []});
   const [showIdentityInfo, setShowIdentityInfo] = useState(false);
   const [showQrCode, setShowQrCode] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
@@ -82,35 +84,36 @@ function Driving(props) {
   const [selectedDate, setSelectedDate] = useState(date);
   const [dateInfo, setDateInfo] = useState(null);
   const [showDateInfo, setShowDateInfo] = useState(false);
+  const [showImage, setShowImage] = useState(false);
 
-  useEffect(() => {
-    const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
-    const today = new Date();
+  // useEffect(() => {
+  //   const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
+  //   const today = new Date();
 
-    if (identityInfo?.length > 0) {
-      if (today.getFullYear() - dob.getFullYear() === 18) {
-        if (today.getMonth() - dob.getMonth() > 0) {
-          setIsValidDob(true);
-        }
+  //   if (identityInfo?.length > 0) {
+  //     if (today.getFullYear() - dob.getFullYear() === 18) {
+  //       if (today.getMonth() - dob.getMonth() > 0) {
+  //         setIsValidDob(true);
+  //       }
 
-        if (today.getMonth() - dob.getMonth() === 0) {
-          if (today.getDate() - dob.getDate() >= 0) {
-            setIsValidDob(true);
-          } else {
-            setIsValidDob(false);
-          }
-        }
+  //       if (today.getMonth() - dob.getMonth() === 0) {
+  //         if (today.getDate() - dob.getDate() >= 0) {
+  //           setIsValidDob(true);
+  //         } else {
+  //           setIsValidDob(false);
+  //         }
+  //       }
 
-        if (today.getMonth() - dob.getMonth() < 0) {
-          setIsValidDob(false);
-        }
-      } else if (today.getFullYear() - dob.getFullYear() < 18) {
-        setIsValidDob(false);
-      } else {
-        setIsValidDob(true);
-      }
-    }
-  }, [identityInfo]);
+  //       if (today.getMonth() - dob.getMonth() < 0) {
+  //         setIsValidDob(false);
+  //       }
+  //     } else if (today.getFullYear() - dob.getFullYear() < 18) {
+  //       setIsValidDob(false);
+  //     } else {
+  //       setIsValidDob(true);
+  //     }
+  //   }
+  // }, [identityInfo]);
 
   useEffect(() => {
     if (imageVisible) {
@@ -151,7 +154,7 @@ function Driving(props) {
       const portraitBlob = await portraitResponse.blob();
       const portraitImage = urlCreator.createObjectURL(portraitBlob);
       document.getElementById(`portrait_${_id}`).src = portraitImage;
-      document.getElementById(`portrait_${_id}`).height = 250;
+      document.getElementById(`portrait_${_id}`).height = 350;
       document.getElementById(`portrait_${_id}`).style.objectFit = 'contain';
       setPortrait(portraitImage);
       setPortraitLoading(false);
@@ -167,7 +170,7 @@ function Driving(props) {
       const frontBlob = await frontResponse.blob();
       const frontImage = urlCreator.createObjectURL(frontBlob);
       document.getElementById(`front_${_id}`).src = frontImage;
-      document.getElementById(`front_${_id}`).height = 250;
+      document.getElementById(`front_${_id}`).height = 550;
       document.getElementById(`front_${_id}`).style.objectFit = 'contain';
       setFrontLoading(false);
       setFront(frontImage);
@@ -183,7 +186,7 @@ function Driving(props) {
       const backBlob = await backResponse.blob();
       const backImage = urlCreator.createObjectURL(backBlob);
       document.getElementById(`back_${_id}`).src = backImage;
-      document.getElementById(`back_${_id}`).height = 250;
+      document.getElementById(`back_${_id}`).height = 550;
       document.getElementById(`back_${_id}`).style.objectFit = 'contain';
       setBack(backImage);
       setBackLoading(false);
@@ -382,12 +385,33 @@ function Driving(props) {
   const extractIdentity = async () => {
     setExtracting(true);
     DrivingApi.extractIdentity(_id).then(res => {
-      setIdentityInfo(res?.data);
+      setIdentityInfo({
+        _id: res?.data?.identityInfo,
+      });
       toastWrapper('Đọc CCCD thành công', 'success')
     }).catch(e => {
       toastWrapper(e.toString(), 'error')
     }).finally(() => {
       setExtracting(false);
+    });
+  }
+
+  console.log(identityInfo);
+  console.log(identityImage);
+
+  const handleShowIdentityInfo = () => {
+    setShowIdentityInfo(true);
+    ocrApi.getOcrInfo(identityInfo?._id).then(res => {
+      setIdentityInfo(res?.data);
+    }).catch(e => {
+      console.log(e);
+      setIdentityInfo({ _id: null, info: [] });
+    });
+    ocrApi.getOcrImage(identityInfo?._id).then(res => {
+      setIdentityImage(res?.data);
+    }).catch(e => {
+      console.log(e);
+      setIdentityImage({ _id: null, image: [] });
     });
   }
 
@@ -524,7 +548,7 @@ function Driving(props) {
           <div className="mt-3 d-flex justify-content-between">
             <div>
               {healthDate ? <p className="text-success">Đăng ký khám sức khoẻ ngày {new Date(healthDate).toLocaleDateString('en-GB')}</p> : <p>Chưa đăng ký khám sức khoẻ</p>}
-              {identityInfo?.length > 0 && <p className="text-success">Đã trích xuất thông tin</p>}
+              {identityInfo?._id > 0 && <p className="text-success">Đã trích xuất thông tin</p>}
             </div>
             <div>
               {invalidCard && <p className="text-danger">CCCD không hợp lệ</p>}
@@ -536,99 +560,9 @@ function Driving(props) {
               ) : null}
             </div>
           </div>
-          {imageVisible && <>
-            <Row>
-              <Col xs={4}>
-                <div className='d-flex justify-content-center mb-2'>
-                  <a
-                    href={portrait}
-                    rel="noopener noreferrer"
-                    download={`${name}-${tel}-portrait.jpg`}
-                  >
-                    {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`portrait_${_id}`} width='100%'/>
-                  </a>
-                  {portraitClip && <a
-                    href={portraitClip}
-                    rel="noopener noreferrer"
-                    download={`${name}-${tel}-clipped.jpg`}
-                  >
-                    {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`portrait_clip_${_id}`} width='100%'/>
-                  </a>}
-                  {portraitCrop && <a href={portraitCrop} download={`${name}-${tel}-cropped.jpg`}>
-                    <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} width='100%'/>
-                  </a>}
-                </div>
-                <div className="d-flex justify-content-center">
-                  <Button variant="outline-primary" onClick={() => rotateImage(`portrait_${_id}`)}>
-                    <MdRotateLeft />
-                  </Button>
-                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url }, 'portrait')} />
-                  <div>
-                    {
-                      imageVisible && processState === DRIVING_STATE.APPROVED ? <>
-                        <Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách' : 'Tách nền'}</Button>
-                        <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button>
-                      </> : <Button className="ms-2" variant={invalidPortrait ? 'danger' : 'outline-primary'} onClick={handleInvalidPortrait}>
-                        <IoClose />
-                      </Button>
-                    }
-                  </div>
-                </div>
-              </Col>
-              <Col xs={4}>
-                <div className='d-flex justify-content-center mb-2'>
-                  <a
-                    href={front}
-                    rel="noopener noreferrer"
-                    download={`${name}-${tel}-front.jpg`}
-                  >
-                    {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`front_${_id}`} width='100%'/>
-                  </a>
-                </div>
-                <div className="d-flex justify-content-center">
-                  <Button variant="outline-primary" onClick={() => rotateImage(`front_${_id}`)}>
-                    <MdRotateLeft />
-                  </Button>
-                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={frontUploading} setUploading={setFrontUploading} onResponse={res => handleUpdateButton(_id, { frontUrl: res?.data?.url }, 'front')} />
-                  {
-                    processState === DRIVING_STATE.APPROVED ? <>
-                      {identityInfo?.length ? <Button className="ms-2" variant="outline-primary" onClick={() => setShowIdentityInfo(true)}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc' : 'Đọc CCCD'}</Button>}
-                    </> : <>
-                      <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
-                        <IoClose />
-                      </Button>
-                    </>
-                  }
-                </div>
-              </Col>
-              <Col xs={4}>
-                <div className="d-flex justify-content-center mb-2">
-                  <a
-                    href={back}
-                    rel="noopener noreferrer"
-                    download={`${name}-${tel}-back.jpg`}
-                  >
-                    {backLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`back_${_id}`} width='100%'/>
-                  </a>
-                </div>
-                <div className="d-flex justify-content-center">
-                  <Button variant="outline-primary" onClick={() => rotateImage(`back_${_id}`)}>
-                    <MdRotateLeft />
-                  </Button>
-                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={backUploading} setUploading={setBackUploading} onResponse={res => handleUpdateButton(_id, { backUrl: res?.data?.url }, 'back')} />
-                  {processState !== DRIVING_STATE.APPROVED && <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
-                    <IoClose />
-                  </Button>}
-                </div>
-              </Col>
-            </Row>
-          </>}
           <div className="d-flex justify-content-end align-items-center mt-2">
-            <Button variant="primary" onClick={() => setImageVisible(!imageVisible)}>{imageVisible ? 'Ẩn đi' : 'Xem ảnh'}</Button>
+            {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc CCCD' : 'Trích xuất CCCD'}</Button>)}
+            <Button className="ms-2" variant="outline-primary" onClick={() => setImageVisible(true)}>Xem ảnh hồ sơ</Button>
           </div>
         </Col>
         <Col>
@@ -677,45 +611,149 @@ function Driving(props) {
           <Modal.Title>Thông tin trích xuất</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Row>
-            {
-              identityInfo[1]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT && <Col xs={6}><div>
-                <p>Họ tên: <b>{identityInfo[1]?.info?.name}</b></p>
-                <p>Ngày sinh: <b>{identityInfo[1]?.info?.dob}</b></p>
-                <p>Số CCCD: <b>{identityInfo[1]?.info?.id}</b></p>
-                <p>Địa chỉ: <b>{identityInfo[1]?.info?.address}</b></p>
-                <p>Giới tính: <b>{identityInfo[1]?.info?.gender}</b></p>
-                <p>Ngày cấp: <b>{identityInfo[0]?.info?.issue_date}</b></p>
-                <p>Nơi cấp: <b>{identityInfo[0]?.info?.issued_at}</b></p>
-                <p>Ngày hết hạn: <b>{identityInfo[0]?.info?.due_date}</b></p>
+          {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT &&
+            <Row>
+              <Col xs={6}><div>
+                <p>Họ tên: <b>{identityInfo?.info[1]?.name}</b></p>
+                <p>Ngày sinh: <b>{identityInfo?.info[1]?.dob}</b></p>
+                <p>Số CCCD: <b>{identityInfo?.info[1]?.id}</b></p>
+                <p>Địa chỉ: <b>{identityInfo?.info[1]?.address}</b></p>
+                <p>Giới tính: <b>{identityInfo?.info[1]?.gender}</b></p>
+                <p>Ngày cấp: <b>{identityInfo?.info[0]?.issue_date}</b></p>
+                <p>Nơi cấp: <b>{identityInfo?.info[0]?.issued_at}</b></p>
+                <p>Ngày hết hạn: <b>{identityInfo?.info[0]?.due_date}</b></p>
               </div>
               </Col>
-            }
-            {
-              identityInfo[1]?.type === IDENTITY_CARD_TYPE.CHIP_ID_CARD_2024_FRONT && <Col xs={6}><div>
-                <p>Họ tên: <b>{identityInfo[1]?.info?.name}</b></p>
-                <p>Ngày sinh: <b>{identityInfo[1]?.info?.dob}</b></p>
-                <p>Số CCCD: <b>{identityInfo[1]?.info?.id}</b></p>
-                <p>Địa chỉ: <b>{identityInfo[0]?.info?.address}</b></p>
-                <p>Giới tính: <b>{identityInfo[1]?.info?.gender}</b></p>
-                <p>Ngày cấp: <b>{identityInfo[0]?.info?.issue_date}</b></p>
-                <p>Nơi cấp: <b>{identityInfo[0]?.info?.issued_at}</b></p>
-                <p>Ngày hết hạn: <b>{identityInfo[0]?.info?.due_date}</b></p>
+              <Col xs={6}>
+                <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[1]}`} />
+                <p className="text-center my-3">Mặt trước</p>
+                <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[0]}`} />
+                <p className="text-center my-3">Mặt sau</p>
+              </Col>
+            </Row>
+          }
+          {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_2024_FRONT &&
+            <Row>
+              <Col xs={6}><div>
+                <p>Họ tên: <b>{identityInfo?.info[1]?.name}</b></p>
+                <p>Ngày sinh: <b>{identityInfo?.info[1]?.dob}</b></p>
+                <p>Số CCCD: <b>{identityInfo?.info[1]?.id}</b></p>
+                <p>Địa chỉ: <b>{identityInfo?.info[0]?.address}</b></p>
+                <p>Giới tính: <b>{identityInfo?.info[1]?.gender}</b></p>
+                <p>Ngày cấp: <b>{identityInfo?.info[0]?.issue_date}</b></p>
+                <p>Nơi cấp: <b>{identityInfo?.info[0]?.issued_at}</b></p>
+                <p>Ngày hết hạn: <b>{identityInfo?.info[0]?.due_date}</b></p>
               </div>
               </Col>
-            }
-            <Col xs={6}>
-              <Image className="mb-3" width='100%' src={`data:image/jpeg;base64,${identityInfo[1]?.info?.image}`} />
-              <p className="text-center">Mặt trước</p>
-              <Image width='100%' src={`data:image/jpeg;base64,${identityInfo[0]?.info?.image}`} />
-              <p className="text-center">Mặt sau</p>
-            </Col>
-          </Row>
-
+              <Col xs={6}>
+                <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[1]}`} />
+                <p className="text-center my-3">Mặt trước</p>
+                <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[0]}`} />
+                <p className="text-center my-3">Mặt sau</p>
+              </Col>
+            </Row>
+          }
 
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={() => setShowIdentityInfo(false)}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>}
+      {imageVisible && <Modal show={imageVisible} onHide={() => setImageVisible(false)} scrollable size="xl">
+        <Modal.Header closeButton>
+          <Modal.Title>Ảnh hồ sơ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row>
+            <Col xs={4}>
+              <div className='d-flex justify-content-center mb-2'>
+                <a
+                  href={portrait}
+                  rel="noopener noreferrer"
+                  download={`${name}-${tel}-portrait.jpg`}
+                >
+                  {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
+                  <img id={`portrait_${_id}`} width='100%' />
+                </a>
+                {portraitClip && <a
+                  href={portraitClip}
+                  rel="noopener noreferrer"
+                  download={`${name}-${tel}-clipped.jpg`}
+                >
+                  {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
+                  <img id={`portrait_clip_${_id}`} width='100%' />
+                </a>}
+                {portraitCrop && <a href={portraitCrop} download={`${name}-${tel}-cropped.jpg`}>
+                  <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} width='100%' />
+                </a>}
+              </div>
+              <div className="d-flex justify-content-center">
+                <Button variant="outline-primary" onClick={() => rotateImage(`portrait_${_id}`)}>
+                  <MdRotateLeft />
+                </Button>
+                <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url }, 'portrait')} />
+                <div>
+                  {
+                    imageVisible && processState === DRIVING_STATE.APPROVED ? <>
+                      <Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách' : 'Tách nền'}</Button>
+                      <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button>
+                    </> : <Button className="ms-2" variant={invalidPortrait ? 'danger' : 'outline-primary'} onClick={handleInvalidPortrait}>
+                      <IoClose />
+                    </Button>
+                  }
+                </div>
+              </div>
+            </Col>
+            <Col>
+              <Row>
+                <div className='d-flex justify-content-center mb-2'>
+                  <a
+                    href={front}
+                    rel="noopener noreferrer"
+                    download={`${name}-${tel}-front.jpg`}
+                  >
+                    {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
+                    <img id={`front_${_id}`} width='100%' />
+                  </a>
+                </div>
+                <div className="d-flex justify-content-center mb-2">
+                  <Button variant="outline-primary" onClick={() => rotateImage(`front_${_id}`)}>
+                    <MdRotateLeft />
+                  </Button>
+                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={frontUploading} setUploading={setFrontUploading} onResponse={res => handleUpdateButton(_id, { frontUrl: res?.data?.url }, 'front')} />
+                  {processState !== DRIVING_STATE.APPROVED && <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
+                    <IoClose />
+                  </Button>}
+                </div>
+              </Row>
+              <Row>
+                <div className="d-flex justify-content-center mb-2">
+                  <a
+                    href={back}
+                    rel="noopener noreferrer"
+                    download={`${name}-${tel}-back.jpg`}
+                  >
+                    {backLoading && <div className="spinner-border text-primary" role="status"></div>}
+                    <img id={`back_${_id}`} width='100%' />
+                  </a>
+                </div>
+                <div className="d-flex justify-content-center mb-2">
+                  <Button variant="outline-primary" onClick={() => rotateImage(`back_${_id}`)}>
+                    <MdRotateLeft />
+                  </Button>
+                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={backUploading} setUploading={setBackUploading} onResponse={res => handleUpdateButton(_id, { backUrl: res?.data?.url }, 'back')} />
+                  {processState !== DRIVING_STATE.APPROVED && <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
+                    <IoClose />
+                  </Button>}
+                </div>
+              </Row>
+            </Col>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setImageVisible(false)}>
             Đóng
           </Button>
         </Modal.Footer>
