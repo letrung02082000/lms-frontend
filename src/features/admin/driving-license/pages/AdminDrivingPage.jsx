@@ -15,7 +15,7 @@ import { Scanner } from '@yudiel/react-qr-scanner';
 import CopyButton from 'components/button/CopyButton';
 import { ROLE } from 'constants/role';
 import AccountModal from 'features/driving-license/components/AccountModal';
-import { DRIVING_STATE, DRIVING_STATE_LABEL } from '../constant';
+import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL } from '../constant';
 import { FaQrcode } from "react-icons/fa";
 import QRCode from "react-qr-code";
 
@@ -31,6 +31,11 @@ function AdminDrivingA1Page() {
     COMPLETED: 3,
     CANCELLED: 4,
   }
+  const DRIVING_TYPE_LIST = [
+    { label: 'Hạng A1', value: 0 },
+    { label: 'Hạng A', value: 1 },
+    { label: 'Hạng khác', value: 2 },
+  ]
   const key = 'aes123456789101112131415';
   const [updateParams, setUpdateParams] = useState({
     date: undefined,
@@ -322,6 +327,12 @@ function AdminDrivingA1Page() {
         data.date = data?.date?.value;
       }
 
+      if (data?.drivingType === undefined) {
+        delete data?.drivingType;
+      } else {
+        data.drivingType = data?.drivingType?.value;
+      }
+
       drivingApi.updateDriving(selectedRow._id, data).then((res) => {
         toastWrapper('Cập nhật thành công', 'success');
         setShowEditModal(false);
@@ -561,6 +572,17 @@ function AdminDrivingA1Page() {
                   onClear={handleClearButton}
                 />
               </Col>
+              <Col>
+                <SelectField
+                  rules={{
+                    required: false,
+                  }}
+                  options={DRIVING_TYPE_LIST}
+                  label={`Hạng thi hiện tại: ${DRIVING_TYPE_LABEL[selectedRow?.drivingType]}`}
+                  control={control}
+                  name='drivingType'
+                />
+              </Col>
             </Row>
 
             <Row className='mb-3 align-items-end'>
@@ -586,7 +608,7 @@ function AdminDrivingA1Page() {
                 />
               </Col>
               <Col xs={1}>
-                <QRCode value={selectedRow?.tel} size={41}/>
+                <QRCode value={selectedRow?.tel} size={41} />
               </Col>
               <Col>
                 <InputField
@@ -680,7 +702,7 @@ function AdminDrivingA1Page() {
                     id='front-link'
                     download={`${selectedRow?.name}-${selectedRow?.tel}-front.png`}
                   >
-                    <img id='front-card' alt={selectedRow?.frontUrl}/>
+                    <img id='front-card' alt={selectedRow?.frontUrl} />
                   </a>
                 </div>
                 <Button
@@ -694,7 +716,10 @@ function AdminDrivingA1Page() {
 
               <Col>
                 <div>
-                  <a id='back-link' download={`${selectedRow?.name}-${selectedRow?.tel}-back.png`}>
+                  <a
+                    id='back-link'
+                    download={`${selectedRow?.name}-${selectedRow?.tel}-back.png`}
+                  >
                     <img id='back-card' alt={selectedRow?.backUrl} />
                   </a>
                 </div>

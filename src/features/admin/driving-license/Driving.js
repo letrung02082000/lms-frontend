@@ -340,8 +340,6 @@ function Driving(props) {
     setSelectedDate(e.target.value);
   };
 
-  console.log(selectedDate);
-
   const handleDateInfoButton = () => {
     const dateInfo = props?.dateList?.find(d => new Date(d.date).toISOString() === new Date(selectedDate).toISOString());
     setDateInfo(dateInfo);
@@ -397,9 +395,6 @@ function Driving(props) {
       setExtracting(false);
     });
   }
-
-  console.log(identityInfo);
-  console.log(identityImage);
 
   const handleShowIdentityInfo = () => {
     setShowIdentityInfo(true);
