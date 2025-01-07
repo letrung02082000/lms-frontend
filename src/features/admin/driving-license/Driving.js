@@ -6,7 +6,7 @@ import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
-import { MdLink, MdMoreVert, MdPhone, MdRotateLeft, MdWeb } from "react-icons/md";
+import { MdLink, MdMoreVert, MdOutlineQuickreply, MdPhone, MdRotateLeft, MdWeb } from "react-icons/md";
 import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, IDENTITY_CARD_TYPE } from "./constant";
 import * as faceapi from '@vladmandic/face-api';
 import { Jimp } from 'jimp';
@@ -84,7 +84,7 @@ function Driving(props) {
   const [selectedDate, setSelectedDate] = useState(date);
   const [dateInfo, setDateInfo] = useState(null);
   const [showDateInfo, setShowDateInfo] = useState(false);
-  const [showImage, setShowImage] = useState(false);
+  const QUICK_MESSAGE = `Chào bạn ${name}, mình gửi bạn nhóm thi ${dateInfo?.description}. Bạn vui lòng tham gia nhóm thi tại ${dateInfo?.link} để nhận thông báo dự thi.${isPaid ? '' : ' Nếu chưa hoàn tất lệ phí, bạn vui lòng thanh toán theo hướng dẫn tại website https://isinhvien.vn/driving-instruction trong hôm nay để đủ điều kiện dự thi.'} Cảm ơn bạn.`;
 
   // useEffect(() => {
   //   const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
@@ -131,6 +131,11 @@ function Driving(props) {
     }
   }, [imageVisible]);
 
+  useEffect(() => {
+    const dateInfo = props?.dateList?.find(d => new Date(d.date).toISOString() === new Date(selectedDate).toISOString());
+    setDateInfo(dateInfo);
+  }, [selectedDate])
+
   const fetchPortraitClip = async (portraitClipUrl) => {
     try {
       const urlCreator = window.URL || window.webkitURL;
@@ -154,8 +159,6 @@ function Driving(props) {
       const portraitBlob = await portraitResponse.blob();
       const portraitImage = urlCreator.createObjectURL(portraitBlob);
       document.getElementById(`portrait_${_id}`).src = portraitImage;
-      document.getElementById(`portrait_${_id}`).height = 350;
-      document.getElementById(`portrait_${_id}`).style.objectFit = 'contain';
       setPortrait(portraitImage);
       setPortraitLoading(false);
     } catch (error) {
@@ -170,8 +173,6 @@ function Driving(props) {
       const frontBlob = await frontResponse.blob();
       const frontImage = urlCreator.createObjectURL(frontBlob);
       document.getElementById(`front_${_id}`).src = frontImage;
-      document.getElementById(`front_${_id}`).height = 550;
-      document.getElementById(`front_${_id}`).style.objectFit = 'contain';
       setFrontLoading(false);
       setFront(frontImage);
     } catch (error) {
@@ -186,8 +187,6 @@ function Driving(props) {
       const backBlob = await backResponse.blob();
       const backImage = urlCreator.createObjectURL(backBlob);
       document.getElementById(`back_${_id}`).src = backImage;
-      document.getElementById(`back_${_id}`).height = 550;
-      document.getElementById(`back_${_id}`).style.objectFit = 'contain';
       setBack(backImage);
       setBackLoading(false);
     } catch (error) {
@@ -340,12 +339,6 @@ function Driving(props) {
     setSelectedDate(e.target.value);
   };
 
-  const handleDateInfoButton = () => {
-    const dateInfo = props?.dateList?.find(d => new Date(d.date).toISOString() === new Date(selectedDate).toISOString());
-    setDateInfo(dateInfo);
-    setShowDateInfo(true);
-  }
-
   const handleUpdateButton = (id, data, type) => {
     DrivingApi.updateDriving(id, data).then(res => {
       if(type === 'portrait') {
@@ -486,10 +479,10 @@ function Driving(props) {
             </Col>
           </Row>
           <Row>
-            <Col xs={4}>
+            <Col xs={6}>
               <p>Ngày thi</p>
               <Row>
-                <Col xs={7}>
+                <Col>
                   <select
                     className="w-100 form-control"
                     onChange={handleDateChange}
@@ -508,7 +501,7 @@ function Driving(props) {
                     ) : null}
                   </select>
                 </Col>
-                <Col xs={3}>
+                <Col xs={2}>
                   <Button
                     className="w-100"
                     variant="outline-primary"
@@ -517,10 +510,11 @@ function Driving(props) {
                     Lưu lại
                   </Button>
                 </Col>
-                <Col xs={2}>
-                  <Button variant='outline-primary' onClick={handleDateInfoButton}>
+                <Col xs={3}>
+                  <Button variant='outline-primary' onClick={() => setShowDateInfo(true)}>
                     <MdMoreVert />
                   </Button>
+                  <CopyToClipboardButton className='btn btn-outline-primary ms-3' value={QUICK_MESSAGE}><MdOutlineQuickreply /></CopyToClipboardButton>
                 </Col>
               </Row>
             </Col>
@@ -671,7 +665,7 @@ function Driving(props) {
                   download={`${name}-${tel}-portrait.jpg`}
                 >
                   {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                  <img id={`portrait_${_id}`} width='100%' />
+                  <img id={`portrait_${_id}`} width='100%'  height='fit-content' objectFit='contain'/>
                 </a>
                 {portraitClip && <a
                   href={portraitClip}
@@ -711,7 +705,7 @@ function Driving(props) {
                     download={`${name}-${tel}-front.jpg`}
                   >
                     {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`front_${_id}`} width='100%' />
+                    <img id={`front_${_id}`} width='100%' height='fit-content' objectFit='contain'/>
                   </a>
                 </div>
                 <div className="d-flex justify-content-center mb-2">
@@ -732,7 +726,7 @@ function Driving(props) {
                     download={`${name}-${tel}-back.jpg`}
                   >
                     {backLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`back_${_id}`} width='100%' />
+                    <img id={`back_${_id}`} width='100%' height='fit-content' objectFit='contain'/>
                   </a>
                 </div>
                 <div className="d-flex justify-content-center mb-2">
@@ -779,6 +773,7 @@ function Driving(props) {
               <p>Ngày hệ thống: <b>{new Date(dateInfo?.date)?.toLocaleDateString('en-GB')}</b></p>
               <p>Mô tả: <b>{dateInfo?.description}</b></p>
               <p>Link nhóm: <a target="_blank" rel='noreferrer noopener' href={dateInfo?.link || ''}>{dateInfo?.link || ''}</a><CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={dateInfo?.link || ''} /></p>
+              {dateInfo?.link && <p>Tin nhắn nhanh:<br />{QUICK_MESSAGE}<CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={QUICK_MESSAGE} /></p>}
             </Col>
             <Col xs={3}>
               {dateInfo?.link && <QRCode value={dateInfo?.link} size={100} />}

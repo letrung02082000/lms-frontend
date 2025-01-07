@@ -21,8 +21,8 @@ function A1Driving() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [dates, setDates] = useState([]);
-  const [dateSelected, setDateSelected] = useState(0);
-  const [state, setState] = useState(null);
+  const [dateSelected, setDateSelected] = useState(null);
+  const [state, setState] = useState(DRIVING_STATE.CREATED);
   const [image, setImage] = useState(null);
   const [isAll, setIsAll] = useState(false);
   const [count, setCount] = useState(0);
@@ -63,7 +63,7 @@ function A1Driving() {
 
         if (temp[0]) {
           DrivingApi
-            .queryDrivings(temp[0].date, null)
+            .queryDrivings(temp[0]?.date, DRIVING_STATE.CREATED)
             .then((res) => {
               const newData = checkDuplicate(res.data);
               setData(newData);
@@ -191,7 +191,7 @@ function A1Driving() {
           );
         })}
       </div>
-      <p className="text-center my-1">Tổng: {data.length} hồ sơ</p>
+      <p className="text-center my-1">Tổng cộng: {data.length} hồ sơ</p>
       <div className='d-flex justify-content-center pb-2'>
         <Button
           className="mx-2"

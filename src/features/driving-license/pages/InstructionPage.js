@@ -204,8 +204,8 @@ export default function DrivingInstructionPage(props) {
               <li>
                 Đóng trực tiếp: Tại văn phòng iSinhvien
                 <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
-                (Tầng trệt Nhà khách ĐHQG)
-                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h30).
+                (Tầng trệt Nhà khách ĐHQG-HCM)
+                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h00).
                 <br /> - Mang theo CCCD để làm thủ tục.
                 <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0876 877 789</ZaloLink>
                 <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>
@@ -253,8 +253,8 @@ export default function DrivingInstructionPage(props) {
               <li>
                 Địa điểm: Tại văn phòng iSinhvien
                 <br /> - Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
-                (Tầng trệt Nhà khách ĐHQG)
-                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h30).
+                (Tầng trệt Nhà khách ĐHQG-HCM)
+                <br /> - Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h00).
                 <br /> - Mang theo CCCD để làm thủ tục.
                 <br /> - Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0876 877 789</ZaloLink>
                 <br/> - Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>

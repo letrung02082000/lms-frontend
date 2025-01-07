@@ -10,7 +10,7 @@ import { convertPhoneNumber } from "utils";
 import ZaloLink from "components/link/ZaloLink";
 
 import drivingApi from "api/drivingApi";
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import AccountModal from "../components/AccountModal";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import FileUploader from "components/form/FileUploader";
@@ -22,6 +22,7 @@ import { formatCurrency } from "utils/commonUtils";
 import { DRIVING_STATE, DRIVING_STATE_LABEL } from "features/admin/driving-license/constant";
 
 export default function DrivingRegisterPage() {
+  const MAP_URL ='https://maps.app.goo.gl/kyq58xK5b8p4rEi1A';
   const categories = [
     {
       value: 0,
@@ -259,7 +260,7 @@ export default function DrivingRegisterPage() {
         <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <p className="text-center">Học viên vui lòng tham gia khám sức khoẻ để hoàn tất thủ tục dự thi. Danh sách và lịch khám sức khoẻ sẽ được cập nhật hàng tuần trên nhóm thi.</p>
         <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán chuyển khoản</Button>
-        <a className="btn btn-outline-primary mb-3" href='driving-instruction#offline' target='_blank' rel="noopener noreferrer">Thanh toán trực tiếp</a>
+        <Button className="mb-3" variant='outline-primary' onClick={() => setPaymentMethod(0)}>Thanh toán trực tiếp</Button>
         
         <p className="text-center">
             Zalo hỗ trợ:<br/>
@@ -440,8 +441,34 @@ export default function DrivingRegisterPage() {
           </button>
         )}
       </form>}
-
-      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} amount={690000} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} aPrice={drivingDateInfo?.aPrice} bPrice={drivingDateInfo?.bPrice}/>
+      <Modal show={paymentMethod === 0} onHide={() => setPaymentMethod(1)} size="lg">
+        <Modal.Header>
+          <Modal.Title>Thanh toán trực tiếp</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Tại văn phòng iSinhvien:</p>
+          <p>- Địa chỉ: Đ. Nguyễn Du, Đông Hoà, Dĩ An, Bình Dương
+            (Tầng trệt Nhà khách ĐHQG-HCM)</p>
+          <p>- Giờ làm việc: Từ thứ 2 - thứ 7 (14h00-17h00).</p>
+          <p>- Mang theo CCCD để làm thủ tục.</p>
+          <p>- Hotline: <ZaloLink tel={DRIVING_LICENSE_NUMBER}>0876 877 789</ZaloLink></p>
+          <p>- Zalo OA tư vấn và hỗ trợ: <ZaloLink tel={ZALO_OA_NUMBER}>Trung tâm dịch vụ sinh viên iStudent</ZaloLink></p>
+          <p>- Google maps:{" "}
+            <a
+              href={MAP_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Văn phòng iSinhvien
+            </a></p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setPaymentMethod(1)}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} aPrice={drivingDateInfo?.aPrice} bPrice={drivingDateInfo?.bPrice}/>
     </Styles>
   );
 }
