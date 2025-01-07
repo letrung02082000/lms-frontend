@@ -340,6 +340,8 @@ function Driving(props) {
     setSelectedDate(e.target.value);
   };
 
+  console.log(selectedDate);
+
   const handleDateInfoButton = () => {
     const dateInfo = props?.dateList?.find(d => new Date(d.date).toISOString() === new Date(selectedDate).toISOString());
     setDateInfo(dateInfo);
@@ -496,14 +498,13 @@ function Driving(props) {
                   <select
                     className="w-100 form-control"
                     onChange={handleDateChange}
-                    defaultValue={selectedDate}
                   >
                     {props.dateList ? (
                       <>
                         {props.dateList.map((child) => {
                           let tmpDate = new Date(child.date);
                           return (
-                            <option value={tmpDate}>
+                            <option value={tmpDate} selected={tmpDate.toISOString() === selectedDate}>
                               {tmpDate.toLocaleDateString("en-GB")}
                             </option>
                           );
