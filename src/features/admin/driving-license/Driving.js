@@ -406,7 +406,7 @@ function Driving(props) {
 
   const updateTransaction = () => {
     DrivingApi.query({ transactionId }).then(res => {
-      if (res?.data?.length > 0) {
+      if (res?.data?.length > 0 && res?.data?.[0]?._id !== _id) {
         return toastWrapper('Mã giao dịch đã tồn tại', 'error');
       } else {
         DrivingApi.updateDriving(_id, {
