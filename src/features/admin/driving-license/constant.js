@@ -47,6 +47,11 @@ export const IDENTITY_CARD_TYPE = {
 }
 
 export const PAYMENT_METHODS = {
-    DIRECT: 'direct',
     BANK_TRANSFER: 'transfer',
+    DIRECT: 'direct',
+}
+
+export const PAYMENT_METHODS_LABEL = {
+    [PAYMENT_METHODS.BANK_TRANSFER]: 'Chuyển khoản ngân hàng',
+    [PAYMENT_METHODS.DIRECT]: 'Thanh toán trực tiếp',
 }
