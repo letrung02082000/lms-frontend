@@ -48,6 +48,7 @@ export const PATH = {
             C: '/driving/admin/c',
             B12: '/driving/admin/b12',
             DATE: '/driving/admin/date',
+            CENTER: '/driving/admin/center',
         },
     },
     UNIFORM: {

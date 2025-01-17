@@ -135,6 +135,19 @@ class DrivingApi {
     });
   };
 
+  getDrivingCenter = async (params) => {
+    const url = `${API_PATH}/center`;
+    return axiosClient.get(url, {
+      params,
+    });
+  };
+
+  updateDrivingCenter = async (_id, data) => {
+    const url = `${API_PATH}/center/${_id}`;
+    return axiosClient.patch(url, data, authHeader());
+  }
+
+
   handleVisibleButton = async (_id, date, isVisible, formVisible = false) => {
     const url = `${API_PATH}/date`;
     return axiosClient.put(

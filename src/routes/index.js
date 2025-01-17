@@ -33,6 +33,7 @@ import MyStatisticsPage from 'features/app/pages/MyStatisticsPage';
 import AdminB12DrivingPage from 'features/admin/driving-license/pages/AdminB12DrivingPage';
 import AdminA1DrivingPage from 'features/admin/driving-license/pages/AdminA1DrivingPage';
 import AdminA2DrivingPage from 'features/admin/driving-license/pages/AdminA2DrivingPage';
+import AdminDrivingCenterPage from 'features/admin/driving-license/pages/AdminDrivingCenterPage';
 
 const router = createBrowserRouter([
   {
@@ -220,6 +221,10 @@ const router = createBrowserRouter([
           {
             path: PATH.DRIVING.ADMIN.DATE,
             element: <AdminDrivingDatePage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.CENTER,
+            element: <AdminDrivingCenterPage />,
           },
           {
             path: PATH.DRIVING.ADMIN.ROOT,
