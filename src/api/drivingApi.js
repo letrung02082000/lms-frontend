@@ -50,6 +50,14 @@ class DrivingApi {
     });
   };
 
+  query = async (query) => {
+    const url = `${API_PATH}/q`;
+    return axiosClient.get(url, {
+      ...authHeader(),
+      params: query,
+    });
+  }
+
   queryDrivings = async (date, state) => {
     const url = `${API_PATH}/query`;
     return axiosClient.get(url, {

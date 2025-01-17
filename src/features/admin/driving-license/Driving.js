@@ -7,7 +7,7 @@ import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
 import { MdLink, MdMoreVert, MdOutlineQuickreply, MdPhone, MdRotateLeft, MdWeb } from "react-icons/md";
-import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, IDENTITY_CARD_TYPE } from "./constant";
+import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, IDENTITY_CARD_TYPE, PAYMENT_METHODS, PAYMENT_METHODS_LABEL } from "./constant";
 import * as faceapi from '@vladmandic/face-api';
 import { Jimp } from 'jimp';
 import moment from 'moment'
@@ -18,6 +18,7 @@ import { IoIosCloseCircle, IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { CiGlobe } from "react-icons/ci";
 import ocrApi from "api/ocrApi";
+import AccountInfo from "./components/AccountInfo";
 
 function Driving(props) {
   faceapi.env.monkeyPatch({
@@ -84,8 +85,11 @@ function Driving(props) {
   const [selectedDate, setSelectedDate] = useState(date);
   const [dateInfo, setDateInfo] = useState(null);
   const [showDateInfo, setShowDateInfo] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [transactionId, setTransactionId] = useState(props?.info?.transactionId || null);
+  const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS_LABEL[props?.info?.paymentMethod] ? props?.info?.paymentMethod : PAYMENT_METHODS.BANK_TRANSFER);
   const QUICK_MESSAGE = `Chào bạn ${name}, mình gửi bạn nhóm thi ${dateInfo?.description}. Bạn vui lòng tham gia nhóm thi tại ${dateInfo?.link} để nhận thông báo dự thi.${isPaid ? '' : ' Nếu chưa hoàn tất lệ phí, bạn vui lòng thanh toán theo hướng dẫn tại website https://isinhvien.vn/driving-instruction trong hôm nay để đủ điều kiện dự thi.'} Cảm ơn bạn.`;
-
+  console.log(paymentMethod)
   // useEffect(() => {
   //   const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
   //   const today = new Date();
@@ -114,6 +118,8 @@ function Driving(props) {
   //     }
   //   }
   // }, [identityInfo]);
+
+  console.log(paymentMethod)
 
   useEffect(() => {
     if (imageVisible) {
@@ -299,14 +305,7 @@ function Driving(props) {
   };
 
   const handlePaidButton = () => {
-    DrivingApi.updateDriving(_id, {
-      isPaid: !isPaid
-    }).then(res => {
-      setIsPaid(res?.data?.isPaid);
-    }).catch(e => {
-      console.log(e);
-      alert(e);
-    });
+    setShowPaymentModal(true);
   }
 
   const handleInvalidCard = () => {
@@ -405,6 +404,29 @@ function Driving(props) {
     });
   }
 
+  const updateTransaction = () => {
+    DrivingApi.query({ transactionId }).then(res => {
+      if (res?.data?.length > 0) {
+        return toastWrapper('Mã giao dịch đã tồn tại', 'error');
+      } else {
+        DrivingApi.updateDriving(_id, {
+          transactionId,
+          paymentMethod,
+          isPaid: true
+        }).then(res => {
+          setIsPaid(res?.data?.isPaid);
+          setShowPaymentModal(false);
+          toastWrapper('Cập nhật thành công', 'success');
+        }).catch(e => {
+          alert(e);
+        });
+      }
+    }).catch(e => {
+      alert(e);
+      return;
+    });
+  }
+
   return (
     <div className="border border-primary m-2 p-3 rounded">
       <Row>
@@ -471,11 +493,11 @@ function Driving(props) {
               <p className="mb-2">
                 {isPaid ? 'Đã' : 'Chưa'} thanh toán
               </p>
-              <Form.Check
+              {isPaid ? <Button variant="outline-primary" onClick={handlePaidButton}>Hiện mã</Button> : <Form.Check
                 className="w-100"
                 type="switch"
                 checked={isPaid}
-                onClick={handlePaidButton} />
+                onClick={handlePaidButton} />}
             </Col>
           </Row>
           <Row>
@@ -782,6 +804,40 @@ function Driving(props) {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-primary" onClick={() => setShowDateInfo(false)}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showPaymentModal} onHide={() => setShowPaymentModal(false)} scrollable size="xl">
+        <Modal.Header closeButton>
+          <Modal.Title>Thông tin thanh toán</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row>
+            <Col>
+              <AccountInfo
+                tel={tel}
+              />
+            </Col>
+            <Col xs={3}>
+              <p>Phương thức thanh toán</p>
+              <Form.Select className="mb-3" onChange={e => setPaymentMethod(e.target.value)} disabled={isPaid}>
+                {Object.keys(PAYMENT_METHODS_LABEL).map(key => {
+                  return (
+                    <option value={key} selected={paymentMethod === key}>{PAYMENT_METHODS_LABEL[key]}</option>
+                  )
+                })}
+              </Form.Select>
+              <p>Mã giao dịch</p>
+              <FormControl disabled={isPaid} type="text" onChange={(e) => setTransactionId(e.target.value?.toUpperCase()?.trim())} className="w-100" placeholder="Nhập mã giao dịch" value={transactionId}/>
+              <Form.Text className="text-warning d-block">Mã hoá đơn là duy nhất và không được thay đổi sau khi cập nhật.</Form.Text>
+              {!isPaid && <Button className="mt-3" variant="primary" onClick={updateTransaction}>Xác nhận</Button>}
+            </Col>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-primary" onClick={() => setShowPaymentModal(false)}>
             Đóng
           </Button>
         </Modal.Footer>
