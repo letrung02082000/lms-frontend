@@ -646,7 +646,7 @@ function Driving(props) {
 
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setShowIdentityInfo(false)}>
+          <Button variant="outline-primary" onClick={() => setShowIdentityInfo(false)}>
             Đóng
           </Button>
         </Modal.Footer>
@@ -743,7 +743,7 @@ function Driving(props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setImageVisible(false)}>
+          <Button variant="outline-primary" onClick={() => setImageVisible(false)}>
             Đóng
           </Button>
         </Modal.Footer>
@@ -758,7 +758,7 @@ function Driving(props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setShowQrCode(false)}>
+          <Button variant="outline-primary" onClick={() => setShowQrCode(false)}>
             Đóng
           </Button>
         </Modal.Footer>
@@ -781,7 +781,7 @@ function Driving(props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setShowDateInfo(false)}>
+          <Button variant="outline-primary" onClick={() => setShowDateInfo(false)}>
             Đóng
           </Button>
         </Modal.Footer>
