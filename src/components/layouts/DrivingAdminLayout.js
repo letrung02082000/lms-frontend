@@ -19,12 +19,49 @@ import {
   SidebarHeader,
 } from "react-pro-sidebar";
 import { BiSolidFileExport } from 'react-icons/bi'
-import { DRIVING_STATE_LABEL } from 'features/admin/driving-license/constant'
+import { DRIVING_STATE_LABEL, IDENTITY_CARD_TYPE } from 'features/admin/driving-license/constant'
+import ocrApi from 'api/ocrApi'
 
 function DrivingAdminLayout({ children, onNavigate, onLogout }) {
   const [visible, setVisible] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
   const data = useSelector(selectDrivingData);
+
+  const exportInfoCSV = async (drivingData) => {
+    let index = 0, exportData = [];
+    for(let child of drivingData) {
+      try {
+        const res = await ocrApi.getOcrInfo(child?.identityInfo);
+        const identityInfo = res?.data?.info;
+        const MaThuongTru = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address_ward_code : identityInfo[0]?.address_ward_code;
+        const ChiTietDiaChi = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address?.split(identityInfo[1]?.address_ward)[0] : identityInfo[0]?.address?.split(identityInfo[1]?.address_ward)[0];
+        const retData = {
+          STT: ++index,
+          HoTen: identityInfo[1]?.name,
+          NgaySinh: identityInfo[1]?.dob,
+          GioiTinh: identityInfo[1]?.gender,
+          SoCCCD: identityInfo[1]?.id,
+          MaThuongTru,
+          ChiTietDiaChi,
+        };
+        exportData.push(retData);
+      } catch (error) {
+        exportData.push({
+          STT: ++index,
+          HoTen: child.name,
+        });
+      }
+    }
+
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+    const fileExtension = '.xlsx'
+    const ws = XLSX.utils.json_to_sheet(exportData)
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] }
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    const data = new Blob([excelBuffer], { type: fileType })
+    const fileName = `Danh_sach_nhap_lieu_${drivingData[0]?.date}_${drivingData?.length}`
+    FileSaver.saveAs(data, fileName + fileExtension)
+  }
 
   const exportToCSV = (csvData) => {
     csvData = csvData.map((child, index) => {
@@ -96,7 +133,7 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] }
     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
     const data = new Blob([excelBuffer], { type: fileType })
-    const fileName = `Danh_sach_${csvData[0]?.NgayThi}_${csvData?.length}`
+    const fileName = `Danh_sach_nhap_lieu_${csvData[0]?.NgayThi}_${csvData?.length}`
     FileSaver.saveAs(data, fileName + fileExtension)
   }
 
@@ -202,7 +239,10 @@ function DrivingAdminLayout({ children, onNavigate, onLogout }) {
               Quản lý hồ sơ A2
             </MenuItem>
             <MenuItem className="mb-3" onClick={() => exportToCSV(data)} icon={<BiSolidFileExport />}>
-              Xuất danh sách
+              Xuất danh sách thi
+            </MenuItem>
+            <MenuItem className="mb-3" onClick={() => exportInfoCSV(data)} icon={<BiSolidFileExport />}>
+              Xuất danh sách nhập liệu
             </MenuItem>
             <MenuItem className="mb-3" onClick={() => zipPortrait(data)} icon={<FaDownload />}>
               Tải ảnh chân dung

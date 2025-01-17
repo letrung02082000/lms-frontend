@@ -15,7 +15,7 @@ import { Scanner } from '@yudiel/react-qr-scanner';
 import CopyButton from 'components/button/CopyButton';
 import { ROLE } from 'constants/role';
 import AccountModal from 'features/driving-license/components/AccountModal';
-import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL } from '../constant';
+import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, PAYMENT_METHODS } from '../constant';
 import { FaQrcode } from "react-icons/fa";
 import QRCode from "react-qr-code";
 
@@ -54,6 +54,15 @@ function AdminDrivingA1Page() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [visibleDate, setVisibleDate] = useState([{}]);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  useEffect(() => {
+    const selectedDate = visibleDate.find((item) => {
+      return item.value === selectedRow?.date;
+    });
+    setSelectedDate(selectedDate);
+  }, [selectedRow]);
+
   const [fixedDate, setFixedDate] = useState(null);
   const {
     control,
@@ -139,6 +148,7 @@ function AdminDrivingA1Page() {
           return {
             label: new Date(item?.date).toLocaleDateString('en-GB'),
             value: item?.date,
+            description: item?.description,
           };
         });
         setVisibleDate(date);
@@ -578,7 +588,9 @@ function AdminDrivingA1Page() {
                     required: false,
                   }}
                   options={DRIVING_TYPE_LIST}
-                  label={`Hạng thi hiện tại: ${DRIVING_TYPE_LABEL[selectedRow?.drivingType]}`}
+                  label={`Hạng thi hiện tại: ${
+                    DRIVING_TYPE_LABEL[selectedRow?.drivingType]
+                  }`}
                   control={control}
                   name='drivingType'
                 />
@@ -640,29 +652,53 @@ function AdminDrivingA1Page() {
             </Row>
             <Row className='mb-3'>
               <Col>
+                <label className='d-block form-label'>
+                  Ngày dự thi hiện tại:{' '}
+                  {new Date(selectedRow?.date).toLocaleDateString('en-GB')}
+                </label>
                 <SelectField
                   rules={{
                     required: false,
                   }}
                   options={visibleDate}
-                  label={`Ngày dự thi hiện tại: ${new Date(
-                    selectedRow?.date
-                  ).toLocaleDateString('en-GB')}`}
+                  label={`${selectedDate?.description}`}
                   control={control}
                   name='date'
                 />
               </Col>
+            </Row>
+
+            <Row className='mb-3'>
+              <Col>
+                <label
+                  className='d-block form-label'
+                  style={{ marginBottom: '0.5rem' }}
+                >
+                  Phương thức
+                </label>
+                <div>
+                  {' '}
+                  {selectedRow?.paymentMethod === PAYMENT_METHODS.DIRECT &&
+                    'Thanh toán trực tiếp'}
+                  {selectedRow?.paymentMethod ===
+                    PAYMENT_METHODS.BANK_TRANSFER && 'Chuyển khoản'}
+                </div>
+              </Col>
+              <Col>
+                <label className='d-block form-label'>Mã giao dịch</label>
+                <div>{selectedRow?.transactionId}</div>
+              </Col>
               <Col>
                 <InputField
                   noClear={true}
-                  label='Đã chuyển khoản'
+                  label='Số tiền'
                   control={control}
                   name='cash'
                   type='number'
                   disabled={true}
                 />
               </Col>
-              <Col xs={2}>
+              <Col>
                 <label
                   className='d-block form-label'
                   style={{ marginBottom: '0.5rem' }}
@@ -677,8 +713,6 @@ function AdminDrivingA1Page() {
                 </Button>
               </Col>
             </Row>
-
-            <Row className='mb-3'></Row>
 
             <Row className='mb-5'>
               <Col>
