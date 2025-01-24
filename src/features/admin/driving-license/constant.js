@@ -20,7 +20,7 @@ export const DRIVING_STATE_LABEL = {
     [DRIVING_STATE.HAS_FILE_1]: "Đã có hồ sơ 1",
     [DRIVING_STATE.HAS_FILE_2]: "Đã có hồ sơ 2",
     [DRIVING_STATE.HAS_FILE_3]: "Đã có hồ sơ 3",
-    [DRIVING_STATE.HEALTH_CHECKED]: "Đã khám sức khoẻ",
+    [DRIVING_STATE.HEALTH_CHECKED]: "Đã khám SK",
     [DRIVING_STATE.WAITING_FOR_SCHEDULE]: "Chờ xếp lịch",
     [DRIVING_STATE.FINISHED]: "Đã hoàn tất",
     [DRIVING_STATE.RECEIVED]: "Đã nhận bằng",
@@ -54,4 +54,22 @@ export const PAYMENT_METHODS = {
 export const PAYMENT_METHODS_LABEL = {
     [PAYMENT_METHODS.BANK_TRANSFER]: 'Chuyển khoản ngân hàng',
     [PAYMENT_METHODS.DIRECT]: 'Thanh toán trực tiếp',
+}
+
+export const DOWNLOAD_OPTIONS = {
+    DOWNLOAD_STUDENT_LIST: 'download_student_list',
+    DOWNLOAD_INPUT_LIST: 'download_input_list',
+    DOWNLOAD_PORTRAIT: 'download_portrait',
+    DOWNLOAD_CARD: 'download_card',
+    DOWNLOAD_CROPPED_CARD: 'download_cropped_card',
+    DOWNLOAD_PDF: 'download_pdf',
+}
+
+export const DOWNLOAD_OPTIONS_LABEL = {
+    [DOWNLOAD_OPTIONS.DOWNLOAD_STUDENT_LIST]: 'Tải danh sách dự thi',
+    [DOWNLOAD_OPTIONS.DOWNLOAD_INPUT_LIST]: 'Tải danh sách nhập liệu',
+    [DOWNLOAD_OPTIONS.DOWNLOAD_PORTRAIT]: 'Tải ảnh chân dung',
+    [DOWNLOAD_OPTIONS.DOWNLOAD_CARD]: 'Tải căn cước',
+    [DOWNLOAD_OPTIONS.DOWNLOAD_CROPPED_CARD]: 'Tải căn cước cắt',
+    [DOWNLOAD_OPTIONS.DOWNLOAD_PDF]: 'Tạo hồ sơ in',
 }

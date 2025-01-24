@@ -549,7 +549,7 @@ function Driving(props) {
                 Đã thanh toán
               </p> : <p className="mb-2 text-danger">Chưa thanh toán</p>}
 
-              {isPaid ? <Button variant="primary" onClick={handlePaidButton}>Hiện mã</Button> : <Form.Check
+              {isPaid ? <Button variant="outline-primary" onClick={handlePaidButton}>Hiện mã</Button> : <Form.Check
                 className="w-100"
                 type="switch"
                 checked={isPaid}
