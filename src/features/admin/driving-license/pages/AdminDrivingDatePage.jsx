@@ -15,6 +15,18 @@ function AdminDrivingDatePage() {
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
   const [groupLink, setGroupLink] = useState('');
+  const [drivingCenters, setDrivingCenters] = useState([]);
+  const [selectedCenter, setSelectedCenter] = useState('');
+  useEffect(() => {
+    drivingApi
+      .getDrivingCenter({ visible: true })
+      .then((res) => {
+        setDrivingCenters(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const [colDefs] = useState([
     {
@@ -51,6 +63,14 @@ function AdminDrivingDatePage() {
             editable: true,
           },
           {
+            field: 'center',
+            headerName: 'Trung tâm',
+            editable: false,
+            cellRenderer: (data) => {
+              return data?.value ? data.value.name : '';
+            },
+          },
+          {
             field: 'formVisible',
             headerName: 'Hiển thị trên website',
             editable: true,
@@ -82,6 +102,7 @@ function AdminDrivingDatePage() {
       isVisible: true,
       description,
       link: groupLink,
+      center: selectedCenter,
     };
 
     drivingApi.addDrivingDate(body).then((res) => {
@@ -89,7 +110,7 @@ function AdminDrivingDatePage() {
       fetchDrivingDates();
       setShowAddModal(false);
     }).catch((err) => {
-      toastWrapper(err.response.data.message, 'error');
+      toastWrapper(err?.message, 'error');
     });
   }
 
@@ -156,6 +177,21 @@ function AdminDrivingDatePage() {
                       onChange={(e) => setDescription(e.target.value)}
                       as={'textarea'}
                     />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Select
+                      className='mb-3'
+                      onChange={(e) => setSelectedCenter(e.target.value)}
+                    >
+                      <option>Chọn trung tâm</option>
+                      {drivingCenters.map((center) => (
+                        <option key={center._id} value={center._id}>
+                          {center.name}
+                        </option>
+                      ))}
+                    </Form.Select>
                   </Col>
                 </Row>
                 <Row>

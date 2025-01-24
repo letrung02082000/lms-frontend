@@ -1,3 +1,4 @@
+import { serializeQuery } from "utils/request.utils";
 import axiosClient from "./axiosClient";
 import { authHeader } from "utils";
 
@@ -51,7 +52,7 @@ class DrivingApi {
   };
 
   query = async (query) => {
-    const url = `${API_PATH}/q`;
+    const url = `${API_PATH}/center/query`;
     return axiosClient.get(url, {
       ...authHeader(),
       params: query,
@@ -142,6 +143,16 @@ class DrivingApi {
     });
   };
 
+  getDrivingCenterById = async (id) => {
+    const url = `${API_PATH}/center/${id}`;
+    return axiosClient.get(url);
+  };
+
+  queryDrivingCenters = async (q) => {
+    const url = `${API_PATH}/center/query?${serializeQuery(q)}`;
+    return axiosClient.get(url);
+  };
+
   updateDrivingCenter = async (_id, data) => {
     const url = `${API_PATH}/center/${_id}`;
     return axiosClient.patch(url, data, authHeader());
@@ -179,11 +190,12 @@ class DrivingApi {
     );
   };
 
-  getFormVisible = async () => {
+  getFormVisible = async (center) => {
     const url = `${API_PATH}/date`;
     return axiosClient.get(url, {
       params: {
         formVisible: true,
+        center,
       },
       ...authHeader(),
     });
@@ -234,6 +246,13 @@ class DrivingApi {
   extractIdentity = async (id) => {
     const url = `/driving/extract/${id}`;
     return axiosClient.get(url);
+  }
+
+  getDrivingCenter = async (params) => {
+    const url = `${API_PATH}/center`;
+    return axiosClient.get(url, {
+      params,
+    });
   }
 }
 

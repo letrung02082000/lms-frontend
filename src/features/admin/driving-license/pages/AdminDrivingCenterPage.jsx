@@ -97,8 +97,12 @@ function AdminDrivingCenterPage() {
     const body = {
       description: data.description,
       formVisible: data.formVisible,
-      isVisible: data.isVisible,
-      link: data.link,
+      visible: data.visible,
+      priority: data.priority,
+      address: data.address,
+      name: data.name,
+      tel: data.tel,
+      zalo: data.zalo,
     };
 
     drivingApi.updateDrivingCenter(data?._id, body).then((res) => {

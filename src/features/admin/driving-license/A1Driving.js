@@ -181,7 +181,7 @@ function A1Driving() {
           return (
             <Button
               variant={dateSelected === index ? "primary" : "text-secondary"}
-              className="mx-2 my-1 rounded-pill border-primary border-2 px-2 py-1"
+              className="mx-2 my-1 rounded-pill border-primary px-2 py-1 form-label"
               onClick={() => handleDateButton(index)}
               key={child._id}
               style={{ width: '100px' }}
@@ -191,25 +191,24 @@ function A1Driving() {
           );
         })}
       </div>
-      <p className="text-center my-1">Tổng cộng: {data.length} hồ sơ</p>
-      <div className='d-flex justify-content-center pb-2'>
+      <div className='d-flex justify-content-center my-3'>
         <Button
-          className="mx-2"
+          className="mx-2 form-label"
           onClick={() => handleStateButton(null)}
           variant={state === null ? 'primary' : 'outline-primary'}
         >
-          Tất cả
+          Tất cả {state === null ? `(${data.length})` : ''}
         </Button>
 
         {Object.keys(DRIVING_STATE).map((key) => {
           return (
             <Button
-              className="mx-2"
+              className="mx-2 form-label"
               onClick={() => handleStateButton(DRIVING_STATE[key])}
               variant={state === DRIVING_STATE[key] ? 'primary' : 'outline-secondary'}
               key={key}
             >
-              {DRIVING_STATE_LABEL[DRIVING_STATE[key]]}
+              {DRIVING_STATE_LABEL[DRIVING_STATE[key]]} {state === DRIVING_STATE[key] ? `(${data.length})` : ''}
             </Button>
           );
         })}

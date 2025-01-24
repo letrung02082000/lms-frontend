@@ -1,0 +1,3 @@
+const genergateDrivingQuickMessage = (name, dateInfo, isPaid) => `Chào bạn ${name}, mình gửi bạn nhóm thi ${dateInfo?.description}. Bạn vui lòng tham gia nhóm thi tại ${dateInfo?.link} để nhận thông báo dự thi.${isPaid ? '' : ' Nếu chưa hoàn tất lệ phí, bạn vui lòng thanh toán theo hướng dẫn tại website https://isinhvien.vn/driving-instruction trong hôm nay để đủ điều kiện dự thi.'} Cảm ơn bạn.`;
+
+export { genergateDrivingQuickMessage };

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import SearchBar from "components/SearchBar";
 import styles from "./registerPage.module.css";
 import styled from "styled-components";
@@ -19,9 +19,12 @@ import { useForm } from "react-hook-form";
 import RadioField from "components/form/RadioField";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { formatCurrency } from "utils/commonUtils";
-import { DRIVING_STATE, DRIVING_STATE_LABEL } from "features/admin/driving-license/constant";
+import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL } from "features/admin/driving-license/constant";
+import { PATH } from "constants/path";
 
 export default function DrivingRegisterPage() {
+  const centerShortName = useParams().shortName || '';
+  
   const MAP_URL ='https://maps.app.goo.gl/kyq58xK5b8p4rEi1A';
   const categories = [
     {
@@ -91,19 +94,49 @@ export default function DrivingRegisterPage() {
   const [frontData, setFrontData] = useState(null);
   const [backData, setBackData] = useState(null);
   const [portraitData, setPortraitData] = useState(null);
+  const [drivingCenter, setDrivingCenter] = useState(null);
 
   useEffect(() => {
-    drivingApi.getFormVisible().then((res) => {
-      let dates = res?.data || [];
-      dates = dates.map((child) => {
-        return { label: child?.description, value: child?._id, link: child?.link, date: new Date(child?.date), aPrice: child?.aPrice, bPrice: child?.bPrice };
-      });
+    const getDrivingDates = async (center) => {
+      drivingApi.getFormVisible(center).then((res) => {
+        let dates = res?.data || [];
+        dates = dates.map((child) => {
+          return { label: child?.description, value: child?._id, link: child?.link, date: new Date(child?.date), aPrice: child?.aPrice, bPrice: child?.bPrice, center: child?.center?._id };
+        });
 
-      setDateList(dates);
-    }).catch((e) => {
-      toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
-    });  
+        setDateList(dates);
+      }).catch((e) => {
+        toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
+      });
+    }
+
+    if(centerShortName) {
+      drivingApi.queryDrivingCenters({shortName: centerShortName}).then((res) => {
+        if (res?.data?.length > 0) {
+          const center = res?.data[0]
+          document.title = center.name;
+          setDrivingCenter(center);
+          getDrivingDates(center?._id);
+        }
+      }).catch((e) => {
+        toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
+      });
+    } else {
+      getDrivingDates();
+    }
   }, []);
+
+  useEffect(() => {
+    if (date) {
+      const dateObj = dateList.filter((child) => child.value == date)[0];
+
+      drivingApi.getDrivingCenterById(dateObj?.center).then((res) => {
+        setDrivingCenter(res?.data);
+      }).catch((e) => {
+        toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
+      });
+    }
+  }, [date]);
 
   const handleSubmitButton = async () => {
     await handleSubmit((formData) => {
@@ -142,6 +175,7 @@ export default function DrivingRegisterPage() {
       localStorage.setItem('driving-date', JSON.stringify(dateObj));
       localStorage.setItem('driving-type', drivingType);
       formData.date = dateObj?.date?.getTime();
+      formData.center = dateObj?.center;
     } else {
       localStorage.setItem('driving-link', '');
       localStorage.setItem('driving-type', drivingType);
@@ -214,7 +248,6 @@ export default function DrivingRegisterPage() {
 
   return (
     <Styles className={styles.drivingRegisterContainer}>
-      <p className="text-center"><a href="/driving-instruction" target="_blank" rel="noopener noreferrer">Xem hướng dẫn đăng ký dự thi tại đây</a></p>
       <SearchBar
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
@@ -231,23 +264,25 @@ export default function DrivingRegisterPage() {
           return (
             <Card key={child?._id} className="my-3">
               <Card.Body>
-              <div className={styles.orderContainer}>
-              <p>Họ tên: {child?.name}</p>
-              <p>Trạng thái: {DRIVING_STATE_LABEL[child.processState]}</p>
-              <p>
-                Ngày xử lý:
-                {` ${processDate.getDate()}/${processDate.getMonth() + 1
-                  }/${processDate.getFullYear()}`}
-              </p>
+                <div className={styles.orderContainer}>
+                  <p>Họ tên: {child?.name}</p>
+                  <p>Tình trạng: {DRIVING_STATE_LABEL[child.processState]}</p>
+                  <p>
+                    Ngày xử lý:
+                    {` ${processDate.getDate()}/${processDate.getMonth() + 1
+                      }/${processDate.getFullYear()}`}
+                  </p>
+                  <p>Hạng thi: {DRIVING_TYPE_LABEL[child?.drivingType]}</p>
+                  {child?.center && <p>Điểm thi: {child?.center?.name}</p>}
                   {child?.cash > 0 && <p>Đã chuyển khoản: {formatCurrency(child?.cash || 0)} VNĐ</p>}
-              <p>
-                Vui lòng gửi biên lai qua Zalo{" "}
-                <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
-                  {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
-                </ZaloLink>{" "}
-                trong trường hợp hồ sơ của bạn chưa được xử lý.
-              </p>
-              </div>
+                  <p>
+                    Vui lòng gửi biên lai qua Zalo{" "}
+                    <ZaloLink tel={DRIVING_LICENSE_NUMBER}>
+                      {convertPhoneNumber(DRIVING_LICENSE_NUMBER, ".")}
+                    </ZaloLink>{" "}
+                    trong trường hợp hồ sơ của bạn chưa được xử lý.
+                  </p>
+                </div>
               </Card.Body>
             </Card>
           );
@@ -390,21 +425,21 @@ export default function DrivingRegisterPage() {
             <RadioField
               hasAsterisk={true}
               options={dateList}
-              label='Chọn điểm thi/ngày dự thi'
+              label='Chọn điểm thi và ngày dự thi'
               control={control}
               name='date'
               onClear={handleClearButton}
               onChange={handleDateChange}
             />
-              <Form.Text>Xem hướng dẫn chi tiết điểm thi và các gói thi <a href="/driving-instruction" target="_blank" rel="noopener noreferrer">tại đây.</a></Form.Text>
+              {date && <Form.Text>Xem hướng dẫn chi tiết điểm thi và các gói thi <a href={drivingCenter?.instructionLink || PATH.DRIVING.CENTER.HUONG_DAN.replace(':shortName/', centerShortName)} target="_blank" rel="noopener noreferrer">tại đây.</a></Form.Text>}
           </Col>
         </Row>}
 
         <Row className="mb-3">
           <Col>
               <InputField
-                label='Bằng lái hạng khác/Mã ưu đãi'
-                subLabel='Vui lòng ghi rõ loại bằng lái hạng khác hoặc mã ưu đãi (nếu có)'
+                label='Bằng lái hạng khác'
+                subLabel='Vui lòng ghi rõ loại bằng lái hạng khác (nếu có)'
                 control={control}
                 name='feedback'
                 as='textarea'

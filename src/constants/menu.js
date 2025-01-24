@@ -35,7 +35,7 @@ export const ADMIN_DRIVING_MENU = [
         icon: <FaList />
     },
     {
-        label: 'Quản lý điểm thi',
+        label: 'Quản lý trung tâm',
         path: PATH.DRIVING.ADMIN.CENTER,
         icon: <FaList />
     },
