@@ -446,15 +446,14 @@ function Driving(props) {
   const handleShowIdentityInfo = () => {
     setShowIdentityInfo(true);
     ocrApi.getOcrInfo(identityInfo?._id).then(res => {
+      console.log(res.data);
       setIdentityInfo(res?.data);
     }).catch(e => {
-      console.log(e);
       setIdentityInfo({ _id: null, info: [] });
     });
     ocrApi.getOcrImage(identityInfo?._id).then(res => {
       setIdentityImage(res?.data);
     }).catch(e => {
-      console.log(e);
       setIdentityImage({ _id: null, image: [] });
     });
   }
@@ -536,7 +535,7 @@ function Driving(props) {
                 className="w-100 mb-2"
                 type="switch"
                 checked={sent}
-                onClick={handleMessageSent} />
+                onChange={handleMessageSent} />
             </Col>
             <Col xs={2} className="text-center">
               <p className="mb-2">
@@ -629,7 +628,7 @@ function Driving(props) {
             </div>
           </div>
           <div className="d-flex justify-content-end align-items-center mt-2">
-            {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc CCCD' : 'Trích xuất CCCD'}</Button>)}
+            {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang trích xuất' : 'Trích xuất CCCD'}</Button>)}
             <Button className="ms-2" variant="outline-primary" onClick={() => setImageVisible(true)}>Xem ảnh hồ sơ</Button>
           </div>
         </Col>

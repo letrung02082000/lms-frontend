@@ -199,11 +199,9 @@ function A1Driving() {
 
     pdfData.push(pdfElements);
 
-    console.log(pdfData);
-
     const MyDoc = (<Document>
       {pdfData.map((child) => (
-        <>
+        <React.Fragment key={_.uniqueId()}>
           <Page size="A4" style={styles.imagePage}>
             {
               child.map((element) => {
@@ -232,7 +230,7 @@ function A1Driving() {
               })
             }
           </Page>
-        </>
+        </React.Fragment>
       ))}
     </Document>);
     pdf(MyDoc).toBlob().then(blob => {
