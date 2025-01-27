@@ -700,7 +700,7 @@ function Driving(props) {
                   <p>Nơi cấp: <b>{identityInfo?.info[0]?.issued_at}</b></p>
                   <p>Ngày hết hạn: <b>{identityInfo?.info[0]?.due_date}</b></p>
                 </Row>
-                <Button variant="outline-primary" onClick={() => printDrivingDocument('download')}>Tải file hồ sơ</Button>
+                <Button variant="outline-primary" onClick={() => printDrivingDocument('download')}>Tải hồ sơ</Button>
                 <Button className="ms-3" onClick={printDrivingDocument}>In hồ sơ</Button>
               </Col>
               <Col xs={6}>
