@@ -629,6 +629,7 @@ function Driving(props) {
           </div>
           <div className="d-flex justify-content-end align-items-center mt-2">
             {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang trích xuất' : 'Trích xuất CCCD'}</Button>)}
+            {DRIVING_STATE.APPROVED !== processState && identityInfo?._id && <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button>}
             <Button className="ms-2" variant="outline-primary" onClick={() => setImageVisible(true)}>Xem ảnh hồ sơ</Button>
           </div>
         </Col>
@@ -678,37 +679,38 @@ function Driving(props) {
           <Modal.Title>Thông tin trích xuất</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Row>
-            <Col xs={6}>
-              <Row>
-                <Col>
-                  <p>Họ tên: <b>{identityInfo?.info[1]?.name}</b></p>
-                  <p>Ngày sinh: <b>{identityInfo?.info[1]?.dob}</b></p>
-                  <p>Số CCCD: <b>{identityInfo?.info[1]?.id}</b></p>
-                  <p>Giới tính: <b>{identityInfo?.info[1]?.gender}</b></p>
-                </Col>
-                <Col xs={3}>
-                  <QRCode value={tel} size={60} id='driving-qr-code' />
-                </Col>
-              </Row>
-              <Row>
-                {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT && <p>Địa chỉ: <b>{identityInfo?.info[1]?.address}</b></p>}
-                {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_2024_FRONT && <p>Địa chỉ: <b>{identityInfo?.info[0]?.address}</b></p>}
-                <p>Ngày cấp: <b>{identityInfo?.info[0]?.issue_date}</b></p>
-                <p>Nơi cấp: <b>{identityInfo?.info[0]?.issued_at}</b></p>
-                <p>Ngày hết hạn: <b>{identityInfo?.info[0]?.due_date}</b></p>
-              </Row>
-              <Button variant="outline-primary" onClick={() => printDrivingDocument('download')}>Tải file hồ sơ</Button>
-              <Button className="ms-3" onClick={printDrivingDocument}>In hồ sơ</Button>
-            </Col>
-            <Col xs={6}>
-              <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[1]}`} />
-              <p className="text-center my-3">Mặt trước</p>
-              <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[0]}`} />
-              <p className="text-center my-3">Mặt sau</p>
-            </Col>
-          </Row>
-          
+          {identityInfo?.frontType &&
+            <Row>
+              <Col xs={6}>
+                <Row>
+                  <Col>
+                    <p>Họ tên: <b>{identityInfo?.info[1]?.name}</b></p>
+                    <p>Ngày sinh: <b>{identityInfo?.info[1]?.dob}</b></p>
+                    <p>Số CCCD: <b>{identityInfo?.info[1]?.id}</b></p>
+                    <p>Giới tính: <b>{identityInfo?.info[1]?.gender}</b></p>
+                  </Col>
+                  <Col xs={3}>
+                    <QRCode value={tel} size={60} id='driving-qr-code' />
+                  </Col>
+                </Row>
+                <Row>
+                  {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT && <p>Địa chỉ: <b>{identityInfo?.info[1]?.address}</b></p>}
+                  {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_2024_FRONT && <p>Địa chỉ: <b>{identityInfo?.info[0]?.address}</b></p>}
+                  <p>Ngày cấp: <b>{identityInfo?.info[0]?.issue_date}</b></p>
+                  <p>Nơi cấp: <b>{identityInfo?.info[0]?.issued_at}</b></p>
+                  <p>Ngày hết hạn: <b>{identityInfo?.info[0]?.due_date}</b></p>
+                </Row>
+                <Button variant="outline-primary" onClick={() => printDrivingDocument('download')}>Tải file hồ sơ</Button>
+                <Button className="ms-3" onClick={printDrivingDocument}>In hồ sơ</Button>
+              </Col>
+              <Col xs={6}>
+                <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[1]}`} />
+                <p className="text-center my-3">Mặt trước</p>
+                <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[0]}`} />
+                <p className="text-center my-3">Mặt sau</p>
+              </Col>
+            </Row>
+          }
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-primary" onClick={() => setShowIdentityInfo(false)}>

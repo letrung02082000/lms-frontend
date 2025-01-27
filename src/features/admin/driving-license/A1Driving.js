@@ -5,15 +5,23 @@ import { useDispatch } from "react-redux";
 import Select from 'react-select'
 import DrivingApi from "api/drivingApi";
 import { Button, Form, Modal } from "react-bootstrap";
-import { DOWNLOAD_OPTIONS, DOWNLOAD_OPTIONS_LABEL, DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
+import { DOWNLOAD_OPTIONS, DOWNLOAD_OPTIONS_LABEL, DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE, EXPORT_EXCEL_FIELDS, EXPORT_EXCEL_FIELDS_LABEL, EXPORT_EXCEL_OPTIONS, EXPORT_EXCEL_OPTIONS_LABEL, EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE, IDENTITY_CARD_TYPE, PAYMENT_METHODS } from "./constant";
 import { MdDownload } from "react-icons/md";
 import ocrApi from "api/ocrApi";
 import { Document, Page, View, Image as PDFImage, Svg, Path, StyleSheet, pdf, Text } from "@react-pdf/renderer";
 import QRCode from "react-qr-code";
 import ReactDOMServer from 'react-dom/server'
+import * as FileSaver from 'file-saver'
+import * as XLSX from 'xlsx'
 import _ from "lodash";
 
 function A1Driving() {
+    const [loadingAction, setLoadingAction] = useState(0);
+    const [exportExcelFields, setExportExcelFields] = useState(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
+    const [exportExcelOption, setExportExcelOption] = useState({
+      value: EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL,
+      label: EXPORT_EXCEL_OPTIONS_LABEL[EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL],
+    });
     const styles = StyleSheet.create({
       imagePage: {
         flexDirection: 'column',
@@ -51,7 +59,7 @@ function A1Driving() {
   const [dateSelected, setDateSelected] = useState(null);
   const [state, setState] = useState(DRIVING_STATE.CREATED);
   const [showActionModal, setShowActionModal] = useState(false);
-  const [action, setAction] = useState(null);
+  const [action, setAction] = useState(DOWNLOAD_OPTIONS.EXPORT_EXCEL);
 
   const checkDuplicate = (data) => {
     const newData = data.map((child) => {
@@ -161,17 +169,104 @@ function A1Driving() {
   const handleActionButton = () => {
     if(action === DOWNLOAD_OPTIONS.DOWNLOAD_PDF) {
       downloadPDF();
+    } else if(action === DOWNLOAD_OPTIONS.EXPORT_EXCEL) {
+      exportExcel();
     }
+  }
+
+  const exportExcel = async () => {
+    let exportData = [], idx = 0, identityInfo, detailAddress, addressTownCode, address, dob, identityNumber;
+    for (let child of data) {
+      ++idx;
+      setLoadingAction(idx);
+      let invalidState = 'Hồ sơ hợp lệ', paymentMethod = '';
+
+      if(exportExcelFields[EXPORT_EXCEL_FIELDS.INVALID_STATE]) {
+        if(child?.invalidCard && child?.invalidPortrait) {
+          invalidState = 'Căn cước và chân dung không hợp lệ';
+        } else if(child?.invalidPortrait) {
+          invalidState = 'Ảnh chân dung không hợp lệ';
+        } else if(child?.invalidCard) {
+          invalidState = 'Căn cước không hợp lệ';
+        }
+      }
+
+      if (exportExcelFields[EXPORT_EXCEL_FIELDS.PAYMENT_METHOD]) {
+        if (child?.paymentMethod === PAYMENT_METHODS.BANK_TRANSFER) {
+          paymentMethod = 'Chuyển khoản';
+        } else if (child?.paymentMethod === PAYMENT_METHODS.DIRECT) {
+          paymentMethod = 'Tiền mặt';
+        }
+      }
+
+      if (child?.identityInfo && (exportExcelFields[EXPORT_EXCEL_FIELDS.DOB] || exportExcelFields[EXPORT_EXCEL_FIELDS.GENDER] || exportExcelFields[EXPORT_EXCEL_FIELDS.IDENTITY_CARD_NUMBER] || exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS] || exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS_TOWN_CODE] || exportExcelFields[EXPORT_EXCEL_FIELDS.DETAIL_ADDRESS] || exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_DATE] || exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_PLACE])) {
+        try {
+          const res = await ocrApi.getOcrInfo(child?.identityInfo);
+          identityInfo = res?.data?.info;
+          address = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address : identityInfo[0]?.address;
+          addressTownCode = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address_ward_code : identityInfo[0]?.address_ward_code;
+          detailAddress = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address?.split(identityInfo[1]?.address_ward)[0] : identityInfo[0]?.address?.split(identityInfo[1]?.address_ward)[0];
+          dob = identityInfo[1]?.dob === identityInfo[0]?.dob ? identityInfo[1]?.dob : 'Ngày sinh không khớp trên 2 mặt căn cước';
+          identityNumber = identityInfo[1]?.id === identityInfo[0]?.person_number ? identityInfo[1]?.id : 'Số căn cước không khớp trên 2 mặt căn cước';
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      const temp = {
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.NO] && { STT: idx }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.TIMESTAMP] && { 'Thời gian đăng ký': new Date(child?.createdAt).toLocaleString('en-GB') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.FULL_NAME] && { 'Họ và tên': child?.name }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.LAST_NAME] && { 'Họ và tên đệm': child?.name?.trim()?.split(' ')?.slice(0, -1)?.join(' ') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.FIRST_NAME] && { 'Tên': child?.name?.trim()?.split(' ')?.slice(-1)?.join(' ') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.DRIVING_DATE] && { 'Ngày thi': new Date(child?.date).toLocaleDateString('en-GB') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.DRIVING_TYPE] && { 'Hạng thi': DRIVING_TYPE_LABEL[child?.drivingType] }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PHONE_NUMBER] && { 'Số điện thoại': [child?.tel?.trim()?.slice(0, 4), child?.tel?.trim()?.slice(4, 7), child?.tel?.trim()?.slice(7)].join(' ') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.ZALO] && { 'Zalo': [child?.zalo?.trim()?.slice(0, 4), child?.zalo?.trim()?.slice(4, 7), child?.zalo?.trim()?.slice(7)].join(' ') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.HIDDEN_PHONE_NUMBER] && { 'Số điện thoại (đã ẩn)': child?.tel?.slice(0, 4) + '***' + child?.tel?.slice(-3) }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PROCESS_STATE] && { 'Trạng thái xử lý': DRIVING_STATE_LABEL[child?.processState] }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.INVALID_STATE] && { 'Trạng thái hồ sơ': invalidState }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PAYMENT_STATE] && { 'Trạng thái thanh toán': child?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán' }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PAYMENT_AMOUNT] && { 'Số tiền': child?.cash }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PAYMENT_METHOD] && { 'Phương thức thanh toán': paymentMethod }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.NOTE] && { 'Ghi chú': child?.feedback }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PORTRAIT_URL] && { 'Ảnh chân dung': child?.portraitUrl }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.FRONT_URL] && { 'Ảnh căn cước mặt trước': child?.frontUrl }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.BACK_URL] && { 'Ảnh căn cước mặt sau': child?.backUrl }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.DOB] && { 'Ngày sinh': dob}),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.GENDER] && { 'Giới tính': identityInfo && identityInfo[1]?.gender }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.IDENTITY_CARD_NUMBER] && { 'Số căn cước': identityNumber }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS] && { 'Địa chỉ': address }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS_TOWN_CODE] && { 'Mã xã/phường': addressTownCode }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.DETAIL_ADDRESS] && { 'Địa chỉ chi tiết': detailAddress }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_DATE] && { 'Ngày cấp': identityInfo && identityInfo[0]?.issue_date }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_PLACE] && { 'Nơi cấp': identityInfo && identityInfo[0]?.issued_at }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.HEALTH_CHECKED_DATE] && { 'Ngày khám sức khỏe': child?.healthDate ? new Date(child?.healthDate).toLocaleString('en-GB') : '' }),
+      };
+
+      exportData.push(temp);
+    }
+
+    setLoadingAction(0);
+
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const excelData = new Blob([excelBuffer], { type: fileType });
+    const fileName = `${EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL ? 'DS_THI' : (EXPORT_EXCEL_OPTIONS.EXPORT_INPUT_EXCEL ? 'DS_NHAP' : '')}_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${exportData?.length}`;
+    FileSaver.saveAs(excelData, fileName + fileExtension)
   }
 
   const downloadPDF = async () => {
     let pdfData = [], pdfElements = [];
     const perPage = 4;
-    const pages = Math.ceil(data.length / perPage);
-    let count = 0;
+    let count = 0, idx = 0;
 
     for (let child of data) {
       if (child?.identityInfo) {
+        setLoadingAction(idx);
         const ocrData = await ocrApi.getOcrImage(child.identityInfo);
         const qrCodeString = ReactDOMServer.renderToString(<QRCode value={child?.tel} size={45} />)
         const qrCodeData = new DOMParser().parseFromString(qrCodeString, 'image/svg+xml').getElementsByTagName('path');
@@ -194,6 +289,7 @@ function A1Driving() {
         }
 
         count++;
+        ++idx;
       }
     }
 
@@ -238,6 +334,8 @@ function A1Driving() {
       window.open(url, '_blank');
     }).catch(e => {
       console.log(e);
+    }).finally(() => {
+      setLoadingAction(0);
     });
   }
 
@@ -301,7 +399,7 @@ function A1Driving() {
         </div>
       )}
 
-      <Modal show={showActionModal} onHide={() => setShowActionModal(false)}>
+      <Modal show={showActionModal} onHide={() => setShowActionModal(false)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Chọn thao tác</Modal.Title>
         </Modal.Header>
@@ -314,14 +412,43 @@ function A1Driving() {
                 label: DOWNLOAD_OPTIONS_LABEL[key],
               };
             })}
-            defaultValue={action}
+            defaultValue={{
+              value: DOWNLOAD_OPTIONS.EXPORT_EXCEL,
+              label: DOWNLOAD_OPTIONS_LABEL[DOWNLOAD_OPTIONS.EXPORT_EXCEL],
+            }}
           />
+          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && <Select
+            className="mt-3"
+            onChange={(e) => {
+              if(e.value === EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL) {
+                setExportExcelOption(e);
+                setExportExcelFields(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
+              } else if(e.value === EXPORT_EXCEL_OPTIONS.EXPORT_INPUT_EXCEL) {
+                setExportExcelOption(e);
+                setExportExcelFields(EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE);
+              }
+            }}
+            options={Object.keys(EXPORT_EXCEL_OPTIONS_LABEL).map((key) => {
+              return {
+                value: key,
+                label: EXPORT_EXCEL_OPTIONS_LABEL[key],
+              };
+            })}
+            defaultValue={exportExcelOption}
+          />}
           <p className="my-3 text-center">Tổng cộng {data.length} hồ sơ</p>
           <div className="mx-auto text-center">
-            <Button variant='primary' onClick={handleActionButton}>
+            {loadingAction ? <Button disabled={true}>Đang thực hiện {loadingAction} / {data.length}</Button> : <Button variant='primary' onClick={handleActionButton}>
               Thực hiện
-            </Button>
+            </Button>}
           </div>
+          <p className="my-3 text-center">Chọn các trường danh sách</p>
+          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && <div className="d-flex flex-wrap mt-3">
+            {Object.keys(exportExcelFields).map((key) => {
+              return <Form.Check className="w-50" name={key} key={key} type='checkbox' label={EXPORT_EXCEL_FIELDS_LABEL[key]} checked={exportExcelFields[key]} onChange={(e) => setExportExcelFields({ ...exportExcelFields, [e.target.name]: e.target.checked })} />
+            })
+            }
+          </div>}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='outline-primary' onClick={() => setShowActionModal(false)}>

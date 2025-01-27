@@ -52,7 +52,7 @@ class DrivingApi {
   };
 
   query = async (query) => {
-    const url = `${API_PATH}/center/query`;
+    const url = `${API_PATH}/q`;
     return axiosClient.get(url, {
       ...authHeader(),
       params: query,
@@ -149,8 +149,10 @@ class DrivingApi {
   };
 
   queryDrivingCenters = async (q) => {
-    const url = `${API_PATH}/center/query?${serializeQuery(q)}`;
-    return axiosClient.get(url);
+    const url = `${API_PATH}/center/query`;
+    return axiosClient.get(url, {
+      params: q,
+    });
   };
 
   updateDrivingCenter = async (_id, data) => {
