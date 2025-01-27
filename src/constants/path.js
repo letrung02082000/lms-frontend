@@ -31,6 +31,7 @@ export const PATH = {
     DRIVING_ADMIN: '/driving-admin',
     DRIVING: {
         ROOT: '/driving',
+        HOC_LAI_XE: '/hoc-lai-xe',
         TEST: '/driving-test',
         A1_TEST: '/driving-test/a1',
         A2_TEST: '/driving-test/a2',
@@ -38,6 +39,12 @@ export const PATH = {
         B2_TEST: '/driving-test/b2',
         REGISTRATION: '/driving-registration',
         INSTRUCTION: '/driving-instruction',
+        CENTER: {
+            REGISTRATION: '/driving/:shortName',
+            INSTRUCTION: '/driving/:shortName/instruction',
+            DANG_KY: '/hoc-lai-xe/:shortName',
+            HUONG_DAN: 'hoc-lai-xe/:shortName/huong-dan',
+        },
         HEALTH_CHECK: '/driving/health',
         ADMIN: {
             ROOT: '/driving/admin',
@@ -48,6 +55,7 @@ export const PATH = {
             C: '/driving/admin/c',
             B12: '/driving/admin/b12',
             DATE: '/driving/admin/date',
+            CENTER: '/driving/admin/center',
         },
     },
     UNIFORM: {

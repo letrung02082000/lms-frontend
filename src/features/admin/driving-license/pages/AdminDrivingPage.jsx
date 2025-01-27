@@ -293,7 +293,7 @@ function AdminDrivingA1Page() {
     portraitReader.readAsDataURL(portraitBlob);
     portraitReader.onloadend = () => {
       const portraitElement = document.getElementById(`portrait`);
-      portraitElement.src = portraitReader.result;
+      portraitElement.setAttribute('src', portraitReader.result);
       portraitElement.style.objectFit = 'contain';
       document.getElementById('portrait-link').href = portraitReader.result;
       portraitElement.height = 350;
@@ -306,7 +306,7 @@ function AdminDrivingA1Page() {
     frontReader.readAsDataURL(frontBlob);
     frontReader.onloadend = () => {
       const frontElement = document.getElementById(`front-card`);
-      frontElement.src = frontReader.result;
+      frontElement.setAttribute('src', frontReader.result);
       frontElement.style.objectFit = 'contain';
       document.getElementById('front-link').href = frontReader.result;
       frontElement.height = 250;
@@ -319,7 +319,7 @@ function AdminDrivingA1Page() {
     backReader.readAsDataURL(backBlob);
     backReader.onloadend = () => {
       const backElement = document.getElementById(`back-card`);
-      backElement.src = backReader.result;
+      backElement.setAttribute('src', backReader.result);
       backElement.style.objectFit = 'contain';
       document.getElementById('back-link').href = backReader.result;
       backElement.height = 250;

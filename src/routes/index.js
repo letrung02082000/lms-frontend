@@ -33,6 +33,8 @@ import MyStatisticsPage from 'features/app/pages/MyStatisticsPage';
 import AdminB12DrivingPage from 'features/admin/driving-license/pages/AdminB12DrivingPage';
 import AdminA1DrivingPage from 'features/admin/driving-license/pages/AdminA1DrivingPage';
 import AdminA2DrivingPage from 'features/admin/driving-license/pages/AdminA2DrivingPage';
+import AdminDrivingCenterPage from 'features/admin/driving-license/pages/AdminDrivingCenterPage';
+import CenterInstructionPage from 'features/driving-license/pages/CenterInstructionPage';
 
 const router = createBrowserRouter([
   {
@@ -162,6 +164,12 @@ const router = createBrowserRouter([
         </ServiceLayout>
       },
       {
+        path: PATH.DRIVING.HOC_LAI_XE,
+        element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
+          <DrivingRegisterPage />
+        </ServiceLayout>
+      },
+      {
         path: PATH.DRIVING.INSTRUCTION,
         element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
           <DrivingInstructionPage />
@@ -173,6 +181,31 @@ const router = createBrowserRouter([
           <DrivingRegisterPage />
         </ServiceLayout>
       },
+      {
+        path: PATH.DRIVING.CENTER.INSTRUCTION,
+        element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
+          <CenterInstructionPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.DRIVING.CENTER.REGISTRATION,
+        element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
+          <DrivingRegisterPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.DRIVING.CENTER.HUONG_DAN,
+        element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
+          <CenterInstructionPage />
+        </ServiceLayout>
+      },
+      {
+        path: PATH.DRIVING.CENTER.DANG_KY,
+        element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
+          <DrivingRegisterPage />
+        </ServiceLayout>
+      },
+      
       {
         path: PATH.GCN.ROOT,
         element: <GcnPage />
@@ -220,6 +253,10 @@ const router = createBrowserRouter([
           {
             path: PATH.DRIVING.ADMIN.DATE,
             element: <AdminDrivingDatePage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.CENTER,
+            element: <AdminDrivingCenterPage />,
           },
           {
             path: PATH.DRIVING.ADMIN.ROOT,

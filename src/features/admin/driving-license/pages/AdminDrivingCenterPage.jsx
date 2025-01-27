@@ -6,7 +6,7 @@ import { MdEdit, MdAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 
-function AdminDrivingDatePage() {
+function AdminDrivingCenterPage() {
   const userRole = JSON.parse(localStorage.getItem('user-info'))?.role;
   const [query, setQuery] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
@@ -15,18 +15,6 @@ function AdminDrivingDatePage() {
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
   const [groupLink, setGroupLink] = useState('');
-  const [drivingCenters, setDrivingCenters] = useState([]);
-  const [selectedCenter, setSelectedCenter] = useState('');
-  useEffect(() => {
-    drivingApi
-      .getDrivingCenter({ visible: true })
-      .then((res) => {
-        setDrivingCenters(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   const [colDefs] = useState([
     {
@@ -40,52 +28,43 @@ function AdminDrivingDatePage() {
       },
     },
     {
-      field: 'date',
-      headerName: 'Ngày thi',
-      flex: 1,
-      cellRenderer: (data) => {
-        return data.value
-          ? new Date(data.value).toLocaleDateString('en-GB')
-          : '';
-      },
+      field: 'name',
+      headerName: 'Tên',
+      flex: 6,
+      editable: true,
     },
-    ...(userRole === ROLE.ADMIN || userRole === ROLE.DRIVING.ADMIN
-      ? [
-          {
-            field: 'description',
-            headerName: 'Mô tả',
-            flex: 6,
-            editable: true,
-          },
-          {
-            field: 'link',
-            headerName: 'Nhóm thi',
-            editable: true,
-          },
-          {
-            field: 'center',
-            headerName: 'Trung tâm',
-            editable: false,
-            cellRenderer: (data) => {
-              return data?.value ? data.value.name : '';
-            },
-          },
-          {
-            field: 'formVisible',
-            headerName: 'Hiển thị trên website',
-            editable: true,
-          },
-          {
-            field: 'isVisible',
-            headerName: 'Hiển thị',
-            editable: true,
-          },
-        ]
-      : []),
+    {
+      field: 'description',
+      headerName: 'Mô tả',
+      flex: 6,
+      editable: true,
+    },
+    {
+      field: 'address',
+      headerName: 'Địa chỉ',
+      flex: 6,
+      editable: true,
+    },
+    {
+      field: 'priority',
+      headerName: 'Độ ưu tiên',
+      flex: 6,
+      editable: true,
+    },
+    {
+      field: 'formVisible',
+      headerName: 'Hiển thị trên website',
+      editable: true,
+    },
+    {
+      field: 'visible',
+      headerName: 'Hiển thị',
+      editable: true,
+    },
   ]);
 
-  const fetchDrivingDates = async () => {
-    drivingApi.getDrivingDate().then((res) => {
+  const fetchDrivingCenters = async () => {
+    drivingApi.getDrivingCenter().then((res) => {
       setRowData(res.data);
     }).catch((err) => {
       console.log(err);
@@ -93,7 +72,7 @@ function AdminDrivingDatePage() {
   }
 
   useEffect(() => {
-    fetchDrivingDates();
+    fetchDrivingCenters();
   }, [page, query]);
   
   const handleAddDateButton = async () => {
@@ -102,15 +81,14 @@ function AdminDrivingDatePage() {
       isVisible: true,
       description,
       link: groupLink,
-      center: selectedCenter,
     };
 
     drivingApi.addDrivingDate(body).then((res) => {
       toastWrapper('Thêm ngày thành công', 'success');
-      fetchDrivingDates();
+      fetchDrivingCenters();
       setShowAddModal(false);
     }).catch((err) => {
-      toastWrapper(err?.message, 'error');
+      toastWrapper(err.response.data.message, 'error');
     });
   }
 
@@ -119,11 +97,15 @@ function AdminDrivingDatePage() {
     const body = {
       description: data.description,
       formVisible: data.formVisible,
-      isVisible: data.isVisible,
-      link: data.link,
+      visible: data.visible,
+      priority: data.priority,
+      address: data.address,
+      name: data.name,
+      tel: data.tel,
+      zalo: data.zalo,
     };
 
-    drivingApi.updateDrivingDate(data?._id, body).then((res) => {
+    drivingApi.updateDrivingCenter(data?._id, body).then((res) => {
       toastWrapper('Cập nhật thành công', 'success');
     }).catch((err) => {
       toastWrapper(err.response.data.message, 'error');
@@ -181,21 +163,6 @@ function AdminDrivingDatePage() {
                 </Row>
                 <Row>
                   <Col>
-                    <Form.Select
-                      className='mb-3'
-                      onChange={(e) => setSelectedCenter(e.target.value)}
-                    >
-                      <option>Chọn trung tâm</option>
-                      {drivingCenters.map((center) => (
-                        <option key={center._id} value={center._id}>
-                          {center.name}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
                     <FormControl
                       className='mb-3'
                       type='text'
@@ -212,7 +179,7 @@ function AdminDrivingDatePage() {
               </Button>
             </Modal.Footer>
           </Modal>
-          <Button
+          {/* <Button
             className='rounded-circle'
             style={{
               width: '50px',
@@ -225,11 +192,11 @@ function AdminDrivingDatePage() {
             onClick={() => setShowAddModal(true)}
           >
             <MdAdd />
-          </Button>
+          </Button> */}
         </>
       )}
     </div>
   );
 }
 
-export default AdminDrivingDatePage;
+export default AdminDrivingCenterPage;

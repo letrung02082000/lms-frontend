@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import DrivingApi from "api/drivingApi";
 import { formatCurrency } from "utils/commonUtils";
 import { Button, Col, Form, FormControl, Image, Modal, Row } from "react-bootstrap";
@@ -6,7 +6,7 @@ import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
-import { MdLink, MdMoreVert, MdOutlineQuickreply, MdPhone, MdRotateLeft, MdWeb } from "react-icons/md";
+import { MdMoreVert, MdOutlineQuickreply, MdPhone, MdRotateLeft, MdWeb } from "react-icons/md";
 import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, IDENTITY_CARD_TYPE, PAYMENT_METHODS, PAYMENT_METHODS_LABEL } from "./constant";
 import * as faceapi from '@vladmandic/face-api';
 import { Jimp } from 'jimp';
@@ -14,13 +14,70 @@ import moment from 'moment'
 import { FaQrcode } from "react-icons/fa";
 import QRCode from "react-qr-code";
 import ZaloImage from "assets/images/ZaloImage";
-import { IoIosCloseCircle, IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
+import { IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
-import { CiGlobe } from "react-icons/ci";
 import ocrApi from "api/ocrApi";
 import AccountInfo from "./components/AccountInfo";
+import { Page, View, Document, StyleSheet, Text, Image as PDFImage, Svg, Path, usePDF, pdf } from '@react-pdf/renderer';
+import { genergateDrivingQuickMessage } from "utils/message.utils";
 
 function Driving(props) {
+  const styles = StyleSheet.create({
+    page: {
+      flexDirection: 'row',
+    },
+    imageSection: {
+      margin: 15,
+      padding: 15,
+      flexGrow: 1
+    },
+    qrSection: {
+      margin: 15,
+      padding: 15,
+      flexGrow: 1,
+      height: '30%',
+      justifyContent: 'center',
+    },
+  });
+
+  const printDrivingDocument = (type = 'print') => {
+    const qrCodeData = document.getElementById('driving-qr-code')?.getElementsByTagName('path');
+    const MyDoc = (<Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.imageSection}>
+          <PDFImage width='100%' src={`data:image/jpeg;base64,${identityImage?.image[1]}`} />
+        </View>
+        <View style={styles.imageSection}>
+          <PDFImage width='100%' src={`data:image/jpeg;base64,${identityImage?.image[0]}`} />
+        </View>
+      </Page>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.qrSection}>
+          <Svg width='45' height='45' viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+            <Path fill="#FFFFFF" d={qrCodeData?.[0].getAttribute('d')}>
+            </Path>
+            <Path fill="#000000" d={qrCodeData?.[1].getAttribute('d')}>
+            </Path>
+          </Svg>
+        </View>
+      </Page>
+    </Document>);
+    pdf(MyDoc).toBlob().then(blob => {
+      if (type === 'download') {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${name}_${tel}_${new Date(date).toLocaleDateString('en-GB')}.pdf`;
+        a.click();
+      } else {
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+      }
+    }).catch(e => {
+      console.log(e);
+    });
+  }
+
   faceapi.env.monkeyPatch({
     Canvas: HTMLCanvasElement,
     Image: HTMLImageElement,
@@ -67,8 +124,8 @@ function Driving(props) {
   const [clipping, setClipping] = useState(false);
   const [cropping, setCropping] = useState(false);
   const [extracting, setExtracting] = useState(false);
-  const [identityInfo, setIdentityInfo] = useState({_id: props?.info?.identityInfo || null, info: []});
-  const [identityImage, setIdentityImage] = useState({_id: props?.info?.identityInfo || null, image: []});
+  const [identityInfo, setIdentityInfo] = useState({ _id: props?.info?.identityInfo || null, info: [] });
+  const [identityImage, setIdentityImage] = useState({ _id: props?.info?.identityInfo || null, image: [] });
   const [showIdentityInfo, setShowIdentityInfo] = useState(false);
   const [showQrCode, setShowQrCode] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
@@ -88,38 +145,36 @@ function Driving(props) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [transactionId, setTransactionId] = useState(props?.info?.transactionId || null);
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS_LABEL[props?.info?.paymentMethod] ? props?.info?.paymentMethod : PAYMENT_METHODS.BANK_TRANSFER);
-  const QUICK_MESSAGE = `Chào bạn ${name}, mình gửi bạn nhóm thi ${dateInfo?.description}. Bạn vui lòng tham gia nhóm thi tại ${dateInfo?.link} để nhận thông báo dự thi.${isPaid ? '' : ' Nếu chưa hoàn tất lệ phí, bạn vui lòng thanh toán theo hướng dẫn tại website https://isinhvien.vn/driving-instruction trong hôm nay để đủ điều kiện dự thi.'} Cảm ơn bạn.`;
-  console.log(paymentMethod)
-  // useEffect(() => {
-  //   const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
-  //   const today = new Date();
+  const QUICK_MESSAGE = genergateDrivingQuickMessage(name, dateInfo, isPaid);
 
-  //   if (identityInfo?.length > 0) {
-  //     if (today.getFullYear() - dob.getFullYear() === 18) {
-  //       if (today.getMonth() - dob.getMonth() > 0) {
-  //         setIsValidDob(true);
-  //       }
+  useEffect(() => {
+    const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
+    const today = new Date();
 
-  //       if (today.getMonth() - dob.getMonth() === 0) {
-  //         if (today.getDate() - dob.getDate() >= 0) {
-  //           setIsValidDob(true);
-  //         } else {
-  //           setIsValidDob(false);
-  //         }
-  //       }
+    if (identityInfo?.length > 0) {
+      if (today.getFullYear() - dob.getFullYear() === 18) {
+        if (today.getMonth() - dob.getMonth() > 0) {
+          setIsValidDob(true);
+        }
 
-  //       if (today.getMonth() - dob.getMonth() < 0) {
-  //         setIsValidDob(false);
-  //       }
-  //     } else if (today.getFullYear() - dob.getFullYear() < 18) {
-  //       setIsValidDob(false);
-  //     } else {
-  //       setIsValidDob(true);
-  //     }
-  //   }
-  // }, [identityInfo]);
+        if (today.getMonth() - dob.getMonth() === 0) {
+          if (today.getDate() - dob.getDate() >= 0) {
+            setIsValidDob(true);
+          } else {
+            setIsValidDob(false);
+          }
+        }
 
-  console.log(paymentMethod)
+        if (today.getMonth() - dob.getMonth() < 0) {
+          setIsValidDob(false);
+        }
+      } else if (today.getFullYear() - dob.getFullYear() < 18) {
+        setIsValidDob(false);
+      } else {
+        setIsValidDob(true);
+      }
+    }
+  }, [identityInfo]);
 
   useEffect(() => {
     if (imageVisible) {
@@ -340,11 +395,11 @@ function Driving(props) {
 
   const handleUpdateButton = (id, data, type) => {
     DrivingApi.updateDriving(id, data).then(res => {
-      if(type === 'portrait') {
+      if (type === 'portrait') {
         fetchPortrait(res?.data?.portraitUrl);
-      } else if(type === 'front') {
+      } else if (type === 'front') {
         fetchFront(res?.data?.frontUrl);
-      } else if(type === 'back') {
+      } else if (type === 'back') {
         fetchBack(res?.data?.backUrl);
       }
 
@@ -391,15 +446,14 @@ function Driving(props) {
   const handleShowIdentityInfo = () => {
     setShowIdentityInfo(true);
     ocrApi.getOcrInfo(identityInfo?._id).then(res => {
+      console.log(res.data);
       setIdentityInfo(res?.data);
     }).catch(e => {
-      console.log(e);
       setIdentityInfo({ _id: null, info: [] });
     });
     ocrApi.getOcrImage(identityInfo?._id).then(res => {
       setIdentityImage(res?.data);
     }).catch(e => {
-      console.log(e);
       setIdentityImage({ _id: null, image: [] });
     });
   }
@@ -441,9 +495,9 @@ function Driving(props) {
             </Col>
             <Col xs={3}>
               <div className="d-flex align-items-center mb-3">
-                <div><IoMdPhonePortrait/></div>
+                <div><IoMdPhonePortrait /></div>
                 <span className="ms-3">{tel}</span>
-                <a className="btn btn-outline-primary ms-3" href={TEL_LINK} target="_blank" rel='noopener noreferrer'><MdPhone/></a>
+                <a className="btn btn-outline-primary ms-3" href={TEL_LINK} target="_blank" rel='noopener noreferrer'><MdPhone /></a>
                 <Button variant="outline-primary" className="ms-3" onClick={() => {
                   setShowQrCode(true);
                   setQrData({
@@ -454,9 +508,9 @@ function Driving(props) {
                 <CopyToClipboardButton value={tel} className='btn btn-outline-primary ms-3' />
               </div>
               <div className="d-flex align-items-center mb-3">
-                <div><ZaloImage width='1em' height='1em'/></div>
+                <div><ZaloImage width='1em' height='1em' /></div>
                 <span className='ms-3'>{zalo}</span>
-                <a className="btn btn-outline-primary ms-3"a href={ZALO_LINK} target="_blank" rel='noopener noreferrer'><IoMdGlobe/></a>
+                <a className="btn btn-outline-primary ms-3" a href={ZALO_LINK} target="_blank" rel='noopener noreferrer'><IoMdGlobe /></a>
                 <Button variant="outline-primary" className="ms-3" onClick={() => {
                   setShowQrCode(true);
                   setQrData({
@@ -481,7 +535,7 @@ function Driving(props) {
                 className="w-100 mb-2"
                 type="switch"
                 checked={sent}
-                onClick={handleMessageSent} />
+                onChange={handleMessageSent} />
             </Col>
             <Col xs={2} className="text-center">
               <p className="mb-2">
@@ -490,9 +544,10 @@ function Driving(props) {
               <p className="fw-bold">{formatCurrency(cash)} VNĐ</p>
             </Col>
             <Col xs={1} className="text-center">
-              <p className="mb-2">
-                {isPaid ? 'Đã' : 'Chưa'} thanh toán
-              </p>
+              {isPaid ? <p className="mb-2 text-success">
+                Đã thanh toán
+              </p> : <p className="mb-2 text-danger">Chưa thanh toán</p>}
+
               {isPaid ? <Button variant="outline-primary" onClick={handlePaidButton}>Hiện mã</Button> : <Form.Check
                 className="w-100"
                 type="switch"
@@ -573,7 +628,8 @@ function Driving(props) {
             </div>
           </div>
           <div className="d-flex justify-content-end align-items-center mt-2">
-            {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc CCCD' : 'Trích xuất CCCD'}</Button>)}
+            {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang trích xuất' : 'Trích xuất CCCD'}</Button>)}
+            {DRIVING_STATE.APPROVED !== processState && identityInfo?._id && <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button>}
             <Button className="ms-2" variant="outline-primary" onClick={() => setImageVisible(true)}>Xem ảnh hồ sơ</Button>
           </div>
         </Col>
@@ -623,18 +679,29 @@ function Driving(props) {
           <Modal.Title>Thông tin trích xuất</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT &&
+          {identityInfo?.frontType &&
             <Row>
-              <Col xs={6}><div>
-                <p>Họ tên: <b>{identityInfo?.info[1]?.name}</b></p>
-                <p>Ngày sinh: <b>{identityInfo?.info[1]?.dob}</b></p>
-                <p>Số CCCD: <b>{identityInfo?.info[1]?.id}</b></p>
-                <p>Địa chỉ: <b>{identityInfo?.info[1]?.address}</b></p>
-                <p>Giới tính: <b>{identityInfo?.info[1]?.gender}</b></p>
-                <p>Ngày cấp: <b>{identityInfo?.info[0]?.issue_date}</b></p>
-                <p>Nơi cấp: <b>{identityInfo?.info[0]?.issued_at}</b></p>
-                <p>Ngày hết hạn: <b>{identityInfo?.info[0]?.due_date}</b></p>
-              </div>
+              <Col xs={6}>
+                <Row>
+                  <Col>
+                    <p>Họ tên: <b>{identityInfo?.info[1]?.name}</b></p>
+                    <p>Ngày sinh: <b>{identityInfo?.info[1]?.dob}</b></p>
+                    <p>Số CCCD: <b>{identityInfo?.info[1]?.id}</b></p>
+                    <p>Giới tính: <b>{identityInfo?.info[1]?.gender}</b></p>
+                  </Col>
+                  <Col xs={3}>
+                    <QRCode value={tel} size={60} id='driving-qr-code' />
+                  </Col>
+                </Row>
+                <Row>
+                  {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT && <p>Địa chỉ: <b>{identityInfo?.info[1]?.address}</b></p>}
+                  {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_2024_FRONT && <p>Địa chỉ: <b>{identityInfo?.info[0]?.address}</b></p>}
+                  <p>Ngày cấp: <b>{identityInfo?.info[0]?.issue_date}</b></p>
+                  <p>Nơi cấp: <b>{identityInfo?.info[0]?.issued_at}</b></p>
+                  <p>Ngày hết hạn: <b>{identityInfo?.info[0]?.due_date}</b></p>
+                </Row>
+                <Button variant="outline-primary" onClick={() => printDrivingDocument('download')}>Tải hồ sơ</Button>
+                <Button className="ms-3" onClick={printDrivingDocument}>In hồ sơ</Button>
               </Col>
               <Col xs={6}>
                 <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[1]}`} />
@@ -644,28 +711,6 @@ function Driving(props) {
               </Col>
             </Row>
           }
-          {identityInfo?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_2024_FRONT &&
-            <Row>
-              <Col xs={6}><div>
-                <p>Họ tên: <b>{identityInfo?.info[1]?.name}</b></p>
-                <p>Ngày sinh: <b>{identityInfo?.info[1]?.dob}</b></p>
-                <p>Số CCCD: <b>{identityInfo?.info[1]?.id}</b></p>
-                <p>Địa chỉ: <b>{identityInfo?.info[0]?.address}</b></p>
-                <p>Giới tính: <b>{identityInfo?.info[1]?.gender}</b></p>
-                <p>Ngày cấp: <b>{identityInfo?.info[0]?.issue_date}</b></p>
-                <p>Nơi cấp: <b>{identityInfo?.info[0]?.issued_at}</b></p>
-                <p>Ngày hết hạn: <b>{identityInfo?.info[0]?.due_date}</b></p>
-              </div>
-              </Col>
-              <Col xs={6}>
-                <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[1]}`} />
-                <p className="text-center my-3">Mặt trước</p>
-                <Image width='100%' src={`data:image/jpeg;base64,${identityImage?.image[0]}`} />
-                <p className="text-center my-3">Mặt sau</p>
-              </Col>
-            </Row>
-          }
-
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-primary" onClick={() => setShowIdentityInfo(false)}>
@@ -687,7 +732,7 @@ function Driving(props) {
                   download={`${name}-${tel}-portrait.jpg`}
                 >
                   {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                  <img id={`portrait_${_id}`} width='100%'  height='fit-content' objectFit='contain'/>
+                  <img id={`portrait_${_id}`} width='100%' height='fit-content' objectFit='contain' />
                 </a>
                 {portraitClip && <a
                   href={portraitClip}
@@ -727,7 +772,7 @@ function Driving(props) {
                     download={`${name}-${tel}-front.jpg`}
                   >
                     {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`front_${_id}`} width='100%' height='fit-content' objectFit='contain'/>
+                    <img id={`front_${_id}`} width='100%' height='fit-content' objectFit='contain' />
                   </a>
                 </div>
                 <div className="d-flex justify-content-center mb-2">
@@ -748,7 +793,7 @@ function Driving(props) {
                     download={`${name}-${tel}-back.jpg`}
                   >
                     {backLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`back_${_id}`} width='100%' height='fit-content' objectFit='contain'/>
+                    <img id={`back_${_id}`} width='100%' height='fit-content' objectFit='contain' />
                   </a>
                 </div>
                 <div className="d-flex justify-content-center mb-2">
@@ -777,6 +822,7 @@ function Driving(props) {
         <Modal.Body>
           <Row>
             <QRCode value={qrData?.value} />
+            <a href={qrData?.value} target="_blank" rel="noopener noreferrer" className="text-center mt-3">{qrData?.value}</a>
           </Row>
         </Modal.Body>
         <Modal.Footer>
@@ -830,7 +876,7 @@ function Driving(props) {
                 })}
               </Form.Select>
               <p>Mã giao dịch</p>
-              <FormControl disabled={isPaid} type="text" onChange={(e) => setTransactionId(e.target.value?.toUpperCase()?.trim())} className="w-100" placeholder="Nhập mã giao dịch" value={transactionId}/>
+              <FormControl disabled={isPaid} type="text" onChange={(e) => setTransactionId(e.target.value?.toUpperCase()?.trim())} className="w-100" placeholder="Nhập mã giao dịch" value={transactionId} />
               <Form.Text className="text-warning d-block">Mã hoá đơn là duy nhất và không được thay đổi sau khi cập nhật.</Form.Text>
               {!isPaid && <Button className="mt-3" variant="primary" onClick={updateTransaction}>Xác nhận</Button>}
             </Col>

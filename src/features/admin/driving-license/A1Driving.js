@@ -1,31 +1,72 @@
 import React, { useState, useEffect } from "react";
 import Driving from "./Driving";
-import {
-  Menu,
-  MenuItem,
-  ProSidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SubMenu,
-} from "react-pro-sidebar";
 import { updateDrivingData } from "../../../store/drivingAdminSlice";
 import { useDispatch } from "react-redux";
-
+import Select from 'react-select'
 import DrivingApi from "api/drivingApi";
-import { Button } from "react-bootstrap";
-import { DRIVING_STATE, DRIVING_STATE_LABEL } from "./constant";
+import { Button, Form, Modal } from "react-bootstrap";
+import { DOWNLOAD_FILE_FIELDS, DOWNLOAD_FILE_FIELDS_LABEL, DOWNLOAD_OPTIONS, DOWNLOAD_OPTIONS_LABEL, DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE, EXPORT_EXCEL_FIELDS, EXPORT_EXCEL_FIELDS_LABEL, EXPORT_EXCEL_OPTIONS, EXPORT_EXCEL_OPTIONS_LABEL, EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE, IDENTITY_CARD_TYPE, PAYMENT_METHODS } from "./constant";
+import { MdDownload } from "react-icons/md";
+import ocrApi from "api/ocrApi";
+import { Document, Page, View, Image as PDFImage, Svg, Path, StyleSheet, pdf } from "@react-pdf/renderer";
+import QRCode from "react-qr-code";
+import ReactDOMServer from 'react-dom/server';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+import JSZip from 'jszip';
+import _ from "lodash";
 
 function A1Driving() {
+  const [loadingAction, setLoadingAction] = useState(0);
+  const [exportExcelFields, setExportExcelFields] = useState(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
+  const [downloadFileFields, setDownloadFileFields] = useState({
+    [DOWNLOAD_FILE_FIELDS.CARD]: false,
+    [DOWNLOAD_FILE_FIELDS.CARD_CROP]: false,
+    [DOWNLOAD_FILE_FIELDS.PORTRAIT]: true,
+    [DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP]: false,
+  });
+  const [exportExcelOption, setExportExcelOption] = useState({
+    value: EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL,
+    label: EXPORT_EXCEL_OPTIONS_LABEL[EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL],
+  });
+  const styles = StyleSheet.create({
+    imagePage: {
+      flexDirection: 'column',
+      marginVertical: 15,
+      marginHorizontal: 5,
+    },
+    qrPage: {
+      flexDirection: 'column',
+      marginVertical: 15,
+      marginHorizontal: 10,
+    },
+    imageGroupSection: {
+      height: '19%',
+      flexDirection: 'row',
+      margin: 15,
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      flexGrow: 1,
+      paddingHorizontal: 15,
+    },
+    qrSection: {
+      margin: 15,
+      paddingBottom: 15,
+      height: '19%',
+      justifyContent: 'flex-end',
+    },
+  });
+
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [dates, setDates] = useState([]);
   const [dateSelected, setDateSelected] = useState(null);
   const [state, setState] = useState(DRIVING_STATE.CREATED);
-  const [image, setImage] = useState(null);
-  const [isAll, setIsAll] = useState(false);
-  const [count, setCount] = useState(0);
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [action, setAction] = useState(DOWNLOAD_OPTIONS.EXPORT_EXCEL);
 
   const checkDuplicate = (data) => {
     const newData = data.map((child) => {
@@ -116,7 +157,6 @@ function A1Driving() {
 
   const handleDateButton = async (index) => {
     setLoading(true);
-    setIsAll(false);
 
     if (index === null) {
       await queryDrivings(null, state);
@@ -128,51 +168,277 @@ function A1Driving() {
   };
 
   const handleStateButton = async (value) => {
-    setIsAll(false);
     setLoading(true);
     setState(value);
     await queryDrivings(dateSelected, value);
   };
 
-  const showImage = (image) => {
-    setImage(image);
-  };
+  const handleActionButton = () => {
+    if (action === DOWNLOAD_OPTIONS.DOWNLOAD_PDF) {
+      downloadPDF();
+    } else if (action === DOWNLOAD_OPTIONS.EXPORT_EXCEL) {
+      exportExcel();
+    } else if (action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE) {
+      if (downloadFileFields[DOWNLOAD_FILE_FIELDS.CARD]) {
+        zipFile(data, DOWNLOAD_FILE_FIELDS.CARD);
+      }
 
-  const hideImage = (image) => {
-    setImage(null);
-  };
+      if (downloadFileFields[DOWNLOAD_FILE_FIELDS.CARD_CROP]) {
+        zipFile(data, DOWNLOAD_FILE_FIELDS.CARD_CROP);
+      }
 
-  const countDrivings = async () => {
-    DrivingApi
-      .countDrivings(state)
-      .then((res) => {
-        setCount(res.data);
-      })
-      .catch((error) => {
-        alert(error.toString());
+      if (downloadFileFields[DOWNLOAD_FILE_FIELDS.PORTRAIT]) {
+        zipFile(data, DOWNLOAD_FILE_FIELDS.PORTRAIT);
+      }
+    }
+  }
+
+  const exportExcel = async () => {
+    let exportData = [], idx = 0, identityInfo, detailAddress, addressTownCode, address, dob, identityNumber;
+    for (let child of data) {
+      ++idx;
+      setLoadingAction(idx);
+      let invalidState = 'Hồ sơ hợp lệ', paymentMethod = '';
+
+      if (exportExcelFields[EXPORT_EXCEL_FIELDS.INVALID_STATE]) {
+        if (child?.invalidCard && child?.invalidPortrait) {
+          invalidState = 'Căn cước và chân dung không hợp lệ';
+        } else if (child?.invalidPortrait) {
+          invalidState = 'Ảnh chân dung không hợp lệ';
+        } else if (child?.invalidCard) {
+          invalidState = 'Căn cước không hợp lệ';
+        }
+      }
+
+      if (exportExcelFields[EXPORT_EXCEL_FIELDS.PAYMENT_METHOD]) {
+        if (child?.paymentMethod === PAYMENT_METHODS.BANK_TRANSFER) {
+          paymentMethod = 'Chuyển khoản';
+        } else if (child?.paymentMethod === PAYMENT_METHODS.DIRECT) {
+          paymentMethod = 'Tiền mặt';
+        }
+      }
+
+      if (child?.identityInfo && (exportExcelFields[EXPORT_EXCEL_FIELDS.DOB] || exportExcelFields[EXPORT_EXCEL_FIELDS.GENDER] || exportExcelFields[EXPORT_EXCEL_FIELDS.IDENTITY_CARD_NUMBER] || exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS] || exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS_TOWN_CODE] || exportExcelFields[EXPORT_EXCEL_FIELDS.DETAIL_ADDRESS] || exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_DATE] || exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_PLACE])) {
+        try {
+          const res = await ocrApi.getOcrInfo(child?.identityInfo);
+          identityInfo = res?.data?.info;
+          address = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address : identityInfo[0]?.address;
+          addressTownCode = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address_ward_code : identityInfo[0]?.address_ward_code;
+          detailAddress = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address?.split(identityInfo[1]?.address_ward)[0] : identityInfo[0]?.address?.split(identityInfo[1]?.address_ward)[0];
+          dob = identityInfo[1]?.dob === identityInfo[0]?.dob ? identityInfo[1]?.dob : 'Ngày sinh không khớp trên 2 mặt căn cước';
+          identityNumber = identityInfo[1]?.id === identityInfo[0]?.person_number ? identityInfo[1]?.id : 'Số căn cước không khớp trên 2 mặt căn cước';
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      const temp = {
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.NO] && { STT: idx }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.TIMESTAMP] && { 'Thời gian đăng ký': new Date(child?.createdAt).toLocaleString('en-GB') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.FULL_NAME] && { 'Họ và tên': child?.name }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.LAST_NAME] && { 'Họ và tên đệm': child?.name?.trim()?.split(' ')?.slice(0, -1)?.join(' ') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.FIRST_NAME] && { 'Tên': child?.name?.trim()?.split(' ')?.slice(-1)?.join(' ') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.DRIVING_DATE] && { 'Ngày thi': new Date(child?.date).toLocaleDateString('en-GB') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.DRIVING_TYPE] && { 'Hạng thi': DRIVING_TYPE_LABEL[child?.drivingType] }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PHONE_NUMBER] && { 'Số điện thoại': [child?.tel?.trim()?.slice(0, 4), child?.tel?.trim()?.slice(4, 7), child?.tel?.trim()?.slice(7)].join(' ') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.ZALO] && { 'Zalo': [child?.zalo?.trim()?.slice(0, 4), child?.zalo?.trim()?.slice(4, 7), child?.zalo?.trim()?.slice(7)].join(' ') }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.HIDDEN_PHONE_NUMBER] && { 'Số điện thoại (đã ẩn)': child?.tel?.slice(0, 4) + '***' + child?.tel?.slice(-3) }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PROCESS_STATE] && { 'Trạng thái xử lý': DRIVING_STATE_LABEL[child?.processState] }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.INVALID_STATE] && { 'Trạng thái hồ sơ': invalidState }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PAYMENT_STATE] && { 'Trạng thái thanh toán': child?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán' }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PAYMENT_AMOUNT] && { 'Số tiền': child?.cash }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PAYMENT_METHOD] && { 'Phương thức thanh toán': paymentMethod }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.NOTE] && { 'Ghi chú': child?.feedback }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.PORTRAIT_URL] && { 'Ảnh chân dung': child?.portraitUrl }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.FRONT_URL] && { 'Ảnh căn cước mặt trước': child?.frontUrl }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.BACK_URL] && { 'Ảnh căn cước mặt sau': child?.backUrl }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.DOB] && { 'Ngày sinh': dob }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.GENDER] && { 'Giới tính': identityInfo && identityInfo[1]?.gender }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.IDENTITY_CARD_NUMBER] && { 'Số căn cước': identityNumber }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS] && { 'Địa chỉ': address }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS_TOWN_CODE] && { 'Mã xã/phường': addressTownCode }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.DETAIL_ADDRESS] && { 'Địa chỉ chi tiết': detailAddress }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_DATE] && { 'Ngày cấp': identityInfo && identityInfo[0]?.issue_date }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_PLACE] && { 'Nơi cấp': identityInfo && identityInfo[0]?.issued_at }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.HEALTH_CHECKED_DATE] && { 'Ngày khám sức khỏe': child?.healthDate ? new Date(child?.healthDate).toLocaleString('en-GB') : '' }),
+      };
+
+      exportData.push(temp);
+    }
+
+    setLoadingAction(0);
+
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const excelData = new Blob([excelBuffer], { type: fileType });
+    const fileName = `${EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL ? 'DS_THI' : (EXPORT_EXCEL_OPTIONS.EXPORT_INPUT_EXCEL ? 'DS_NHAP' : '')}_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${exportData?.length}`;
+    FileSaver.saveAs(excelData, fileName + fileExtension)
+  }
+
+  const downloadPDF = async () => {
+    let pdfData = [], pdfElements = [];
+    const perPage = 4;
+    let count = 0, idx = 0;
+
+    for (let child of data) {
+      if (child?.identityInfo) {
+        setLoadingAction(idx);
+        const ocrData = await ocrApi.getOcrImage(child.identityInfo);
+        const qrCodeString = ReactDOMServer.renderToString(<QRCode value={child?.tel} size={45} />)
+        const qrCodeData = new DOMParser().parseFromString(qrCodeString, 'image/svg+xml').getElementsByTagName('path');
+
+        if (count < perPage) {
+          pdfElements.push({
+            tel: child.tel,
+            image: ocrData?.data?.image,
+            qrCodeData,
+          });
+        } else {
+          pdfData.push(pdfElements);
+          pdfElements = [];
+          pdfElements.push({
+            tel: child.tel,
+            image: ocrData?.data?.image,
+            qrCodeData,
+          });
+          count = 0;
+        }
+
+        count++;
+        ++idx;
+      }
+    }
+
+    pdfData.push(pdfElements);
+
+    const MyDoc = (<Document>
+      {pdfData.map((child) => (
+        <React.Fragment key={_.uniqueId()}>
+          <Page size="A4" style={styles.imagePage}>
+            {
+              child.map((element) => {
+                return (
+                  <View style={styles.imageGroupSection}>
+                    <PDFImage style={styles.image} src={`data:image/jpeg;base64,${element?.image?.[1]}`} />
+                    <PDFImage style={styles.image} src={`data:image/jpeg;base64,${element?.image?.[0]}`} />
+                  </View>
+                );
+              })
+            }
+          </Page>
+          <Page size="A4" style={styles.qrPage}>
+            {
+              child.map((element) => {
+                return (
+                  <View style={styles.qrSection}>
+                    <Svg width='45' height='45' viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+                      <Path fill="#FFFFFF" d={element?.qrCodeData?.[0].getAttribute('d')}>
+                      </Path>
+                      <Path fill="#000000" d={element?.qrCodeData?.[1].getAttribute('d')}>
+                      </Path>
+                    </Svg>
+                  </View>
+                );
+              })
+            }
+          </Page>
+        </React.Fragment>
+      ))}
+    </Document>);
+    pdf(MyDoc).toBlob().then(blob => {
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    }).catch(e => {
+      console.log(e);
+    }).finally(() => {
+      setLoadingAction(0);
+    });
+  }
+
+  const zipFile = async (data, type) => {
+    if (type === DOWNLOAD_FILE_FIELDS.CARD) {
+      const frontZip = new JSZip()
+
+      for (let drivingInfo of data) {
+        setLoadingAction(prev => prev + 1);
+
+        if (drivingInfo?.frontUrl) {
+          const fileMimeType = drivingInfo.frontUrl.split('.').pop();
+          const frontResponse = await fetch(drivingInfo.frontUrl);
+          const frontBlob = await frontResponse.blob();
+          frontZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, frontBlob, { binary: true });
+        }
+      }
+
+      frontZip.generateAsync({ type: "blob" }).then(function (content) {
+        FileSaver.saveAs(content, `front_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${data.length}.zip`);
       });
-  };
 
-  const getAllDrivings = async (state) => {
-    DrivingApi
-      .getAllDrivings(state)
-      .then((res) => {
-        const newData = checkDuplicate(res.data);
-        setData(newData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        alert(error);
-        setLoading(false);
+      const backZip = new JSZip()
+
+      for (let drivingInfo of data) {
+        setLoadingAction(prev => prev + 1);
+
+        if (drivingInfo.backUrl) {
+          const fileMimeType = drivingInfo.backUrl.split('.').pop();
+          const backResponse = await fetch(drivingInfo.backUrl);
+          const backBlob = await backResponse.blob();
+          backZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, backBlob, { binary: true });
+        }
+      }
+
+      backZip.generateAsync({ type: "blob" }).then(function (content) {
+        FileSaver.saveAs(content, `back_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${data.length}.zip`);
       });
-  };
+    }
 
-  const handleAllDatesButton = async () => {
-    setLoading(true);
-    setIsAll(true);
-    setDateSelected(null);
-    await queryDrivings(null, null);
-  };
+    if (type === DOWNLOAD_FILE_FIELDS.PORTRAIT) {
+      const portraitZip = new JSZip()
+
+      for (let drivingInfo of data) {
+        setLoadingAction(prev => prev + 1);
+
+        if (drivingInfo.portraitUrl) {
+          const fileMimeType = drivingInfo.portraitUrl.split('.').pop();
+          const portraitResponse = await fetch(drivingInfo.portraitUrl);
+          const portraitBlob = await portraitResponse.blob();
+          portraitZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, portraitBlob, { binary: true });
+        }
+      }
+
+      portraitZip.generateAsync({ type: "blob" }).then(function (content) {
+        FileSaver.saveAs(content, `portrait_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${data.length}.zip`);
+      });
+    }
+
+    if (type === DOWNLOAD_FILE_FIELDS.CARD_CROP) {
+      const frontCropZip = new JSZip()
+      const backCropZip = new JSZip()
+
+      for (let drivingInfo of data) {
+        setLoadingAction(prev => prev + 1);
+
+        if (drivingInfo?.identityInfo) {
+          const frontFileName = `${drivingInfo.name}-${drivingInfo.tel}-1.jpg`;
+          const backFileName = `${drivingInfo.name}-${drivingInfo.tel}-2.jpg`;
+          const { data: identityInfo } = await ocrApi.getOcrImage(drivingInfo.identityInfo);
+          frontCropZip.file(frontFileName, identityInfo?.image[1], { base64: true });
+          backCropZip.file(backFileName, identityInfo?.image[0], { base64: true });
+        }
+      }
+
+      frontCropZip.generateAsync({ type: "blob" }).then(function (content) {
+        FileSaver.saveAs(content, `front-crop_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${data.length}.zip`);
+      });
+      backCropZip.generateAsync({ type: "blob" }).then(function (content) {
+        FileSaver.saveAs(content, `back-crop_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${data.length}.zip`);
+      });
+    }
+    setLoadingAction(0);
+  }
 
   return (
     <>
@@ -181,38 +447,38 @@ function A1Driving() {
           return (
             <Button
               variant={dateSelected === index ? "primary" : "text-secondary"}
-              className="mx-2 my-1 rounded-pill border-primary border-2 px-2 py-1"
+              className="mx-2 my-1 rounded-pill border-primary px-2 py-1 form-label"
               onClick={() => handleDateButton(index)}
               key={child._id}
-              style={{ width: '100px' }}
+              style={{ minWidth: '100px' }}
             >
               <span>{child.date.toLocaleDateString('en-GB')}</span>
             </Button>
           );
         })}
       </div>
-      <p className="text-center my-1">Tổng cộng: {data.length} hồ sơ</p>
-      <div className='d-flex justify-content-center pb-2'>
+      <div className='my-3 d-flex justify-content-center'>
         <Button
-          className="mx-2"
+          className="mx-1"
           onClick={() => handleStateButton(null)}
           variant={state === null ? 'primary' : 'outline-primary'}
         >
-          Tất cả
+          Tất cả {state === null ? `(${data.length})` : ''}
         </Button>
 
         {Object.keys(DRIVING_STATE).map((key) => {
           return (
             <Button
-              className="mx-2"
+              className="mx-1"
               onClick={() => handleStateButton(DRIVING_STATE[key])}
               variant={state === DRIVING_STATE[key] ? 'primary' : 'outline-secondary'}
               key={key}
             >
-              {DRIVING_STATE_LABEL[DRIVING_STATE[key]]}
+              {DRIVING_STATE_LABEL[DRIVING_STATE[key]]} {state === DRIVING_STATE[key] ? `(${data.length})` : ''}
             </Button>
           );
         })}
+        <Button className="mx-1" onClick={() => setShowActionModal(true)}><MdDownload /> Tải xuống</Button>
       </div>
 
       {data.length <= 0 && !loading && <p className="text-center mt-5">Không có dữ liệu</p>}
@@ -228,12 +494,79 @@ function A1Driving() {
                 dateList={dates}
                 key={child._id}
                 id={child._id}
-                showImage={showImage}
               />
             );
           })}
         </div>
       )}
+
+      <Modal show={showActionModal} onHide={() => setShowActionModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Chọn thao tác</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Select
+            onChange={(e) => setAction(e.value)}
+            options={Object.keys(DOWNLOAD_OPTIONS_LABEL).map((key) => {
+              return {
+                value: key,
+                label: DOWNLOAD_OPTIONS_LABEL[key],
+              };
+            })}
+            defaultValue={{
+              value: DOWNLOAD_OPTIONS.EXPORT_EXCEL,
+              label: DOWNLOAD_OPTIONS_LABEL[DOWNLOAD_OPTIONS.EXPORT_EXCEL],
+            }}
+            value={{
+              value: action,
+              label: DOWNLOAD_OPTIONS_LABEL[action],
+            }}
+          />
+          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && <Select
+            className="mt-3"
+            onChange={(e) => {
+              if (e.value === EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL) {
+                setExportExcelOption(e);
+                setExportExcelFields(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
+              } else if (e.value === EXPORT_EXCEL_OPTIONS.EXPORT_INPUT_EXCEL) {
+                setExportExcelOption(e);
+                setExportExcelFields(EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE);
+              }
+            }}
+            options={Object.keys(EXPORT_EXCEL_OPTIONS_LABEL).map((key) => {
+              return {
+                value: key,
+                label: EXPORT_EXCEL_OPTIONS_LABEL[key],
+              };
+            })}
+            defaultValue={exportExcelOption}
+            value={exportExcelOption}
+          />}
+          <p className="my-3 text-center">Tổng cộng {data.length} hồ sơ</p>
+          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && <p className="my-3 text-center">Chọn các trường danh sách</p>}
+          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && <div className="d-flex flex-wrap mt-3">
+            {Object.keys(exportExcelFields).map((key) => {
+              return <Form.Check className="w-50" name={key} key={key} type='checkbox' label={EXPORT_EXCEL_FIELDS_LABEL[key]} checked={exportExcelFields[key]} onChange={(e) => setExportExcelFields({ ...exportExcelFields, [e.target.name]: e.target.checked })} />
+            })
+            }
+          </div>}
+          {action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE && <p className="my-3 text-center">Chọn ảnh</p>}
+          {action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE && <div className="d-flex flex-wrap justify-content-around mt-3">
+            {Object.keys(downloadFileFields).map((key) => {
+              return <Form.Check name={key} key={key} type='checkbox' label={DOWNLOAD_FILE_FIELDS_LABEL[key]} checked={downloadFileFields[key]} onChange={(e) => setDownloadFileFields({ ...downloadFileFields, [e.target.name]: e.target.checked })} />
+            })}</div>}
+          <div className="my-3 mx-auto text-center">
+            {loadingAction ? <Button disabled={true}>Đang thực hiện {loadingAction}</Button> : <Button variant='primary' onClick={handleActionButton}>
+              Thực hiện
+            </Button>}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='outline-primary' onClick={() => setShowActionModal(false)}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

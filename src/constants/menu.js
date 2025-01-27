@@ -34,4 +34,9 @@ export const ADMIN_DRIVING_MENU = [
         path: PATH.DRIVING.ADMIN.DATE,
         icon: <FaList />
     },
+    {
+        label: 'Quản lý trung tâm',
+        path: PATH.DRIVING.ADMIN.CENTER,
+        icon: <FaList />
+    },
 ]
