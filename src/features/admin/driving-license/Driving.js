@@ -67,7 +67,7 @@ function Driving(props) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${name}-${tel}-driving-document.pdf`;
+        a.download = `${name}_${tel}_${new Date(date).toLocaleDateString('en-GB')}.pdf`;
         a.click();
       } else {
         const url = URL.createObjectURL(blob);

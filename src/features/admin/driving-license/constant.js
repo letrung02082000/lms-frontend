@@ -99,6 +99,20 @@ export const EXPORT_EXCEL_FIELDS = {
     HEALTH_CHECKED_DATE: 'healthCheckedDate',
 }
 
+export const DOWNLOAD_FILE_FIELDS = {
+    CARD: 'card',
+    CARD_CROP: 'cardCrop',
+    PORTRAIT: 'portrait',
+    PORTRAIT_CROP: 'portraitCrop',
+}
+
+export const DOWNLOAD_FILE_FIELDS_LABEL = {
+    [DOWNLOAD_FILE_FIELDS.CARD]: 'Ảnh căn cước',
+    [DOWNLOAD_FILE_FIELDS.CARD_CROP]: 'Ảnh căn cước (cắt)',
+    [DOWNLOAD_FILE_FIELDS.PORTRAIT]: 'Ảnh chân dung',
+    [DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP]: 'Ảnh chân dung (cắt)',
+}
+
 export const EXPORT_EXCEL_FIELDS_LABEL = {
     [EXPORT_EXCEL_FIELDS.NO]: 'STT',
     [EXPORT_EXCEL_FIELDS.TIMESTAMP]: 'Thời gian đăng ký',
