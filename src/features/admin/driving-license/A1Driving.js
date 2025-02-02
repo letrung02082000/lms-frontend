@@ -15,6 +15,7 @@ import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import JSZip from 'jszip';
 import _ from "lodash";
+import fileApi from "api/fileApi";
 
 function A1Driving() {
   const [loadingAction, setLoadingAction] = useState(0);
@@ -358,6 +359,15 @@ function A1Driving() {
     });
   }
 
+  const getSignedUrl = async (url) => {
+    try {
+      const res = await fileApi.getSignedUrl(url);
+      return res?.data?.signedUrl;
+    } catch (error) {
+      return url;
+    }
+  }
+
   const zipFile = async (data, type) => {
     if (type === DOWNLOAD_FILE_FIELDS.CARD) {
       const frontZip = new JSZip()
@@ -367,7 +377,7 @@ function A1Driving() {
 
         if (drivingInfo?.frontUrl) {
           const fileMimeType = drivingInfo.frontUrl.split('.').pop();
-          const frontResponse = await fetch(drivingInfo.frontUrl);
+          const frontResponse = await fetch(await getSignedUrl(drivingInfo.frontUrl));
           const frontBlob = await frontResponse.blob();
           frontZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, frontBlob, { binary: true });
         }
@@ -384,7 +394,7 @@ function A1Driving() {
 
         if (drivingInfo.backUrl) {
           const fileMimeType = drivingInfo.backUrl.split('.').pop();
-          const backResponse = await fetch(drivingInfo.backUrl);
+          const backResponse = await fetch(await getSignedUrl(drivingInfo.backUrl));
           const backBlob = await backResponse.blob();
           backZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, backBlob, { binary: true });
         }
@@ -403,7 +413,7 @@ function A1Driving() {
 
         if (drivingInfo.portraitUrl) {
           const fileMimeType = drivingInfo.portraitUrl.split('.').pop();
-          const portraitResponse = await fetch(drivingInfo.portraitUrl);
+          const portraitResponse = await fetch(await getSignedUrl(drivingInfo.portraitUrl));
           const portraitBlob = await portraitResponse.blob();
           portraitZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, portraitBlob, { binary: true });
         }
