@@ -64,7 +64,7 @@ function AdminDrivingCenterPage() {
   ]);
 
   const fetchDrivingCenters = async () => {
-    drivingApi.getDrivingCenter().then((res) => {
+    drivingApi.queryDrivingCenters().then((res) => {
       setRowData(res.data);
     }).catch((err) => {
       console.log(err);

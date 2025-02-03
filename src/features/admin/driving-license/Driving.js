@@ -570,7 +570,7 @@ function Driving(props) {
                   <Button variant='outline-primary' onClick={() => setShowDateInfo(true)}>
                     <MdMoreVert />
                   </Button>
-                  <CopyToClipboardButton className='btn btn-outline-primary ms-3' value={QUICK_MESSAGE}><MdOutlineQuickreply /></CopyToClipboardButton>
+                  <CopyToClipboardButton className='btn btn-outline-primary ms-3' value={QUICK_MESSAGE}/>
                 </Col>
               </Row>
             </Col>

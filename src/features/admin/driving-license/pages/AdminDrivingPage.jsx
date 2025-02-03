@@ -19,7 +19,7 @@ import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, PAYMENT_METHODS
 import QRCode from "react-qr-code";
 import fileApi from 'api/fileApi';
 
-function AdminDrivingA1Page() {
+function AdminDrivingPage() {
   const userRole = JSON.parse(localStorage.getItem('user-info')).role;
   const PROCESS_STATE = {
     CREATED: 0,
@@ -148,7 +148,7 @@ function AdminDrivingA1Page() {
     fetchDrivings(query, searchText, page);
 
     drivingApi
-      .getDateVisible()
+      .getDate()
       .then((res) => {
         const date = res.data.map((item) => {
           return {
@@ -439,9 +439,9 @@ function AdminDrivingA1Page() {
         <button className='btn ms-2' onClick={handleSearchButton}>
           <MdSearch size={25} />
         </button>
-        <button className='btn ms-2' onClick={() => setShow(true)}>
+        {/* <button className='btn ms-2' onClick={() => setShow(true)}>
           <MdFilterList size={25} />
-        </button>
+        </button> */}
         <button className='btn ms-2' onClick={() => setShowQRModal(true)}>
           <MdQrCodeScanner size={25} />
         </button>
@@ -1012,4 +1012,4 @@ function AdminDrivingA1Page() {
   );
 }
 
-export default AdminDrivingA1Page;
+export default AdminDrivingPage;

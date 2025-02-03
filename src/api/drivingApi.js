@@ -41,16 +41,6 @@ class DrivingApi {
     return axiosClient.patch(url, data, authHeader());
   };
 
-  getDateVisible = async () => {
-    const url = `${API_PATH}/date`;
-    return axiosClient.get(url, {
-      ...authHeader(),
-      params: {
-        isVisible: true,
-      },
-    });
-  };
-
   query = async (query) => {
     const url = `${API_PATH}/q`;
     return axiosClient.get(url, {
@@ -59,13 +49,14 @@ class DrivingApi {
     });
   }
 
-  queryDrivings = async (date, state) => {
-    const url = `${API_PATH}/query`;
+  queryDrivings = async (date, processState, drivingType) => {
+    const url = `${API_PATH}/q`;
     return axiosClient.get(url, {
       ...authHeader(),
       params: {
         date,
-        state,
+        processState,
+        drivingType,
       },
     });
   };
@@ -133,6 +124,14 @@ class DrivingApi {
     return axiosClient.get(url, {
       params,
       ...authHeader(),
+    });
+  };
+  
+  getDate = async (params) => {
+    const url = `${API_PATH}/date`;
+    return axiosClient.get(url, {
+      ...authHeader(),
+      params,
     });
   };
 
@@ -255,6 +254,11 @@ class DrivingApi {
     return axiosClient.get(url, {
       params,
     });
+  }
+
+  getDrivingType = async () => {
+    const url = `${API_PATH}/type`;
+    return axiosClient.get(url);
   }
 }
 
