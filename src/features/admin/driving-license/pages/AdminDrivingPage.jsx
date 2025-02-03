@@ -58,6 +58,9 @@ function AdminDrivingA1Page() {
   const [frontUrl, setFrontUrl] = useState('');
   const [backUrl, setBackUrl] = useState('');
   const [portraitUrl, setPortraitUrl] = useState('');
+  const [portraitUploading, setPortraitUploading] = useState(false);
+  const [frontUploading, setFrontUploading] = useState(false);
+  const [backUploading, setBackUploading] = useState(false);
 
   useEffect(() => {
     const selectedDate = visibleDate.find((item) => {
@@ -292,25 +295,39 @@ function AdminDrivingA1Page() {
       setBackUrl('');
     }
   }, [selectedRow, showEditModal]);
+  const fetchImage = async (type, url) => {
+    if (type === 'portrait' || type === undefined) {
+      fileApi
+        .getSignedUrl(url || selectedRow.portraitUrl)
+        .then(async (res) => {
+          setPortraitUrl(res?.data?.signedUrl);
+        })
+        .catch((err) => {
+          setPortraitUrl(selectedRow?.portraitUrl);
+        });
+    }
 
-  const fetchImage = async () => {
-    fileApi.getSignedUrl(selectedRow.portraitUrl).then(async (res) => {
-      setPortraitUrl(res?.data?.signedUrl);
-    }).catch((err) => {
-      setPortraitUrl(selectedRow?.portraitUrl);
-    });
+    if (type === 'front' || type === undefined) {
+      fileApi
+        .getSignedUrl(url || selectedRow.frontUrl)
+        .then(async (res) => {
+          setFrontUrl(res?.data?.signedUrl);
+        })
+        .catch((err) => {
+          setFrontUrl(selectedRow?.frontUrl);
+        });
+    }
 
-    fileApi.getSignedUrl(selectedRow.frontUrl).then(async (res) => {
-      setFrontUrl(res?.data?.signedUrl);
-    }).catch((err) => {
-      setFrontUrl(selectedRow?.frontUrl);
-    });
-
-    fileApi.getSignedUrl(selectedRow.backUrl).then(async (res) => {
-      setBackUrl(res?.data?.signedUrl);
-    }).catch((err) => {
-      setBackUrl(selectedRow?.backUrl);
-    });
+    if (type === 'back' || type === undefined) {
+      fileApi
+        .getSignedUrl(url || selectedRow.backUrl)
+        .then(async (res) => {
+          setBackUrl(res?.data?.signedUrl);
+        })
+        .catch((err) => {
+          setBackUrl(selectedRow?.backUrl);
+        });
+    }
   };
 
   const downloadImage = async (url, name) => {
@@ -327,6 +344,20 @@ function AdminDrivingA1Page() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleUpdateImageButton = (id, data, type) => {
+    drivingApi
+      .updateDriving(id, data)
+      .then((res) => {
+        setSelectedRow({ ...selectedRow, ...res.data });
+        fetchImage(type);
+        fetchDrivings(query, searchText, page);
+        toastWrapper('Cập nhật thành công', 'success');
+      })
+      .catch((e) => {
+        toastWrapper('Cập nhật thất bại', 'error');
+      });
   };
 
   const handleClose = () => setShowEditModal(false);
@@ -741,7 +772,7 @@ function AdminDrivingA1Page() {
                     width='100%'
                   />
                 </div>
-                <div className='my-3'>
+                <div className='my-3 d-flex justify-content-center align-items-center'>
                   <Button
                     variant='outline-primary'
                     onClick={() => rotateImage('portrait')}
@@ -759,6 +790,24 @@ function AdminDrivingA1Page() {
                   >
                     Tải xuống
                   </Button>
+                  <FileUploader
+                    className='ms-3'
+                    name='file'
+                    text='Tải lên'
+                    hasLabel={false}
+                    url={FILE_UPLOAD_URL}
+                    uploading={portraitUploading}
+                    setUploading={setPortraitUploading}
+                    onResponse={(res) =>
+                      handleUpdateImageButton(
+                        selectedRow?._id,
+                        {
+                          portraitUrl: res?.data?.url,
+                        },
+                        'portrait'
+                      )
+                    }
+                  />
                 </div>
               </Col>
               <Col>
@@ -770,7 +819,7 @@ function AdminDrivingA1Page() {
                     width='100%'
                   />
                 </div>
-                <div className='my-3'>
+                <div className='my-3 d-flex justify-content-center align-items-center'>
                   <Button
                     variant='outline-primary'
                     onClick={() => rotateImage('front-card')}
@@ -788,6 +837,24 @@ function AdminDrivingA1Page() {
                   >
                     Tải xuống
                   </Button>
+                  <FileUploader
+                    className='ms-3'
+                    name='file'
+                    text='Tải lên'
+                    hasLabel={false}
+                    url={FILE_UPLOAD_URL}
+                    uploading={portraitUploading}
+                    setUploading={setPortraitUploading}
+                    onResponse={(res) =>
+                      handleUpdateImageButton(
+                        selectedRow?._id,
+                        {
+                          frontUrl: res?.data?.url,
+                        },
+                        'front'
+                      )
+                    }
+                  />
                 </div>
                 <div>
                   <img
@@ -797,7 +864,7 @@ function AdminDrivingA1Page() {
                     width='100%'
                   />
                 </div>
-                <div className='my-3'>
+                <div className='my-3 d-flex justify-content-center align-items-center'>
                   <Button
                     variant='outline-primary'
                     onClick={() => rotateImage('back-card')}
@@ -815,60 +882,25 @@ function AdminDrivingA1Page() {
                   >
                     Tải xuống
                   </Button>
+                  <FileUploader
+                    className='ms-3'
+                    name='file'
+                    text='Tải lên'
+                    hasLabel={false}
+                    url={FILE_UPLOAD_URL}
+                    uploading={portraitUploading}
+                    setUploading={setPortraitUploading}
+                    onResponse={(res) =>
+                      handleUpdateImageButton(
+                        selectedRow?._id,
+                        {
+                          backUrl: res?.data?.url,
+                        },
+                        'back'
+                      )
+                    }
+                  />
                 </div>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col>
-                <Row>
-                  <Col>
-                    {/* <FileUploader
-                      name='file'
-                      text='Cập nhật ảnh chân dung'
-                      url={FILE_UPLOAD_URL}
-                      uploading={portraitUploading}
-                      setUploading={setPortraitUploading}
-                      onResponse={(res) =>
-                        handleUpdateButton(selectedRow._id, {
-                          portraitUrl: res?.data?.url,
-                        })
-                      }
-                    /> */}
-                  </Col>
-                </Row>
-                <Row className='mt-3'>
-                  <Col>
-                    {/* <FileUploader
-                      name='file'
-                      text='Cập nhật ảnh mặt trước'
-                      url={FILE_UPLOAD_URL}
-                      uploading={portraitUploading}
-                      setUploading={setPortraitUploading}
-                      onResponse={(res) =>
-                        handleUpdateButton(selectedRow._id, {
-                          portraitUrl: res?.data?.url,
-                        })
-                      }
-                    /> */}
-                  </Col>
-                </Row>
-                <Row className='mt-3'>
-                  <Col>
-                    {/* <FileUploader
-                      name='file'
-                      text='Cập nhật ảnh mặt sau'
-                      url={FILE_UPLOAD_URL}
-                      uploading={portraitUploading}
-                      setUploading={setPortraitUploading}
-                      onResponse={(res) =>
-                        handleUpdateButton(selectedRow._id, {
-                          portraitUrl: res?.data?.url,
-                        })
-                      }
-                    /> */}
-                  </Col>
-                </Row>
               </Col>
             </Row>
           </div>

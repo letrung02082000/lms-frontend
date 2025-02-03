@@ -29,11 +29,11 @@ export default function DrivingRegisterPage() {
   const categories = [
     {
       value: 0,
-      label: "Bằng A1",
+      label: "Bằng A1 (Mô tô 2 bánh có dung tích xi lanh đến 125 cm3)",
     },
     {
       value: 1,
-      label: "Bằng A2 (Mô tô 2 bánh không giới hạn dung tích xi lanh, trung tâm liên hệ hướng dẫn qua điện thoại)",
+      label: "Bằng A (Mô tô 2 bánh không giới hạn dung tích xi lanh, trung tâm liên hệ hướng dẫn qua điện thoại)",
     },
     {
       value: 2,
