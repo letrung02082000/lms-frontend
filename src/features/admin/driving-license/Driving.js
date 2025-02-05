@@ -18,11 +18,12 @@ import { IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import ocrApi from "api/ocrApi";
 import AccountInfo from "./components/AccountInfo";
-import { Page, View, Document, StyleSheet, Text, Image as PDFImage, Svg, Path, usePDF, pdf } from '@react-pdf/renderer';
+import { Page, View, Document, StyleSheet, Text, Image as PDFImage, Svg, Path, pdf } from '@react-pdf/renderer';
 import { genergateDrivingQuickMessage } from "utils/message.utils";
 import fileApi from "api/fileApi";
 
 function Driving(props) {
+  const [drivingInfo, setDrivingInfo] = useState(props?.info);
   const styles = StyleSheet.create({
     page: {
       flexDirection: 'row',
@@ -100,36 +101,35 @@ function Driving(props) {
     _id,
     cash,
     healthDate,
-  } = props.info;
+  } = drivingInfo;
 
   const ZALO_LINK = `https://zalo.me/${zalo}`;
   const TEL_LINK = `tel:${tel}`;
   const [loading, setLoading] = useState(false);
-  const [signed, setSigned] = useState(false);
   const [sent, setSent] = useState(messageSent);
-  const [isPaid, setIsPaid] = useState(props?.info?.isPaid || false);
+  const [isPaid, setIsPaid] = useState(drivingInfo.isPaid || false);
   const [feedback, setFeedback] = useState(props.info.feedback || "");
   const [processState, setProcessState] = useState(props.info.processState);
   const [frontUploading, setFrontUploading] = useState(false);
   const [backUploading, setBackUploading] = useState(false);
   const [portraitUploading, setPortraitUploading] = useState(false);
-  const [frontUrl, setFrontUrl] = useState(props?.info?.frontUrl);
-  const [backUrl, setBackUrl] = useState(props?.info?.backUrl);
-  const [portraitUrl, setPortraitUrl] = useState(props?.info?.portraitUrl);
+  const [frontUrl, setFrontUrl] = useState(drivingInfo.frontUrl);
+  const [backUrl, setBackUrl] = useState(drivingInfo.backUrl);
+  const [portraitUrl, setPortraitUrl] = useState(drivingInfo.portraitUrl);
   const [imageVisible, setImageVisible] = useState(false);
-  const [portraitClipUrl, setPortraitClipUrl] = useState(props?.info?.portraitClipUrl);
+  const [portraitClipUrl, setPortraitClipUrl] = useState(drivingInfo.portraitClipUrl);
   const [clipping, setClipping] = useState(false);
   const [cropping, setCropping] = useState(false);
   const [extracting, setExtracting] = useState(false);
-  const [identityInfo, setIdentityInfo] = useState({ _id: props?.info?.identityInfo || null, info: [] });
-  const [identityImage, setIdentityImage] = useState({ _id: props?.info?.identityInfo || null, image: [] });
+  const [identityInfo, setIdentityInfo] = useState({ _id: drivingInfo.identityInfo || null, info: [] });
+  const [identityImage, setIdentityImage] = useState({ _id: drivingInfo.identityInfo || null, image: [] });
   const [showIdentityInfo, setShowIdentityInfo] = useState(false);
   const [showQrCode, setShowQrCode] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [portraitClip, setPortraitClip] = useState(null);
   const [portraitCrop, setPortraitCrop] = useState(null);
-  const [invalidPortrait, setInvalidPortrait] = useState(props?.info?.invalidPortrait || false);
-  const [invalidCard, setInvalidCard] = useState(props?.info?.invalidCard || false);
+  const [invalidPortrait, setInvalidPortrait] = useState(drivingInfo.invalidPortrait || false);
+  const [invalidCard, setInvalidCard] = useState(drivingInfo.invalidCard || false);
   createdAt = new Date(createdAt);
   const [isValidDob, setIsValidDob] = useState(true);
   const [qrData, setQrData] = useState(null);
@@ -137,8 +137,8 @@ function Driving(props) {
   const [dateInfo, setDateInfo] = useState(null);
   const [showDateInfo, setShowDateInfo] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [transactionId, setTransactionId] = useState(props?.info?.transactionId || null);
-  const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS_LABEL[props?.info?.paymentMethod] ? props?.info?.paymentMethod : PAYMENT_METHODS.BANK_TRANSFER);
+  const [transactionId, setTransactionId] = useState(drivingInfo.transactionId || null);
+  const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS_LABEL[drivingInfo.paymentMethod] ? drivingInfo.paymentMethod : PAYMENT_METHODS.BANK_TRANSFER);
   const QUICK_MESSAGE = genergateDrivingQuickMessage(name, dateInfo, isPaid);
 
   useEffect(() => {
@@ -181,28 +181,25 @@ function Driving(props) {
 
   const fetchImage = async (type, url) => {
     if(type === 'front') {
-      setFrontUrl(await getSignedUrl(url || props?.info?.frontUrl));
+      setFrontUrl(await getSignedUrl(url || drivingInfo.frontUrl));
     } else if(type === 'back') {
-      setBackUrl(await getSignedUrl(url || props?.info?.backUrl));
+      setBackUrl(await getSignedUrl(url || drivingInfo.backUrl));
     } else if(type === 'portrait') {
-      setPortraitUrl(await getSignedUrl(url || props?.info?.portraitUrl));
+      setPortraitUrl(await getSignedUrl(url || drivingInfo.portraitUrl));
     } else if(type === 'portrait_clip') {
-      setPortraitClipUrl(await getSignedUrl(url || props?.info?.portraitClipUrl));
+      setPortraitClipUrl(await getSignedUrl(url || drivingInfo.portraitClipUrl));
     }
     else {
-      setFrontUrl(await getSignedUrl(url || props?.info?.frontUrl));
-      setBackUrl(await getSignedUrl(url || props?.info?.backUrl));
-      setPortraitUrl(await getSignedUrl(url || props?.info?.portraitUrl));
-      setPortraitClipUrl(await getSignedUrl(url || props?.info?.portraitClipUrl));
+      setFrontUrl(await getSignedUrl(url || drivingInfo.frontUrl));
+      setBackUrl(await getSignedUrl(url || drivingInfo.backUrl));
+      setPortraitUrl(await getSignedUrl(url || drivingInfo.portraitUrl));
+      setPortraitClipUrl(await getSignedUrl(url || drivingInfo.portraitClipUrl));
     }
   }
 
   useEffect(() => {
-    if (imageVisible && !signed) {
-      fetchImage('front', frontUrl);
-      fetchImage('back', backUrl);
-      fetchImage('portrait', portraitUrl);
-      fetchImage('portrait_clip', portraitClipUrl)
+    if (imageVisible) {
+      fetchImage();
 
       const loadModels = async () => {
         const MODEL_URL = '/models';
@@ -215,7 +212,7 @@ function Driving(props) {
 
       loadModels();
     }
-  }, [imageVisible]);
+  }, [imageVisible, drivingInfo]);
 
   useEffect(() => {
     const dateInfo = props?.dateList?.find(d => new Date(d.date).toISOString() === new Date(selectedDate).toISOString());
@@ -241,7 +238,7 @@ function Driving(props) {
   const cropPortrait = async () => {
     if (!modelsLoaded) return toastWrapper('Đang tải mô hình, vui lòng thử lại sau', 'info');
 
-    // if (!portraitClip) return toastWrapper('Chưa tách nền ảnh', 'error');
+    if (!portraitClip) return toastWrapper('Chưa tách nền ảnh', 'error');
 
     setCropping(true);
     const input = document.getElementById(`portrait_clip_${_id}`)
@@ -354,14 +351,7 @@ function Driving(props) {
 
   const handleUpdateButton = (id, data, type) => {
     DrivingApi.updateDriving(id, data).then(res => {
-      if (type === 'front') {
-        fetchImage('front', res?.data?.frontUrl);
-      } else if(type === 'back') {
-        fetchImage('back', res?.data?.backUrl);
-      } else if(type === 'portrait') {
-        fetchImage('portrait', res?.data?.portraitUrl);
-      }
-      
+      setDrivingInfo(res?.data)
       toastWrapper('Cập nhật thành công', 'success')
     }).catch(e => {
       toastWrapper('Cập nhật thất bại', 'error')
@@ -376,11 +366,14 @@ function Driving(props) {
 
   const clipPortrait = async () => {
     setClipping(true);
-    const url = await getSignedUrl(props?.info?.portraitUrl);
+    const url = await getSignedUrl(drivingInfo.portraitUrl);
     console.log(url);
 
     DrivingApi.clipPortrait(_id, url).then(async (res) => {
-      fetchImage('portrait_clip', res?.data?.portraitClipUrl);
+      setDrivingInfo({
+        ...drivingInfo,
+        portraitClipUrl: res?.data?.url,
+      })
       toastWrapper('Tách nền ảnh thành công', 'success')
     }).catch(e => {
       toastWrapper(e.toString(), 'error')
@@ -393,8 +386,8 @@ function Driving(props) {
     setExtracting(true);
 
     try {
-      const frontUrl = await getSignedUrl(props?.info?.frontUrl)
-      const backUrl = await getSignedUrl(props?.info?.backUrl)
+      const frontUrl = await getSignedUrl(drivingInfo.frontUrl)
+      const backUrl = await getSignedUrl(drivingInfo.backUrl)
       DrivingApi.extractIdentity(_id, frontUrl, backUrl).then(res => {
         setIdentityInfo({
           _id: res?.data?.identityInfo,
@@ -696,7 +689,7 @@ function Driving(props) {
           </Button>
         </Modal.Footer>
       </Modal>}
-      {imageVisible && <Modal show={imageVisible} onHide={() => { setImageVisible(false); setSigned(true) }} scrollable size="xl">
+      {imageVisible && <Modal show={imageVisible} onHide={() => setImageVisible(false)} scrollable size="xl">
         <Modal.Header closeButton>
           <Modal.Title>Ảnh hồ sơ</Modal.Title>
         </Modal.Header>
@@ -716,14 +709,14 @@ function Driving(props) {
                   {
                     imageVisible && processState === DRIVING_STATE.APPROVED ? <>
                       <Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách' : 'Tách nền'}</Button>
-                      <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button>
+                      {/* <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button> */}
                     </> : <Button className="ms-2" variant={invalidPortrait ? 'danger' : 'outline-primary'} onClick={handleInvalidPortrait}>
                       <IoClose /> Lỗi
                     </Button>
                   }
                 </div>
               </div>
-              <div className='d-flex justify-content-center mb-2'>
+              <div className='d-flex justify-content-center my-2'>
                 <img id={`portrait_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitClipUrl} />
               </div>
             </Col>
