@@ -231,6 +231,7 @@ export default function DrivingRegisterPage() {
       drivingApi.addDriving(data)
         .then((res) => {
           localStorage.setItem('driving-info', JSON.stringify(res?.data));
+          localStorage.setItem('driving-date', JSON.stringify(drivingDateInfo));
           setDrivingTel(res?.data?.tel);
         })
         .catch((error) => {
