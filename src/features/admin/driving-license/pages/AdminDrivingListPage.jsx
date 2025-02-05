@@ -95,7 +95,7 @@ function AdminDrivingListPage() {
   }, [data]);
 
   useEffect(() => {
-    const drivingType = searchParams.get('type') || 0;
+    const drivingType = searchParams.get('type');
     setDrivingType(drivingType);
   }, [searchParams]);
 
@@ -118,7 +118,7 @@ function AdminDrivingListPage() {
 
         if (temp[0]) {
           DrivingApi
-            .queryDrivings(temp[0]?.date, DRIVING_STATE.CREATED)
+            .queryDrivings(temp[0]?.date, state, drivingType)
             .then((res) => {
               const newData = checkDuplicate(res.data);
               setData(newData);

@@ -20,7 +20,7 @@ import QRCode from "react-qr-code";
 import fileApi from 'api/fileApi';
 
 function AdminDrivingPage() {
-  const userRole = JSON.parse(localStorage.getItem('user-info')).role;
+  const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const PROCESS_STATE = {
     CREATED: 0,
     WAITING_FOR_UPDATE: 1,

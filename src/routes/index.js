@@ -258,7 +258,7 @@ const router = createBrowserRouter([
             element: <AdminDrivingCenterPage />,
           },
           {
-            path: PATH.DRIVING.ADMIN.LIST,
+            path: PATH.DRIVING.ADMIN.QUERY,
             element: <AdminDrivingListPage />,
           },
           {

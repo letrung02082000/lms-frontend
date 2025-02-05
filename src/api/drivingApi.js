@@ -148,7 +148,7 @@ class DrivingApi {
   };
 
   queryDrivingCenters = async (q) => {
-    const url = `${API_PATH}/center/query`;
+    const url = `${API_PATH}/center`;
     return axiosClient.get(url, {
       params: q,
     });
@@ -159,6 +159,12 @@ class DrivingApi {
     return axiosClient.patch(url, data, authHeader());
   }
 
+  queryDrivingCenterPrice = async (q) => {
+    const url = `${API_PATH}/center/price`;
+    return axiosClient.get(url, {
+      params: q,
+    });
+  }
 
   handleVisibleButton = async (_id, date, isVisible, formVisible = false) => {
     const url = `${API_PATH}/date`;
@@ -256,9 +262,18 @@ class DrivingApi {
     });
   }
 
-  getDrivingType = async () => {
+  queryDrivingType = async (q) => {
     const url = `${API_PATH}/type`;
-    return axiosClient.get(url);
+    return axiosClient.get(url, {
+      params: q,
+    });
+  }
+
+  queryDrivingCenterType = async (q) => {
+    const url = `${API_PATH}/center/type`;
+    return axiosClient.get(url, {
+      params: q,
+    });
   }
 }
 

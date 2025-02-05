@@ -19,7 +19,7 @@ function AdminDrivingDatePage() {
   const [selectedCenter, setSelectedCenter] = useState('');
   const [drivingTypes, setDrivingTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
-
+  console.log('selectedType', selectedType);
   useEffect(() => {
     drivingApi
       .queryDrivingCenters({ visible: true, ...(center && { center }) })
@@ -30,11 +30,14 @@ function AdminDrivingDatePage() {
         console.log(err);
       });
 
-    drivingApi.getDrivingType().then((res) => {
-      setDrivingTypes(res.data);
-    }).catch((err) => {
-      console.log(err);
-    });
+    drivingApi
+      .queryDrivingType()
+      .then((res) => {
+        setDrivingTypes(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const [colDefs] = useState([
@@ -51,7 +54,7 @@ function AdminDrivingDatePage() {
     {
       field: 'date',
       headerName: 'Ngày thi',
-      flex: 1,
+      flex: 2,
       cellRenderer: (data) => {
         return data.value
           ? new Date(data.value).toLocaleDateString('en-GB')
@@ -223,7 +226,7 @@ function AdminDrivingDatePage() {
                     >
                       <option>Chọn hạng bằng</option>
                       {drivingTypes.map((type) => (
-                        <option key={type._id} value={type.type}>
+                        <option key={type._id} value={type._id}>
                           {type.label}
                         </option>
                       ))}

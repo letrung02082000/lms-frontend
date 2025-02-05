@@ -5,7 +5,7 @@ export const generateDrivingMenu = (drivingType) => {
     const drivingTypeObj = drivingType.map((t) => {
         return {
             label: t?.label,
-            path: PATH.DRIVING.ADMIN.LIST + '?type=' + t?._id,
+            path: PATH.DRIVING.ADMIN.QUERY + '?type=' + t?.value,
             icon: t?.icon || <FaList />
         }
     })
@@ -16,12 +16,12 @@ export const generateDrivingMenu = (drivingType) => {
             path: PATH.DRIVING.ADMIN.ROOT,
             icon: <FaList />,
         },
-        {
+        ...(drivingType.length ? [{
             label: 'Quản lý hồ sơ',
-            path: PATH.DRIVING.ADMIN.LIST,
+            path: PATH.DRIVING.ADMIN.QUERY,
             icon: <FaList />,
-            children:drivingTypeObj
-        },
+            children: drivingTypeObj
+        }] : []),
         {
             label: 'Quản lý ngày thi',
             path: PATH.DRIVING.ADMIN.DATE,

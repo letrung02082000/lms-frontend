@@ -7,7 +7,7 @@ import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 
 function AdminDrivingCenterPage() {
-  const userRole = JSON.parse(localStorage.getItem('user-info'))?.role;
+  const {role: userRole, center} = JSON.parse(localStorage.getItem('user-info'));
   const [query, setQuery] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
   const [page, setPage] = useState(1);
@@ -64,11 +64,14 @@ function AdminDrivingCenterPage() {
   ]);
 
   const fetchDrivingCenters = async () => {
-    drivingApi.queryDrivingCenters().then((res) => {
-      setRowData(res.data);
-    }).catch((err) => {
-      console.log(err);
-    });
+    drivingApi
+      .queryDrivingCenters({ _id: center })
+      .then((res) => {
+        setRowData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   useEffect(() => {
