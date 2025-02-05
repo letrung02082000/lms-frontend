@@ -245,14 +245,16 @@ class DrivingApi {
     });
   };
 
-  clipPortrait = async (id) => {
+  clipPortrait = async (id, portraitUrl) => {
     const url = `/driving/clipping/${id}`;
-    return axiosClient.post(url, { id });
+    return axiosClient.post(url, { id, url: portraitUrl });
   }
 
-  extractIdentity = async (id) => {
+  extractIdentity = async (id, frontUrl, backUrl) => {
     const url = `/driving/extract/${id}`;
-    return axiosClient.get(url);
+    return axiosClient.get(url, {
+      params: { frontUrl, backUrl },
+    });
   }
 
   getDrivingCenter = async (params) => {
