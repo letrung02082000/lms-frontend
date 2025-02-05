@@ -1,1 +1,1 @@
-export const FILE_UPLOAD_URL = '/upload/media';
+export const FILE_UPLOAD_URL = '/file/upload/driving';

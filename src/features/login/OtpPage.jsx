@@ -54,6 +54,8 @@ export default function OtpPage() {
               zalo: res?.data?.zalo,
               role: res?.data?.role,
               store: res?.data?.store,
+              source: res?.data?.source,
+              center: res?.data?.center,
             })
           );
           dispatch(updateUser({ isLoggedIn: true, data: { zalo: data.zalo } }));

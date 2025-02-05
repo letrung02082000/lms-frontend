@@ -18,10 +18,12 @@ import { IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import ocrApi from "api/ocrApi";
 import AccountInfo from "./components/AccountInfo";
-import { Page, View, Document, StyleSheet, Text, Image as PDFImage, Svg, Path, usePDF, pdf } from '@react-pdf/renderer';
+import { Page, View, Document, StyleSheet, Text, Image as PDFImage, Svg, Path, pdf } from '@react-pdf/renderer';
 import { genergateDrivingQuickMessage } from "utils/message.utils";
+import fileApi from "api/fileApi";
 
 function Driving(props) {
+  const [drivingInfo, setDrivingInfo] = useState(props?.info);
   const styles = StyleSheet.create({
     page: {
       flexDirection: 'row',
@@ -98,44 +100,36 @@ function Driving(props) {
     dup,
     _id,
     cash,
-    portraitUrl,
-    frontUrl,
-    backUrl,
     healthDate,
-  } = props.info;
+  } = drivingInfo;
 
   const ZALO_LINK = `https://zalo.me/${zalo}`;
   const TEL_LINK = `tel:${tel}`;
   const [loading, setLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [sent, setSent] = useState(messageSent);
-  const [isPaid, setIsPaid] = useState(props?.info?.isPaid || false);
+  const [isPaid, setIsPaid] = useState(drivingInfo.isPaid || false);
   const [feedback, setFeedback] = useState(props.info.feedback || "");
   const [processState, setProcessState] = useState(props.info.processState);
   const [frontUploading, setFrontUploading] = useState(false);
   const [backUploading, setBackUploading] = useState(false);
   const [portraitUploading, setPortraitUploading] = useState(false);
-  const [portraitLoading, setPortraitLoading] = useState(false);
-  const [portraitClipLoading, setPortraitClipLoading] = useState(false);
-  const [frontLoading, setFrontLoading] = useState(false);
-  const [backLoading, setBackLoading] = useState(false);
+  const [frontUrl, setFrontUrl] = useState(drivingInfo.frontUrl);
+  const [backUrl, setBackUrl] = useState(drivingInfo.backUrl);
+  const [portraitUrl, setPortraitUrl] = useState(drivingInfo.portraitUrl);
   const [imageVisible, setImageVisible] = useState(false);
-  const [portraitClipUrl, setPortraitClipUrl] = useState(props?.info?.portraitClipUrl);
+  const [portraitClipUrl, setPortraitClipUrl] = useState(drivingInfo.portraitClipUrl);
   const [clipping, setClipping] = useState(false);
   const [cropping, setCropping] = useState(false);
   const [extracting, setExtracting] = useState(false);
-  const [identityInfo, setIdentityInfo] = useState({ _id: props?.info?.identityInfo || null, info: [] });
-  const [identityImage, setIdentityImage] = useState({ _id: props?.info?.identityInfo || null, image: [] });
+  const [identityInfo, setIdentityInfo] = useState({ _id: drivingInfo.identityInfo || null, info: [] });
+  const [identityImage, setIdentityImage] = useState({ _id: drivingInfo.identityInfo || null, image: [] });
   const [showIdentityInfo, setShowIdentityInfo] = useState(false);
   const [showQrCode, setShowQrCode] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [portraitClip, setPortraitClip] = useState(null);
   const [portraitCrop, setPortraitCrop] = useState(null);
-  const [portrait, setPortrait] = useState(null);
-  const [front, setFront] = useState(null);
-  const [back, setBack] = useState(null);
-  const [invalidPortrait, setInvalidPortrait] = useState(props?.info?.invalidPortrait || false);
-  const [invalidCard, setInvalidCard] = useState(props?.info?.invalidCard || false);
+  const [invalidPortrait, setInvalidPortrait] = useState(drivingInfo.invalidPortrait || false);
+  const [invalidCard, setInvalidCard] = useState(drivingInfo.invalidCard || false);
   createdAt = new Date(createdAt);
   const [isValidDob, setIsValidDob] = useState(true);
   const [qrData, setQrData] = useState(null);
@@ -143,8 +137,8 @@ function Driving(props) {
   const [dateInfo, setDateInfo] = useState(null);
   const [showDateInfo, setShowDateInfo] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [transactionId, setTransactionId] = useState(props?.info?.transactionId || null);
-  const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS_LABEL[props?.info?.paymentMethod] ? props?.info?.paymentMethod : PAYMENT_METHODS.BANK_TRANSFER);
+  const [transactionId, setTransactionId] = useState(drivingInfo.transactionId || null);
+  const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS_LABEL[drivingInfo.paymentMethod] ? drivingInfo.paymentMethod : PAYMENT_METHODS.BANK_TRANSFER);
   const QUICK_MESSAGE = genergateDrivingQuickMessage(name, dateInfo, isPaid);
 
   useEffect(() => {
@@ -176,84 +170,70 @@ function Driving(props) {
     }
   }, [identityInfo]);
 
+  const getSignedUrl = useCallback(async (url) => {
+    try {
+      const res = await fileApi.getSignedUrl(url);
+      return res?.data?.signedUrl;
+    } catch (error) {
+      return url;
+    }
+  }, []);
+
+  const fetchImage = async (type, url) => {
+    if(type === 'front') {
+      setFrontUrl(await getSignedUrl(url || drivingInfo.frontUrl));
+    } else if(type === 'back') {
+      setBackUrl(await getSignedUrl(url || drivingInfo.backUrl));
+    } else if(type === 'portrait') {
+      setPortraitUrl(await getSignedUrl(url || drivingInfo.portraitUrl));
+    } else if(type === 'portrait_clip') {
+      setPortraitClipUrl(await getSignedUrl(url || drivingInfo.portraitClipUrl));
+    }
+    else {
+      setFrontUrl(await getSignedUrl(url || drivingInfo.frontUrl));
+      setBackUrl(await getSignedUrl(url || drivingInfo.backUrl));
+      setPortraitUrl(await getSignedUrl(url || drivingInfo.portraitUrl));
+      setPortraitClipUrl(await getSignedUrl(url || drivingInfo.portraitClipUrl));
+    }
+  }
+
   useEffect(() => {
     if (imageVisible) {
       fetchImage();
+
       const loadModels = async () => {
         const MODEL_URL = '/models';
-
         Promise.all([
           faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
           faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
           faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
         ]).then(setModelsLoaded(true)).catch(e => console.log(e));
       }
+
       loadModels();
     }
-  }, [imageVisible]);
+  }, [imageVisible, drivingInfo]);
 
   useEffect(() => {
     const dateInfo = props?.dateList?.find(d => new Date(d.date).toISOString() === new Date(selectedDate).toISOString());
     setDateInfo(dateInfo);
   }, [selectedDate])
 
-  const fetchPortraitClip = async (portraitClipUrl) => {
+  const downloadImage = async (url, name) => {
     try {
-      const urlCreator = window.URL || window.webkitURL;
-      const portraitClipResponse = await fetch(portraitClipUrl);
-      const portraitClipBlob = await portraitClipResponse.blob();
-      const portraitClipImage = urlCreator.createObjectURL(portraitClipBlob);
-      document.getElementById(`portrait_clip_${_id}`).src = portraitClipImage;
-      document.getElementById(`portrait_clip_${_id}`).height = 250;
-      document.getElementById(`portrait_clip_${_id}`).style.objectFit = 'contain';
-      setPortraitClip(portraitClipImage);
-      setPortraitClipLoading(false);
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const urlBlob = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = urlBlob;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch (error) {
-      setPortraitClipLoading(false);
+      console.log(error);
     }
-  }
-
-  const fetchPortrait = async (portraitUrl) => {
-    try {
-      const urlCreator = window.URL || window.webkitURL;
-      const portraitResponse = await fetch(portraitUrl);
-      const portraitBlob = await portraitResponse.blob();
-      const portraitImage = urlCreator.createObjectURL(portraitBlob);
-      document.getElementById(`portrait_${_id}`).src = portraitImage;
-      setPortrait(portraitImage);
-      setPortraitLoading(false);
-    } catch (error) {
-      setPortraitLoading(false);
-    }
-  }
-
-  const fetchFront = async (frontUrl) => {
-    try {
-      const urlCreator = window.URL || window.webkitURL;
-      const frontResponse = await fetch(frontUrl);
-      const frontBlob = await frontResponse.blob();
-      const frontImage = urlCreator.createObjectURL(frontBlob);
-      document.getElementById(`front_${_id}`).src = frontImage;
-      setFrontLoading(false);
-      setFront(frontImage);
-    } catch (error) {
-      setFrontLoading(false);
-    }
-  }
-
-  const fetchBack = async (backUrl) => {
-    try {
-      const urlCreator = window.URL || window.webkitURL;
-      const backResponse = await fetch(backUrl);
-      const backBlob = await backResponse.blob();
-      const backImage = urlCreator.createObjectURL(backBlob);
-      document.getElementById(`back_${_id}`).src = backImage;
-      setBack(backImage);
-      setBackLoading(false);
-    } catch (error) {
-      setBackLoading(false);
-    }
-  }
+  };
 
   const cropPortrait = async () => {
     if (!modelsLoaded) return toastWrapper('Đang tải mô hình, vui lòng thử lại sau', 'info');
@@ -272,30 +252,6 @@ function Driving(props) {
     const portraitCrop = await img.crop({ x, y, w: width, h: height }).getBase64('image/jpeg');
     setPortraitCrop(portraitCrop);
     setCropping(false);
-  }
-
-  const fetchImage = async () => {
-    if (imageVisible) {
-      setFrontLoading(true);
-      setBackLoading(true);
-      setPortraitLoading(true);
-      fetchPortrait(portraitUrl);
-      fetchFront(frontUrl);
-      fetchBack(backUrl);
-
-      if (portraitClipUrl) {
-        fetchPortraitClip(portraitClipUrl);
-      }
-    } else {
-      document.getElementById(`front_${_id}`).removeAttribute('src');
-      document.getElementById(`back_${_id}`).removeAttribute('src');
-      document.getElementById(`portrait_${_id}`).removeAttribute('src');
-      document.getElementById(`portrait_clip_${_id}`).removeAttribute('src');
-      document.getElementById(`front_${_id}`).height = 0;
-      document.getElementById(`back_${_id}`).height = 0;
-      document.getElementById(`portrait_${_id}`).height = 0;
-      document.getElementById(`portrait_clip_${_id}`).height = 0;
-    }
   }
 
   if (date) {
@@ -395,14 +351,7 @@ function Driving(props) {
 
   const handleUpdateButton = (id, data, type) => {
     DrivingApi.updateDriving(id, data).then(res => {
-      if (type === 'portrait') {
-        fetchPortrait(res?.data?.portraitUrl);
-      } else if (type === 'front') {
-        fetchFront(res?.data?.frontUrl);
-      } else if (type === 'back') {
-        fetchBack(res?.data?.backUrl);
-      }
-
+      setDrivingInfo(res?.data)
       toastWrapper('Cập nhật thành công', 'success')
     }).catch(e => {
       toastWrapper('Cập nhật thất bại', 'error')
@@ -415,12 +364,16 @@ function Driving(props) {
     tmp.setAttribute('data-rotate', (tmp.getAttribute('data-rotate') || 0) - 90);
   }
 
-  const clipPortrait = () => {
+  const clipPortrait = async () => {
     setClipping(true);
-    setImageVisible(true);
-    DrivingApi.clipPortrait(_id).then(res => {
-      setPortraitClipUrl(res?.data?.url);
-      fetchPortraitClip(res?.data?.url);
+    const url = await getSignedUrl(drivingInfo.portraitUrl);
+    console.log(url);
+
+    DrivingApi.clipPortrait(_id, url).then(async (res) => {
+      setDrivingInfo({
+        ...drivingInfo,
+        portraitClipUrl: res?.data?.url,
+      })
       toastWrapper('Tách nền ảnh thành công', 'success')
     }).catch(e => {
       toastWrapper(e.toString(), 'error')
@@ -431,16 +384,32 @@ function Driving(props) {
 
   const extractIdentity = async () => {
     setExtracting(true);
-    DrivingApi.extractIdentity(_id).then(res => {
-      setIdentityInfo({
-        _id: res?.data?.identityInfo,
+
+    try {
+      const frontUrl = await getSignedUrl(drivingInfo.frontUrl)
+      const backUrl = await getSignedUrl(drivingInfo.backUrl)
+      DrivingApi.extractIdentity(_id, frontUrl, backUrl).then(res => {
+        setIdentityInfo({
+          _id: res?.data?.identityInfo,
+        });
+        toastWrapper('Đọc CCCD thành công', 'success')
+      }).catch(e => {
+        toastWrapper(e.toString(), 'error')
+      }).finally(() => {
+        setExtracting(false);
       });
-      toastWrapper('Đọc CCCD thành công', 'success')
-    }).catch(e => {
-      toastWrapper(e.toString(), 'error')
-    }).finally(() => {
-      setExtracting(false);
-    });
+    } catch (error) {
+      DrivingApi.extractIdentity(_id).then(res => {
+        setIdentityInfo({
+          _id: res?.data?.identityInfo,
+        });
+        toastWrapper('Đọc CCCD thành công', 'success')
+      }).catch(e => {
+        toastWrapper(e.toString(), 'error')
+      }).finally(() => {
+        setExtracting(false);
+      });
+    }
   }
 
   const handleShowIdentityInfo = () => {
@@ -591,7 +560,7 @@ function Driving(props) {
                   <Button variant='outline-primary' onClick={() => setShowDateInfo(true)}>
                     <MdMoreVert />
                   </Button>
-                  <CopyToClipboardButton className='btn btn-outline-primary ms-3' value={QUICK_MESSAGE}><MdOutlineQuickreply /></CopyToClipboardButton>
+                  <CopyToClipboardButton className='btn btn-outline-primary ms-3' value={QUICK_MESSAGE}/>
                 </Col>
               </Row>
             </Col>
@@ -630,7 +599,9 @@ function Driving(props) {
           <div className="d-flex justify-content-end align-items-center mt-2">
             {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang trích xuất' : 'Trích xuất CCCD'}</Button>)}
             {DRIVING_STATE.APPROVED !== processState && identityInfo?._id && <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button>}
-            <Button className="ms-2" variant="outline-primary" onClick={() => setImageVisible(true)}>Xem ảnh hồ sơ</Button>
+            <Button className="ms-2" variant="outline-primary" onClick={() => {
+              setImageVisible(true);
+            }}>Xem ảnh hồ sơ</Button>
           </div>
         </Col>
         <Col>
@@ -724,85 +695,59 @@ function Driving(props) {
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col xs={4}>
+            <Col xs={5}>
               <div className='d-flex justify-content-center mb-2'>
-                <a
-                  href={portrait}
-                  rel="noopener noreferrer"
-                  download={`${name}-${tel}-portrait.jpg`}
-                >
-                  {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                  <img id={`portrait_${_id}`} width='100%' height='fit-content' objectFit='contain' />
-                </a>
-                {portraitClip && <a
-                  href={portraitClip}
-                  rel="noopener noreferrer"
-                  download={`${name}-${tel}-clipped.jpg`}
-                >
-                  {portraitLoading && <div className="spinner-border text-primary" role="status"></div>}
-                  <img id={`portrait_clip_${_id}`} width='100%' />
-                </a>}
-                {portraitCrop && <a href={portraitCrop} download={`${name}-${tel}-cropped.jpg`}>
-                  <img className="ms-2" id={`portrait_crop_${_id}`} src={portraitCrop} height={portraitCrop && imageVisible ? 250 : 0} width='100%' />
-                </a>}
+                <img id={`portrait_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitUrl} />
               </div>
               <div className="d-flex justify-content-center">
                 <Button variant="outline-primary" onClick={() => rotateImage(`portrait_${_id}`)}>
-                  <MdRotateLeft />
+                  <MdRotateLeft /> Xoay
                 </Button>
-                <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url }, 'portrait')} />
+                <Button className="ms-2" onClick={() => downloadImage(portraitUrl, `${name}-${tel}-portrait.png`)}>Tải xuống</Button>
+                <FileUploader className='ms-2' name='file' text="Tải lên"  hasLabel={false} url={FILE_UPLOAD_URL} uploading={portraitUploading} setUploading={setPortraitUploading} onResponse={res => handleUpdateButton(_id, { portraitUrl: res?.data?.url }, 'portrait')} />
                 <div>
                   {
                     imageVisible && processState === DRIVING_STATE.APPROVED ? <>
                       <Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách' : 'Tách nền'}</Button>
-                      <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button>
+                      {/* <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button> */}
                     </> : <Button className="ms-2" variant={invalidPortrait ? 'danger' : 'outline-primary'} onClick={handleInvalidPortrait}>
-                      <IoClose />
+                      <IoClose /> Lỗi
                     </Button>
                   }
                 </div>
+              </div>
+              <div className='d-flex justify-content-center my-2'>
+                <img id={`portrait_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitClipUrl} />
               </div>
             </Col>
             <Col>
               <Row>
                 <div className='d-flex justify-content-center mb-2'>
-                  <a
-                    href={front}
-                    rel="noopener noreferrer"
-                    download={`${name}-${tel}-front.jpg`}
-                  >
-                    {frontLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`front_${_id}`} width='100%' height='fit-content' objectFit='contain' />
-                  </a>
+                <img id={`front_${_id}`} width='100%' height='fit-content' objectFit='contain' src={frontUrl}/>
                 </div>
                 <div className="d-flex justify-content-center mb-2">
                   <Button variant="outline-primary" onClick={() => rotateImage(`front_${_id}`)}>
-                    <MdRotateLeft />
+                    <MdRotateLeft /> Xoay
                   </Button>
-                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={frontUploading} setUploading={setFrontUploading} onResponse={res => handleUpdateButton(_id, { frontUrl: res?.data?.url }, 'front')} />
+                  <Button className="ms-2" onClick={() => downloadImage(frontUrl, `${name}-${tel}-front.png`)}>Tải xuống</Button>
+                  <FileUploader className='ms-2' name='file' text="Tải lên"  hasLabel={false} url={FILE_UPLOAD_URL} uploading={frontUploading} setUploading={setFrontUploading} onResponse={res => handleUpdateButton(_id, { frontUrl: res?.data?.url }, 'front')} />
                   {processState !== DRIVING_STATE.APPROVED && <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
-                    <IoClose />
+                    <IoClose /> Lỗi
                   </Button>}
                 </div>
               </Row>
               <Row>
                 <div className="d-flex justify-content-center mb-2">
-                  <a
-                    href={back}
-                    rel="noopener noreferrer"
-                    download={`${name}-${tel}-back.jpg`}
-                  >
-                    {backLoading && <div className="spinner-border text-primary" role="status"></div>}
-                    <img id={`back_${_id}`} width='100%' height='fit-content' objectFit='contain' />
-                  </a>
+                  <img id={`back_${_id}`} width='100%' height='fit-content' objectFit='contain' src={backUrl}/>
                 </div>
                 <div className="d-flex justify-content-center mb-2">
                   <Button variant="outline-primary" onClick={() => rotateImage(`back_${_id}`)}>
-                    <MdRotateLeft />
+                    <MdRotateLeft /> Xoay
                   </Button>
-                  <FileUploader className='ms-2' name='file' hasText={false} hasLabel={false} url={FILE_UPLOAD_URL} uploading={backUploading} setUploading={setBackUploading} onResponse={res => handleUpdateButton(_id, { backUrl: res?.data?.url }, 'back')} />
+                  <Button className="ms-2" onClick={() => downloadImage(backUrl, `${name}-${tel}-back.png`)}>Tải xuống</Button>
+                  <FileUploader className='ms-2' name='file' text="Tải lên" hasLabel={false} url={FILE_UPLOAD_URL} uploading={backUploading} setUploading={setBackUploading} onResponse={res => handleUpdateButton(_id, { backUrl: res?.data?.url }, 'back')} />
                   {processState !== DRIVING_STATE.APPROVED && <Button className="ms-2" variant={invalidCard ? 'danger' : 'outline-primary'} onClick={handleInvalidCard}>
-                    <IoClose />
+                    <IoClose /> Lỗi
                   </Button>}
                 </div>
               </Row>
@@ -810,7 +755,7 @@ function Driving(props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-primary" onClick={() => setImageVisible(false)}>
+          <Button variant="outline-primary" onClick={() => { setImageVisible(false)}}>
             Đóng
           </Button>
         </Modal.Footer>

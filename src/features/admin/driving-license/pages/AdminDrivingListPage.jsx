@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Driving from "./Driving";
-import { updateDrivingData } from "../../../store/drivingAdminSlice";
+import Driving from "../Driving";
+import { updateDrivingData } from "store/drivingAdminSlice";
 import { useDispatch } from "react-redux";
 import Select from 'react-select'
 import DrivingApi from "api/drivingApi";
 import { Button, Form, Modal } from "react-bootstrap";
-import { DOWNLOAD_FILE_FIELDS, DOWNLOAD_FILE_FIELDS_LABEL, DOWNLOAD_OPTIONS, DOWNLOAD_OPTIONS_LABEL, DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE, EXPORT_EXCEL_FIELDS, EXPORT_EXCEL_FIELDS_LABEL, EXPORT_EXCEL_OPTIONS, EXPORT_EXCEL_OPTIONS_LABEL, EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE, IDENTITY_CARD_TYPE, PAYMENT_METHODS } from "./constant";
+import { DOWNLOAD_FILE_FIELDS, DOWNLOAD_FILE_FIELDS_LABEL, DOWNLOAD_OPTIONS, DOWNLOAD_OPTIONS_LABEL, DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE, EXPORT_EXCEL_FIELDS, EXPORT_EXCEL_FIELDS_LABEL, EXPORT_EXCEL_OPTIONS, EXPORT_EXCEL_OPTIONS_LABEL, EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE, IDENTITY_CARD_TYPE, PAYMENT_METHODS } from "../constant";
 import { MdDownload } from "react-icons/md";
 import ocrApi from "api/ocrApi";
 import { Document, Page, View, Image as PDFImage, Svg, Path, StyleSheet, pdf } from "@react-pdf/renderer";
@@ -16,8 +16,12 @@ import * as XLSX from 'xlsx';
 import JSZip from 'jszip';
 import _ from "lodash";
 import fileApi from "api/fileApi";
+import { useSearchParams } from "react-router-dom";
 
-function A1Driving() {
+function AdminDrivingListPage() {
+  const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [drivingType, setDrivingType] = useState(searchParams.get('type') || 0);
   const [loadingAction, setLoadingAction] = useState(0);
   const [exportExcelFields, setExportExcelFields] = useState(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
   const [downloadFileFields, setDownloadFileFields] = useState({
@@ -91,9 +95,18 @@ function A1Driving() {
   }, [data]);
 
   useEffect(() => {
+    const drivingType = searchParams.get('type');
+    setDrivingType(drivingType);
+  }, [searchParams]);
+
+  useEffect(() => {
     setLoading(true);
     DrivingApi
-      .getDateVisible()
+      .getDrivingDate({
+        isVisible: true,
+        drivingType,
+        center,
+      })
       .then(async (res) => {
         const temp = res.data;
 
@@ -105,7 +118,7 @@ function A1Driving() {
 
         if (temp[0]) {
           DrivingApi
-            .queryDrivings(temp[0]?.date, DRIVING_STATE.CREATED)
+            .queryDrivings(temp[0]?.date, state, drivingType)
             .then((res) => {
               const newData = checkDuplicate(res.data);
               setData(newData);
@@ -124,12 +137,12 @@ function A1Driving() {
         alert(error);
         setLoading(false);
       });
-  }, []);
+  }, [drivingType]);
 
   const queryDrivings = async (dateIndex, state) => {
     if (dateIndex === null) {
       DrivingApi
-        .queryDrivings(null, state)
+        .queryDrivings(null, state, drivingType)
         .then((res) => {
           const newData = checkDuplicate(res.data);
           setData(newData);
@@ -142,7 +155,7 @@ function A1Driving() {
         });
     } else {
       DrivingApi
-        .queryDrivings(dates[dateIndex].date, state)
+        .queryDrivings(dates[dateIndex].date, state, drivingType)
         .then((res) => {
           const newData = checkDuplicate(res.data);
           setData(newData);
@@ -451,13 +464,18 @@ function A1Driving() {
   }
 
   return (
-    <>
-      <div className="d-flex flex-wrap justify-content-center">
+    <div
+      style={{
+        height: '100vh',
+        overflow: 'scroll',
+      }}
+    >
+      <div className='d-flex flex-wrap justify-content-center'>
         {dates.map((child, index) => {
           return (
             <Button
-              variant={dateSelected === index ? "primary" : "text-secondary"}
-              className="mx-2 my-1 rounded-pill border-primary px-2 py-1 form-label"
+              variant={dateSelected === index ? 'primary' : 'text-secondary'}
+              className='mx-2 my-1 rounded-pill border-primary px-2 py-1 form-label'
               onClick={() => handleDateButton(index)}
               key={child._id}
               style={{ minWidth: '100px' }}
@@ -469,7 +487,7 @@ function A1Driving() {
       </div>
       <div className='my-3 d-flex justify-content-center'>
         <Button
-          className="mx-1"
+          className='mx-1'
           onClick={() => handleStateButton(null)}
           variant={state === null ? 'primary' : 'outline-primary'}
         >
@@ -479,22 +497,29 @@ function A1Driving() {
         {Object.keys(DRIVING_STATE).map((key) => {
           return (
             <Button
-              className="mx-1"
+              className='mx-1'
               onClick={() => handleStateButton(DRIVING_STATE[key])}
-              variant={state === DRIVING_STATE[key] ? 'primary' : 'outline-secondary'}
+              variant={
+                state === DRIVING_STATE[key] ? 'primary' : 'outline-secondary'
+              }
               key={key}
             >
-              {DRIVING_STATE_LABEL[DRIVING_STATE[key]]} {state === DRIVING_STATE[key] ? `(${data.length})` : ''}
+              {DRIVING_STATE_LABEL[DRIVING_STATE[key]]}{' '}
+              {state === DRIVING_STATE[key] ? `(${data.length})` : ''}
             </Button>
           );
         })}
-        <Button className="mx-1" onClick={() => setShowActionModal(true)}><MdDownload /> Tải xuống</Button>
+        <Button className='mx-1' onClick={() => setShowActionModal(true)}>
+          <MdDownload /> Tải xuống
+        </Button>
       </div>
 
-      {data.length <= 0 && !loading && <p className="text-center mt-5">Không có dữ liệu</p>}
+      {data.length <= 0 && !loading && (
+        <p className='text-center mt-5'>Không có dữ liệu</p>
+      )}
 
       {loading ? (
-        <p className="text-center mt-5">Đang tải dữ liệu...</p>
+        <p className='text-center mt-5'>Đang tải dữ liệu...</p>
       ) : (
         <div>
           {data.map((child) => {
@@ -510,7 +535,11 @@ function A1Driving() {
         </div>
       )}
 
-      <Modal show={showActionModal} onHide={() => setShowActionModal(false)} size="lg">
+      <Modal
+        show={showActionModal}
+        onHide={() => setShowActionModal(false)}
+        size='lg'
+      >
         <Modal.Header closeButton>
           <Modal.Title>Chọn thao tác</Modal.Title>
         </Modal.Header>
@@ -532,53 +561,101 @@ function A1Driving() {
               label: DOWNLOAD_OPTIONS_LABEL[action],
             }}
           />
-          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && <Select
-            className="mt-3"
-            onChange={(e) => {
-              if (e.value === EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL) {
-                setExportExcelOption(e);
-                setExportExcelFields(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
-              } else if (e.value === EXPORT_EXCEL_OPTIONS.EXPORT_INPUT_EXCEL) {
-                setExportExcelOption(e);
-                setExportExcelFields(EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE);
-              }
-            }}
-            options={Object.keys(EXPORT_EXCEL_OPTIONS_LABEL).map((key) => {
-              return {
-                value: key,
-                label: EXPORT_EXCEL_OPTIONS_LABEL[key],
-              };
-            })}
-            defaultValue={exportExcelOption}
-            value={exportExcelOption}
-          />}
-          <p className="my-3 text-center">Tổng cộng {data.length} hồ sơ</p>
-          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && <p className="my-3 text-center">Chọn các trường danh sách</p>}
-          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && <div className="d-flex flex-wrap mt-3">
-            {Object.keys(exportExcelFields).map((key) => {
-              return <Form.Check className="w-50" name={key} key={key} type='checkbox' label={EXPORT_EXCEL_FIELDS_LABEL[key]} checked={exportExcelFields[key]} onChange={(e) => setExportExcelFields({ ...exportExcelFields, [e.target.name]: e.target.checked })} />
-            })
-            }
-          </div>}
-          {action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE && <p className="my-3 text-center">Chọn ảnh</p>}
-          {action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE && <div className="d-flex flex-wrap justify-content-around mt-3">
-            {Object.keys(downloadFileFields).map((key) => {
-              return <Form.Check name={key} key={key} type='checkbox' label={DOWNLOAD_FILE_FIELDS_LABEL[key]} checked={downloadFileFields[key]} onChange={(e) => setDownloadFileFields({ ...downloadFileFields, [e.target.name]: e.target.checked })} />
-            })}</div>}
-          <div className="my-3 mx-auto text-center">
-            {loadingAction ? <Button disabled={true}>Đang thực hiện {loadingAction}</Button> : <Button variant='primary' onClick={handleActionButton}>
-              Thực hiện
-            </Button>}
+          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && (
+            <Select
+              className='mt-3'
+              onChange={(e) => {
+                if (e.value === EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL) {
+                  setExportExcelOption(e);
+                  setExportExcelFields(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
+                } else if (
+                  e.value === EXPORT_EXCEL_OPTIONS.EXPORT_INPUT_EXCEL
+                ) {
+                  setExportExcelOption(e);
+                  setExportExcelFields(EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE);
+                }
+              }}
+              options={Object.keys(EXPORT_EXCEL_OPTIONS_LABEL).map((key) => {
+                return {
+                  value: key,
+                  label: EXPORT_EXCEL_OPTIONS_LABEL[key],
+                };
+              })}
+              defaultValue={exportExcelOption}
+              value={exportExcelOption}
+            />
+          )}
+          <p className='my-3 text-center'>Tổng cộng {data.length} hồ sơ</p>
+          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && (
+            <p className='my-3 text-center'>Chọn các trường danh sách</p>
+          )}
+          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && (
+            <div className='d-flex flex-wrap mt-3'>
+              {Object.keys(exportExcelFields).map((key) => {
+                return (
+                  <Form.Check
+                    className='w-50'
+                    name={key}
+                    key={key}
+                    type='checkbox'
+                    label={EXPORT_EXCEL_FIELDS_LABEL[key]}
+                    checked={exportExcelFields[key]}
+                    onChange={(e) =>
+                      setExportExcelFields({
+                        ...exportExcelFields,
+                        [e.target.name]: e.target.checked,
+                      })
+                    }
+                  />
+                );
+              })}
+            </div>
+          )}
+          {action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE && (
+            <p className='my-3 text-center'>Chọn ảnh</p>
+          )}
+          {action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE && (
+            <div className='d-flex flex-wrap justify-content-around mt-3'>
+              {Object.keys(downloadFileFields).map((key) => {
+                return (
+                  <Form.Check
+                    name={key}
+                    key={key}
+                    type='checkbox'
+                    label={DOWNLOAD_FILE_FIELDS_LABEL[key]}
+                    checked={downloadFileFields[key]}
+                    onChange={(e) =>
+                      setDownloadFileFields({
+                        ...downloadFileFields,
+                        [e.target.name]: e.target.checked,
+                      })
+                    }
+                  />
+                );
+              })}
+            </div>
+          )}
+          <div className='my-3 mx-auto text-center'>
+            {loadingAction ? (
+              <Button disabled={true}>Đang thực hiện {loadingAction}</Button>
+            ) : (
+              <Button variant='primary' onClick={handleActionButton}>
+                Thực hiện
+              </Button>
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='outline-primary' onClick={() => setShowActionModal(false)}>
+          <Button
+            variant='outline-primary'
+            onClick={() => setShowActionModal(false)}
+          >
             Đóng
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 }
 
-export default A1Driving;
+export default AdminDrivingListPage;

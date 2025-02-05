@@ -41,16 +41,6 @@ class DrivingApi {
     return axiosClient.patch(url, data, authHeader());
   };
 
-  getDateVisible = async () => {
-    const url = `${API_PATH}/date`;
-    return axiosClient.get(url, {
-      ...authHeader(),
-      params: {
-        isVisible: true,
-      },
-    });
-  };
-
   query = async (query) => {
     const url = `${API_PATH}/q`;
     return axiosClient.get(url, {
@@ -59,13 +49,14 @@ class DrivingApi {
     });
   }
 
-  queryDrivings = async (date, state) => {
-    const url = `${API_PATH}/query`;
+  queryDrivings = async (date, processState, drivingType) => {
+    const url = `${API_PATH}/q`;
     return axiosClient.get(url, {
       ...authHeader(),
       params: {
         date,
-        state,
+        processState,
+        drivingType,
       },
     });
   };
@@ -135,6 +126,14 @@ class DrivingApi {
       ...authHeader(),
     });
   };
+  
+  getDate = async (params) => {
+    const url = `${API_PATH}/date`;
+    return axiosClient.get(url, {
+      ...authHeader(),
+      params,
+    });
+  };
 
   getDrivingCenter = async (params) => {
     const url = `${API_PATH}/center`;
@@ -149,7 +148,7 @@ class DrivingApi {
   };
 
   queryDrivingCenters = async (q) => {
-    const url = `${API_PATH}/center/query`;
+    const url = `${API_PATH}/center`;
     return axiosClient.get(url, {
       params: q,
     });
@@ -160,6 +159,12 @@ class DrivingApi {
     return axiosClient.patch(url, data, authHeader());
   }
 
+  queryDrivingCenterPrice = async (q) => {
+    const url = `${API_PATH}/center/price`;
+    return axiosClient.get(url, {
+      params: q,
+    });
+  }
 
   handleVisibleButton = async (_id, date, isVisible, formVisible = false) => {
     const url = `${API_PATH}/date`;
@@ -240,20 +245,36 @@ class DrivingApi {
     });
   };
 
-  clipPortrait = async (id) => {
+  clipPortrait = async (id, portraitUrl) => {
     const url = `/driving/clipping/${id}`;
-    return axiosClient.post(url, { id });
+    return axiosClient.post(url, { id, url: portraitUrl });
   }
 
-  extractIdentity = async (id) => {
+  extractIdentity = async (id, frontUrl, backUrl) => {
     const url = `/driving/extract/${id}`;
-    return axiosClient.get(url);
+    return axiosClient.get(url, {
+      params: { frontUrl, backUrl },
+    });
   }
 
   getDrivingCenter = async (params) => {
     const url = `${API_PATH}/center`;
     return axiosClient.get(url, {
       params,
+    });
+  }
+
+  queryDrivingType = async (q) => {
+    const url = `${API_PATH}/type`;
+    return axiosClient.get(url, {
+      params: q,
+    });
+  }
+
+  queryDrivingCenterType = async (q) => {
+    const url = `${API_PATH}/center/type`;
+    return axiosClient.get(url, {
+      params: q,
     });
   }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
-import { Button, Col, Form, FormControl, Modal, Offcanvas, Pagination, Row } from 'react-bootstrap';
+import { Button, Col, Form, Modal, Offcanvas, Pagination, Row } from 'react-bootstrap';
 import { MdClear, MdEdit, MdFilterList, MdRotateLeft, MdSearch, MdQrCodeScanner, MdFlipCameraAndroid } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
@@ -16,11 +16,11 @@ import CopyButton from 'components/button/CopyButton';
 import { ROLE } from 'constants/role';
 import AccountModal from 'features/driving-license/components/AccountModal';
 import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, PAYMENT_METHODS } from '../constant';
-import { FaQrcode } from "react-icons/fa";
 import QRCode from "react-qr-code";
+import fileApi from 'api/fileApi';
 
-function AdminDrivingA1Page() {
-  const userRole = JSON.parse(localStorage.getItem('user-info')).role;
+function AdminDrivingPage() {
+  const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const PROCESS_STATE = {
     CREATED: 0,
     WAITING_FOR_UPDATE: 1,
@@ -55,6 +55,12 @@ function AdminDrivingA1Page() {
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [visibleDate, setVisibleDate] = useState([{}]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [frontUrl, setFrontUrl] = useState('');
+  const [backUrl, setBackUrl] = useState('');
+  const [portraitUrl, setPortraitUrl] = useState('');
+  const [portraitUploading, setPortraitUploading] = useState(false);
+  const [frontUploading, setFrontUploading] = useState(false);
+  const [backUploading, setBackUploading] = useState(false);
 
   useEffect(() => {
     const selectedDate = visibleDate.find((item) => {
@@ -142,7 +148,7 @@ function AdminDrivingA1Page() {
     fetchDrivings(query, searchText, page);
 
     drivingApi
-      .getDateVisible()
+      .getDate()
       .then((res) => {
         const date = res.data.map((item) => {
           return {
@@ -283,48 +289,75 @@ function AdminDrivingA1Page() {
 
     if(showEditModal) {
       fetchImage();
+    } else {
+      setPortraitUrl('');
+      setFrontUrl('');
+      setBackUrl('');
     }
   }, [selectedRow, showEditModal]);
+  const fetchImage = async (type, url) => {
+    if (type === 'portrait' || type === undefined) {
+      fileApi
+        .getSignedUrl(url || selectedRow.portraitUrl)
+        .then(async (res) => {
+          setPortraitUrl(res?.data?.signedUrl);
+        })
+        .catch((err) => {
+          setPortraitUrl(selectedRow?.portraitUrl);
+        });
+    }
 
-  const fetchImage = async () => {
-    const portraitResponse = await fetch(selectedRow.portraitUrl);
-    const portraitBlob = await portraitResponse.blob();
-    const portraitReader = new FileReader();
-    portraitReader.readAsDataURL(portraitBlob);
-    portraitReader.onloadend = () => {
-      const portraitElement = document.getElementById(`portrait`);
-      portraitElement.setAttribute('src', portraitReader.result);
-      portraitElement.style.objectFit = 'contain';
-      document.getElementById('portrait-link').href = portraitReader.result;
-      portraitElement.height = 350;
-      portraitElement.style.objectFit = 'contain';
-    };
+    if (type === 'front' || type === undefined) {
+      fileApi
+        .getSignedUrl(url || selectedRow.frontUrl)
+        .then(async (res) => {
+          setFrontUrl(res?.data?.signedUrl);
+        })
+        .catch((err) => {
+          setFrontUrl(selectedRow?.frontUrl);
+        });
+    }
 
-    const frontResponse = await fetch(selectedRow.frontUrl);
-    const frontBlob = await frontResponse.blob();
-    const frontReader = new FileReader();
-    frontReader.readAsDataURL(frontBlob);
-    frontReader.onloadend = () => {
-      const frontElement = document.getElementById(`front-card`);
-      frontElement.setAttribute('src', frontReader.result);
-      frontElement.style.objectFit = 'contain';
-      document.getElementById('front-link').href = frontReader.result;
-      frontElement.height = 250;
-      frontElement.style.objectFit = 'contain';
-    };
+    if (type === 'back' || type === undefined) {
+      fileApi
+        .getSignedUrl(url || selectedRow.backUrl)
+        .then(async (res) => {
+          setBackUrl(res?.data?.signedUrl);
+        })
+        .catch((err) => {
+          setBackUrl(selectedRow?.backUrl);
+        });
+    }
+  };
 
-    const backResponse = await fetch(selectedRow.backUrl);
-    const backBlob = await backResponse.blob();
-    const backReader = new FileReader();
-    backReader.readAsDataURL(backBlob);
-    backReader.onloadend = () => {
-      const backElement = document.getElementById(`back-card`);
-      backElement.setAttribute('src', backReader.result);
-      backElement.style.objectFit = 'contain';
-      document.getElementById('back-link').href = backReader.result;
-      backElement.height = 250;
-      backElement.style.objectFit = 'contain';
-    };
+  const downloadImage = async (url, name) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const urlBlob = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = urlBlob;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUpdateImageButton = (id, data, type) => {
+    drivingApi
+      .updateDriving(id, data)
+      .then((res) => {
+        setSelectedRow({ ...selectedRow, ...res.data });
+        fetchImage(type);
+        fetchDrivings(query, searchText, page);
+        toastWrapper('Cập nhật thành công', 'success');
+      })
+      .catch((e) => {
+        toastWrapper('Cập nhật thất bại', 'error');
+      });
   };
 
   const handleClose = () => setShowEditModal(false);
@@ -406,9 +439,9 @@ function AdminDrivingA1Page() {
         <button className='btn ms-2' onClick={handleSearchButton}>
           <MdSearch size={25} />
         </button>
-        <button className='btn ms-2' onClick={() => setShow(true)}>
+        {/* <button className='btn ms-2' onClick={() => setShow(true)}>
           <MdFilterList size={25} />
-        </button>
+        </button> */}
         <button className='btn ms-2' onClick={() => setShowQRModal(true)}>
           <MdQrCodeScanner size={25} />
         </button>
@@ -730,110 +763,144 @@ function AdminDrivingA1Page() {
             </Row>
 
             <Row className='mb-5'>
+              <Col xs={5}>
+                <div>
+                  <img
+                    id='portrait'
+                    alt='portrait'
+                    src={portraitUrl}
+                    width='100%'
+                  />
+                </div>
+                <div className='my-3 d-flex justify-content-center align-items-center'>
+                  <Button
+                    variant='outline-primary'
+                    onClick={() => rotateImage('portrait')}
+                  >
+                    <MdRotateLeft /> Xoay
+                  </Button>
+                  <Button
+                    className='ms-3'
+                    onClick={() =>
+                      downloadImage(
+                        portraitUrl,
+                        `${selectedRow?.name}-${selectedRow?.tel}-portrait.png`
+                      )
+                    }
+                  >
+                    Tải xuống
+                  </Button>
+                  <FileUploader
+                    className='ms-3'
+                    name='file'
+                    text='Tải lên'
+                    hasLabel={false}
+                    url={FILE_UPLOAD_URL}
+                    uploading={portraitUploading}
+                    setUploading={setPortraitUploading}
+                    onResponse={(res) =>
+                      handleUpdateImageButton(
+                        selectedRow?._id,
+                        {
+                          portraitUrl: res?.data?.url,
+                        },
+                        'portrait'
+                      )
+                    }
+                  />
+                </div>
+              </Col>
               <Col>
                 <div>
-                  <a
-                    id='front-link'
-                    download={`${selectedRow?.name}-${selectedRow?.tel}-front.png`}
-                  >
-                    <img id='front-card' alt={selectedRow?.frontUrl} />
-                  </a>
+                  <img
+                    id='front-card'
+                    alt='front-card'
+                    src={frontUrl}
+                    width='100%'
+                  />
                 </div>
-                <Button
-                  variant='outline-primary'
-                  className='mt-2'
-                  onClick={() => rotateImage('front-card')}
-                >
-                  <MdRotateLeft /> Xoay ảnh mặt trước
-                </Button>
-              </Col>
-
-              <Col>
+                <div className='my-3 d-flex justify-content-center align-items-center'>
+                  <Button
+                    variant='outline-primary'
+                    onClick={() => rotateImage('front-card')}
+                  >
+                    <MdRotateLeft /> Xoay
+                  </Button>
+                  <Button
+                    className='ms-3'
+                    onClick={() =>
+                      downloadImage(
+                        frontUrl,
+                        `${selectedRow?.name}-${selectedRow?.tel}-front.png`
+                      )
+                    }
+                  >
+                    Tải xuống
+                  </Button>
+                  <FileUploader
+                    className='ms-3'
+                    name='file'
+                    text='Tải lên'
+                    hasLabel={false}
+                    url={FILE_UPLOAD_URL}
+                    uploading={portraitUploading}
+                    setUploading={setPortraitUploading}
+                    onResponse={(res) =>
+                      handleUpdateImageButton(
+                        selectedRow?._id,
+                        {
+                          frontUrl: res?.data?.url,
+                        },
+                        'front'
+                      )
+                    }
+                  />
+                </div>
                 <div>
-                  <a
-                    id='back-link'
-                    download={`${selectedRow?.name}-${selectedRow?.tel}-back.png`}
-                  >
-                    <img id='back-card' alt={selectedRow?.backUrl} />
-                  </a>
+                  <img
+                    id='back-card'
+                    alt='back-card'
+                    src={backUrl}
+                    width='100%'
+                  />
                 </div>
-                <Button
-                  variant='outline-primary'
-                  className='mt-2'
-                  onClick={() => rotateImage('back-card')}
-                >
-                  <MdRotateLeft /> Xoay ảnh mặt sau
-                </Button>
-              </Col>
-              <Col>
-                <div>
-                  <a
-                    id='portrait-link'
-                    download={`${selectedRow.name}-${selectedRow?.tel}-portrait.png`}
+                <div className='my-3 d-flex justify-content-center align-items-center'>
+                  <Button
+                    variant='outline-primary'
+                    onClick={() => rotateImage('back-card')}
                   >
-                    <img id='portrait' alt={selectedRow?.portraitUrl} />
-                  </a>
+                    <MdRotateLeft /> Xoay
+                  </Button>
+                  <Button
+                    className='ms-3'
+                    onClick={() =>
+                      downloadImage(
+                        backUrl,
+                        `${selectedRow?.name}-${selectedRow?.tel}-back.png`
+                      )
+                    }
+                  >
+                    Tải xuống
+                  </Button>
+                  <FileUploader
+                    className='ms-3'
+                    name='file'
+                    text='Tải lên'
+                    hasLabel={false}
+                    url={FILE_UPLOAD_URL}
+                    uploading={portraitUploading}
+                    setUploading={setPortraitUploading}
+                    onResponse={(res) =>
+                      handleUpdateImageButton(
+                        selectedRow?._id,
+                        {
+                          backUrl: res?.data?.url,
+                        },
+                        'back'
+                      )
+                    }
+                  />
                 </div>
-                <Button
-                  variant='outline-primary'
-                  className='mt-2'
-                  onClick={() => rotateImage('portrait')}
-                >
-                  <MdRotateLeft /> Xoay ảnh chân dung
-                </Button>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col>
-                <Row>
-                  <Col>
-                    {/* <FileUploader
-                      name='file'
-                      text='Cập nhật ảnh chân dung'
-                      url={FILE_UPLOAD_URL}
-                      uploading={portraitUploading}
-                      setUploading={setPortraitUploading}
-                      onResponse={(res) =>
-                        handleUpdateButton(selectedRow._id, {
-                          portraitUrl: res?.data?.url,
-                        })
-                      }
-                    /> */}
-                  </Col>
-                </Row>
-                <Row className='mt-3'>
-                  <Col>
-                    {/* <FileUploader
-                      name='file'
-                      text='Cập nhật ảnh mặt trước'
-                      url={FILE_UPLOAD_URL}
-                      uploading={portraitUploading}
-                      setUploading={setPortraitUploading}
-                      onResponse={(res) =>
-                        handleUpdateButton(selectedRow._id, {
-                          portraitUrl: res?.data?.url,
-                        })
-                      }
-                    /> */}
-                  </Col>
-                </Row>
-                <Row className='mt-3'>
-                  <Col>
-                    {/* <FileUploader
-                      name='file'
-                      text='Cập nhật ảnh mặt sau'
-                      url={FILE_UPLOAD_URL}
-                      uploading={portraitUploading}
-                      setUploading={setPortraitUploading}
-                      onResponse={(res) =>
-                        handleUpdateButton(selectedRow._id, {
-                          portraitUrl: res?.data?.url,
-                        })
-                      }
-                    /> */}
-                  </Col>
-                </Row>
               </Col>
             </Row>
           </div>
@@ -885,7 +952,19 @@ function AdminDrivingA1Page() {
           </Form.Group>
           <Form.Group className='my-3' as={Row}>
             <Form.Label column sm='4'>
-              Ngày dự thi
+              Ngày dự thi ban đầu
+            </Form.Label>
+            <Col>
+              <Select
+                isClearable
+                options={visibleDate}
+                onChange={(val) => setFixedDate(val?.value || undefined)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group className='my-3' as={Row}>
+            <Form.Label column sm='4'>
+              Ngày dự thi mới
             </Form.Label>
             <Col>
               <Select
@@ -902,7 +981,7 @@ function AdminDrivingA1Page() {
           </Form.Group>
           <Form.Group className='mb-3' as={Row}>
             <Form.Label column sm='4'>
-              Trạng thái
+              Trạng thái mới
             </Form.Label>
             <Col>
               <Select
@@ -922,18 +1001,6 @@ function AdminDrivingA1Page() {
               />
             </Col>
           </Form.Group>
-          <Form.Group className='my-3' as={Row}>
-            <Form.Label column sm='4'>
-              Ngày cố định
-            </Form.Label>
-            <Col>
-              <Select
-                isClearable
-                options={visibleDate}
-                onChange={(val) => setFixedDate(val?.value || undefined)}
-              />
-            </Col>
-          </Form.Group>
         </Modal.Body>
       </Modal>
       <AccountModal
@@ -945,4 +1012,4 @@ function AdminDrivingA1Page() {
   );
 }
 
-export default AdminDrivingA1Page;
+export default AdminDrivingPage;

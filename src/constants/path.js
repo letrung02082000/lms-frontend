@@ -48,6 +48,7 @@ export const PATH = {
         HEALTH_CHECK: '/driving/health',
         ADMIN: {
             ROOT: '/driving/admin',
+            QUERY: '/driving/admin/query',
             A1: '/driving/admin/a1',
             A2: '/driving/admin/a2',
             B1: '/driving/admin/b1',

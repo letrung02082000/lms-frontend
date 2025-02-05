@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
@@ -7,7 +7,7 @@ import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 
 function AdminDrivingDatePage() {
-  const userRole = JSON.parse(localStorage.getItem('user-info'))?.role;
+  const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const [query, setQuery] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
   const [page, setPage] = useState(1);
@@ -17,11 +17,23 @@ function AdminDrivingDatePage() {
   const [groupLink, setGroupLink] = useState('');
   const [drivingCenters, setDrivingCenters] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState('');
+  const [drivingTypes, setDrivingTypes] = useState([]);
+  const [selectedType, setSelectedType] = useState('');
+  console.log('selectedType', selectedType);
   useEffect(() => {
     drivingApi
-      .getDrivingCenter({ visible: true })
+      .queryDrivingCenters({ visible: true, ...(center && { center }) })
       .then((res) => {
         setDrivingCenters(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    drivingApi
+      .queryDrivingType()
+      .then((res) => {
+        setDrivingTypes(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -42,7 +54,7 @@ function AdminDrivingDatePage() {
     {
       field: 'date',
       headerName: 'Ngày thi',
-      flex: 1,
+      flex: 2,
       cellRenderer: (data) => {
         return data.value
           ? new Date(data.value).toLocaleDateString('en-GB')
@@ -71,6 +83,14 @@ function AdminDrivingDatePage() {
             },
           },
           {
+            field: 'drivingType',
+            headerName: 'Hạng bằng',
+            editable: false,
+            cellRenderer: (data) => {
+              return data?.value ? data.value.label : '';
+            },
+          },
+          {
             field: 'formVisible',
             headerName: 'Hiển thị trên website',
             editable: true,
@@ -85,11 +105,14 @@ function AdminDrivingDatePage() {
   ]);
 
   const fetchDrivingDates = async () => {
-    drivingApi.getDrivingDate().then((res) => {
-      setRowData(res.data);
-    }).catch((err) => {
-      console.log(err);
-    });
+    drivingApi
+      .getDrivingDate({ ...(center && { center }) })
+      .then((res) => {
+        setRowData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   useEffect(() => {
@@ -103,6 +126,7 @@ function AdminDrivingDatePage() {
       description,
       link: groupLink,
       center: selectedCenter,
+      drivingType: selectedType,
     };
 
     drivingApi.addDrivingDate(body).then((res) => {
@@ -189,6 +213,21 @@ function AdminDrivingDatePage() {
                       {drivingCenters.map((center) => (
                         <option key={center._id} value={center._id}>
                           {center.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Select
+                      className='mb-3'
+                      onChange={(e) => setSelectedType(e.target.value)}
+                    >
+                      <option>Chọn hạng bằng</option>
+                      {drivingTypes.map((type) => (
+                        <option key={type._id} value={type._id}>
+                          {type.label}
                         </option>
                       ))}
                     </Form.Select>

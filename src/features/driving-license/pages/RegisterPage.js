@@ -24,16 +24,16 @@ import { PATH } from "constants/path";
 
 export default function DrivingRegisterPage() {
   const centerShortName = useParams().shortName || '';
-  
-  const MAP_URL ='https://maps.app.goo.gl/kyq58xK5b8p4rEi1A';
+
+  const MAP_URL = 'https://maps.app.goo.gl/kyq58xK5b8p4rEi1A';
   const categories = [
     {
       value: 0,
-      label: "Bằng A1",
+      label: "Bằng A1 (Mô tô 2 bánh có dung tích xi lanh đến 125 cm3)",
     },
     {
       value: 1,
-      label: "Bằng A2 (Mô tô 2 bánh không giới hạn dung tích xi lanh, trung tâm liên hệ hướng dẫn qua điện thoại)",
+      label: "Bằng A (Mô tô 2 bánh không giới hạn dung tích xi lanh, trung tâm liên hệ hướng dẫn qua điện thoại)",
     },
     {
       value: 2,
@@ -69,11 +69,11 @@ export default function DrivingRegisterPage() {
   }
 
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
-  const drivingDateInfo = JSON.parse(localStorage.getItem('driving-date') || '{}');
+  let drivingDateInfo = JSON.parse(localStorage.getItem('driving-date') || '{}');
   const [drivingTel, setDrivingTel] = useState(drivingInfo?.tel || '');
-  const drivingLink = localStorage.getItem("driving-link") || '';
-  const drivingDate = useMemo(()=>{
-    if(drivingInfo?.date) {
+  const drivingLink = drivingDateInfo?.link;
+  const drivingDate = useMemo(() => {
+    if (drivingInfo?.date) {
       return new Date(drivingInfo?.date).toLocaleDateString('en-GB').split("/").join("");
     } else return null;
   }, [drivingInfo?.date]);
@@ -82,138 +82,164 @@ export default function DrivingRegisterPage() {
 
   const [accountShow, setAccountShow] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(1);
-  const [drivingType, setDrivingType] = useState(0);
+  const [drivingType, setDrivingType] = useState(null);
+  const [drivingCenterTypes, setDrivingCenterTypes] = useState([]);
   const [date, setDate] = useState(false);
   const [dateList, setDateList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchData, setSearchData] = useState(null);
-  const[frontUploading, setFrontUploading] = useState(false);
-  const[backUploading, setBackUploading] = useState(false);
-  const[portraitUploading, setPortraitUploading] = useState(false);
+  const [frontUploading, setFrontUploading] = useState(false);
+  const [backUploading, setBackUploading] = useState(false);
+  const [portraitUploading, setPortraitUploading] = useState(false);
   const [frontData, setFrontData] = useState(null);
   const [backData, setBackData] = useState(null);
   const [portraitData, setPortraitData] = useState(null);
   const [drivingCenter, setDrivingCenter] = useState(null);
+  const [drivingCenters, setDrivingCenters] = useState([]);
 
   useEffect(() => {
-    const getDrivingDates = async (center) => {
-      drivingApi.getFormVisible(center).then((res) => {
-        let dates = res?.data || [];
-        dates = dates.map((child) => {
-          return { label: child?.description, value: child?._id, link: child?.link, date: new Date(child?.date), aPrice: child?.aPrice, bPrice: child?.bPrice, center: child?.center?._id };
-        });
-
-        setDateList(dates);
-      }).catch((e) => {
-        toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
-      });
-    }
-
-    if(centerShortName) {
-      drivingApi.queryDrivingCenters({shortName: centerShortName}).then((res) => {
+    if (centerShortName) {
+      drivingApi.queryDrivingCenters({ shortName: centerShortName }).then((res) => {
         if (res?.data?.length > 0) {
-          const center = res?.data[0]
+          const center = res?.data[0];
           document.title = center.name;
-          setDrivingCenter(center);
-          getDrivingDates(center?._id);
+          setDrivingCenter(center?._id);
+          setDrivingCenters([center]);
         }
       }).catch((e) => {
         toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
       });
     } else {
-      getDrivingDates();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (date) {
-      const dateObj = dateList.filter((child) => child.value == date)[0];
-
-      drivingApi.getDrivingCenterById(dateObj?.center).then((res) => {
-        setDrivingCenter(res?.data);
+      drivingApi.queryDrivingCenters({}).then((res) => {
+        setDrivingCenters(res?.data || []);
       }).catch((e) => {
         toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
       });
     }
-  }, [date]);
+  }, []);
+
+  useEffect(() => {
+    if (drivingCenter) {
+      drivingApi.queryDrivingCenterType({ visible: true, center: drivingCenter }).then((res) => {
+        setDrivingCenterTypes(res?.data || []);
+      }).catch((e) => {
+        toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
+      });
+    }
+  }, [drivingCenter]);
+
+  const DRIVING_TYPE_LABEL = useMemo(() => {
+    return drivingCenterTypes.reduce((acc, cur) => {
+      acc[cur?.drivingType?._id] = cur?.drivingType?.label;
+      return acc;
+    }, {});
+  }, [drivingCenterTypes]);
+
+  const DRIVING_CENTER_LIST = useMemo(() => {
+    return drivingCenters.map((center) => {
+      return { label: center.name, value: center._id };
+    });
+  }, [drivingCenters]);
+
+  const DRIVING_DATE_LIST = useMemo(() => {
+    return dateList.map((date) => {
+      return { label: date?.description, value: date?._id };
+    });
+  }, [dateList]);
+
+  const DRIVING_TYPE_LIST = useMemo(() => {
+    return drivingCenterTypes.map((centerType) => {
+      return { label: `${centerType?.drivingType?.label} (${centerType?.drivingType?.description})`, value: centerType?.drivingType?._id };
+    });
+  }, [drivingCenterTypes]);
+
+  const DRIVING_CENTER_INFO = useMemo(() => {
+    return drivingCenters.filter((center) => center._id === drivingCenter)[0] || {};
+  }, [drivingCenter]);
+
+  useEffect(() => {
+    const getDrivingDates = async (center, drivingType) => {
+      drivingApi.getDate({ center, drivingType, formVisible: true, }).then((res) => {
+        let dates = res?.data || [];
+
+        if (!dates.length) {
+          setDateList([]);
+          return toastWrapper('Hiện tại không có ngày thi nào được mở đăng ký, vui lòng quay lại sau', 'error');
+        }
+
+        setDateList(dates)
+      }).catch((e) => {
+        toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
+      });
+    }
+
+    if (drivingCenter && drivingType) {
+      getDrivingDates(drivingCenter, drivingType);
+    }
+  }, [drivingType]);
 
   const handleSubmitButton = async () => {
     await handleSubmit((formData) => {
-      setIsLoading(true);
+      // setIsLoading(true);
+      if (!frontData) {
+        toastWrapper('Vui lòng tải lên mặt trước CCCD', 'error');
+        setIsLoading(false);
+        return;
+      }
 
-    if(!frontData) {
-      toastWrapper('Vui lòng tải lên mặt trước CCCD', 'error');
-      setIsLoading(false);
-      return;
-    }
+      if (!backData) {
+        setIsLoading(false);
+        return toastWrapper('Vui lòng tải lên mặt sau CCCD', 'error');
+      }
 
-    if(!backData) {
-      toastWrapper('Vui lòng tải lên mặt sau CCCD', 'error');
-      setIsLoading(false);
-      return;
-    }
+      if (!portraitData) {
+        setIsLoading(false);
+        return toastWrapper('Vui lòng tải lên ảnh chân dung', 'error');
+      }
 
-    if(!portraitData) {
-      toastWrapper('Vui lòng tải lên ảnh chân dung', 'error');
-      setIsLoading(false);
-      return;
-    }
+      if (!date) {
+        setIsLoading(false);
+        return toastWrapper('Vui lòng chọn ngày dự thi', 'error');
+      }
 
-    if(parseInt(drivingType) === 0 && !date) {
-      toastWrapper('Vui lòng chọn ngày dự thi', 'error');
-      setIsLoading(false);
-      return;
-    }
+      if(!drivingCenter) {
+        setIsLoading(false);
+        return toastWrapper('Vui lòng chọn cơ sở đào tạo', 'error');
+      }
 
-    let drivingLink = '';
-    
-    if(drivingType == 0) {
-      const dateObj = dateList.filter((child) => child.value == date)[0];
-      drivingLink = dateObj?.link;
-      localStorage.setItem('driving-link', drivingLink || '');
-      localStorage.setItem('driving-date', JSON.stringify(dateObj));
-      localStorage.setItem('driving-type', drivingType);
-      formData.date = dateObj?.date?.getTime();
-      formData.center = dateObj?.center;
-    } else {
-      localStorage.setItem('driving-link', '');
-      localStorage.setItem('driving-type', drivingType);
-    }
+      if(!drivingType) {
+        setIsLoading(false);
+        return toastWrapper('Vui lòng chọn hạng bằng lái', 'error');
+      }
 
-    const data = {
-      ...formData,
-      frontUrl: frontData?.url,
-      backUrl: backData?.url,
-      portraitUrl: portraitData?.url,
-      isPaid: false,
-      paymentMethod: paymentMethod,
-      drivingType: drivingType,
-      source: source,
-      link: drivingLink,
-    }
+      drivingDateInfo = dateList.filter((d) => d._id === date)[0] || {};
 
-    drivingApi.addDriving(data)
-    .then((res) => {
-      localStorage.setItem('driving-info', JSON.stringify(res?.data));
-      setDrivingTel(res?.data?.tel);
-    })
-    .catch((error) => {
-      toastWrapper(`${error.toString()}`, "error");
-    }).finally(() => {
-      setIsLoading(false);
-    }
-    );
+      const data = {
+        ...formData,
+        frontUrl: frontData?.url,
+        backUrl: backData?.url,
+        portraitUrl: portraitData?.url,
+        drivingType,
+        source,
+        center: drivingCenter,
+        date: drivingDateInfo?.date,
+        drivingLink: drivingDateInfo?.link,
+      }
+
+
+      drivingApi.addDriving(data)
+        .then((res) => {
+          localStorage.setItem('driving-info', JSON.stringify(res?.data));
+          setDrivingTel(res?.data?.tel);
+        })
+        .catch((error) => {
+          toastWrapper(`${error.toString()}`, "error");
+        }).finally(() => {
+          setIsLoading(false);
+        }
+        );
     })();
-  };
-
-  const handleDrivingTypeChange = (value) => {
-    setDate(false);
-    setDrivingType(value);
-  };
-
-  const handleDateChange = (value) => {
-    setDate(value);
   };
 
   const handleSearchChange = (e) => {
@@ -287,23 +313,23 @@ export default function DrivingRegisterPage() {
             </Card>
           );
         })}
-        
+
       {drivingInfo?._id ? <div className="success-container d-flex flex-column align-items-center">
         <Row className="mb-3">
           <BsFillCheckCircleFill color='#019f91' size={45} />
         </Row>
         <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <p className="text-center">Học viên vui lòng tham gia khám sức khoẻ để hoàn tất thủ tục dự thi. Danh sách và lịch khám sức khoẻ sẽ được cập nhật hàng tuần trên nhóm thi.</p>
-        <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán chuyển khoản</Button>
+        {/* <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán chuyển khoản</Button> */}
         <Button className="mb-3" variant='outline-primary' onClick={() => setPaymentMethod(0)}>Thanh toán trực tiếp</Button>
-        
+
         <p className="text-center">
-            Zalo hỗ trợ:<br/>
-            <ZaloLink tel='4013961016678131109'>
-              Trung tâm dịch vụ sinh viên iStudent
-            </ZaloLink>
-          </p>
-          <Button className="mb-3" variant='outline-primary' onClick={() => {
+          Zalo hỗ trợ:<br />
+          <ZaloLink tel='4013961016678131109'>
+            Trung tâm dịch vụ sinh viên iStudent
+          </ZaloLink>
+        </p>
+        <Button className="mb-3" variant='outline-primary' onClick={() => {
           localStorage.removeItem('driving-info');
           window.location.reload();
         }}>Đăng ký hồ sơ mới</Button>
@@ -312,154 +338,178 @@ export default function DrivingRegisterPage() {
 
         <Row className="mb-3">
           <Col>
-              <InputField
-                hasAsterisk={true}
-                label='Tên của bạn'
-                subLabel='Nhập họ tên đầy đủ, có dấu'
-                control={control}
-                name='name'
-                rules={{
-                  maxLength: {
-                    value: 50,
-                    message: 'Độ dài tối đa <= 50 ký tự',
-                  },
-                  required: 'Vui lòng nhập trường này',
-                }}
-                onClear={handleClearButton}
-              />
-          </Col>
-        </Row>
-
-        <Row className="mb-3">
-          <Col>
-              <InputField
-                hasAsterisk={true}
-                label='Số điện thoại liên hệ'
-                control={control}
-                name='tel'
-                type='number'
-                rules={{
-                  maxLength: {
-                    value: 10,
-                    message: 'Số điện thoại phải có 10 chữ số',
-                  },
-                  minLength: {
-                    value: 10,
-                    message: 'Số điện thoại phải có 10 chữ số',
-                  },
-                  required: 'Vui lòng nhập trường này',
-                }}
-                onClear={handleClearButton}
-              />
-          </Col>
-        </Row>
-
-        <Row className="mb-3">
-          <Col>
-              <InputField
-                hasAsterisk={true}
-                label='Số điện thoại Zalo'
-                control={control}
-                name='zalo'
-                type='number'
-                rules={{
-                  maxLength: {
-                    value: 10,
-                    message: 'Số điện thoại Zalo phải có 10 chữ số',
-                  },
-                  minLength: {
-                    value: 10,
-                    message: 'Số điện thoại Zalo phải có 10 chữ số',
-                  },
-                  required: 'Vui lòng nhập trường này',
-                }}
-                onClear={handleClearButton}
-              />
-          </Col>
-        </Row>
-
-        <Row className="mb-3">
-            <Col>
-              <FileUploader fileName={frontData?.originalName} onResponse={(res) => setFrontData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading}  label='Mặt trước CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc' accept={{
-                'image/png': ['.png'], 
-                'image/jpeg': ['.jpg', '.jpeg'],
-              }}/>
-            </Col>
-        </Row>
-
-        <Row className="mb-3">
-            <Col>
-              <FileUploader fileName={backData?.originalName} onResponse={res => setBackData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading}  label='Mặt sau CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc' accept={{
-                'image/png': ['.png'], 
-                'image/jpeg': ['.jpg', '.jpeg'] 
-              }}/>
-            </Col>
-        </Row>
-
-        <Row className="mb-3">
-            <Col>
-              <FileUploader fileName={portraitData?.originalName} onResponse={res => setPortraitData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={portraitUploading} setUploading={setPortraitUploading} label='Ảnh chân dung' hasAsterisk={true} subLabel='Lấy đủ 2 vai từ thắt lưng, không đeo kính, tóc không che trán, nhìn rõ và không quá 3 tháng' accept={{
-                'image/png': ['.png'],
-                'image/jpeg': ['.jpg', '.jpeg'] 
-              }} />
-            </Col>
-        </Row>
-
-        <Row className="mb-3">
-          <Col>
-            <RadioField
+            <InputField
               hasAsterisk={true}
-              options={categories}
-              label='Chọn loại bằng lái'
+              label='Tên của bạn'
+              subLabel='Nhập họ tên đầy đủ, có dấu'
               control={control}
-              name='category'
+              name='name'
+              rules={{
+                maxLength: {
+                  value: 50,
+                  message: 'Độ dài tối đa <= 50 ký tự',
+                },
+                required: 'Vui lòng nhập trường này',
+              }}
               onClear={handleClearButton}
-              onChange={handleDrivingTypeChange}
-              defaultChecked={0}
             />
           </Col>
         </Row>
 
-        {drivingType == categories[0]?.value && <Row className="mb-3">
+        <Row className="mb-3">
+          <Col>
+            <InputField
+              hasAsterisk={true}
+              label='Số điện thoại liên hệ'
+              control={control}
+              name='tel'
+              type='number'
+              rules={{
+                maxLength: {
+                  value: 10,
+                  message: 'Số điện thoại phải có 10 chữ số',
+                },
+                minLength: {
+                  value: 10,
+                  message: 'Số điện thoại phải có 10 chữ số',
+                },
+                required: 'Vui lòng nhập trường này',
+              }}
+              onClear={handleClearButton}
+            />
+          </Col>
+        </Row>
+
+        <Row className="mb-3">
+          <Col>
+            <InputField
+              hasAsterisk={true}
+              label='Số điện thoại Zalo'
+              control={control}
+              name='zalo'
+              type='number'
+              rules={{
+                maxLength: {
+                  value: 10,
+                  message: 'Số điện thoại Zalo phải có 10 chữ số',
+                },
+                minLength: {
+                  value: 10,
+                  message: 'Số điện thoại Zalo phải có 10 chữ số',
+                },
+                required: 'Vui lòng nhập trường này',
+              }}
+              onClear={handleClearButton}
+            />
+          </Col>
+        </Row>
+
+        <Row className="mb-3">
+          <Col>
+            <FileUploader fileName={frontData?.originalName} onResponse={(res) => setFrontData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={frontUploading} setUploading={setFrontUploading} label='Mặt trước CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc' accept={{
+              'image/png': ['.png'],
+              'image/jpeg': ['.jpg', '.jpeg'],
+            }} />
+          </Col>
+        </Row>
+
+        <Row className="mb-3">
+          <Col>
+            <FileUploader fileName={backData?.originalName} onResponse={res => setBackData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={backUploading} setUploading={setBackUploading} label='Mặt sau CCCD' hasAsterisk={true} subLabel='Không chói loá hay mất góc' accept={{
+              'image/png': ['.png'],
+              'image/jpeg': ['.jpg', '.jpeg']
+            }} />
+          </Col>
+        </Row>
+
+        <Row className="mb-3">
+          <Col>
+            <FileUploader fileName={portraitData?.originalName} onResponse={res => setPortraitData(res?.data)} url={FILE_UPLOAD_URL} name='file' uploading={portraitUploading} setUploading={setPortraitUploading} label='Ảnh chân dung' hasAsterisk={true} subLabel='Lấy đủ 2 vai từ thắt lưng, không đeo kính, tóc không che trán, nhìn rõ và không quá 3 tháng' accept={{
+              'image/png': ['.png'],
+              'image/jpeg': ['.jpg', '.jpeg']
+            }} />
+          </Col>
+        </Row>
+
+        {!centerShortName && <Row className="mb-3">
+            <Col>
+              <RadioField
+                hasAsterisk={true}
+                options={DRIVING_CENTER_LIST}
+                label='Chọn cơ sở đào tạo'
+                control={control}
+                name='center'
+                onClear={handleClearButton}
+                onChange={(value) => {
+                  setDate(null)
+                  setDrivingType(null)
+                  setDrivingCenterTypes([])
+                  setDrivingCenter(value)
+                }}
+              />
+            {DRIVING_CENTER_INFO?.instructionLink && <Form.Text>Xem thông tin cơ sở đào tạo <a href={DRIVING_CENTER_INFO?.instructionLink} target="_blank" rel="noopener noreferrer">tại đây.</a></Form.Text>}
+          </Col>
+        </Row>}
+
+        {drivingCenter && <Row className="mb-3">
           <Col>
             <RadioField
               hasAsterisk={true}
-              options={dateList}
+              options={DRIVING_TYPE_LIST}
+              label='Chọn hạng bằng lái'
+              control={control}
+              name='drivingType'
+              onClear={handleClearButton}
+              onChange={value => {
+                setDate(null)
+                setDateList([])
+                setDrivingType(value)
+              }}
+              defaultChecked={0}
+            />
+          </Col>
+        </Row>}
+
+        {drivingCenter && drivingType && <Row className="mb-3">
+          <Col>
+            <RadioField
+              hasAsterisk={true}
+              options={DRIVING_DATE_LIST}
               label='Chọn điểm thi và ngày dự thi'
               control={control}
               name='date'
               onClear={handleClearButton}
-              onChange={handleDateChange}
-            />
-              {date && <Form.Text>Xem hướng dẫn chi tiết điểm thi và các gói thi <a href={drivingCenter?.instructionLink || PATH.DRIVING.CENTER.HUONG_DAN.replace(':shortName/', centerShortName)} target="_blank" rel="noopener noreferrer">tại đây.</a></Form.Text>}
+              onChange={setDate}
+              />
+            {date && <Form.Text>Xem hướng dẫn chi tiết điểm thi và các gói thi <a href={DRIVING_CENTER_INFO?.instructionLink} target="_blank" rel="noopener noreferrer">tại đây.</a></Form.Text>}
           </Col>
         </Row>}
 
         <Row className="mb-3">
           <Col>
-              <InputField
-                label='Bằng lái hạng khác'
-                subLabel='Vui lòng ghi rõ loại bằng lái hạng khác (nếu có)'
-                control={control}
-                name='feedback'
-                as='textarea'
-                rules={{
-                  required: false,
-                  maxLength: {
-                    value: 500,
-                    message: 'Độ dài không vượt quá 500 ký tự',
-                  }
-                }}
-                onClear={handleClearButton}
-              />
+            <InputField
+              label='Bằng lái hạng khác'
+              subLabel='Vui lòng ghi rõ hạng bằng và số giấy phép lái xe hạng khác (nếu có)'
+              control={control}
+              name='feedback'
+              as='textarea'
+              rules={{
+                required: false,
+                maxLength: {
+                  value: 500,
+                  message: 'Độ dài không vượt quá 500 ký tự',
+                }
+              }}
+              onClear={handleClearButton}
+            />
           </Col>
         </Row>
 
         <p style={{ margin: "1rem 0" }}>
-            Bằng cách bấm Đăng ký, khách hàng đã đồng ý với <a href="https://file.uniapp.vn/-ff2ZVv45XH" target='_blank' rel='noopener noreferrer'>Điều khoản sử dụng dữ liệu</a> của chúng tôi, mọi thắc mắc vui lòng liên hệ Zalo Offical Account{" "}
-            <ZaloLink tel='4013961016678131109'>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>{' '}
-            để được hỗ trợ nhanh nhất.
-          </p>
+          Bằng cách bấm Đăng ký, khách hàng đã đồng ý với <a href="https://file.uniapp.vn/-ff2ZVv45XH" target='_blank' rel='noopener noreferrer'>Điều khoản sử dụng dữ liệu</a> của chúng tôi, mọi thắc mắc vui lòng liên hệ Zalo Offical Account{" "}
+          <ZaloLink tel='4013961016678131109'>Trung tâm dịch vụ sinh viên iStudent</ZaloLink>{' '}
+          để được hỗ trợ nhanh nhất.
+        </p>
 
         {isLoading ? (
           <>
@@ -503,7 +553,7 @@ export default function DrivingRegisterPage() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} aPrice={drivingDateInfo?.aPrice} bPrice={drivingDateInfo?.bPrice}/>
+      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} aPrice={drivingDateInfo?.aPrice} bPrice={drivingDateInfo?.bPrice} />
     </Styles>
   );
 }
