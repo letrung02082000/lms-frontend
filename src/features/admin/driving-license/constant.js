@@ -12,6 +12,17 @@ export const DRIVING_STATE = {
     CANCELED: 4,
 }
 
+ export const PROCESS_STATE = {
+    CREATED: 0,
+    WAITING_FOR_UPDATE: 1,
+    WAITING_FOR_PAYMENT: 2,
+    APPROVED: 5,
+    HEALTH_CHECKED: 6,
+    WAITING_FOR_SCHEDULE: 7,
+    COMPLETED: 3,
+    CANCELLED: 4,
+  };
+
 export const DRIVING_STATE_LABEL = {
     [DRIVING_STATE.CREATED]: "Đã tạo",
     [DRIVING_STATE.WAITING_CHANGE]: "Chờ cập nhật",

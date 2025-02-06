@@ -494,7 +494,7 @@ function Driving(props) {
               <p className="mb-2">
                 Hạng thi
               </p>
-              <p className="fw-bold">{DRIVING_TYPE_LABEL[drivingType]}</p>
+              <p className="fw-bold">{props?.drivingTypesLabel[drivingType]}</p>
             </Col>
             <Col xs={1} className="text-center">
               <p className="mb-2">

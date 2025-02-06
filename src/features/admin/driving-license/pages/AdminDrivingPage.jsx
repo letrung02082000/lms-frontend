@@ -1,8 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
-import { Button, Col, Form, Modal, Offcanvas, Pagination, Row } from 'react-bootstrap';
-import { MdClear, MdEdit, MdFilterList, MdRotateLeft, MdSearch, MdQrCodeScanner, MdFlipCameraAndroid } from 'react-icons/md';
+import {
+  Button,
+  Col,
+  Form,
+  Modal,
+  Offcanvas,
+  Pagination,
+  Row,
+} from 'react-bootstrap';
+import {
+  MdClear,
+  MdEdit,
+  MdFilterList,
+  MdRotateLeft,
+  MdSearch,
+  MdQrCodeScanner,
+  MdFlipCameraAndroid,
+} from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
 import SelectField from 'components/form/SelectField';
@@ -10,32 +26,24 @@ import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
 import { toastWrapper } from 'utils';
 import Select from 'react-select';
-import cryptojs from 'crypto-js'
+import cryptojs from 'crypto-js';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import CopyButton from 'components/button/CopyButton';
 import { ROLE } from 'constants/role';
 import AccountModal from 'features/driving-license/components/AccountModal';
-import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, PAYMENT_METHODS } from '../constant';
-import QRCode from "react-qr-code";
+import {
+  DRIVING_STATE,
+  DRIVING_STATE_LABEL,
+  PAYMENT_METHODS,
+} from '../constant';
+import QRCode from 'react-qr-code';
 import fileApi from 'api/fileApi';
 
 function AdminDrivingPage() {
-  const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
-  const PROCESS_STATE = {
-    CREATED: 0,
-    WAITING_FOR_UPDATE: 1,
-    WAITING_FOR_PAYMENT: 2,
-    APPROVED: 5,
-    HEALTH_CHECKED: 6,
-    WAITING_FOR_SCHEDULE: 7,
-    COMPLETED: 3,
-    CANCELLED: 4,
-  }
-  const DRIVING_TYPE_LIST = [
-    { label: 'Hạng A1', value: 0 },
-    { label: 'Hạng A', value: 1 },
-    { label: 'Hạng khác', value: 2 },
-  ]
+  const { center, role: userRole } = JSON.parse(
+    localStorage.getItem('user-info')
+  );
+
   const key = 'aes123456789101112131415';
   const [updateParams, setUpdateParams] = useState({
     date: undefined,
@@ -59,8 +67,8 @@ function AdminDrivingPage() {
   const [backUrl, setBackUrl] = useState('');
   const [portraitUrl, setPortraitUrl] = useState('');
   const [portraitUploading, setPortraitUploading] = useState(false);
-  const [frontUploading, setFrontUploading] = useState(false);
-  const [backUploading, setBackUploading] = useState(false);
+  const [fixedDate, setFixedDate] = useState(null);
+  const [drivingTypes, setDrivingTypes] = useState([]);
 
   useEffect(() => {
     const selectedDate = visibleDate.find((item) => {
@@ -69,7 +77,30 @@ function AdminDrivingPage() {
     setSelectedDate(selectedDate);
   }, [selectedRow]);
 
-  const [fixedDate, setFixedDate] = useState(null);
+  useEffect(() => {
+    drivingApi
+      .queryDrivingType()
+      .then((res) => {
+        const drivingTypes = res.data.map((drivingType) => {
+          return {
+            label: drivingType.label,
+            value: drivingType._id,
+          };
+        });
+        setDrivingTypes(drivingTypes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const DRIVING_TYPES_LABEL = useMemo(() => {
+    return drivingTypes.reduce((acc, cur) => {
+      acc[cur.value] = cur.label;
+      return acc;
+    }, {});
+  }, [drivingTypes]);
+
   const {
     control,
     setValue,
@@ -141,7 +172,17 @@ function AdminDrivingPage() {
       },
     },
     { field: 'source', headerName: 'Nguồn', flex: 1 },
-    ...(userRole === ROLE.DRIVING.ADMIN || userRole === ROLE.ADMIN) ? [{ field: 'action', headerName: 'Thao tác', flex: 1, cellRenderer: ActionButton, valueGetter: rowDataGetter }] : [],
+    ...(userRole === ROLE.DRIVING.ADMIN || userRole === ROLE.ADMIN
+      ? [
+          {
+            field: 'action',
+            headerName: 'Thao tác',
+            flex: 1,
+            cellRenderer: ActionButton,
+            valueGetter: rowDataGetter,
+          },
+        ]
+      : []),
   ]);
 
   useEffect(() => {
@@ -175,7 +216,8 @@ function AdminDrivingPage() {
             : qrDataArr[2] ||
               cryptojs.AES.decrypt(qrDataArr[0], key)
                 ?.toString(cryptojs.enc.Utf8)
-                ?.split('.')[0] || '';
+                ?.split('.')[0] ||
+              '';
 
         if (searchText?.length === 0) {
           return toastWrapper('Mã QR không hợp lệ', 'error');
@@ -198,7 +240,7 @@ function AdminDrivingPage() {
             ) {
               const count = res.data.reduce((acc, cur) => {
                 return (
-                  acc + (cur.processState != PROCESS_STATE.CANCELLED ? 1 : 0)
+                  acc + (cur.processState != DRIVING_STATE.CANCELLED ? 1 : 0)
                 );
               }, 0);
 
@@ -211,7 +253,7 @@ function AdminDrivingPage() {
               }
 
               for (let i = 0; i < res.data.length; i++) {
-                if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
+                if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
                   setSelectedRow(res.data[i]);
 
                   if (fixedDate && fixedDate !== res.data[i].date) {
@@ -248,7 +290,7 @@ function AdminDrivingPage() {
               }
             } else {
               for (let i = 0; i < res.data.length; i++) {
-                if (res.data[i].processState != PROCESS_STATE.CANCELLED) {
+                if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
                   setSelectedRow(res.data[i]);
 
                   if (fixedDate && fixedDate !== res.data[i].date) {
@@ -278,16 +320,16 @@ function AdminDrivingPage() {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
-  useEffect( () => {
+  useEffect(() => {
     setValue('name', selectedRow?.name);
     setValue('tel', selectedRow?.tel);
     setValue('zalo', selectedRow?.zalo);
     setValue('feedback', selectedRow?.feedback);
     setValue('cash', selectedRow?.cash);
 
-    if(showEditModal) {
+    if (showEditModal) {
       fetchImage();
     } else {
       setPortraitUrl('');
@@ -376,41 +418,53 @@ function AdminDrivingPage() {
         data.drivingType = data?.drivingType?.value;
       }
 
-      drivingApi.updateDriving(selectedRow._id, data).then((res) => {
-        toastWrapper('Cập nhật thành công', 'success');
-        setShowEditModal(false);
-        fetchDrivings(query, searchText, page);
-
-      }).catch((err) => {
-        toastWrapper(err.response.data.message, 'error');
-      });
+      drivingApi
+        .updateDriving(selectedRow._id, data)
+        .then((res) => {
+          toastWrapper('Cập nhật thành công', 'success');
+          setShowEditModal(false);
+          fetchDrivings(query, searchText, page);
+        })
+        .catch((err) => {
+          toastWrapper(err.response.data.message, 'error');
+        });
     })();
-  }
+  };
 
   const handleSearchButton = () => {
-   fetchDrivings(query, searchText, page);
+    fetchDrivings(query, searchText, page);
   };
 
   const handleClearButton = (name) => {
     setValue(name, '');
-  }
+  };
 
   const updateProcessState = (id, processState) => {
-    drivingApi.updateProcessState(id, processState).then((res) => {
-      toastWrapper('Đã cập nhật thành ' + DRIVING_STATE_LABEL[processState], 'success');
-      fetchDrivings(query, searchText, page);
-      setShowEditModal(false);
-    }).catch((err) => {
-      toastWrapper(err.response.data.message, 'error');
-    }
-    );
-  }
+    drivingApi
+      .updateProcessState(id, processState)
+      .then((res) => {
+        toastWrapper(
+          'Đã cập nhật thành ' + DRIVING_STATE_LABEL[processState],
+          'success'
+        );
+        fetchDrivings(query, searchText, page);
+        setShowEditModal(false);
+      })
+      .catch((err) => {
+        toastWrapper(err.response.data.message, 'error');
+      });
+  };
 
   const rotateImage = (id) => {
     const tmp = document.getElementById(id);
-    tmp.style.transform = `rotate(${(tmp.getAttribute('data-rotate') || 0) - 90}deg)`;
-    tmp.setAttribute('data-rotate', (tmp.getAttribute('data-rotate') || 0) - 90);
-  }
+    tmp.style.transform = `rotate(${
+      (tmp.getAttribute('data-rotate') || 0) - 90
+    }deg)`;
+    tmp.setAttribute(
+      'data-rotate',
+      (tmp.getAttribute('data-rotate') || 0) - 90
+    );
+  };
 
   return (
     <div
@@ -620,9 +674,9 @@ function AdminDrivingPage() {
                   rules={{
                     required: false,
                   }}
-                  options={DRIVING_TYPE_LIST}
+                  options={drivingTypes}
                   label={`Hạng thi hiện tại: ${
-                    DRIVING_TYPE_LABEL[selectedRow?.drivingType]
+                    DRIVING_TYPES_LABEL[selectedRow?.drivingType]
                   }`}
                   control={control}
                   name='drivingType'
