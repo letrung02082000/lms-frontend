@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Driving from "../Driving";
 import { updateDrivingData } from "store/drivingAdminSlice";
 import { useDispatch } from "react-redux";
@@ -22,6 +22,7 @@ function AdminDrivingListPage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const [searchParams, setSearchParams] = useSearchParams();
   const [drivingType, setDrivingType] = useState(searchParams.get('type') || 0);
+  const [drivingTypes, setDrivingTypes] = useState([]);
   const [loadingAction, setLoadingAction] = useState(0);
   const [exportExcelFields, setExportExcelFields] = useState(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
   const [downloadFileFields, setDownloadFileFields] = useState({
@@ -89,6 +90,30 @@ function AdminDrivingListPage() {
     });
     return newData;
   };
+
+  useEffect(() => {
+    DrivingApi
+      .queryDrivingType()
+      .then((res) => {
+        const drivingTypes = res.data.map((drivingType) => {
+          return {
+            label: drivingType.label,
+            value: drivingType._id,
+          }
+        });
+        setDrivingTypes(drivingTypes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [])
+  
+  const DRIVING_TYPES_LABEL = useMemo(() => {
+    return drivingTypes.reduce((acc, cur) => {
+      acc[cur.value] = cur.label;
+      return acc;
+    }, {});
+  }, [drivingTypes]);
 
   useEffect(() => {
     dispatch(updateDrivingData(data));
@@ -529,6 +554,7 @@ function AdminDrivingListPage() {
                 dateList={dates}
                 key={child._id}
                 id={child._id}
+                drivingTypesLabel={DRIVING_TYPES_LABEL}
               />
             );
           })}
