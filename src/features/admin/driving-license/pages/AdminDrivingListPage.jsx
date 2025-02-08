@@ -233,7 +233,7 @@ function AdminDrivingListPage() {
   }
 
   const exportExcel = async () => {
-    let exportData = [], idx = 0, identityInfo, detailAddress, addressTownCode, address, dob, identityNumber;
+    let exportData = [], idx = 0, identityInfo, detailAddress, addressTownCode, address, dob, identityNumber, error='';
     for (let child of data) {
       ++idx;
       setLoadingAction(idx);
@@ -257,18 +257,34 @@ function AdminDrivingListPage() {
         }
       }
 
-      if (child?.identityInfo && (exportExcelFields[EXPORT_EXCEL_FIELDS.DOB] || exportExcelFields[EXPORT_EXCEL_FIELDS.GENDER] || exportExcelFields[EXPORT_EXCEL_FIELDS.IDENTITY_CARD_NUMBER] || exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS] || exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS_TOWN_CODE] || exportExcelFields[EXPORT_EXCEL_FIELDS.DETAIL_ADDRESS] || exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_DATE] || exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_PLACE])) {
+      if (child.identityInfo && (exportExcelFields[EXPORT_EXCEL_FIELDS.DOB] || exportExcelFields[EXPORT_EXCEL_FIELDS.GENDER] || exportExcelFields[EXPORT_EXCEL_FIELDS.IDENTITY_CARD_NUMBER] || exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS] || exportExcelFields[EXPORT_EXCEL_FIELDS.ADDRESS_TOWN_CODE] || exportExcelFields[EXPORT_EXCEL_FIELDS.DETAIL_ADDRESS] || exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_DATE] || exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_PLACE])) {
         try {
           const res = await ocrApi.getOcrInfo(child?.identityInfo);
           identityInfo = res?.data?.info;
           address = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address : identityInfo[0]?.address;
           addressTownCode = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address_ward_code : identityInfo[0]?.address_ward_code;
           detailAddress = res?.data?.frontType === IDENTITY_CARD_TYPE.CHIP_ID_CARD_FRONT ? identityInfo[1]?.address?.split(identityInfo[1]?.address_ward)[0] : identityInfo[0]?.address?.split(identityInfo[1]?.address_ward)[0];
-          dob = identityInfo[1]?.dob === identityInfo[0]?.dob ? identityInfo[1]?.dob : 'Ngày sinh không khớp trên 2 mặt căn cước';
-          identityNumber = identityInfo[1]?.id === identityInfo[0]?.person_number ? identityInfo[1]?.id : 'Số căn cước không khớp trên 2 mặt căn cước';
+          error =
+            identityInfo[1]?.dob !== identityInfo[0]?.dob
+              ? 'Ngày sinh không khớp trên 2 mặt căn cước, '
+              : '';
+          dob = identityInfo[1]?.dob;
+          identityNumber = identityInfo[1]?.id
+          error =
+            identityInfo[1]?.id !== identityInfo[0]?.person_number
+              ? (error += 'Số căn cước không khớp trên 2 mặt căn cước')
+              : '';
         } catch (error) {
           console.log(error);
         }
+      } else {
+        identityInfo = null;
+        address = null;
+        addressTownCode = null;
+        detailAddress = null;
+        dob = null;
+        identityNumber = null;
+        error = 'Không có thông tin căn cước';
       }
 
       const temp = {
@@ -300,6 +316,7 @@ function AdminDrivingListPage() {
         ...(exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_DATE] && { 'Ngày cấp': identityInfo && identityInfo[0]?.issue_date }),
         ...(exportExcelFields[EXPORT_EXCEL_FIELDS.CARD_PROVIDED_PLACE] && { 'Nơi cấp': identityInfo && identityInfo[0]?.issued_at }),
         ...(exportExcelFields[EXPORT_EXCEL_FIELDS.HEALTH_CHECKED_DATE] && { 'Ngày khám sức khỏe': child?.healthDate ? new Date(child?.healthDate).toLocaleString('en-GB') : '' }),
+        ...(exportExcelFields[EXPORT_EXCEL_FIELDS.ERROR] && { 'Lỗi': error }),
       };
 
       exportData.push(temp);
