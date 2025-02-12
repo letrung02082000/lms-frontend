@@ -34,6 +34,14 @@ import AdminDrivingCenterPage from 'features/admin/driving-license/pages/AdminDr
 import CenterInstructionPage from 'features/driving-license/pages/CenterInstructionPage';
 import AdminDrivingLayout from 'components/layout/AdminDrivingLayout';
 import AdminDrivingPage from 'features/admin/driving-license/pages/AdminDrivingPage';
+import AdminElearningGuard from 'components/guard/AdminElearningGuard';
+import AdminElearningLayout from 'components/layout/AdminElearningLayout';
+import AdminElearningPage from 'features/admin/elearning/pages/AdminElearningPage';
+import AdminElearningStudentPage from 'features/admin/elearning/pages/AdminElearningStudentPage';
+import StudentElearningGuard from 'components/guard/StudentElearningGuard';
+import StudentElearningLayout from 'components/layout/StudentElearningLayout';
+import ElearningStudentPage from 'features/elearning/pages/ElearningStudentPage';
+import ElearningStudentCoursePage from 'features/elearning/pages/ElearningStudentCoursePage';
 
 const router = createBrowserRouter([
   {
@@ -264,6 +272,44 @@ const router = createBrowserRouter([
           {
             path: PATH.DRIVING.ADMIN.ROOT,
             element: <AdminDrivingPage />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    element: <AdminElearningGuard />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        element: <AdminElearningLayout />,
+        children: [
+          {
+            path: PATH.ELEARNING.ADMIN.ROOT,
+            element: <AdminElearningPage />,
+          },
+          {
+            path: PATH.ELEARNING.ADMIN.STUDENT,
+            element: <AdminElearningStudentPage />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    element: <StudentElearningGuard />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        element: <StudentElearningLayout />,
+        children: [
+          {
+            path: PATH.ELEARNING.STUDENT.RESULT,
+            element: <ElearningStudentPage />,
+          },
+          {
+            path: PATH.ELEARNING.STUDENT.COURSE,
+            element: <ElearningStudentCoursePage />,
           },
         ],
       },

@@ -11,6 +11,12 @@ export const ROLE = {
         CNTD: 17,
     },
 
+    ELEARNING: {
+        ADMIN: 20,
+        TEACHER: 21,
+        STUDENT: 22,
+    },
+
     UNIFORM: {
         ADMIN: 30,
     },

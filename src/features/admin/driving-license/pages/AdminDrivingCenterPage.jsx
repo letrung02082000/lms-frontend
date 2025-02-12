@@ -5,6 +5,8 @@ import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
 import { MdEdit, MdAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
+import elearningApi from 'api/elearningApi';
+import CopyToClipboardButton from 'components/button/CopyToClipboardButton';
 
 function AdminDrivingCenterPage() {
   const {role: userRole, center} = JSON.parse(localStorage.getItem('user-info'));
@@ -15,6 +17,10 @@ function AdminDrivingCenterPage() {
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
   const [groupLink, setGroupLink] = useState('');
+  const [showElearningModal, setShowElearningModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [initingElearning, setInitingElearning] = useState(false);
+  const [elearningInfo, setElearningInfo] = useState(null);
 
   const [colDefs] = useState([
     {
@@ -61,6 +67,34 @@ function AdminDrivingCenterPage() {
       headerName: 'Hiển thị',
       editable: true,
     },
+    {
+      field: 'action',
+      headerName: 'Hành động',
+      cellRenderer: (data) => {
+        data = data.data;
+        return (
+          <div className='w-100 d-flex justify-content-center'>
+            <button
+              className='btn'
+              onClick={() => {
+                setSelectedRow(data);
+                setElearningInfo({
+                  cohortId: data?.cohortId,
+                  categoryId: data?.categoryId,
+                  admin: {
+                    username: data?.adminUsername,
+                    password: data?.adminPassword,
+                  }
+                })
+                setShowElearningModal(true);
+              }}
+            >
+              <MdEdit />
+            </button>
+          </div>
+        );
+      },
+    },
   ]);
 
   const fetchDrivingCenters = async () => {
@@ -73,6 +107,23 @@ function AdminDrivingCenterPage() {
         console.log(err);
       });
   }
+
+  const onInitCenterElearning = (centerId) => {
+    setInitingElearning(true);
+    elearningApi
+      .initCenterElearning(centerId)
+      .then((res) => {
+        setElearningInfo(res.data);
+        toastWrapper('Khởi tạo thành công', 'success');
+        fetchDrivingCenters();
+      })
+      .catch((err) => {
+        toastWrapper('Khởi tạo thất bại', 'error');
+      })
+      .finally(() => {
+        setInitingElearning(false);
+      });
+  };
 
   useEffect(() => {
     fetchDrivingCenters();
@@ -114,6 +165,8 @@ function AdminDrivingCenterPage() {
       toastWrapper(err.response.data.message, 'error');
     });
   }
+
+  console.log(elearningInfo)
 
   return (
     <div
@@ -198,6 +251,57 @@ function AdminDrivingCenterPage() {
           </Button> */}
         </>
       )}
+      <Modal
+        show={showElearningModal}
+        onHide={() => setShowElearningModal(false)}
+        size='lg'
+        backdrop='static'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Thông tin điểm thi</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {elearningInfo?.cohortId ? (
+            <div className='text-center'>
+              <p>
+                Tên đăng nhập: {elearningInfo?.admin?.username}
+                <CopyToClipboardButton className='btn text-primary' value={elearningInfo?.admin?.username} />
+              </p>
+              <p>
+                Mật khẩu: {elearningInfo?.admin?.password}
+                <CopyToClipboardButton className='btn text-primary' value={elearningInfo?.admin?.password} />
+              </p>
+              <p>Cohort ID: {elearningInfo?.cohortId}</p>
+              <p>Category ID: {elearningInfo?.categoryId}</p>
+              <Button
+                onClick={() =>
+                  window.open('https://lms.uniapp.vn/my/courses.php')
+                }
+              >
+                Quản lý E-learning
+              </Button>
+            </div>
+          ) : (
+            <p className='text-center'>
+              <div className='mb-3'>Bạn chưa có E-learning</div>
+              <Button
+                onClick={() => onInitCenterElearning(selectedRow?._id)}
+                disabled={initingElearning}
+              >
+                {initingElearning ? 'Đang khởi tạo' : 'Khởi tạo ngay'}
+              </Button>
+            </p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant='primary'
+            onClick={() => setShowElearningModal(false)}
+          >
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
