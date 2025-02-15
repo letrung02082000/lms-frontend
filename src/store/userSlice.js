@@ -21,6 +21,7 @@ export const userSlice = createSlice({
       state.isLoggedIn = false;
       localStorage.removeItem("user-jwt-tk");
       localStorage.removeItem("user-jwt-rftk");
+      localStorage.removeItem("user-info");
     },
 
     updateName: (state, action) => {
