@@ -27,13 +27,8 @@ function AccountPage() {
   };
 
   const handleLogout = async () => {
-    try {
-      await AccountApi.logout();
-      dispatch(logoutUser());
-      navigate(PATH.EXPLORE.ROOT);
-    } catch (error) {
-      console.log("Failed to logout: ", error);
-    }
+    dispatch(logoutUser());
+    navigate(PATH.AUTH.SIGNIN);
   }
 
   return (
