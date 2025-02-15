@@ -4,7 +4,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 function AdminElearningGuard() {
-  const user = JSON.parse(localStorage.getItem('user-info'));
+  let user = JSON.parse(localStorage.getItem('user-info'));
 
   if (Math.floor(user?.role / 10) === (ROLE.ELEARNING.ADMIN / 10) || user?.role === ROLE.ADMIN) {
     return <Outlet />;

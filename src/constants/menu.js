@@ -52,7 +52,7 @@ export const ADMIN_ELEARNING_MENU = [
 export const STUDENT_ELEARNING_MENU = [
     {
         label: 'Khoá học của tôi',
-        path: PATH.ELEARNING.STUDENT.COURSE,
+        path: PATH.ELEARNING.STUDENT.ROOT,
         icon: <FaList />,
     },
     {

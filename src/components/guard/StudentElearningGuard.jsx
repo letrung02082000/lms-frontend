@@ -4,9 +4,13 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 function StudentElearningGuard() {
-  const user = JSON.parse(localStorage.getItem('user-info'));
+  let user = JSON.parse(localStorage.getItem('user-info'));
 
-  if (user?.role === ROLE.ELEARNING.STUDENT || user?.role === ROLE.ADMIN) {
+  if(!Array.isArray(user.role)) {
+    user = {...user, role: [user.role]};
+  }
+
+  if (user?.role.includes(ROLE.ELEARNING.STUDENT)) {
     return <Outlet />;
   } else {
     window.location.href = PATH.AUTH.SIGNIN;

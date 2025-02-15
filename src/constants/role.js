@@ -4,11 +4,6 @@ export const ROLE = {
 
     DRIVING: {
         ADMIN: 10,
-        MANAGER: 11,
-        LANGF: 12,
-        UEL: 13,
-        UIT: 14,
-        CNTD: 17,
     },
 
     ELEARNING: {
