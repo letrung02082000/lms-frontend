@@ -172,7 +172,7 @@ function AdminDrivingPage() {
       },
     },
     { field: 'source', headerName: 'Nguồn', flex: 1 },
-    ...(userRole === ROLE.DRIVING.ADMIN || userRole === ROLE.ADMIN
+    ...(userRole?.includes(ROLE.DRIVING.ADMIN) || userRole?.includes(ROLE.ADMIN)
       ? [
           {
             field: 'action',
