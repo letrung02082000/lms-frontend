@@ -35,3 +35,29 @@ export const generateDrivingMenu = (drivingType) => {
     ];
     return ADMIN_DRIVING_MENU;
 }
+
+export const ADMIN_ELEARNING_MENU = [
+    {
+        label: 'Quản lý khóa học',
+        path: PATH.ELEARNING.ADMIN.ROOT,
+        icon: <FaList />,
+    },
+    {
+        label: 'Quản lý học viên',
+        path: PATH.ELEARNING.ADMIN.STUDENT,
+        icon: <FaList />,
+    }
+]
+
+export const STUDENT_ELEARNING_MENU = [
+    {
+        label: 'Khoá học của tôi',
+        path: PATH.ELEARNING.STUDENT.ROOT,
+        icon: <FaList />,
+    },
+    {
+        label: 'Kết quả học tập',
+        path: PATH.ELEARNING.STUDENT.RESULT,
+        icon: <FaList />,
+    },
+]

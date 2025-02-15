@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Driving from "../Driving";
 import { updateDrivingData } from "store/drivingAdminSlice";
 import { useDispatch } from "react-redux";
 import Select from 'react-select'
 import DrivingApi from "api/drivingApi";
-import { Button, Form, Modal } from "react-bootstrap";
-import { DOWNLOAD_FILE_FIELDS, DOWNLOAD_FILE_FIELDS_LABEL, DOWNLOAD_OPTIONS, DOWNLOAD_OPTIONS_LABEL, DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE, EXPORT_EXCEL_FIELDS, EXPORT_EXCEL_FIELDS_LABEL, EXPORT_EXCEL_OPTIONS, EXPORT_EXCEL_OPTIONS_LABEL, EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE, IDENTITY_CARD_TYPE, PAYMENT_METHODS } from "../constant";
-import { MdDownload } from "react-icons/md";
+import { Button, Form, Modal, Table } from "react-bootstrap";
+import { DOWNLOAD_FILE_FIELDS, DOWNLOAD_FILE_FIELDS_LABEL, ACTION_OPTIONS, ACTION_OPTIONS_LABEL, DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE, EXPORT_EXCEL_FIELDS, EXPORT_EXCEL_FIELDS_LABEL, EXPORT_EXCEL_OPTIONS, EXPORT_EXCEL_OPTIONS_LABEL, EXPORT_INPUT_EXCEL_FIELDS_TEMPLATE, IDENTITY_CARD_TYPE, PAYMENT_METHODS, UPLOAD_FILE_OPTIONS, UPLOAD_FILE_OPTIONS_LABEL } from "../constant";
+import { MdDelete, MdDownload } from "react-icons/md";
 import ocrApi from "api/ocrApi";
 import { Document, Page, View, Image as PDFImage, Svg, Path, StyleSheet, pdf } from "@react-pdf/renderer";
 import QRCode from "react-qr-code";
@@ -17,6 +17,10 @@ import JSZip from 'jszip';
 import _ from "lodash";
 import fileApi from "api/fileApi";
 import { useSearchParams } from "react-router-dom";
+import FileUploader from "components/form/FileUploader";
+import { FILE_UPLOAD_URL } from "constants/endpoints";
+import { IoMdEye } from "react-icons/io";
+import { toastWrapper } from "utils";
 
 function AdminDrivingListPage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
@@ -27,7 +31,6 @@ function AdminDrivingListPage() {
   const [exportExcelFields, setExportExcelFields] = useState(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
   const [downloadFileFields, setDownloadFileFields] = useState({
     [DOWNLOAD_FILE_FIELDS.CARD]: false,
-    [DOWNLOAD_FILE_FIELDS.CARD_CROP]: false,
     [DOWNLOAD_FILE_FIELDS.PORTRAIT]: true,
     [DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP]: false,
   });
@@ -35,6 +38,16 @@ function AdminDrivingListPage() {
     value: EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL,
     label: EXPORT_EXCEL_OPTIONS_LABEL[EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL],
   });
+  const [uploadFileOption, setUploadFileOption] = useState({
+    value: UPLOAD_FILE_OPTIONS.ALL,
+    label: UPLOAD_FILE_OPTIONS_LABEL[UPLOAD_FILE_OPTIONS.ALL],
+  });
+  const uploadFileOptionRef = useRef(uploadFileOption);
+
+  useEffect(() => {
+    uploadFileOptionRef.current = uploadFileOption;
+  }, [uploadFileOption]);
+
   const styles = StyleSheet.create({
     imagePage: {
       flexDirection: 'column',
@@ -64,7 +77,6 @@ function AdminDrivingListPage() {
       justifyContent: 'flex-end',
     },
   });
-
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -72,8 +84,10 @@ function AdminDrivingListPage() {
   const [dateSelected, setDateSelected] = useState(null);
   const [state, setState] = useState(DRIVING_STATE.CREATED);
   const [showActionModal, setShowActionModal] = useState(false);
-  const [action, setAction] = useState(DOWNLOAD_OPTIONS.EXPORT_EXCEL);
-
+  const [action, setAction] = useState(ACTION_OPTIONS.EXPORT_EXCEL);
+  const [uploading, setUploading] = useState(false);
+  const [preventActionButton, setPreventActionButton] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const checkDuplicate = (data) => {
     const newData = data.map((child) => {
       let dup = 0;
@@ -213,11 +227,12 @@ function AdminDrivingListPage() {
   };
 
   const handleActionButton = () => {
-    if (action === DOWNLOAD_OPTIONS.DOWNLOAD_PDF) {
+    console.log(uploadFileOption)
+    if (action === ACTION_OPTIONS.DOWNLOAD_PDF) {
       downloadPDF();
-    } else if (action === DOWNLOAD_OPTIONS.EXPORT_EXCEL) {
+    } else if (action === ACTION_OPTIONS.EXPORT_EXCEL) {
       exportExcel();
-    } else if (action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE) {
+    } else if (action === ACTION_OPTIONS.DOWNLOAD_FILE) {
       if (downloadFileFields[DOWNLOAD_FILE_FIELDS.CARD]) {
         zipFile(data, DOWNLOAD_FILE_FIELDS.CARD);
       }
@@ -228,6 +243,10 @@ function AdminDrivingListPage() {
 
       if (downloadFileFields[DOWNLOAD_FILE_FIELDS.PORTRAIT]) {
         zipFile(data, DOWNLOAD_FILE_FIELDS.PORTRAIT);
+      }
+    } else if(action === ACTION_OPTIONS.UPLOAD_FILE) {
+      if (uploadFileOption.value === UPLOAD_FILE_OPTIONS.ALL) {
+
       }
     }
   }
@@ -505,6 +524,67 @@ function AdminDrivingListPage() {
     setLoadingAction(0);
   }
 
+  useEffect(() => {
+    if(uploadedFiles.length > 0 && action === ACTION_OPTIONS.UPLOAD_FILE) {
+      setPreventActionButton(true);
+    } else {
+      setPreventActionButton(false);
+    }
+  }, [uploadedFiles, action]);
+  console.log(uploadedFiles)
+  const handleResponse = useCallback((res) => {
+    let file = res.data;
+
+    if (!file.originalName) {
+      console.error("Lỗi: File không có originalName");
+      return;
+    }
+
+    const infos = file.originalName.split("-");
+    file.name = infos[0]?.trim() || "";
+    file.tel = infos[1]?.trim() || "";
+    file.zalo = infos[1]?.trim() || "";
+
+    const currentUploadFileOption = uploadFileOptionRef.current;
+
+    if (!currentUploadFileOption || !currentUploadFileOption.value) {
+      console.error("Lỗi: uploadFileOption không hợp lệ", currentUploadFileOption);
+      return;
+    }
+
+    let newFileData = { ...file };
+
+    if (currentUploadFileOption.value === UPLOAD_FILE_OPTIONS.ALL) {
+      if (file.originalName.includes('front')) {
+        newFileData[UPLOAD_FILE_OPTIONS.FRONT] = file.url;
+      } else if (file.originalName.includes('back')) {
+        newFileData[UPLOAD_FILE_OPTIONS.BACK] = file.url;
+      } else if (file.originalName.includes('portrait')) {
+        newFileData[UPLOAD_FILE_OPTIONS.PORTRAIT] = file.url;
+      } else {
+        newFileData[UPLOAD_FILE_OPTIONS.FRONT] = file.url;
+      }
+    } else {
+      newFileData[currentUploadFileOption.value] =
+        file.url;
+    }
+
+    setUploadedFiles((prev) => {
+      const fileIndex = prev.findIndex((child) => child.name === file.name);
+
+      if (fileIndex !== -1) {
+        const updatedFiles = [...prev];
+        updatedFiles[fileIndex] = {
+          ...updatedFiles[fileIndex],
+          ...newFileData,
+        };
+        return updatedFiles;
+      } else {
+        return [...prev, newFileData];
+      }
+    });
+}, []);
+  
   return (
     <div
       style={{
@@ -552,7 +632,7 @@ function AdminDrivingListPage() {
           );
         })}
         <Button className='mx-1' onClick={() => setShowActionModal(true)}>
-          <MdDownload /> Tải xuống
+          <MdDownload /> Thao tác
         </Button>
       </div>
 
@@ -581,7 +661,7 @@ function AdminDrivingListPage() {
       <Modal
         show={showActionModal}
         onHide={() => setShowActionModal(false)}
-        size='lg'
+        size={action === ACTION_OPTIONS.UPLOAD_FILE ? 'xl' : 'lg'}
       >
         <Modal.Header closeButton>
           <Modal.Title>Chọn thao tác</Modal.Title>
@@ -589,22 +669,22 @@ function AdminDrivingListPage() {
         <Modal.Body>
           <Select
             onChange={(e) => setAction(e.value)}
-            options={Object.keys(DOWNLOAD_OPTIONS_LABEL).map((key) => {
+            options={Object.keys(ACTION_OPTIONS_LABEL).map((key) => {
               return {
                 value: key,
-                label: DOWNLOAD_OPTIONS_LABEL[key],
+                label: ACTION_OPTIONS_LABEL[key],
               };
             })}
             defaultValue={{
-              value: DOWNLOAD_OPTIONS.EXPORT_EXCEL,
-              label: DOWNLOAD_OPTIONS_LABEL[DOWNLOAD_OPTIONS.EXPORT_EXCEL],
+              value: ACTION_OPTIONS.EXPORT_EXCEL,
+              label: ACTION_OPTIONS_LABEL[ACTION_OPTIONS.EXPORT_EXCEL],
             }}
             value={{
               value: action,
-              label: DOWNLOAD_OPTIONS_LABEL[action],
+              label: ACTION_OPTIONS_LABEL[action],
             }}
           />
-          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && (
+          {action === ACTION_OPTIONS.EXPORT_EXCEL && (
             <Select
               className='mt-3'
               onChange={(e) => {
@@ -628,65 +708,250 @@ function AdminDrivingListPage() {
               value={exportExcelOption}
             />
           )}
-          <p className='my-3 text-center'>Tổng cộng {data.length} hồ sơ</p>
-          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && (
-            <p className='my-3 text-center'>Chọn các trường danh sách</p>
+          {action === ACTION_OPTIONS.EXPORT_EXCEL && (
+            <>
+              <p className='my-3 text-center'>Chọn các trường danh sách</p>
+              <div className='d-flex flex-wrap mt-3'>
+                {Object.keys(exportExcelFields).map((key) => {
+                  return (
+                    <Form.Check
+                      className='w-50'
+                      name={key}
+                      key={key}
+                      type='checkbox'
+                      label={EXPORT_EXCEL_FIELDS_LABEL[key]}
+                      checked={exportExcelFields[key]}
+                      onChange={(e) =>
+                        setExportExcelFields({
+                          ...exportExcelFields,
+                          [e.target.name]: e.target.checked,
+                        })
+                      }
+                    />
+                  );
+                })}
+              </div>
+              <div className='my-3 mx-auto text-center'>
+                {loadingAction ? (
+                  <Button disabled={true}>
+                    Đang thực hiện {loadingAction}
+                  </Button>
+                ) : (
+                  <Button
+                    variant='primary'
+                    onClick={handleActionButton}
+                    disabled={preventActionButton}
+                  >
+                    Thực hiện
+                  </Button>
+                )}
+              </div>
+            </>
           )}
-          {action === DOWNLOAD_OPTIONS.EXPORT_EXCEL && (
-            <div className='d-flex flex-wrap mt-3'>
-              {Object.keys(exportExcelFields).map((key) => {
-                return (
-                  <Form.Check
-                    className='w-50'
-                    name={key}
-                    key={key}
-                    type='checkbox'
-                    label={EXPORT_EXCEL_FIELDS_LABEL[key]}
-                    checked={exportExcelFields[key]}
-                    onChange={(e) =>
-                      setExportExcelFields({
-                        ...exportExcelFields,
-                        [e.target.name]: e.target.checked,
-                      })
-                    }
-                  />
-                );
-              })}
-            </div>
-          )}
-          {action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE && (
+          {action === ACTION_OPTIONS.DOWNLOAD_FILE && (
             <p className='my-3 text-center'>Chọn ảnh</p>
           )}
-          {action === DOWNLOAD_OPTIONS.DOWNLOAD_FILE && (
-            <div className='d-flex flex-wrap justify-content-around mt-3'>
-              {Object.keys(downloadFileFields).map((key) => {
-                return (
-                  <Form.Check
-                    name={key}
-                    key={key}
-                    type='checkbox'
-                    label={DOWNLOAD_FILE_FIELDS_LABEL[key]}
-                    checked={downloadFileFields[key]}
-                    onChange={(e) =>
-                      setDownloadFileFields({
-                        ...downloadFileFields,
-                        [e.target.name]: e.target.checked,
-                      })
-                    }
-                  />
-                );
+          {action === ACTION_OPTIONS.DOWNLOAD_FILE && (
+            <>
+              <div className='d-flex flex-wrap justify-content-around mt-3'>
+                {Object.keys(downloadFileFields).map((key) => {
+                  return (
+                    <Form.Check
+                      name={key}
+                      key={key}
+                      type='checkbox'
+                      label={DOWNLOAD_FILE_FIELDS_LABEL[key]}
+                      checked={downloadFileFields[key]}
+                      onChange={(e) =>
+                        setDownloadFileFields({
+                          ...downloadFileFields,
+                          [e.target.name]: e.target.checked,
+                        })
+                      }
+                    />
+                  );
+                })}
+              </div>
+              <div className='my-3 mx-auto text-center'>
+                {loadingAction ? (
+                  <Button disabled={true}>
+                    Đang thực hiện {loadingAction}
+                  </Button>
+                ) : (
+                  <Button
+                    variant='primary'
+                    onClick={handleActionButton}
+                    disabled={preventActionButton}
+                  >
+                    Thực hiện
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
+          {action === ACTION_OPTIONS.UPLOAD_FILE && (
+            <Select
+              className='mt-3'
+              onChange={(e) => setUploadFileOption(e)}
+              options={Object.keys(UPLOAD_FILE_OPTIONS_LABEL).map((key) => {
+                return {
+                  value: key,
+                  label: UPLOAD_FILE_OPTIONS_LABEL[key],
+                };
               })}
+              value={uploadFileOption}
+            />
+          )}
+          {uploadedFiles.length > 0 &&
+            action === ACTION_OPTIONS.UPLOAD_FILE && (
+              <Table striped bordered hover className='mt-3 text-center'>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Họ và tên</th>
+                    <th>SĐT</th>
+                    <th>Zalo</th>
+                    <th>Mặt trước</th>
+                    <th>Mặt sau</th>
+                    <th>Chân dung</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {uploadedFiles.map((child, index) => {
+                    return (
+                      <tr key={index} className='align-middle text-center'>
+                        <td>{index + 1}</td>
+                        <td>{child.name}</td>
+                        <td>{child.tel}</td>
+                        <td>{child.zalo}</td>
+                        <td>
+                          {child.frontUrl && (
+                            <Button
+                              variant='white'
+                              onClick={async () => {
+                                window.open(
+                                  await getSignedUrl(child.frontUrl),
+                                  '_blank'
+                                );
+                              }}
+                              rel='noreferrer'
+                            >
+                              <IoMdEye className='text-primary' />
+                            </Button>
+                          )}
+                        </td>
+                        <td>
+                          {child.backUrl && (
+                            <Button
+                              variant='white'
+                              onClick={async () => {
+                                window.open(
+                                  await getSignedUrl(child.backUrl),
+                                  '_blank'
+                                );
+                              }}
+                              rel='noreferrer'
+                            >
+                              <IoMdEye className='text-primary' />
+                            </Button>
+                          )}
+                        </td>
+                        <td>
+                          {child.portraitUrl && (
+                            <Button
+                              variant='white'
+                              onClick={async () => {
+                                window.open(
+                                  await getSignedUrl(child.portraitUrl),
+                                  '_blank'
+                                );
+                              }}
+                              rel='noreferrer'
+                            >
+                              <IoMdEye className='text-primary' />
+                            </Button>
+                          )}
+                        </td>
+                        <td>
+                          <Button
+                            variant='white'
+                            onClick={() => {
+                              const confirm = window.confirm(
+                                'Bạn có chắc chắn muốn xóa hồ sơ này?'
+                              );
+
+                              if (!confirm) return;
+
+                              setUploadedFiles((prev) => {
+                                return prev.filter((child, i) => i !== index);
+                              });
+                            }}
+                          >
+                            <MdDelete className='text-danger' />
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            )}
+          {action === ACTION_OPTIONS.UPLOAD_FILE && (
+            <div className='d-flex flex-wrap justify-content-center my-3'>
+              <FileUploader
+                multiple={true}
+                name='file'
+                text='Tải lên'
+                hasLabel={false}
+                url={FILE_UPLOAD_URL}
+                uploading={uploading}
+                setUploading={setUploading}
+                onResponse={handleResponse}
+              />
+              <Button
+                className='ms-3'
+                onClick={() => {
+                  const confirm = window.confirm(
+                    `Bạn có chắc chắn muốn lưu tất cả ${uploadedFiles.length} hồ sơ đã tải lên?`
+                  );
+
+                  if (!confirm) return;
+
+                  for (let child of uploadedFiles) {
+                    DrivingApi.addDriving({
+                      ...child,
+                      date: dates[dateSelected].date,
+                      drivingType,
+                      center: dates[dateSelected]?.center?._id,
+                    })
+                      .then((res) => {
+                        toastWrapper(
+                          'Tải lên ' + child.name + ' thành công',
+                          'success'
+                        );
+                        setUploadedFiles((prev) =>
+                          prev.filter((item) => item.tel !== child.tel)
+                        );
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  }
+                }}
+              >
+                Lưu tất cả
+              </Button>
             </div>
           )}
-          <div className='my-3 mx-auto text-center'>
-            {loadingAction ? (
-              <Button disabled={true}>Đang thực hiện {loadingAction}</Button>
-            ) : (
-              <Button variant='primary' onClick={handleActionButton}>
-                Thực hiện
-              </Button>
-            )}
-          </div>
+
+          {action === ACTION_OPTIONS.UPLOAD_FILE ? (
+            <p className='my-3 text-center'>
+              Tổng cộng {uploadedFiles.length} hồ sơ
+            </p>
+          ) : (
+            <p className='my-3 text-center'>Tổng cộng {data.length} hồ sơ</p>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button

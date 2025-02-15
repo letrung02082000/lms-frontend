@@ -1,6 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { PATH } from 'constants/path';
-import { ADMIN_DRIVING_MENU } from 'constants/menu';
 import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, LoginPage, MaintainPage, NotFoundPage, PoolInfoPage, QrScanPage, SupportPage, PhotocopyPage, DrivingTestPage, DrivingHealthPage } from 'features';
 import { AppStorePage, CheckoutPage, OrderPage, ProductDetailPage, StoreDetailPage } from 'features/app';
 import MainGuard from 'components/guard/MainGuard';
@@ -12,7 +11,6 @@ import AdminGuard from 'components/guard/AdminGuard';
 import AdminPage from 'features/admin/pages/AdminPage';
 import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDrivingDatePage';
 import AdminDrivingListPage from 'features/admin/driving-license/pages/AdminDrivingListPage';
-import DrivingAdminPage from 'features/admin/driving-license/DrivingAdminPage';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
 import StoreByCategory from 'features/app/pages/StoreByCategory';
@@ -34,6 +32,16 @@ import AdminDrivingCenterPage from 'features/admin/driving-license/pages/AdminDr
 import CenterInstructionPage from 'features/driving-license/pages/CenterInstructionPage';
 import AdminDrivingLayout from 'components/layout/AdminDrivingLayout';
 import AdminDrivingPage from 'features/admin/driving-license/pages/AdminDrivingPage';
+import AdminElearningGuard from 'components/guard/AdminElearningGuard';
+import AdminElearningLayout from 'components/layout/AdminElearningLayout';
+import AdminElearningPage from 'features/admin/elearning/pages/AdminElearningPage';
+import AdminElearningStudentPage from 'features/admin/elearning/pages/AdminElearningStudentPage';
+import StudentElearningGuard from 'components/guard/StudentElearningGuard';
+import StudentElearningLayout from 'components/layout/StudentElearningLayout';
+import ElearningStudentPage from 'features/elearning/pages/ElearningStudentPage';
+import ElearningStudentCoursePage from 'features/elearning/pages/ElearningStudentCoursePage';
+import ElearningStudentCourseDetailPage from 'features/elearning/pages/ElearningStudentCourseDetailPage';
+import ElearningStudentResultPage from 'features/elearning/pages/ElearningStudentResultPage';
 
 const router = createBrowserRouter([
   {
@@ -232,17 +240,6 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '',
-    element: <AdminDrivingGuard />,
-    errorElement: <NotFoundPage />,
-    children: [
-      {
-        element: <DrivingAdminPage />,
-        path: PATH.DRIVING_ADMIN,
-      },
-    ],
-  },
-  {
     element: <AdminDrivingGuard />,
     errorElement: <NotFoundPage />,
     children: [
@@ -266,6 +263,48 @@ const router = createBrowserRouter([
             element: <AdminDrivingPage />,
           },
         ],
+      },
+    ],
+  },
+  {
+    element: <AdminElearningGuard />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        element: <AdminElearningLayout />,
+        children: [
+          {
+            path: PATH.ELEARNING.ADMIN.ROOT,
+            element: <AdminElearningPage />,
+          },
+          {
+            path: PATH.ELEARNING.ADMIN.STUDENT,
+            element: <AdminElearningStudentPage />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    element: <StudentElearningGuard />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        element: <StudentElearningLayout />,
+        children: [
+          {
+            path: PATH.ELEARNING.STUDENT.ROOT,
+            element: <ElearningStudentPage />,
+          },
+          {
+            path: PATH.ELEARNING.STUDENT.RESULT,
+            element: <ElearningStudentResultPage />,
+          },
+        ],
+      },
+      {
+        path: PATH.ELEARNING.STUDENT.COURSE_DETAIL,
+        element: <ElearningStudentCourseDetailPage />,
       },
     ],
   },

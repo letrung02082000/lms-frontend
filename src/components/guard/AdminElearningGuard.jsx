@@ -3,18 +3,14 @@ import { ROLE } from 'constants/role';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-function AdminGuard() {
+function AdminElearningGuard() {
   let user = JSON.parse(localStorage.getItem('user-info'));
 
-  if(!Array.isArray(user.role)) {
-    user = {...user, role: [user.role]};
-  }
-
-  if (!user || user.role !== ROLE.ADMIN) {
+  if (Math.floor(user?.role / 10) === (ROLE.ELEARNING.ADMIN / 10) || user?.role === ROLE.ADMIN) {
+    return <Outlet />;
+  } else {
     window.location.href = PATH.AUTH.SIGNIN;
   }
-  
-  return <Outlet />;
 }
 
-export default AdminGuard;
+export default AdminElearningGuard;

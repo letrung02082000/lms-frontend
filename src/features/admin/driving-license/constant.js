@@ -67,16 +67,18 @@ export const PAYMENT_METHODS_LABEL = {
     [PAYMENT_METHODS.DIRECT]: 'Thanh toán trực tiếp',
 }
 
-export const DOWNLOAD_OPTIONS = {
+export const ACTION_OPTIONS = {
     EXPORT_EXCEL: 'export_excel',
     DOWNLOAD_FILE: 'download_file',
     DOWNLOAD_PDF: 'download_pdf',
+    UPLOAD_FILE: 'upload_file',
 }
 
-export const DOWNLOAD_OPTIONS_LABEL = {
-    [DOWNLOAD_OPTIONS.EXPORT_EXCEL]: 'Tải danh sách',
-    [DOWNLOAD_OPTIONS.DOWNLOAD_FILE]: 'Tải ảnh hồ sơ',
-    [DOWNLOAD_OPTIONS.DOWNLOAD_PDF]: 'Tải hồ sơ PDF',
+export const ACTION_OPTIONS_LABEL = {
+    [ACTION_OPTIONS.EXPORT_EXCEL]: 'Tải danh sách',
+    [ACTION_OPTIONS.DOWNLOAD_FILE]: 'Tải ảnh hồ sơ',
+    [ACTION_OPTIONS.DOWNLOAD_PDF]: 'Tải hồ sơ PDF',
+    [ACTION_OPTIONS.UPLOAD_FILE]: 'Tải lên hồ sơ',
 }
 
 export const EXPORT_EXCEL_FIELDS = {
@@ -228,4 +230,18 @@ export const EXPORT_EXCEL_OPTIONS = {
 export const EXPORT_EXCEL_OPTIONS_LABEL = {
     [EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL]: 'Tải danh sách dự thi',
     [EXPORT_EXCEL_OPTIONS.EXPORT_INPUT_EXCEL]: 'Tải danh sách nhập',
+}
+
+export const UPLOAD_FILE_OPTIONS = {
+    ALL: 'all',
+    PORTRAIT: 'portraitUrl',
+    FRONT: 'frontUrl',
+    BACK: 'backUrl',
+}
+
+export const UPLOAD_FILE_OPTIONS_LABEL = {
+    [UPLOAD_FILE_OPTIONS.ALL]: 'Tải lên tất cả',
+    [UPLOAD_FILE_OPTIONS.PORTRAIT]: 'Tải lên ảnh chân dung',
+    [UPLOAD_FILE_OPTIONS.FRONT]: 'Tải lên ảnh mặt trước',
+    [UPLOAD_FILE_OPTIONS.BACK]: 'Tải lên ảnh mặt sau',
 }

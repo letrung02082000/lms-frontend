@@ -59,6 +59,22 @@ export const PATH = {
             CENTER: '/driving/admin/center',
         },
     },
+    ELEARNING: {
+        ROOT: '/elearning',
+        ADMIN: {
+            ROOT: '/elearning/admin',
+            STUDENT: '/elearning/admin/student',
+            COURSE: '/elearning/admin/course',
+        },
+        STUDENT: {
+            ROOT: '/elearning/student',
+            COURSE: '/elearning/student/course',
+            COURSE_DETAIL: '/elearning/student/course/:courseId',
+            LESSON: '/elearning/student/lesson',
+            LESSON_DETAIL: '/elearning/student/lesson/:lessonId',
+            RESULT: '/elearning/student/result',
+        }
+    },
     UNIFORM: {
         ROOT: '/shop/666195bad4fed7a40f1016fe',
     },
