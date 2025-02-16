@@ -740,7 +740,6 @@ function AdminDrivingListPage() {
                   <Button
                     variant='primary'
                     onClick={handleActionButton}
-                    disabled={preventActionButton}
                   >
                     Thực hiện
                   </Button>
@@ -781,7 +780,6 @@ function AdminDrivingListPage() {
                   <Button
                     variant='primary'
                     onClick={handleActionButton}
-                    disabled={preventActionButton}
                   >
                     Thực hiện
                   </Button>
@@ -801,6 +799,22 @@ function AdminDrivingListPage() {
               })}
               value={uploadFileOption}
             />
+          )}
+          {action === ACTION_OPTIONS.DOWNLOAD_PDF && (
+            <div className='my-3 mx-auto text-center'>
+            {loadingAction ? (
+              <Button disabled={true}>
+                Đang thực hiện {loadingAction}
+              </Button>
+            ) : (
+              <Button
+                variant='primary'
+                onClick={handleActionButton}
+              >
+                Thực hiện
+              </Button>
+            )}
+          </div>
           )}
           {uploadedFiles.length > 0 &&
             action === ACTION_OPTIONS.UPLOAD_FILE && (
