@@ -4,6 +4,7 @@ import userReducer from './userSlice'
 import busSurveyReducer from './busSurveySlice'
 import drivingAdminReducer from './drivingAdminSlice'
 import cartReducer from './cart'
+import centerReducer from './center'
 import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
 import storage from 'redux-persist/lib/storage';
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
   user: userReducer,
   busSurvey: busSurveyReducer,
   drivingAdmin: drivingAdminReducer,
-  cart: cartReducer
+  cart: cartReducer,
+  center: centerReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

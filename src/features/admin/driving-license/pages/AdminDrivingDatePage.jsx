@@ -8,7 +8,6 @@ import { ROLE } from 'constants/role';
 
 function AdminDrivingDatePage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
-  console.log(userRole);
   const [query, setQuery] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
   const [page, setPage] = useState(1);
