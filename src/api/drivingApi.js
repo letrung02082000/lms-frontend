@@ -245,9 +245,9 @@ class DrivingApi {
     });
   };
 
-  clipPortrait = async (id, portraitUrl) => {
+  clipPortrait = async (id, _url, field, isHealth = false) => {
     const url = `/driving/clipping/${id}`;
-    return axiosClient.post(url, { id, url: portraitUrl });
+    return axiosClient.post(url, { id, url: _url, field, isHealth });
   }
 
   extractIdentity = async (id, frontUrl, backUrl) => {
