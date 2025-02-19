@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import RadioField from "components/form/RadioField";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { formatCurrency } from "utils/commonUtils";
-import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL } from "features/admin/driving-license/constant";
+import { DRIVING_STATE, DRIVING_STATE_LABEL} from "features/admin/driving-license/constant";
 import { PATH } from "constants/path";
 
 export default function DrivingRegisterPage() {
@@ -299,7 +299,7 @@ export default function DrivingRegisterPage() {
                     {` ${processDate.getDate()}/${processDate.getMonth() + 1
                       }/${processDate.getFullYear()}`}
                   </p>
-                  <p>Hạng thi: {DRIVING_TYPE_LABEL[child?.drivingType]}</p>
+                  <p>Hạng thi: {child?.drivingType?.label}</p>
                   {child?.center && <p>Điểm thi: {child?.center?.name}</p>}
                   {child?.cash > 0 && <p>Đã chuyển khoản: {formatCurrency(child?.cash || 0)} VNĐ</p>}
                   <p>
