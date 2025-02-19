@@ -25,10 +25,16 @@ import fileApi from "api/fileApi";
 function Driving(props) {
   const [drivingInfo, setDrivingInfo] = useState(props?.info);
   const [portraitCropBlob, setPortraitCropBlob] = useState(null);
+  const [portraitHealthBlob, setPortraitHealthBlob] = useState(null);
   const [portraitPrintInfo, setPortraitPrintInfo] = useState({
     quantity: 5,
     width: 3,
     height: 4,
+  });
+  const [portraitHealthPrintInfo, setPortraitHealthPrintInfo] = useState({
+    quantity: 5,
+    width: 4,
+    height: 6,
   });
   const styles = StyleSheet.create({
     page: {
@@ -106,10 +112,52 @@ function Driving(props) {
         <Page size="A4" style={styles.page}>
           <View style={styles.portraitSection}>
             {Array.from({ length: printInfo.quantity }).map((_, index) => (
-              <View style={{padding: '0 2 15 2'}}>
-                <PDFImage key={index} src={imageSrc} cache={false}
-                  style={{ width: cmToPt(printInfo.width), height: 'auto' }}
-                />
+              <View key={index} style={{ padding: '0 2 15 2' }}>
+                <View style={{ width: cmToPt(printInfo.width), height: 'auto'}}>
+                  <PDFImage src={imageSrc} cache={false} />
+                </View>
+              </View>
+            ))}
+          </View>
+        </Page>
+      </Document>
+    );
+
+    pdf(MyDoc).toBlob().then(blob => {
+      const url = URL.createObjectURL(blob);
+
+      if (type === 'download') {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${name}_${tel}_${new Date(date).toLocaleDateString('en-GB')}.pdf`;
+        a.click();
+      } else {
+        window.open(url, '_blank');
+      }
+
+      // Cleanup để tránh memory leak
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    }).catch(e => {
+      console.error("Lỗi khi tạo PDF:", e);
+    });
+  };
+
+  const printHealthPortraitDocument = (type ='print', printInfo) => {
+    const imageSrc = portraitHealthBlob
+      ? URL.createObjectURL(portraitHealthBlob)
+      : portraitHealthUrl;
+
+    const cmToPt = (cm) => cm * 28.3465;
+
+    const MyDoc = (
+      <Document>
+        <Page size="A4" style={styles.page}>
+          <View style={styles.portraitSection}>
+            {Array.from({ length: printInfo.quantity }).map((_, index) => (
+              <View key={index} style={{ padding: '0 2 15 2' }}>
+                <View style={{ width: cmToPt(printInfo.width), height: 'auto', borderWidth: 1, borderColor: '#000', borderStyle: 'solid' }}>
+                  <PDFImage src={imageSrc} cache={false} />
+                </View>
               </View>
             ))}
           </View>
@@ -175,6 +223,7 @@ function Driving(props) {
   const [portraitUrl, setPortraitUrl] = useState(drivingInfo.portraitUrl);
   const [imageVisible, setImageVisible] = useState(false);
   const [portraitClipUrl, setPortraitClipUrl] = useState(drivingInfo.portraitClipUrl);
+  const [portraitHealthUrl, setPortraitHealthUrl] = useState(drivingInfo.portraitHealthUrl);
   const [clipping, setClipping] = useState(false);
   const [cropping, setCropping] = useState(false);
   const [extracting, setExtracting] = useState(false);
@@ -211,6 +260,20 @@ function Driving(props) {
       });
     }
   }, [portraitCrop]);
+
+  useEffect(() => {
+    if (portraitHealthUrl) {
+      fetch(portraitHealthUrl, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+      }).then(res => res.blob()).then(blob => {
+        setPortraitHealthBlob(blob);
+      }).catch(e => {
+        console.log(e);
+      });
+    }
+  }, [portraitHealthUrl]);
 
   useEffect(() => {
     const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
@@ -261,6 +324,8 @@ function Driving(props) {
       setPortraitClipUrl(await getSignedUrl(url || drivingInfo.portraitClipUrl));
     } else if(type === 'portrait_crop') {
       setPortraitCrop(await getSignedUrl(url || drivingInfo.portraitCropUrl));
+    } else if(type === 'portrait_health') {
+      setPortraitHealthUrl(await getSignedUrl(url || drivingInfo.portraitHealthUrl));
     }
     else {
       setFrontUrl(await getSignedUrl(url || drivingInfo.frontUrl));
@@ -268,6 +333,7 @@ function Driving(props) {
       setPortraitUrl(await getSignedUrl(url || drivingInfo.portraitUrl));
       setPortraitClipUrl(await getSignedUrl(url || drivingInfo.portraitClipUrl));
       setPortraitCrop(await getSignedUrl(url || drivingInfo.portraitCropUrl));
+      setPortraitHealthUrl(await getSignedUrl(url || drivingInfo.portraitHealthUrl));
     }
   }
 
@@ -342,25 +408,34 @@ function Driving(props) {
         DrivingApi.updateDriving(_id, {
           portraitCropUrl: res?.data?.url,
         }).then(async res => {
-          setDrivingInfo(res?.data);
-          const url = await getSignedUrl(res?.data?.url);
-          setPortraitCrop(url);
-          toastWrapper('Cắt ảnh thành công', 'success')
+          const portraitCropUrl = await getSignedUrl(res?.data?.portraitCropUrl);
+          const field = 'portraitHealthUrl';
+          DrivingApi.clipPortrait(_id, portraitCropUrl, field, true).then(async (res) => {
+            setDrivingInfo({
+              ...drivingInfo,
+              portraitHealthUrl: res?.data?.url,
+            })
+            setPortraitCrop(portraitCropUrl);
+            setPortraitHealthUrl(await getSignedUrl(res?.data?.url));
+            toastWrapper('Cắt ảnh thành công', 'success')
+          }).catch(e => {
+            toastWrapper('Cắt ảnh thất bại', 'error')
+          }).finally(() => {
+            setCropping(false);
+          });
         }).catch(e => {
           toastWrapper('Lưu ảnh thất bại', 'error')
+          setCropping(false);
         });
       }).catch(e => {
         toastWrapper('Cắt ảnh thất bại', 'error')
-      }).finally(() => {
         setCropping(false);
-      });
+      })
     } catch (error) {
       toastWrapper('Cắt ảnh thất bại', 'error')
       setCropping(false);
     }
   }
-
-
 
   if (date) {
     date = new Date(date);
@@ -475,8 +550,9 @@ function Driving(props) {
   const clipPortrait = async () => {
     setClipping(true);
     const url = await getSignedUrl(drivingInfo.portraitUrl);
+    const field = 'portraitClipUrl';
 
-    DrivingApi.clipPortrait(_id, url).then(async (res) => {
+    DrivingApi.clipPortrait(_id, url, field).then(async (res) => {
       setDrivingInfo({
         ...drivingInfo,
         portraitClipUrl: res?.data?.url,
@@ -834,17 +910,28 @@ function Driving(props) {
                 <div className='d-flex justify-content-center'>
                   <img id={`portrait_crop_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitCrop} />
                 </div>
-                <div>
-                  <div className="d-flex justify-content-around align-items-center my-2">
-                    <Button variant='primary' onClick={() => downloadImage(portraitCrop, `${name}-${tel}-portrait-crop.png`)}>Tải xuống</Button>
-                    <FormControl className="w-25" placeholder="Số lượng" type='number' value={portraitPrintInfo.quantity} onChange={e => setPortraitPrintInfo(prev => {
-                      return {
-                        ...prev,
-                        quantity: e.target.value
-                      }
-                    })} />
-                    <Button className="w-25" variant="outline-primary" onClick={() => printPortraitDocument('print', portraitPrintInfo)}>In ảnh</Button>
-                  </div>
+                <div className="d-flex justify-content-around align-items-center my-2">
+                  <Button variant='primary' onClick={() => downloadImage(portraitCrop, `${name}-${tel}-portrait-crop.png`)}>Tải xuống</Button>
+                  <FormControl className="w-25" placeholder="Số lượng" type='number' value={portraitPrintInfo.quantity} onChange={e => setPortraitPrintInfo(prev => {
+                    return {
+                      ...prev,
+                      quantity: e.target.value
+                    }
+                  })} />
+                  <Button className="w-25" variant="outline-primary" onClick={() => printPortraitDocument('print', portraitPrintInfo)}>In ảnh</Button>
+                </div>
+                <div className='d-flex justify-content-center'>
+                  <img id={`portrait_health_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitHealthUrl} />
+                </div>
+                <div className="d-flex justify-content-around align-items-center my-2">
+                  <Button variant='primary' onClick={() => downloadImage(portraitHealthUrl, `${name}-${tel}-portrait-crop.png`)}>Tải xuống</Button>
+                  <FormControl className="w-25" placeholder="Số lượng" type='number' value={portraitHealthPrintInfo.quantity} onChange={e => setPortraitHealthPrintInfo(prev => {
+                    return {
+                      ...prev,
+                      quantity: e.target.value
+                    }
+                  })} />
+                  <Button className="w-25" variant="outline-primary" onClick={() => printHealthPortraitDocument('print', portraitHealthPrintInfo)}>In ảnh</Button>
                 </div>
               </Col>
             }

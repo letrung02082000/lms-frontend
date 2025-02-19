@@ -71,13 +71,17 @@ export const ACTION_OPTIONS = {
     EXPORT_EXCEL: 'export_excel',
     DOWNLOAD_FILE: 'download_file',
     DOWNLOAD_PDF: 'download_pdf',
+    DOWNLOAD_PORTRAIT_PDF: 'download_portrait_pdf',
+    DOWNLOAD_HEALTH_POTRAIT_PDF: 'download_health_pdf',
     UPLOAD_FILE: 'upload_file',
 }
 
 export const ACTION_OPTIONS_LABEL = {
     [ACTION_OPTIONS.EXPORT_EXCEL]: 'Tải danh sách',
     [ACTION_OPTIONS.DOWNLOAD_FILE]: 'Tải ảnh hồ sơ',
-    [ACTION_OPTIONS.DOWNLOAD_PDF]: 'Tải hồ sơ PDF',
+    [ACTION_OPTIONS.DOWNLOAD_PDF]: 'Tải PDF căn cước',
+    [ACTION_OPTIONS.DOWNLOAD_PORTRAIT_PDF]: 'Tải PDF chân dung hồ sơ',
+    [ACTION_OPTIONS.DOWNLOAD_HEALTH_POTRAIT_PDF]: 'Tải PDF chân dung khám sức khỏe',
     [ACTION_OPTIONS.UPLOAD_FILE]: 'Tải lên hồ sơ',
 }
 

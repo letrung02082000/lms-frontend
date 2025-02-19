@@ -50,6 +50,9 @@ function AdminDrivingListPage() {
   }, [uploadFileOption]);
 
   const styles = StyleSheet.create({
+    page: {
+      flexDirection: 'row',
+    },
     imagePage: {
       flexDirection: 'column',
       marginVertical: 15,
@@ -77,6 +80,14 @@ function AdminDrivingListPage() {
       height: '19%',
       justifyContent: 'flex-end',
     },
+    portraitSection: {
+      margin: 15,
+      padding: 15,
+      flexGrow: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+    }
   });
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -228,9 +239,12 @@ function AdminDrivingListPage() {
   };
 
   const handleActionButton = () => {
-    console.log(uploadFileOption)
     if (action === ACTION_OPTIONS.DOWNLOAD_PDF) {
       downloadPDF();
+    } else if(action === ACTION_OPTIONS.DOWNLOAD_PORTRAIT_PDF){
+      downloadPortraitPDF();
+    } else if(action === ACTION_OPTIONS.DOWNLOAD_HEALTH_POTRAIT_PDF) {
+      downloadPortraitHealthPDF();
     } else if (action === ACTION_OPTIONS.EXPORT_EXCEL) {
       exportExcel();
     } else if (action === ACTION_OPTIONS.DOWNLOAD_FILE) {
@@ -251,7 +265,6 @@ function AdminDrivingListPage() {
       }
     } else if(action === ACTION_OPTIONS.UPLOAD_FILE) {
       if (uploadFileOption.value === UPLOAD_FILE_OPTIONS.ALL) {
-
       }
     }
   }
@@ -428,6 +441,152 @@ function AdminDrivingListPage() {
         </React.Fragment>
       ))}
     </Document>);
+    pdf(MyDoc).toBlob().then(blob => {
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    }).catch(e => {
+      console.log(e);
+    }).finally(() => {
+      setLoadingAction(0);
+    });
+  }
+
+  const downloadPortraitPDF = async () => {
+    let pdfData = [], pdfElements = [];
+    const perPage = 36;
+    let count = 0, idx = 0;
+    const cmToPt = (cm) => cm * 28.3465;
+
+    for (let child of data) {
+      if (child?.portraitCropUrl) {
+        setLoadingAction(idx);
+        const portraitCropBlob = await fetch(
+          await getSignedUrl(child.portraitCropUrl),
+          {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+          }
+        ).then((r) => r.blob());
+
+        if (count < perPage) {
+          pdfElements.push(portraitCropBlob);
+        } else {
+          pdfData.push(pdfElements);
+          pdfElements = [];
+          pdfElements.push(portraitCropBlob);
+          count = 0;
+        }
+
+        count++;
+        ++idx;
+      }
+    }
+
+    pdfData.push(pdfElements);
+
+    const MyDoc = (
+      <Document>
+        {pdfData.map((child) => (
+          <React.Fragment key={_.uniqueId()}>
+            <Page size='A4' style={styles.page}>
+              <View style={styles.portraitSection}>
+                {child.map((element) => {
+                  const imageSrc = URL.createObjectURL(element);
+                  return (
+                    <View style={{ padding: '0 2 15 2' }}>
+                      <PDFImage
+                        key={_.uniqueId()}
+                        src={imageSrc}
+                        cache={false}
+                        style={{
+                          width: cmToPt(3),
+                          height: 'auto',
+                        }}
+                      />
+                    </View>
+                  );
+                })}
+              </View>
+            </Page>
+          </React.Fragment>
+        ))}
+      </Document>
+    );
+    pdf(MyDoc).toBlob().then(blob => {
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    }).catch(e => {
+      console.log(e);
+    }).finally(() => {
+      setLoadingAction(0);
+    });
+  }
+
+  const downloadPortraitHealthPDF = async () => {
+    let pdfData = [], pdfElements = [];
+    const perPage = 36;
+    let count = 0, idx = 0;
+    const cmToPt = (cm) => cm * 28.3465;
+
+    for (let child of data) {
+      if (child?.portraitHealthUrl) {
+        setLoadingAction(idx);
+        const portraitHealthBlob = await fetch(
+          await getSignedUrl(child.portraitHealthUrl),
+          {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+          }
+        ).then((r) => r.blob());
+
+        if (count < perPage) {
+          pdfElements.push(portraitHealthBlob);
+        } else {
+          pdfData.push(pdfElements);
+          pdfElements = [];
+          pdfElements.push(portraitHealthBlob);
+          count = 0;
+        }
+
+        count++;
+        ++idx;
+      }
+    }
+
+    pdfData.push(pdfElements);
+
+    const MyDoc = (
+      <Document>
+        {pdfData.map((child) => (
+          <React.Fragment key={_.uniqueId()}>
+            <Page size='A4' style={styles.page}>
+              <View style={styles.portraitSection}>
+                {child.map((element) => {
+                  const imageSrc = URL.createObjectURL(element);
+                  return (
+                    <View key={_.uniqueId()} style={{ padding: '0 2 15 2' }}>
+                      <View
+                        style={{
+                          width: cmToPt(4),
+                          height: 'auto',
+                          borderWidth: 1,
+                          borderColor: '#000',
+                          borderStyle: 'solid',
+                        }}
+                      >
+                        <PDFImage src={imageSrc} cache={false} />
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </Page>
+          </React.Fragment>
+        ))}
+      </Document>
+    );
     pdf(MyDoc).toBlob().then(blob => {
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank');
@@ -761,10 +920,7 @@ function AdminDrivingListPage() {
                     Đang thực hiện {loadingAction}
                   </Button>
                 ) : (
-                  <Button
-                    variant='primary'
-                    onClick={handleActionButton}
-                  >
+                  <Button variant='primary' onClick={handleActionButton}>
                     Thực hiện
                   </Button>
                 )}
@@ -801,15 +957,23 @@ function AdminDrivingListPage() {
                     Đang thực hiện {loadingAction}
                   </Button>
                 ) : (
-                  <Button
-                    variant='primary'
-                    onClick={handleActionButton}
-                  >
+                  <Button variant='primary' onClick={handleActionButton}>
                     Thực hiện
                   </Button>
                 )}
               </div>
             </>
+          )}
+          {action === ACTION_OPTIONS.DOWNLOAD_HEALTH_POTRAIT_PDF && (
+            <div className='my-3 mx-auto text-center'>
+              {loadingAction ? (
+                <Button disabled={true}>Đang thực hiện {loadingAction}</Button>
+              ) : (
+                <Button variant='primary' onClick={handleActionButton}>
+                  Thực hiện
+                </Button>
+              )}
+            </div>
           )}
           {action === ACTION_OPTIONS.UPLOAD_FILE && (
             <Select
@@ -826,19 +990,14 @@ function AdminDrivingListPage() {
           )}
           {action === ACTION_OPTIONS.DOWNLOAD_PDF && (
             <div className='my-3 mx-auto text-center'>
-            {loadingAction ? (
-              <Button disabled={true}>
-                Đang thực hiện {loadingAction}
-              </Button>
-            ) : (
-              <Button
-                variant='primary'
-                onClick={handleActionButton}
-              >
-                Thực hiện
-              </Button>
-            )}
-          </div>
+              {loadingAction ? (
+                <Button disabled={true}>Đang thực hiện {loadingAction}</Button>
+              ) : (
+                <Button variant='primary' onClick={handleActionButton}>
+                  Thực hiện
+                </Button>
+              )}
+            </div>
           )}
           {uploadedFiles.length > 0 &&
             action === ACTION_OPTIONS.UPLOAD_FILE && (
@@ -980,6 +1139,18 @@ function AdminDrivingListPage() {
               >
                 Lưu tất cả
               </Button>
+            </div>
+          )}
+
+          {action === ACTION_OPTIONS.DOWNLOAD_PORTRAIT_PDF && (
+            <div className='my-3 mx-auto text-center'>
+              {loadingAction ? (
+                <Button disabled={true}>Đang thực hiện {loadingAction}</Button>
+              ) : (
+                <Button variant='primary' onClick={handleActionButton}>
+                  Thực hiện
+                </Button>
+              )}
             </div>
           )}
 
