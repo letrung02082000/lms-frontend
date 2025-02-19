@@ -11,6 +11,15 @@ class FileApi {
         },
     });
   }
+
+  uploadDrivingFile = async (file) => {
+    const url = `${API_PATH}/upload/driving`;
+    let formData = new FormData();
+    const newFile = new File([file], file.name, { type: file.type });
+    formData.append("file", newFile);
+
+    return axiosClient.post(url, formData);
+  }
 }
 
 export default new FileApi();

@@ -24,6 +24,12 @@ import fileApi from "api/fileApi";
 
 function Driving(props) {
   const [drivingInfo, setDrivingInfo] = useState(props?.info);
+  const [portraitCropBlob, setPortraitCropBlob] = useState(null);
+  const [portraitPrintInfo, setPortraitPrintInfo] = useState({
+    quantity: 5,
+    width: 3,
+    height: 4,
+  });
   const styles = StyleSheet.create({
     page: {
       flexDirection: 'row',
@@ -40,6 +46,14 @@ function Driving(props) {
       height: '30%',
       justifyContent: 'center',
     },
+    portraitSection: {
+      margin: 15,
+      padding: 15,
+      flexGrow: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+    }
   });
 
   const printDrivingDocument = (type = 'print') => {
@@ -79,6 +93,49 @@ function Driving(props) {
       console.log(e);
     });
   }
+
+  const printPortraitDocument = (type ='print', printInfo) => {
+    const imageSrc = portraitCropBlob
+      ? URL.createObjectURL(portraitCropBlob)
+      : portraitCrop;
+
+    const cmToPt = (cm) => cm * 28.3465;
+
+    const MyDoc = (
+      <Document>
+        <Page size="A4" style={styles.page}>
+          <View style={styles.portraitSection}>
+            {Array.from({ length: printInfo.quantity }).map((_, index) => (
+              <View style={{padding: '0 2 15 2'}}>
+                <PDFImage key={index} src={imageSrc} cache={false}
+                  style={{ width: cmToPt(printInfo.width), height: 'auto' }}
+                />
+              </View>
+            ))}
+          </View>
+        </Page>
+      </Document>
+    );
+
+    pdf(MyDoc).toBlob().then(blob => {
+      const url = URL.createObjectURL(blob);
+
+      if (type === 'download') {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${name}_${tel}_${new Date(date).toLocaleDateString('en-GB')}.pdf`;
+        a.click();
+      } else {
+        window.open(url, '_blank');
+      }
+
+      // Cleanup để tránh memory leak
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    }).catch(e => {
+      console.error("Lỗi khi tạo PDF:", e);
+    });
+  };
+  
 
   faceapi.env.monkeyPatch({
     Canvas: HTMLCanvasElement,
@@ -126,7 +183,6 @@ function Driving(props) {
   const [showIdentityInfo, setShowIdentityInfo] = useState(false);
   const [showQrCode, setShowQrCode] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
-  const [portraitClip, setPortraitClip] = useState(null);
   const [portraitCrop, setPortraitCrop] = useState(null);
   const [invalidPortrait, setInvalidPortrait] = useState(drivingInfo.invalidPortrait || false);
   const [invalidCard, setInvalidCard] = useState(drivingInfo.invalidCard || false);
@@ -140,6 +196,21 @@ function Driving(props) {
   const [transactionId, setTransactionId] = useState(drivingInfo.transactionId || null);
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS_LABEL[drivingInfo.paymentMethod] ? drivingInfo.paymentMethod : PAYMENT_METHODS.BANK_TRANSFER);
   const QUICK_MESSAGE = genergateDrivingQuickMessage(name, dateInfo, isPaid);
+
+  
+  useEffect(() => {
+    if (portraitCrop) {
+      fetch(portraitCrop, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+      }).then(res => res.blob()).then(blob => {
+        setPortraitCropBlob(blob);
+      }).catch(e => {
+        console.log(e);
+      });
+    }
+  }, [portraitCrop]);
 
   useEffect(() => {
     const dob = moment(identityInfo[1]?.info?.dob, 'DD/MM/YYYY').toDate();
@@ -188,12 +259,15 @@ function Driving(props) {
       setPortraitUrl(await getSignedUrl(url || drivingInfo.portraitUrl));
     } else if(type === 'portrait_clip') {
       setPortraitClipUrl(await getSignedUrl(url || drivingInfo.portraitClipUrl));
+    } else if(type === 'portrait_crop') {
+      setPortraitCrop(await getSignedUrl(url || drivingInfo.portraitCropUrl));
     }
     else {
       setFrontUrl(await getSignedUrl(url || drivingInfo.frontUrl));
       setBackUrl(await getSignedUrl(url || drivingInfo.backUrl));
       setPortraitUrl(await getSignedUrl(url || drivingInfo.portraitUrl));
       setPortraitClipUrl(await getSignedUrl(url || drivingInfo.portraitClipUrl));
+      setPortraitCrop(await getSignedUrl(url || drivingInfo.portraitCropUrl));
     }
   }
 
@@ -207,7 +281,7 @@ function Driving(props) {
           faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
           faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
           faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-        ]).then(setModelsLoaded(true)).catch(e => console.log(e));
+        ]).then(() => setModelsLoaded(true)).catch(console.log);
       }
 
       loadModels();
@@ -221,7 +295,11 @@ function Driving(props) {
 
   const downloadImage = async (url, name) => {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+      });
       const blob = await res.blob();
       const urlBlob = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -235,24 +313,43 @@ function Driving(props) {
     }
   };
 
-  const cropPortrait = async () => {
-    if (!modelsLoaded) return toastWrapper('Đang tải mô hình, vui lòng thử lại sau', 'info');
-
-    if (!portraitClip) return toastWrapper('Chưa tách nền ảnh', 'error');
-
-    setCropping(true);
-    const input = document.getElementById(`portrait_clip_${_id}`)
-    const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1, maxResults: 10 }); // set model options
-    const result = await faceapi.detectSingleFace(input, options);
-    const x = result.box.x - (result.box._width * 0.75);
-    const y = result.box.y - (result.box._height * 0.8);
-    const width = result.box.width * 2.5;
-    const height = width * 4 / 3;
-    const img = await Jimp.read(portraitClip);
-    const portraitCrop = await img.crop({ x, y, w: width, h: height }).getBase64('image/jpeg');
-    setPortraitCrop(portraitCrop);
-    setCropping(false);
+  const detectAndCropPortrait = async (imageUrl) => {
+    try {
+      setCropping(true);
+      const input = document.getElementById(`portrait_clip_${_id}`)
+      const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1, maxResults: 10 }); // set model options
+      const result = await faceapi.detectSingleFace(input, options);
+      const x = result.box.x - (result.box._width * 0.75);
+      const y = result.box.y - (result.box._height * 0.8);
+      const width = result.box.width * 2.5;
+      const height = width * 4 / 3;
+      const img = await Jimp.read(imageUrl);
+      const portraitCrop = await img.crop({ x, y, w: width, h: height }).getBase64('image/jpeg');
+      const portraitCropBlob = await fetch(portraitCrop).then(res => res.blob());
+      const portraitCropFile = new File([portraitCropBlob], `${name}-${tel}-portrait-crop.png`, { type: 'image/jpeg' });
+      fileApi.uploadDrivingFile(portraitCropFile).then(res => {
+        DrivingApi.updateDriving(_id, {
+          portraitCropUrl: res?.data?.url,
+        }).then(async res => {
+          setDrivingInfo(res?.data);
+          const url = await getSignedUrl(res?.data?.url);
+          setPortraitCrop(url);
+          toastWrapper('Cắt ảnh thành công', 'success')
+        }).catch(e => {
+          toastWrapper('Lưu ảnh thất bại', 'error')
+        });
+      }).catch(e => {
+        toastWrapper('Cắt ảnh thất bại', 'error')
+      }).finally(() => {
+        setCropping(false);
+      });
+    } catch (error) {
+      toastWrapper('Cắt ảnh thất bại', 'error')
+      setCropping(false);
+    }
   }
+
+
 
   if (date) {
     date = new Date(date);
@@ -367,7 +464,6 @@ function Driving(props) {
   const clipPortrait = async () => {
     setClipping(true);
     const url = await getSignedUrl(drivingInfo.portraitUrl);
-    console.log(url);
 
     DrivingApi.clipPortrait(_id, url).then(async (res) => {
       setDrivingInfo({
@@ -415,7 +511,6 @@ function Driving(props) {
   const handleShowIdentityInfo = () => {
     setShowIdentityInfo(true);
     ocrApi.getOcrInfo(identityInfo?._id).then(res => {
-      console.log(res.data);
       setIdentityInfo(res?.data);
     }).catch(e => {
       setIdentityInfo({ _id: null, info: [] });
@@ -695,11 +790,11 @@ function Driving(props) {
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col xs={5}>
+            <Col>
               <div className='d-flex justify-content-center mb-2'>
                 <img id={`portrait_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitUrl} />
               </div>
-              <div className="d-flex justify-content-center">
+              <div className="d-flex justify-content-center mb-2">
                 <Button variant="outline-primary" onClick={() => rotateImage(`portrait_${_id}`)}>
                   <MdRotateLeft /> Xoay
                 </Button>
@@ -709,17 +804,39 @@ function Driving(props) {
                   {
                     imageVisible && processState === DRIVING_STATE.APPROVED ? <>
                       <Button className="ms-2" disabled={clipping} variant='outline-primary' onClick={() => clipPortrait()}>{clipping ? 'Đang tách' : 'Tách nền'}</Button>
-                      {/* <Button className="ms-2" variant='outline-primary' onClick={() => cropPortrait()}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button> */}
                     </> : <Button className="ms-2" variant={invalidPortrait ? 'danger' : 'outline-primary'} onClick={handleInvalidPortrait}>
                       <IoClose /> Lỗi
                     </Button>
                   }
                 </div>
               </div>
-              <div className='d-flex justify-content-center my-2'>
-                <img id={`portrait_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitClipUrl} />
+              <div className='d-flex justify-content-center'>
+                <img id={`portrait_clip_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitClipUrl} crossOrigin='anonymous' />
               </div>
+              {portraitClipUrl && <div className='d-flex justify-content-center my-2'>
+                <Button variant='outline-primary' disabled={cropping} onClick={() => detectAndCropPortrait(portraitClipUrl)}>{cropping ? 'Đang cắt' : 'Cắt ảnh'}</Button>
+                <Button className="ms-2" onClick={() => downloadImage(portraitClipUrl, `${name}-${tel}-portrait-clip.png`)}>Tải xuống</Button>
+              </div>}
             </Col>
+            {portraitCrop &&
+              <Col>
+                <div className='d-flex justify-content-center'>
+                  <img id={`portrait_crop_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitCrop} />
+                </div>
+                <div>
+                  <div className="d-flex justify-content-around align-items-center my-2">
+                    <Button variant='primary' onClick={() => downloadImage(portraitCrop, `${name}-${tel}-portrait-crop.png`)}>Tải xuống</Button>
+                    <FormControl className="w-25" placeholder="Số lượng" type='number' value={portraitPrintInfo.quantity} onChange={e => setPortraitPrintInfo(prev => {
+                      return {
+                        ...prev,
+                        quantity: e.target.value
+                      }
+                    })} />
+                    <Button className="w-25" variant="outline-primary" onClick={() => printPortraitDocument('print', portraitPrintInfo)}>In ảnh</Button>
+                  </div>
+                </div>
+              </Col>
+            }
             <Col>
               <Row>
                 <div className='d-flex justify-content-center mb-2'>

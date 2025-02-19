@@ -43,7 +43,7 @@ export const ADMIN_ELEARNING_MENU = [
         icon: <FaList />,
     },
     {
-        label: 'Quản lý học viên',
+        label: 'Quản lý người dùng',
         path: PATH.ELEARNING.ADMIN.STUDENT,
         icon: <FaList />,
     }

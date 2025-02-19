@@ -30,8 +30,9 @@ function AdminDrivingListPage() {
   const [loadingAction, setLoadingAction] = useState(0);
   const [exportExcelFields, setExportExcelFields] = useState(EXPORT_EXAM_EXCEL_FIELDS_TEMPLATE);
   const [downloadFileFields, setDownloadFileFields] = useState({
-    [DOWNLOAD_FILE_FIELDS.CARD]: false,
-    [DOWNLOAD_FILE_FIELDS.PORTRAIT]: true,
+    [DOWNLOAD_FILE_FIELDS.CARD]: true,
+    [DOWNLOAD_FILE_FIELDS.CARD_CROP]: false,
+    [DOWNLOAD_FILE_FIELDS.PORTRAIT]: false,
     [DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP]: false,
   });
   const [exportExcelOption, setExportExcelOption] = useState({
@@ -243,6 +244,10 @@ function AdminDrivingListPage() {
 
       if (downloadFileFields[DOWNLOAD_FILE_FIELDS.PORTRAIT]) {
         zipFile(data, DOWNLOAD_FILE_FIELDS.PORTRAIT);
+      }
+
+      if (downloadFileFields[DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP]) {
+        zipFile(data, DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP);
       }
     } else if(action === ACTION_OPTIONS.UPLOAD_FILE) {
       if (uploadFileOption.value === UPLOAD_FILE_OPTIONS.ALL) {
@@ -495,6 +500,25 @@ function AdminDrivingListPage() {
 
       portraitZip.generateAsync({ type: "blob" }).then(function (content) {
         FileSaver.saveAs(content, `portrait_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${data.length}.zip`);
+      });
+    }
+
+    if (type === DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP) {
+      const portraitCropZip = new JSZip()
+
+      for (let drivingInfo of data) {
+        setLoadingAction(prev => prev + 1);
+
+        if (drivingInfo.portraitCropUrl) {
+          const fileMimeType = drivingInfo.portraitCropUrl.split('.').pop();
+          const portraitResponse = await fetch(await getSignedUrl(drivingInfo.portraitCropUrl));
+          const portraitBlob = await portraitResponse.blob();
+          portraitCropZip.file(`${drivingInfo.name}-${drivingInfo.tel}.${fileMimeType}`, portraitBlob, { binary: true });
+        }
+      }
+
+      portraitCropZip.generateAsync({ type: "blob" }).then(function (content) {
+        FileSaver.saveAs(content, `portrait_crop_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${data.length}.zip`);
       });
     }
 
