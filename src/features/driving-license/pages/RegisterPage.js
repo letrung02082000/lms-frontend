@@ -321,7 +321,7 @@ export default function DrivingRegisterPage() {
         </Row>
         <p className="text-center text-danger fw-bold">Tham gia nhóm thi tại <a target="_blank" rel="noreferrer" href={drivingLink}>{drivingLink}</a></p>
         <p className="text-center">Học viên vui lòng tham gia khám sức khoẻ để hoàn tất thủ tục dự thi. Danh sách và lịch khám sức khoẻ sẽ được cập nhật hàng tuần trên nhóm thi.</p>
-        {/* <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán chuyển khoản</Button> */}
+        <Button className="mb-3 text-white fw-bold" variant='primary' onClick={() => setAccountShow(true)}>Thanh toán chuyển khoản</Button>
         <Button className="mb-3" variant='outline-primary' onClick={() => setPaymentMethod(0)}>Thanh toán trực tiếp</Button>
 
         <p className="text-center">
