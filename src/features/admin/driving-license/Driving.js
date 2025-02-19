@@ -319,12 +319,23 @@ function Driving(props) {
       const input = document.getElementById(`portrait_clip_${_id}`)
       const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1, maxResults: 10 }); // set model options
       const result = await faceapi.detectSingleFace(input, options);
-      const x = result.box.x - (result.box._width * 0.75);
-      const y = result.box.y - (result.box._height * 0.8);
-      const width = result.box.width * 2.5;
-      const height = width * 4 / 3;
+
+      if(!result) {
+        setCropping(false);
+        return toastWrapper('Không tìm thấy khuôn mặt', 'error');
+      }
+
+      let { x, y, width, height } = result.box;
+
+      // Mở rộng vùng cắt để có tỷ lệ 4:3 và lấy cả phần vai
+      const newWidth = width * 2.2; // Tăng gấp đôi chiều rộng khuôn mặt
+      const newHeight = (newWidth * 4) / 3; // Đảm bảo tỷ lệ 4:3
+
+      // Điều chỉnh tọa độ x, y để khuôn mặt ở vị trí trung tâm hợp lý
+      const newX = x - (newWidth - width) / 2; // Căn giữa theo chiều ngang
+      const newY = y - (newHeight * 0.27); // Dịch lên một chút để giữ phần vai trong ảnh
       const img = await Jimp.read(imageUrl);
-      const portraitCrop = await img.crop({ x, y, w: width, h: height }).getBase64('image/jpeg');
+      const portraitCrop = await img.crop({ x: newX, y: newY, w: newWidth, h: newHeight }).getBase64('image/jpeg');
       const portraitCropBlob = await fetch(portraitCrop).then(res => res.blob());
       const portraitCropFile = new File([portraitCropBlob], `${name}-${tel}-portrait-crop.png`, { type: 'image/jpeg' });
       fileApi.uploadDrivingFile(portraitCropFile).then(res => {
