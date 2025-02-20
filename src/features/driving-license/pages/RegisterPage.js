@@ -26,20 +26,6 @@ export default function DrivingRegisterPage() {
   const centerShortName = useParams().shortName || '';
 
   const MAP_URL = 'https://maps.app.goo.gl/kyq58xK5b8p4rEi1A';
-  const categories = [
-    {
-      value: 0,
-      label: "Bằng A1 (Mô tô 2 bánh có dung tích xi lanh đến 125 cm3)",
-    },
-    {
-      value: 1,
-      label: "Bằng A (Mô tô 2 bánh không giới hạn dung tích xi lanh, trung tâm liên hệ hướng dẫn qua điện thoại)",
-    },
-    {
-      value: 2,
-      label: "Bằng B1/B2/C (Bằng lái xe ô tô, trung tâm liên hệ hướng dẫn qua điện thoại)",
-    }
-  ]
 
   const {
     control,
@@ -97,6 +83,7 @@ export default function DrivingRegisterPage() {
   const [portraitData, setPortraitData] = useState(null);
   const [drivingCenter, setDrivingCenter] = useState(null);
   const [drivingCenters, setDrivingCenters] = useState([]);
+  console.log(centerShortName)
 
   useEffect(() => {
     if (centerShortName) {
@@ -111,7 +98,7 @@ export default function DrivingRegisterPage() {
         toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
       });
     } else {
-      drivingApi.queryDrivingCenters({}).then((res) => {
+      drivingApi.queryDrivingCenters({ formVisible: true }).then((res) => {
         setDrivingCenters(res?.data || []);
       }).catch((e) => {
         toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
@@ -294,6 +281,7 @@ export default function DrivingRegisterPage() {
                 <div className={styles.orderContainer}>
                   <p>Họ tên: {child?.name}</p>
                   <p>Tình trạng: {DRIVING_STATE_LABEL[child.processState]}</p>
+                  {child?.processState === DRIVING_STATE.WAITING_CHANGE && <p>Cần cập nhật: {child?.invalidPortrait ? 'Ảnh chân dung (Chói loá/thiếu sáng/mờ/không đủ vai/đeo kính)' : (child?.invalidCard ? 'Căn cước (Chói loá/thiếu sáng/mất góc/mờ)' : '')}</p>}
                   <p>
                     Ngày xử lý:
                     {` ${processDate.getDate()}/${processDate.getMonth() + 1
