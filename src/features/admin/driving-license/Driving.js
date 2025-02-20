@@ -391,7 +391,7 @@ function Driving(props) {
         return toastWrapper('Không tìm thấy khuôn mặt', 'error');
       }
 
-      let { x, y, width, height } = result.box;
+      let { x, y, width } = result.box;
 
       // Mở rộng vùng cắt để có tỷ lệ 4:3 và lấy cả phần vai
       const newWidth = width * 2.2; // Tăng gấp đôi chiều rộng khuôn mặt
@@ -408,15 +408,17 @@ function Driving(props) {
         DrivingApi.updateDriving(_id, {
           portraitCropUrl: res?.data?.url,
         }).then(async res => {
-          const portraitCropUrl = await getSignedUrl(res?.data?.portraitCropUrl);
+          const signedPortraitCropUrl = await getSignedUrl(res?.data?.portraitCropUrl);
+          const portraitCropUrl = res?.data?.portraitCropUrl;
+          setPortraitCrop(signedPortraitCropUrl);
           const field = 'portraitHealthUrl';
-          DrivingApi.clipPortrait(_id, portraitCropUrl, field, true).then(async (res) => {
+          DrivingApi.clipPortrait(_id, signedPortraitCropUrl, field, true).then(async (res) => {
+            setPortraitHealthUrl(await getSignedUrl(res?.data?.url));
             setDrivingInfo({
               ...drivingInfo,
+              portraitCropUrl,
               portraitHealthUrl: res?.data?.url,
-            })
-            setPortraitCrop(portraitCropUrl);
-            setPortraitHealthUrl(await getSignedUrl(res?.data?.url));
+            });
             toastWrapper('Cắt ảnh thành công', 'success')
           }).catch(e => {
             toastWrapper('Cắt ảnh thất bại', 'error')
@@ -906,7 +908,7 @@ function Driving(props) {
               </div>}
             </Col>
             {portraitCrop &&
-              <Col>
+            <Col>
                 <div className='d-flex justify-content-center'>
                   <img id={`portrait_crop_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitCrop} />
                 </div>
@@ -920,19 +922,21 @@ function Driving(props) {
                   })} />
                   <Button className="w-25" variant="outline-primary" onClick={() => printPortraitDocument('print', portraitPrintInfo)}>In ảnh</Button>
                 </div>
-                <div className='d-flex justify-content-center'>
-                  <img id={`portrait_health_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitHealthUrl} />
-                </div>
-                <div className="d-flex justify-content-around align-items-center my-2">
-                  <Button variant='primary' onClick={() => downloadImage(portraitHealthUrl, `${name}-${tel}-portrait-crop.png`)}>Tải xuống</Button>
-                  <FormControl className="w-25" placeholder="Số lượng" type='number' value={portraitHealthPrintInfo.quantity} onChange={e => setPortraitHealthPrintInfo(prev => {
-                    return {
-                      ...prev,
-                      quantity: e.target.value
-                    }
-                  })} />
-                  <Button className="w-25" variant="outline-primary" onClick={() => printHealthPortraitDocument('print', portraitHealthPrintInfo)}>In ảnh</Button>
-                </div>
+                {portraitHealthUrl && <>
+                  <div className='d-flex justify-content-center'>
+                    <img id={`portrait_health_${_id}`} width='100%' height='fit-content' objectFit='contain' src={portraitHealthUrl} />
+                  </div>
+                  <div className="d-flex justify-content-around align-items-center my-2">
+                    <Button variant='primary' onClick={() => downloadImage(portraitHealthUrl, `${name}-${tel}-portrait-health.png`)}>Tải xuống</Button>
+                    <FormControl className="w-25" placeholder="Số lượng" type='number' value={portraitHealthPrintInfo.quantity} onChange={e => setPortraitHealthPrintInfo(prev => {
+                      return {
+                        ...prev,
+                        quantity: e.target.value
+                      }
+                    })} />
+                    <Button className="w-25" variant="outline-primary" onClick={() => printHealthPortraitDocument('print', portraitHealthPrintInfo)}>In ảnh</Button>
+                  </div>
+                </>}
               </Col>
             }
             <Col>
