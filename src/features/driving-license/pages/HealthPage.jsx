@@ -151,7 +151,7 @@ function DrivingHealthPage() {
               );
               return;
             }
-            setData(drivingList.at(-1));
+            setData(drivingList.at(0));
             toastWrapper('Nhập thông tin thành công', 'success');
             setDisabled(false);
           }
