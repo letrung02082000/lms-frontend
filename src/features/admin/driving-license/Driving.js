@@ -780,13 +780,19 @@ function Driving(props) {
               ) : null}
             </div>
           </div>
-          <div className="d-flex justify-content-end align-items-center mt-2">
-            {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang trích xuất' : 'Trích xuất CCCD'}</Button>)}
-            {DRIVING_STATE.APPROVED !== processState && identityInfo?._id && <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button>}
-            <Button className="ms-2" variant="outline-primary" onClick={() => {
-              setImageVisible(true);
-            }}>Xem ảnh hồ sơ</Button>
+          <div>
+            <div className="d-flex justify-content-end align-items-center mt-2">
+              {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang trích xuất' : 'Trích xuất CCCD'}</Button>)}
+              {DRIVING_STATE.APPROVED !== processState && identityInfo?._id && <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button>}
+              <Button className="ms-2" variant="outline-primary" onClick={() => {
+                setImageVisible(true);
+              }}>Xem ảnh hồ sơ</Button>
+            </div>
+            <div className="mt-2">
+              {drivingInfo?.portraitHealthUrl ? <p className="text-success text-end">Đã cắt ảnh</p> : <p className="text-warning text-end">Chưa cắt ảnh</p>}
+            </div>
           </div>
+
         </Col>
         <Col>
           <Row>
