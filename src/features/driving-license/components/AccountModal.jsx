@@ -43,9 +43,9 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
       },
     },
 
-    A2: {
-      checkup: 1590000,
-      noCheckup: 1450000,
+    A: {
+      checkup: 1690000,
+      noCheckup: 1550000,
     },
 
     other : 0,
@@ -90,11 +90,11 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
       }
     }
 
-    if (drivingClass === 'A2') {
+    if (drivingClass === 'A') {
       if (hasCheckup) {
-        setAmount(DRIVING_PRICES.A2.checkup);
+        setAmount(DRIVING_PRICES.A.checkup);
       } else {
-        setAmount(DRIVING_PRICES.A2.noCheckup);
+        setAmount(DRIVING_PRICES.A.noCheckup);
       }
     }
 
@@ -146,15 +146,15 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
                       Hạng A1
                     </Button>
                     <Button
-                      onClick={() => setDrivingClass('A2')}
+                      onClick={() => setDrivingClass('A')}
                       variant={
-                        drivingClass === 'A2'
+                        drivingClass === 'A'
                           ? 'secondary'
                           : 'outline-secondary'
                       }
                       className='fw-bold'
                     >
-                      Hạng A2
+                      Hạng A
                     </Button>
                     <Button
                       onClick={() => setDrivingClass('')}
