@@ -44,8 +44,8 @@ function AccountModal({ show, setShow, tel, aPrice, bPrice }) {
     },
 
     A2: {
-      checkup: 1590000,
-      noCheckup: 1450000,
+      checkup: 1690000,
+      noCheckup: 1550000,
     },
 
     other : 0,
