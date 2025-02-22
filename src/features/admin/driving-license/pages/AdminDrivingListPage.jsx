@@ -525,7 +525,7 @@ function AdminDrivingListPage() {
 
   const downloadPortraitHealthPDF = async () => {
     let pdfData = [], pdfElements = [];
-    const perPage = 36;
+    const perPage = 16;
     let count = 0, idx = 0;
     const cmToPt = (cm) => cm * 28.3465;
 
