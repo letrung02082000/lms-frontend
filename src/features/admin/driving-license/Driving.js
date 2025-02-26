@@ -24,6 +24,7 @@ import fileApi from "api/fileApi";
 
 function Driving(props) {
   const [drivingInfo, setDrivingInfo] = useState(props?.info);
+  const [zaloSent, setZaloSent] = useState(props?.info?.zaloSent);
   const [portraitCropBlob, setPortraitCropBlob] = useState(null);
   const [portraitHealthBlob, setPortraitHealthBlob] = useState(null);
   const [portraitPrintInfo, setPortraitPrintInfo] = useState({
@@ -1011,7 +1012,14 @@ function Driving(props) {
               <p>Ngày hệ thống: <b>{new Date(dateInfo?.date)?.toLocaleDateString('en-GB')}</b></p>
               <p>Mô tả: <b>{dateInfo?.description}</b></p>
               <p>Link nhóm: <a target="_blank" rel='noreferrer noopener' href={dateInfo?.link || ''}>{dateInfo?.link || ''}</a><CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={dateInfo?.link || ''} /></p>
-              {dateInfo?.link && <p>Tin nhắn nhanh:<br />{QUICK_MESSAGE}<CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={QUICK_MESSAGE} /></p>}
+              {dateInfo?.link && <p>Tin nhắn nhanh:<br />{QUICK_MESSAGE}<CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={QUICK_MESSAGE} /><Button variant={zaloSent ? "outline-warning" : "outline-primary"} className="ms-2" onClick={() => {
+                DrivingApi.sendZaloMessage(tel, QUICK_MESSAGE).then(res => {
+                  toastWrapper('Gửi tin nhắn thành công', 'success')
+                  setZaloSent(true);
+                }).catch(e => {
+                  toastWrapper('Gửi tin nhắn thất bại', 'error')
+                })
+              }}>{zaloSent ? 'Gửi lại' : 'Gửi tin nhắn'}</Button></p>}
             </Col>
             <Col xs={3}>
               {dateInfo?.link && <QRCode value={dateInfo?.link} size={100} />}

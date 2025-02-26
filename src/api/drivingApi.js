@@ -277,6 +277,11 @@ class DrivingApi {
       params: q,
     });
   }
+
+  sendZaloMessage = async (tel, message) => {
+    const url = `${API_PATH}/message`;
+    return axiosClient.post(url, { tel, message });
+  }
 }
 
 export default new DrivingApi();

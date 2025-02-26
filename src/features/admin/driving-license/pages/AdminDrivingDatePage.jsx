@@ -16,7 +16,7 @@ function AdminDrivingDatePage() {
   const [description, setDescription] = useState('');
   const [groupLink, setGroupLink] = useState('');
   const [drivingCenters, setDrivingCenters] = useState([]);
-  const [selectedCenter, setSelectedCenter] = useState('');
+  const [selectedCenter, setSelectedCenter] = useState(center || '');
   const [drivingTypes, setDrivingTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
 
@@ -30,14 +30,25 @@ function AdminDrivingDatePage() {
         console.log(err);
       });
 
-    drivingApi
-      .queryDrivingType()
-      .then((res) => {
-        setDrivingTypes(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (center) {
+      drivingApi
+        .queryDrivingCenterType({ center })
+        .then((res) => {
+          setDrivingTypes(res.data.map((item) => item.drivingType));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      drivingApi
+        .queryDrivingType()
+        .then((res) => {
+          setDrivingTypes(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, []);
 
   const [colDefs] = useState([
@@ -203,7 +214,7 @@ function AdminDrivingDatePage() {
                     />
                   </Col>
                 </Row>
-                <Row>
+                {!center && <Row>
                   <Col>
                     <Form.Select
                       className='mb-3'
@@ -217,7 +228,7 @@ function AdminDrivingDatePage() {
                       ))}
                     </Form.Select>
                   </Col>
-                </Row>
+                </Row>}
                 <Row>
                   <Col>
                     <Form.Select
