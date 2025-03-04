@@ -14,12 +14,12 @@ import moment from 'moment'
 import { FaQrcode } from "react-icons/fa";
 import QRCode from "react-qr-code";
 import ZaloImage from "assets/images/ZaloImage";
-import { IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
+import { IoMdEye, IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import ocrApi from "api/ocrApi";
 import AccountInfo from "./components/AccountInfo";
 import { Page, View, Document, StyleSheet, Text, Image as PDFImage, Svg, Path, pdf } from '@react-pdf/renderer';
-import { genergateDrivingQuickMessage } from "utils/message.utils";
+import { genDrivingQuickMessage, genInvalidCardMessage, genInvalidPortraitMessage } from "utils/message.utils";
 import fileApi from "api/fileApi";
 import zaloApi from "api/zaloApi";
 import drivingApi from "api/drivingApi";
@@ -247,7 +247,9 @@ function Driving(props) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [transactionId, setTransactionId] = useState(drivingInfo.transactionId || null);
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS_LABEL[drivingInfo.paymentMethod] ? drivingInfo.paymentMethod : PAYMENT_METHODS.BANK_TRANSFER);
-  const QUICK_MESSAGE = genergateDrivingQuickMessage(name, dateInfo, isPaid);
+  const QUICK_MESSAGE = genDrivingQuickMessage(name, dateInfo, isPaid);
+  const INVALID_PORTRAIT_MESSAGE = genInvalidPortraitMessage(name);
+  const INVALID_CARD_MESSAGE = genInvalidCardMessage(name);
 
   
   useEffect(() => {
@@ -518,6 +520,13 @@ function Driving(props) {
         console.log(error);
         alert(error);
       });
+
+    if (!invalidCard) {
+      const confirmed = window.confirm('Bạn có muốn gửi tin nhắn thông báo với nội dung sau không? ' + INVALID_CARD_MESSAGE);
+      if (confirmed) {
+        sendZaloMessage(INVALID_CARD_MESSAGE);
+      }
+    }
   };
 
   const handleInvalidPortrait = () => {
@@ -531,6 +540,13 @@ function Driving(props) {
         console.log(error);
         alert(error);
       });
+
+    if(!invalidPortrait) {
+      const confirmed = window.confirm('Bạn có muốn gửi tin nhắn thông báo với nội dung sau không? ' + INVALID_PORTRAIT_MESSAGE);
+      if (confirmed) {
+        sendZaloMessage(INVALID_PORTRAIT_MESSAGE);
+      }
+    }
   };
 
   const handleDateChange = (e) => {
@@ -661,6 +677,23 @@ function Driving(props) {
     });
   }
 
+  const sendZaloMessage = (message) => {
+    zaloApi.findUserbyPhoneNumber(dateInfo?.center?._id, drivingInfo?.zalo).then(res => {
+      if (res?.data?.uid) {
+        zaloApi.sendTextMessage(dateInfo?.center?._id, res?.data?.uid, message).then(res => {
+          toastWrapper('Gửi tin nhắn thành công', 'success');
+        }).catch(e => {
+          toastWrapper('Gửi tin nhắn thất bại', 'error');
+        });
+      } else {
+        toastWrapper('Không tìm thấy người dùng trên Zalo', 'error');
+      }
+    }
+    ).catch(e => {
+      toastWrapper('Không tìm thấy người dùng trên Zalo', 'error');
+    });
+  }
+
   return (
     <div className="border border-primary m-2 p-3 rounded">
       <Row>
@@ -769,7 +802,7 @@ function Driving(props) {
                 </Col>
                 <Col xs={3}>
                   <Button variant='outline-primary' onClick={() => setShowDateInfo(true)}>
-                    <MdMoreVert />
+                    <IoMdEye />
                   </Button>
                   <CopyToClipboardButton className='btn btn-outline-primary ms-3' value={QUICK_MESSAGE}/>
                 </Col>
