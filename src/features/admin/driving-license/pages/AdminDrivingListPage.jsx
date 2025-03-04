@@ -33,7 +33,9 @@ function AdminDrivingListPage() {
     [DOWNLOAD_FILE_FIELDS.CARD]: true,
     [DOWNLOAD_FILE_FIELDS.CARD_CROP]: false,
     [DOWNLOAD_FILE_FIELDS.PORTRAIT]: false,
+    [DOWNLOAD_FILE_FIELDS.PORTRAIT_CLIP]: false,
     [DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP]: false,
+    [DOWNLOAD_FILE_FIELDS.PORTRAIT_HEALTH]: false,
   });
   const [exportExcelOption, setExportExcelOption] = useState({
     value: EXPORT_EXCEL_OPTIONS.EXPORT_EXAM_EXCEL,
@@ -262,6 +264,14 @@ function AdminDrivingListPage() {
 
       if (downloadFileFields[DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP]) {
         zipFile(data, DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP);
+      }
+
+      if (downloadFileFields[DOWNLOAD_FILE_FIELDS.PORTRAIT_CLIP]) {
+        zipFile(data, DOWNLOAD_FILE_FIELDS.PORTRAIT_CLIP);
+      }
+
+      if (downloadFileFields[DOWNLOAD_FILE_FIELDS.PORTRAIT_HEALTH]) {
+        zipFile(data, DOWNLOAD_FILE_FIELDS.PORTRAIT_HEALTH);
       }
     } else if(action === ACTION_OPTIONS.UPLOAD_FILE) {
       if (uploadFileOption.value === UPLOAD_FILE_OPTIONS.ALL) {
@@ -662,6 +672,44 @@ function AdminDrivingListPage() {
       });
     }
 
+    if (type === DOWNLOAD_FILE_FIELDS.PORTRAIT_CLIP) {
+      const portraitZip = new JSZip()
+
+      for (let drivingInfo of data) {
+        setLoadingAction(prev => prev + 1);
+
+        if (drivingInfo.portraitClipUrl) {
+          const fileMimeType = drivingInfo.portraitClipUrl.split('.').pop();
+          const portraitResponse = await fetch(await getSignedUrl(drivingInfo.portraitClipUrl));
+          const portraitBlob = await portraitResponse.blob();
+          portraitZip.file(`${drivingInfo.name}-${drivingInfo.tel}-clipped.${fileMimeType}`, portraitBlob, { binary: true });
+        }
+      }
+
+      portraitZip.generateAsync({ type: "blob" }).then(function (content) {
+        FileSaver.saveAs(content, `portrait_clip_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${data.length}.zip`);
+      });
+    }
+
+    if (type === DOWNLOAD_FILE_FIELDS.PORTRAIT_HEALTH) {
+      const portraitZip = new JSZip()
+
+      for (let drivingInfo of data) {
+        setLoadingAction(prev => prev + 1);
+
+        if (drivingInfo.portraitClipUrl) {
+          const fileMimeType = drivingInfo.portraitHealthUrl.split('.').pop();
+          const portraitResponse = await fetch(await getSignedUrl(drivingInfo.portraitHealthUrl));
+          const portraitBlob = await portraitResponse.blob();
+          portraitZip.file(`${drivingInfo.name}-${drivingInfo.tel}-clipped.${fileMimeType}`, portraitBlob, { binary: true });
+        }
+      }
+
+      portraitZip.generateAsync({ type: "blob" }).then(function (content) {
+        FileSaver.saveAs(content, `portrait_health_${new Date(data[0]?.date).toLocaleDateString('en-GB')}_TC_${data.length}.zip`);
+      });
+    }
+
     if (type === DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP) {
       const portraitCropZip = new JSZip()
 
@@ -932,7 +980,7 @@ function AdminDrivingListPage() {
           )}
           {action === ACTION_OPTIONS.DOWNLOAD_FILE && (
             <>
-              <div className='d-flex flex-wrap justify-content-around mt-3'>
+              <div className='d-flex justify-content-around mt-3'>
                 {Object.keys(downloadFileFields).map((key) => {
                   return (
                     <Form.Check
