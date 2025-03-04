@@ -21,6 +21,8 @@ import AccountInfo from "./components/AccountInfo";
 import { Page, View, Document, StyleSheet, Text, Image as PDFImage, Svg, Path, pdf } from '@react-pdf/renderer';
 import { genergateDrivingQuickMessage } from "utils/message.utils";
 import fileApi from "api/fileApi";
+import zaloApi from "api/zaloApi";
+import drivingApi from "api/drivingApi";
 
 function Driving(props) {
   const [drivingInfo, setDrivingInfo] = useState(props?.info);
@@ -635,6 +637,30 @@ function Driving(props) {
     });
   }
 
+  const handleZaloMessageButton = () => {
+    zaloApi.findUserbyPhoneNumber(dateInfo?.center?._id, drivingInfo?.zalo).then(res => {
+      if (res?.data?.uid) {
+        zaloApi.sendTextMessage(dateInfo?.center?._id, res?.data?.uid, QUICK_MESSAGE).then(res => {
+          toastWrapper('Gửi tin nhắn thành công', 'success');
+          drivingApi.updateDriving(drivingInfo._id, {
+            zaloSent: true
+          }).then(res => {
+            setZaloSent(true);
+          }).catch(e => {
+            toastWrapper('Cập nhật trạng thái hồ sơ thất bại', 'error');
+          })
+        }).catch(e => {
+          toastWrapper('Gửi tin nhắn thất bại', 'error');
+        });
+      } else {
+        toastWrapper('Không tìm thấy người dùng trên Zalo', 'error');
+      }
+    }
+    ).catch(e => {
+      toastWrapper('Không tìm thấy người dùng trên Zalo', 'error');
+    });
+  }
+
   return (
     <div className="border border-primary m-2 p-3 rounded">
       <Row>
@@ -1012,14 +1038,7 @@ function Driving(props) {
               <p>Ngày hệ thống: <b>{new Date(dateInfo?.date)?.toLocaleDateString('en-GB')}</b></p>
               <p>Mô tả: <b>{dateInfo?.description}</b></p>
               <p>Link nhóm: <a target="_blank" rel='noreferrer noopener' href={dateInfo?.link || ''}>{dateInfo?.link || ''}</a><CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={dateInfo?.link || ''} /></p>
-              {dateInfo?.link && <p>Tin nhắn nhanh:<br />{QUICK_MESSAGE}<CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={QUICK_MESSAGE} /><Button variant={zaloSent ? "outline-warning" : "outline-primary"} className="ms-2" onClick={() => {
-                DrivingApi.sendZaloMessage(tel, QUICK_MESSAGE).then(res => {
-                  toastWrapper('Gửi tin nhắn thành công', 'success')
-                  setZaloSent(true);
-                }).catch(e => {
-                  toastWrapper('Gửi tin nhắn thất bại', 'error')
-                })
-              }}>{zaloSent ? 'Gửi lại' : 'Gửi tin nhắn'}</Button></p>}
+              {dateInfo?.link && <p>Tin nhắn nhanh:<br />{QUICK_MESSAGE}<CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={QUICK_MESSAGE} /><Button variant={zaloSent ? "outline-warning" : "outline-primary"} className="ms-2" onClick={handleZaloMessageButton}>{zaloSent ? 'Gửi lại' : 'Gửi tin nhắn'}</Button></p>}
             </Col>
             <Col xs={3}>
               {dateInfo?.link && <QRCode value={dateInfo?.link} size={100} />}
