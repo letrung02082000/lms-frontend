@@ -580,7 +580,7 @@ function Driving(props) {
         setIdentityInfo({
           _id: res?.data?.identityInfo,
         });
-        toastWrapper('Đọc CCCD thành công', 'success')
+        toastWrapper('Đọc căn cước thành công', 'success')
       }).catch(e => {
         toastWrapper(e.toString(), 'error')
       }).finally(() => {
@@ -591,7 +591,7 @@ function Driving(props) {
         setIdentityInfo({
           _id: res?.data?.identityInfo,
         });
-        toastWrapper('Đọc CCCD thành công', 'success')
+        toastWrapper('Đọc căn cước thành công', 'success')
       }).catch(e => {
         toastWrapper(e.toString(), 'error')
       }).finally(() => {
@@ -809,8 +809,8 @@ function Driving(props) {
           </div>
           <div>
             <div className="d-flex justify-content-end align-items-center mt-2">
-              {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang trích xuất' : 'Trích xuất CCCD'}</Button>)}
-              {DRIVING_STATE.APPROVED !== processState && identityInfo?._id && <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button>}
+              {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc' : 'Đọc thông tin'}</Button>)}
+              {DRIVING_STATE.APPROVED !== processState && identityInfo?._id && <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin</Button>}
               <Button className="ms-2" variant="outline-primary" onClick={() => {
                 setImageVisible(true);
               }}>Xem ảnh hồ sơ</Button>

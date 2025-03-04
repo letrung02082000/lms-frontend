@@ -119,15 +119,19 @@ export const EXPORT_EXCEL_FIELDS = {
 
 export const DOWNLOAD_FILE_FIELDS = {
     CARD: 'card',
-    CARD_CROP: 'cardCrop',
+    CARD_CROP: 'card_crop',
     PORTRAIT: 'portrait',
-    PORTRAIT_CROP: 'portraitCrop',
+    PORTRAIT_CLIP: 'portrait_clip',
+    PORTRAIT_HEALTH: 'portrait_health',
+    PORTRAIT_CROP: 'portrait_crop',
 }
 
 export const DOWNLOAD_FILE_FIELDS_LABEL = {
     [DOWNLOAD_FILE_FIELDS.CARD]: 'Ảnh căn cước',
     [DOWNLOAD_FILE_FIELDS.CARD_CROP]: 'Ảnh căn cước (cắt)',
     [DOWNLOAD_FILE_FIELDS.PORTRAIT]: 'Ảnh chân dung',
+    [DOWNLOAD_FILE_FIELDS.PORTRAIT_CLIP]: 'Ảnh chân dung (nền xanh)',
+    [DOWNLOAD_FILE_FIELDS.PORTRAIT_HEALTH]: 'Ảnh chân dung (nền trắng)',
     [DOWNLOAD_FILE_FIELDS.PORTRAIT_CROP]: 'Ảnh chân dung (cắt)',
 }
 
