@@ -6,7 +6,7 @@ import { MdEdit, MdAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 
-function AdminDrivingDatePage() {
+function AdminDrivingClassPage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const [query, setQuery] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
@@ -62,16 +62,35 @@ function AdminDrivingDatePage() {
       },
     },
     {
+      field: 'enrollmentDate',
+      headerName: 'Ngày vào khoá',
+      valueFormatter: (data) => {
+        return data.value
+          ? new Date(data.value).toLocaleDateString('vi-VN')
+          : 'Chưa cập nhật';
+      },
+    },
+    {
       field: 'date',
-      headerName: 'Ngày thi',
+      headerName: 'Ngày tốt nghiệp',
       cellRenderer: (data) => {
         return data.value
           ? new Date(data.value).toLocaleDateString('en-GB')
-          : '';
+          : 'Chưa cập nhật';
       },
     },
     ...(userRole?.includes(ROLE.ADMIN) || userRole?.includes(ROLE.DRIVING.ADMIN)
       ? [
+          {
+            field: 'code',
+            headerName: 'Mã khoá',
+            editable: true,
+          },
+          {
+            field: 'name',
+            headerName: 'Tên khoá',
+            editable: true,
+          },
           {
             field: 'description',
             headerName: 'Mô tả',
@@ -83,28 +102,22 @@ function AdminDrivingDatePage() {
             editable: true,
           },
           {
-            field: 'center',
+            field: 'center.name',
             headerName: 'Trung tâm',
             editable: false,
-            cellRenderer: (data) => {
-              return data?.value ? data.value.name : '';
-            },
           },
           {
-            field: 'drivingType',
+            field: 'drivingType.label',
             headerName: 'Hạng bằng',
             editable: false,
-            cellRenderer: (data) => {
-              return data?.value ? data.value.label : '';
-            },
           },
           {
-            field: 'formVisible',
+            field: 'visible',
             headerName: 'Hiển thị trên website',
             editable: true,
           },
           {
-            field: 'isVisible',
+            field: 'active',
             headerName: 'Hiển thị',
             editable: true,
           },
@@ -112,9 +125,9 @@ function AdminDrivingDatePage() {
       : []),
   ]);
 
-  const fetchDrivingDates = async () => {
+  const fetchDrivingClass = async () => {
     drivingApi
-      .getDrivingDate({ ...(center && { center }) })
+      .queryDrivingClass({ ...(center && { center }) })
       .then((res) => {
         setRowData(res.data);
       })
@@ -124,7 +137,7 @@ function AdminDrivingDatePage() {
   }
 
   useEffect(() => {
-    fetchDrivingDates();
+    fetchDrivingClass();
   }, [page, query]);
   
   const handleAddDateButton = async () => {
@@ -139,7 +152,7 @@ function AdminDrivingDatePage() {
 
     drivingApi.addDrivingDate(body).then((res) => {
       toastWrapper('Thêm ngày thành công', 'success');
-      fetchDrivingDates();
+      fetchDrivingClass();
       setShowAddModal(false);
     }).catch((err) => {
       toastWrapper(err?.message, 'error');
@@ -281,4 +294,4 @@ function AdminDrivingDatePage() {
   );
 }
 
-export default AdminDrivingDatePage;
+export default AdminDrivingClassPage;

@@ -278,9 +278,49 @@ class DrivingApi {
     });
   }
 
+  updateDrivingCenterType = async (id, data) => {
+    const url = `${API_PATH}/center/type/${id}`;
+    return axiosClient.patch(url, data);
+  }
+  
+  queryDrivingCenterTeacher = async (q) => {
+    const url = `${API_PATH}/center/teacher`;
+    return axiosClient.get(url, {
+      params: q,
+    });
+  }
+
   sendZaloMessage = async (tel, message) => {
     const url = `${API_PATH}/message`;
     return axiosClient.post(url, { tel, message });
+  }
+
+  queryDrivingCenterTeacher = async (q) => {
+    const url = `${API_PATH}/center/teacher`;
+    return axiosClient.get(url, {
+      params: q,
+    });
+  }
+
+  queryDrivingCenterSetting = async (center) => {
+    const url = `${API_PATH}/setting`;
+    return axiosClient.get(url, {
+      params: { center },
+    });
+  }
+
+  queryDrivingClass = async (q) => {
+    const url = `${API_PATH}/class`;
+    return axiosClient.get(url, {
+      params: q,
+    });
+  }
+
+  queryDrivingVehicle = async (q) => {
+    const url = `${API_PATH}/vehicle`;
+    return axiosClient.get(url, {
+      params: q,
+    });
   }
 }
 

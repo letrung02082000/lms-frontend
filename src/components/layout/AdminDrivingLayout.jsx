@@ -6,6 +6,7 @@ import drivingApi from 'api/drivingApi';
 function AdminDrivingLayout() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const [drivingTypes, setDrivingTypes] = React.useState([]);
+  const [setting, setSetting] = React.useState({});
 
   useEffect(() => {
     document.title = 'Quản lý đào tạo lái xe';
@@ -20,6 +21,15 @@ function AdminDrivingLayout() {
           }
         });
         setDrivingTypes(drivingCenterTypes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    drivingApi
+      .queryDrivingCenterSetting(center)
+      .then((res) => {
+        setSetting(res?.data[0]);
       })
       .catch((err) => {
         console.log(err);
@@ -43,7 +53,7 @@ function AdminDrivingLayout() {
   }, []);
 
   return (
-    <AdminLayout menu={generateDrivingMenu(drivingTypes)} title='Quản lý lái xe'/>
+    <AdminLayout menu={generateDrivingMenu(drivingTypes, setting)} title='Quản lý lái xe'/>
   )
 }
 

@@ -6,7 +6,7 @@ import { MdEdit, MdAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 
-function AdminDrivingDatePage() {
+function AdminDrivingVehiclePage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const [query, setQuery] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
@@ -19,6 +19,8 @@ function AdminDrivingDatePage() {
   const [selectedCenter, setSelectedCenter] = useState(center || '');
   const [drivingTypes, setDrivingTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
     drivingApi
@@ -51,7 +53,30 @@ function AdminDrivingDatePage() {
     }
   }, []);
 
+  const ActionButton = (props) => {
+    return (
+      <div className='w-100 d-flex justify-content-center'>
+        <button
+          className='btn'
+          onClick={() => {
+            setSelectedRow(props.data);
+            setShowEditModal(true);
+          }}
+        >
+          <MdEdit />
+        </button>
+      </div>
+    );
+  };
+
   const [colDefs] = useState([
+    {
+      headerName: 'STT',
+      valueGetter: 'node.rowIndex + 1',
+      suppressMenu: true,
+      pinned: 'left',
+      width: 60,
+    },
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
@@ -62,59 +87,137 @@ function AdminDrivingDatePage() {
       },
     },
     {
-      field: 'date',
-      headerName: 'Ngày thi',
-      cellRenderer: (data) => {
-        return data.value
-          ? new Date(data.value).toLocaleDateString('en-GB')
-          : '';
+      field: 'plate',
+      headerName: 'Biển số',
+    },
+    {
+      field: 'isContractVehicle',
+      headerName: 'Xe hợp đồng/trung tâm',
+      valueFormatter: (data) => {
+        return data.value ? 'Xe hợp đồng' : 'Xe trung tâm';
       },
     },
-    ...(userRole?.includes(ROLE.ADMIN) || userRole?.includes(ROLE.DRIVING.ADMIN)
-      ? [
-          {
-            field: 'description',
-            headerName: 'Mô tả',
-            editable: true,
-          },
-          {
-            field: 'link',
-            headerName: 'Nhóm thi',
-            editable: true,
-          },
-          {
-            field: 'center',
-            headerName: 'Trung tâm',
-            editable: false,
-            cellRenderer: (data) => {
-              return data?.value ? data.value.name : '';
-            },
-          },
-          {
-            field: 'drivingType',
-            headerName: 'Hạng bằng',
-            editable: false,
-            cellRenderer: (data) => {
-              return data?.value ? data.value.label : '';
-            },
-          },
-          {
-            field: 'formVisible',
-            headerName: 'Hiển thị trên website',
-            editable: true,
-          },
-          {
-            field: 'isVisible',
-            headerName: 'Hiển thị',
-            editable: true,
-          },
-        ]
-      : []),
+    {
+      field: 'brand',
+      headerName: 'Hãng xe',
+      editable: true,
+    },
+    {
+      field: 'type',
+      headerName: 'Loại xe',
+      editable: true,
+    },
+    {
+      field: 'model',
+      headerName: 'Mẫu xe',
+      editable: true,
+    },
+    {
+      field: 'engineNumber',
+      headerName: 'Số máy',
+      editable: true,
+    },
+    {
+      field: 'chassisNumber',
+      headerName: 'Số khung',
+      editable: true,
+    },
+    {
+      field: 'color',
+      headerName: 'Màu xe',
+      editable: false,
+    },
+    {
+      field: 'inspectionCertificateDate',
+      headerName: 'Ngày kiểm định',
+      editable: true,
+    },
+    {
+      field: 'inspectionCertificateExpiryDate',
+      headerName: 'Ngày hết hạn kiểm định',
+      editable: true,
+    },
+    {
+      field: 'inspectionCertificateExpiryDate',
+      headerName: 'Ngày hết hạn kiểm định',
+      editable: true,
+    },
+    {
+      field: 'DatSerialNumber',
+      headerName: 'Số thiết bị Dat',
+      editable: true,
+    },
+    {
+      field: 'DatInstallationDate',
+      headerName: 'Ngày lắp Dat',
+      editable: true,
+    },
+    {
+      field: 'supplier',
+      headerName: 'Nhà cung cấp',
+      editable: true,
+    },
+    {
+      field: 'transmissionType',
+      headerName: 'Loại hộp số',
+      editable: true,
+    },
+    {
+      field: 'dispatchNumber',
+      headerName: 'Số công văn',
+      editable: true,
+    },
+    {
+      field: 'owner',
+      headerName: 'Chủ xe',
+      editable: true,
+    },
+    {
+      field: 'relatedPerson',
+      headerName: 'Người liên quan',
+      editable: true,
+    },
+    {
+      field: 'dispatchNumber',
+      headerName: 'Số công văn',
+      editable: true,
+    },
+    {
+      field: 'insuranceExpiryDate',
+      headerName: 'Ngày hết hạn bảo hiểm',
+      editable: true,
+    },
+    {
+      field: 'gptlNumber',
+      headerName: 'Số giấy phép tập lái',
+      editable: true,
+    },
+    {
+      field: 'validFromDate',
+      headerName: 'Ngày có hiệu lực',
+      editable: true,
+    },
+    {
+      field: 'productionYear',
+      headerName: 'Năm sản xuất',
+      editable: true,
+    },
+    {
+      field: 'note',
+      headerName: 'Ghi chú',
+      editable: true,
+    },
+    {
+      field: 'action',
+      headerName: 'Thao tác',
+      cellRenderer: ActionButton,
+      width: 100,
+    },
   ]);
 
-  const fetchDrivingDates = async () => {
+  const fetchDrivingVehicle = async () => {
     drivingApi
-      .getDrivingDate({ ...(center && { center }) })
+      .queryDrivingVehicle({ ...(center && { center }) })
       .then((res) => {
         setRowData(res.data);
       })
@@ -124,7 +227,7 @@ function AdminDrivingDatePage() {
   }
 
   useEffect(() => {
-    fetchDrivingDates();
+    fetchDrivingVehicle();
   }, [page, query]);
   
   const handleAddDateButton = async () => {
@@ -139,7 +242,7 @@ function AdminDrivingDatePage() {
 
     drivingApi.addDrivingDate(body).then((res) => {
       toastWrapper('Thêm ngày thành công', 'success');
-      fetchDrivingDates();
+      fetchDrivingVehicle();
       setShowAddModal(false);
     }).catch((err) => {
       toastWrapper(err?.message, 'error');
@@ -281,4 +384,4 @@ function AdminDrivingDatePage() {
   );
 }
 
-export default AdminDrivingDatePage;
+export default AdminDrivingVehiclePage;

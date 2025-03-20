@@ -99,6 +99,7 @@
     "uploader": "^1.48.0",
     "validator": "^13.7.0",
     "video.js": "^8.21.0",
+    "videojs-markers": "^1.0.1",
     "web-vitals": "^1.0.1",
     "xlsx": "^0.18.3"
   },

@@ -154,11 +154,11 @@ function AdminDrivingPage() {
     { field: 'name', headerName: 'Họ và tên', flex: 2 },
     {
       field: 'date',
-      headerName: 'Ngày dự thi',
+      headerName: 'Ngày thi',
       flex: 1,
-      cellRenderer: (data) => {
-        return data.value
-          ? new Date(data.value).toLocaleDateString('en-GB')
+      valueFormatter: (params) => {
+        return params.value
+          ? new Date(params.value).toLocaleDateString('en-GB')
           : '';
       },
     },
