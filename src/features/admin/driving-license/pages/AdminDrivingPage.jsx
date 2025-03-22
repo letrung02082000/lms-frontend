@@ -7,7 +7,6 @@ import {
   Form,
   Modal,
   Offcanvas,
-  Pagination,
   Row,
 } from 'react-bootstrap';
 import {
@@ -52,7 +51,6 @@ function AdminDrivingPage() {
   const [query, setQuery] = useState({});
   const [facingMode, setFacingMode] = useState('environment');
   const [searchText, setSearchText] = useState('');
-  const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
   const [pagination, setPagination] = useState({});
@@ -69,6 +67,7 @@ function AdminDrivingPage() {
   const [portraitUploading, setPortraitUploading] = useState(false);
   const [fixedDate, setFixedDate] = useState(null);
   const [drivingTypes, setDrivingTypes] = useState([]);
+  const [gridApi, setGridApi] = useState(null);
 
   useEffect(() => {
     const selectedDate = visibleDate.find((item) => {
@@ -186,8 +185,6 @@ function AdminDrivingPage() {
   ]);
 
   useEffect(() => {
-    fetchDrivings(query, searchText, page);
-
     drivingApi
       .getDate()
       .then((res) => {
@@ -203,7 +200,7 @@ function AdminDrivingPage() {
       .catch((err) => {
         console.log(err);
       });
-  }, [page, query]);
+  }, [query]);
 
   useEffect(() => {
     const readQrData = async () => {
@@ -225,12 +222,12 @@ function AdminDrivingPage() {
 
         setSearchText(searchText);
         drivingApi
-          .getDrivings(query, searchText, 1)
+          .getDrivings({ query, search: searchText, page: 1 })
           .then((res) => {
             setRowData(res.data);
             setPagination(res.pagination);
 
-            if (res.data.length === 0) {
+            if (res.data?.length === 0) {
               toastWrapper('Không tìm thấy hồ sơ', 'error');
             }
 
@@ -252,7 +249,7 @@ function AdminDrivingPage() {
                 );
               }
 
-              for (let i = 0; i < res.data.length; i++) {
+              for (let i = 0; i < res.data?.length; i++) {
                 if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
                   setSelectedRow(res.data[i]);
 
@@ -289,7 +286,7 @@ function AdminDrivingPage() {
                 }
               }
             } else {
-              for (let i = 0; i < res.data.length; i++) {
+              for (let i = 0; i < res.data?.length; i++) {
                 if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
                   setSelectedRow(res.data[i]);
 
@@ -312,7 +309,7 @@ function AdminDrivingPage() {
 
   const fetchDrivings = async (query, searchText, page) => {
     drivingApi
-      .getDrivings(query, searchText, page)
+      .getDrivings({ query, search: searchText, page })
       .then((res) => {
         setRowData(res.data);
         setPagination(res.pagination);
@@ -394,7 +391,7 @@ function AdminDrivingPage() {
       .then((res) => {
         setSelectedRow({ ...selectedRow, ...res.data });
         fetchImage(type);
-        fetchDrivings(query, searchText, page);
+        fetchDrivings(query, searchText);
         toastWrapper('Cập nhật thành công', 'success');
       })
       .catch((e) => {
@@ -423,7 +420,7 @@ function AdminDrivingPage() {
         .then((res) => {
           toastWrapper('Cập nhật thành công', 'success');
           setShowEditModal(false);
-          fetchDrivings(query, searchText, page);
+          refreshGrid();
         })
         .catch((err) => {
           toastWrapper(err.response.data.message, 'error');
@@ -432,7 +429,8 @@ function AdminDrivingPage() {
   };
 
   const handleSearchButton = () => {
-    fetchDrivings(query, searchText, page);
+    const dataSource = getDataSource(searchText, query);
+    gridApi.setGridOption('datasource', dataSource);
   };
 
   const handleClearButton = (name) => {
@@ -447,7 +445,7 @@ function AdminDrivingPage() {
           'Đã cập nhật thành ' + DRIVING_STATE_LABEL[processState],
           'success'
         );
-        fetchDrivings(query, searchText, page);
+        fetchDrivings(query, searchText);
         setShowEditModal(false);
       })
       .catch((err) => {
@@ -464,6 +462,39 @@ function AdminDrivingPage() {
       'data-rotate',
       (tmp.getAttribute('data-rotate') || 0) - 90
     );
+  };
+
+  const onGridReady = (params) => {
+    setGridApi(params.api);
+    const dataSource = getDataSource();
+    params.api.setGridOption('datasource', dataSource);
+  };
+
+  const getDataSource = (search, query) => {
+    return {
+      rowCount: null,
+      getRows: async (params) => {
+        const { startRow, endRow } = params;
+        try {
+          const res = await drivingApi.getDrivings({
+            ...(center && { center }),
+            limit: endRow - startRow,
+            page: Math.floor(startRow / (endRow - startRow)) + 1,
+            ...(query && { query }),
+            ...(search && { search }),
+          });
+          params.successCallback(res.data, res.pagination.totalDocs);
+        } catch (error) {
+          params.failCallback();
+        }
+      },
+    };
+  };
+
+  const refreshGrid = () => {
+    if (gridApi) {
+      gridApi.refreshInfiniteCache();
+    }
   };
 
   return (
@@ -484,7 +515,8 @@ function AdminDrivingPage() {
             className='btn position-absolute end-0 top-50 translate-middle p-0'
             onClick={() => {
               setSearchText('');
-              fetchDrivings(query, '', page);
+              const dataSource = getDataSource('', query);
+              gridApi.setGridOption('datasource', dataSource);
             }}
           >
             <MdClear />
@@ -500,38 +532,17 @@ function AdminDrivingPage() {
           <MdQrCodeScanner size={25} />
         </button>
       </div>
-      <div className='ag-theme-quartz' style={{ height: '85%' }}>
-        <AgGridReact rowData={rowData} columnDefs={colDefs} />
+      <div className='ag-theme-quartz' style={{ height: '90%' }}>
+        <AgGridReact
+          columnDefs={colDefs}
+          pagination={true}
+          paginationPageSize={20}
+          rowModelType={'infinite'}
+          cacheBlockSize={20}
+          paginationPageSizeSelector={[20, 50, 100]}
+          onGridReady={onGridReady}
+        />
       </div>
-      <Pagination
-        className='d-flex justify-content-center align-items-center'
-        style={{
-          height: '6%',
-        }}
-      >
-        <Pagination.Item>
-          {pagination.start +
-            '-' +
-            pagination.end +
-            ' của ' +
-            pagination.totalCount}
-        </Pagination.Item>
-        <Pagination.First onClick={() => setPage(1)}></Pagination.First>
-        <Pagination.Prev
-          onClick={() => setPage(page - 1)}
-          disabled={page <= 1}
-        />
-        <Pagination.Item active>
-          {pagination.page}/{pagination.totalPage}
-        </Pagination.Item>
-        <Pagination.Next
-          onClick={() => setPage(page + 1)}
-          disabled={page >= pagination.totalPage}
-        />
-        <Pagination.Last
-          onClick={() => setPage(pagination.totalPage)}
-        ></Pagination.Last>
-      </Pagination>
       <Offcanvas
         show={show}
         onHide={() => setShow(false)}

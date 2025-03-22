@@ -278,8 +278,8 @@ function AdminDrivingTeacherPage() {
           paginationPageSize={100}
           rowModelType={'infinite'}
           cacheBlockSize={100}
-          onGridReady={onGridReady}
           paginationPageSizeSelector={[10, 20, 50, 100]}
+          onGridReady={onGridReady}
         />
       </div>
       {(userRole?.includes(ROLE.ADMIN) ||
