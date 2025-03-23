@@ -2,24 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
-import { MdEdit, MdAdd } from 'react-icons/md';
+import { MdAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import vehicleValidation from 'validations/vehicle.validation'; // Update the import path
-import colDefs from './colDefs.js'; // Import the column definitions
+import drivingVehicleValidation from 'validations/driving-vehicle.validation.js'; // Update the import path
+import {vehicleColDefs as colDefs} from './column.defs.js'; // Import the column definitions
 
 function AdminDrivingVehiclePage() {
   const { center, role: userRole } = JSON.parse(localStorage.getItem('user-info'));
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
-  const [description, setDescription] = useState('');
-  const [groupLink, setGroupLink] = useState('');
   const [drivingCenters, setDrivingCenters] = useState([]);
-  const [selectedCenter, setSelectedCenter] = useState(center || '');
   const [drivingTypes, setDrivingTypes] = useState([]);
-  const [selectedType, setSelectedType] = useState('');
   const [selectedRow, setSelectedRow] = useState(null);
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -27,7 +21,7 @@ function AdminDrivingVehiclePage() {
   const [gridApi, setGridApi] = useState(null);
 
   const { register, handleSubmit, setValue, formState: { errors }, clearErrors, reset } = useForm({
-    resolver: yupResolver(vehicleValidation)
+    resolver: yupResolver(drivingVehicleValidation)
   });
 
   const handleVehicleSubmit = (values) => {
@@ -104,25 +98,6 @@ function AdminDrivingVehiclePage() {
     const dataSource = getDataSource();
     gridApi.setDatasource(dataSource);
   };
-  
-  const handleAddDateButton = async () => {
-    const body = {
-      date: new Date(drivingDate).getTime(),
-      isVisible: true,
-      description,
-      link: groupLink,
-      center: selectedCenter,
-      drivingType: selectedType,
-    };
-
-    drivingApi.addDrivingDate(body).then((res) => {
-      toastWrapper('Thêm ngày thành công', 'success');
-      fetchDrivingVehicle();
-      setShowAddModal(false);
-    }).catch((err) => {
-      toastWrapper(err?.message, 'error');
-    });
-  }
 
   const onCellValueChanged = (event) => {
     const { data } = event;
@@ -201,88 +176,6 @@ function AdminDrivingVehiclePage() {
       </div>
       {(userRole?.includes(ROLE.ADMIN) || userRole?.includes(ROLE.DRIVING.ADMIN)) && (
         <>
-          <Modal
-            show={showAddModal}
-            onHide={() => setShowAddModal(false)}
-            size='lg'
-            backdrop='static'
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Thêm khoá thi mới</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form>
-                <Row>
-                  <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='date'
-                      id='drivingDate'
-                      name='drivingDate'
-                      defaultValue={drivingDate}
-                      onChange={(e) => setDrivingDate(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='text'
-                      placeholder='Mô tả'
-                      onChange={(e) => setDescription(e.target.value)}
-                      as={'textarea'}
-                    />
-                  </Col>
-                </Row>
-                {!center && <Row>
-                  <Col>
-                    <Form.Select
-                      className='mb-3'
-                      onChange={(e) => setSelectedCenter(e.target.value)}
-                    >
-                      <option>Chọn trung tâm</option>
-                      {drivingCenters.map((center) => (
-                        <option key={center._id} value={center._id}>
-                          {center.name}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                </Row>}
-                <Row>
-                  <Col>
-                    <Form.Select
-                      className='mb-3'
-                      onChange={(e) => setSelectedType(e.target.value)}
-                    >
-                      <option>Chọn hạng bằng</option>
-                      {drivingTypes.map((type) => (
-                        <option key={type._id} value={type._id}>
-                          {type.label}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='text'
-                      placeholder='Nhóm thi'
-                      onChange={(e) => setGroupLink(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant='primary' onClick={handleAddDateButton}>
-                Thêm
-              </Button>
-            </Modal.Footer>
-          </Modal>
           <Modal
             show={showVehicleModal}
             onHide={handleCloseModal}

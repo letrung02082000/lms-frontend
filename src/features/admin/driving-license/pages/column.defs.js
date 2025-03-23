@@ -19,7 +19,7 @@ const ActionButton = (props) => {
   );
 };
 
-const colDefs = [
+const vehicleColDefs = [
   {
     field: 'action',
     headerName: 'Thao tác',
@@ -137,4 +137,7 @@ const colDefs = [
   }
 ];
 
-export default colDefs;
+export {
+  vehicleColDefs,
+  ActionButton,
+};

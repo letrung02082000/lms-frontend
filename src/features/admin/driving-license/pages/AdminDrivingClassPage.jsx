@@ -5,13 +5,14 @@ import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
 import { MdEdit, MdAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import drivingClassSchema from 'validations/driving-class.validation';
 
 function AdminDrivingClassPage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const [query, setQuery] = useState({});
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [page, setPage] = useState(1);
-  const [rowData, setRowData] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
   const [groupLink, setGroupLink] = useState('');
@@ -19,6 +20,12 @@ function AdminDrivingClassPage() {
   const [selectedCenter, setSelectedCenter] = useState(center || '');
   const [drivingTypes, setDrivingTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
+  const [gridApi, setGridApi] = useState(null);
+  const [showClassModal, setShowClassModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const { register, handleSubmit, setValue, formState: { errors }, clearErrors, reset } = useForm({
+    resolver: yupResolver(drivingClassSchema)
+  });
 
   useEffect(() => {
     drivingApi
@@ -51,7 +58,56 @@ function AdminDrivingClassPage() {
     }
   }, []);
 
+    useEffect(() => {
+      if (selectedRow && isEditMode) {
+        Object.keys(selectedRow).forEach((key) => {
+          setValue(key, selectedRow[key]);
+        });
+      }
+    }, [selectedRow, setValue, showClassModal]);
+
+  const ActionButton = (props) => {
+    return (
+      <div className='w-100 d-flex justify-content-center'>
+        <button
+          className='btn'
+          onClick={() => {
+              props?.clearErrors();
+              props?.reset();
+              props?.setSelectedRow(props.data);
+              props?.setIsEditMode(true);
+              props?.setShowClassModal(true);
+          }}
+        >
+          <MdEdit />
+        </button>
+      </div>
+    );
+  };
+
   const [colDefs] = useState([
+    {
+      field: 'action',
+      headerName: 'Thao tác',
+      cellRenderer: ActionButton,
+      width: 60,
+      suppressMenu: true,
+      pinned: 'left',
+      cellRendererParams: {
+        clearErrors,
+        reset,
+        setSelectedRow,
+        setIsEditMode,
+        setShowClassModal
+      }
+    },
+    {
+      headerName: 'STT',
+      valueGetter: 'node.rowIndex + 1',
+      suppressMenu: true,
+      pinned: 'left',
+      width: 60,
+    },
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
@@ -71,8 +127,17 @@ function AdminDrivingClassPage() {
       },
     },
     {
-      field: 'date',
+      field: 'graduationDate',
       headerName: 'Ngày tốt nghiệp',
+      cellRenderer: (data) => {
+        return data.value
+          ? new Date(data.value).toLocaleDateString('en-GB')
+          : 'Chưa cập nhật';
+      },
+    },
+    {
+      field: 'examDate',
+      headerName: 'Ngày thi dự kiến',
       cellRenderer: (data) => {
         return data.value
           ? new Date(data.value).toLocaleDateString('en-GB')
@@ -84,80 +149,82 @@ function AdminDrivingClassPage() {
           {
             field: 'code',
             headerName: 'Mã khoá',
-            editable: true,
           },
           {
             field: 'name',
             headerName: 'Tên khoá',
-            editable: true,
           },
           {
             field: 'description',
             headerName: 'Mô tả',
-            editable: true,
           },
           {
             field: 'link',
             headerName: 'Nhóm thi',
-            editable: true,
           },
           {
             field: 'center.name',
             headerName: 'Trung tâm',
-            editable: false,
           },
           {
             field: 'drivingType.label',
             headerName: 'Hạng bằng',
-            editable: false,
           },
           {
             field: 'visible',
             headerName: 'Hiển thị trên website',
             editable: true,
+            cellRenderer: 'agCheckboxCellRenderer',
           },
           {
             field: 'active',
             headerName: 'Hiển thị',
             editable: true,
+            cellRenderer: 'agCheckboxCellRenderer',
           },
         ]
       : []),
   ]);
 
   const fetchDrivingClass = async () => {
-    drivingApi
-      .queryDrivingClass({ ...(center && { center }) })
-      .then((res) => {
-        setRowData(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const dataSource = getDataSource();
+
+    if (gridApi) {
+      gridApi.setDatasource(dataSource);
+    }
   }
 
   useEffect(() => {
     fetchDrivingClass();
-  }, [page, query]);
+  }, [query]);
   
-  const handleAddDateButton = async () => {
+  const handleAddClassButton = () => {
+    reset();
+    setIsEditMode(false);
+    setShowClassModal(true);
+  };
+
+  const handleSaveClass = () => {
     const body = {
       date: new Date(drivingDate).getTime(),
-      isVisible: true,
       description,
       link: groupLink,
       center: selectedCenter,
       drivingType: selectedType,
     };
 
-    drivingApi.addDrivingDate(body).then((res) => {
-      toastWrapper('Thêm ngày thành công', 'success');
+    const apiCall = isEditMode
+      ? drivingApi.updateDrivingClass(selectedRow._id, body)
+      : drivingApi.addDrivingClass(body);
+
+    apiCall.then((res) => {
+      toastWrapper(isEditMode ? 'Cập nhật khoá thành công' : 'Thêm khoá thành công', 'success');
       fetchDrivingClass();
-      setShowAddModal(false);
+      setShowClassModal(false);
     }).catch((err) => {
       toastWrapper(err?.message, 'error');
     });
-  }
+  };
 
   const onCellValueChanged = (event) => {
     const { data } = event;
@@ -177,6 +244,31 @@ function AdminDrivingClassPage() {
     });
   }
 
+  const onGridReady = (params) => {
+    setGridApi(params.api);
+    const dataSource = getDataSource();
+    params.api.setGridOption('datasource', dataSource);
+  };
+
+  const getDataSource = () => {
+    return {
+      rowCount: null,
+      getRows: async (params) => {
+        const { startRow, endRow } = params;
+        try {
+          const res = await drivingApi.queryDrivingClass({
+            ...(center && { center }),
+            page: Math.floor(startRow / (endRow - startRow)) + 1,
+            limit: endRow - startRow,
+          });
+          params.successCallback(res.data, res.pagination.totalDocs);
+        } catch (error) {
+          params.failCallback();
+        }
+      },
+    };
+  };
+
   return (
     <div
       style={{
@@ -185,21 +277,31 @@ function AdminDrivingClassPage() {
     >
       <div className='ag-theme-quartz' style={{ height: '100%' }}>
         <AgGridReact
-          rowData={rowData}
           columnDefs={colDefs}
           onCellValueChanged={onCellValueChanged}
+          rowModelType='infinite'
+          paginationPageSize={20}
+          paginationPageSizeSelectors={[10, 20, 50, 100]}
+          pagination={true}
+          cacheBlockSize={20}
+          onGridReady={onGridReady}
         />
       </div>
-      {(userRole?.includes(ROLE.ADMIN) || userRole?.includes(ROLE.DRIVING.ADMIN)) && (
+      {(userRole?.includes(ROLE.ADMIN) ||
+        userRole?.includes(ROLE.DRIVING.ADMIN)) && (
         <>
           <Modal
-            show={showAddModal}
-            onHide={() => setShowAddModal(false)}
+            show={showClassModal}
+            onHide={() => {
+              setShowClassModal(false);
+            }}
             size='lg'
             backdrop='static'
           >
             <Modal.Header closeButton>
-              <Modal.Title>Thêm khoá thi mới</Modal.Title>
+              <Modal.Title>
+                {isEditMode ? 'Chỉnh sửa khoá thi' : 'Thêm khoá thi mới'}
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form>
@@ -226,21 +328,23 @@ function AdminDrivingClassPage() {
                     />
                   </Col>
                 </Row>
-                {!center && <Row>
-                  <Col>
-                    <Form.Select
-                      className='mb-3'
-                      onChange={(e) => setSelectedCenter(e.target.value)}
-                    >
-                      <option>Chọn trung tâm</option>
-                      {drivingCenters.map((center) => (
-                        <option key={center._id} value={center._id}>
-                          {center.name}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                </Row>}
+                {!center && (
+                  <Row>
+                    <Col>
+                      <Form.Select
+                        className='mb-3'
+                        onChange={(e) => setSelectedCenter(e.target.value)}
+                      >
+                        <option>Chọn trung tâm</option>
+                        {drivingCenters.map((center) => (
+                          <option key={center._id} value={center._id}>
+                            {center.name}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </Col>
+                  </Row>
+                )}
                 <Row>
                   <Col>
                     <Form.Select
@@ -258,19 +362,25 @@ function AdminDrivingClassPage() {
                 </Row>
                 <Row>
                   <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='text'
-                      placeholder='Nhóm thi'
-                      onChange={(e) => setGroupLink(e.target.value)}
-                    />
+                    <Form.Group className='mb-3'>
+                      <Form.Label>Mã khoá</Form.Label>
+                      <FormControl
+                        type='text'
+                        placeholder='Mã khoá'
+                        {...register('code')}
+                        isInvalid={!!errors.code}
+                      />
+                      <FormControl.Feedback type='invalid'>
+                        {errors.plate?.message}
+                      </FormControl.Feedback>
+                    </Form.Group>
                   </Col>
                 </Row>
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant='primary' onClick={handleAddDateButton}>
-                Thêm
+              <Button variant='primary' onClick={handleSaveClass}>
+                {isEditMode ? 'Cập nhật' : 'Thêm'}
               </Button>
             </Modal.Footer>
           </Modal>
@@ -284,7 +394,7 @@ function AdminDrivingClassPage() {
               right: '50px',
               zIndex: 1000,
             }}
-            onClick={() => setShowAddModal(true)}
+            onClick={handleAddClassButton}
           >
             <MdAdd />
           </Button>

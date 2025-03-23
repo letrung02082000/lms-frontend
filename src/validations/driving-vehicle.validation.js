@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-const vehicleSchema = yup.object().shape({
+const drivingVehicleSchema = yup.object().shape({
   plate: yup.string().required('Biển số là bắt buộc'),
   brand: yup.string().required('Hãng xe là bắt buộc'),
   type: yup.string().required('Loại xe là bắt buộc'),
@@ -24,4 +24,4 @@ const vehicleSchema = yup.object().shape({
   note: yup.string().required('Ghi chú là bắt buộc'),
 });
 
-export default vehicleSchema;
+export default drivingVehicleSchema;
