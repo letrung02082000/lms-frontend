@@ -4,13 +4,12 @@ import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
-import { DRIVING_LICENSE_LEVELS, EDUCATION_LEVELS, GENDERS, TEACHER_STATUS, TEACHING_CERTIFICATE_LEVELS } from 'constants/driving-teacher.constant';
+import { EDUCATION_LEVELS, GENDERS, TEACHER_STATUS, TEACHING_CERTIFICATE_LEVELS } from 'constants/driving-teacher.constant';
 import { MdEdit } from 'react-icons/md';
 
 function AdminDrivingTeacherPage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const [query, setQuery] = useState({});
-  const [showAddModal, setShowAddModal] = useState(false);
   const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
@@ -22,7 +21,7 @@ function AdminDrivingTeacherPage() {
   const [selectedType, setSelectedType] = useState('');
   const [gridApi, setGridApi] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (center) {
@@ -53,7 +52,7 @@ function AdminDrivingTeacherPage() {
           className='btn'
           onClick={() => {
             setSelectedRow(props.data);
-            setShowEditModal(true);
+            setShowModal(true);
           }}
         >
           <MdEdit />
@@ -63,6 +62,14 @@ function AdminDrivingTeacherPage() {
   };
 
   const [colDefs] = useState([
+    {
+      field: 'action',
+      headerName: 'Thao tác',
+      cellRenderer: ActionButton,
+      width: 60,
+      suppressMenu: true,
+      pinned: 'left',
+    },
     {
       headerName: 'STT',
       valueGetter: 'node.rowIndex + 1',
@@ -178,13 +185,7 @@ function AdminDrivingTeacherPage() {
       valueFormatter: (params) => {
         return params.value ? TEACHER_STATUS[params.value] : 'Chưa cập nhật';
       },
-    },
-    {
-      field: 'action',
-      headerName: 'Thao tác',
-      cellRenderer: ActionButton,
-      width: 100,
-    },
+    }
   ]);
 
   const fetchDrivingTypes = async () => {
@@ -215,7 +216,7 @@ function AdminDrivingTeacherPage() {
     drivingApi.addDrivingDate(body).then((res) => {
       toastWrapper('Thêm ngày thành công', 'success');
       fetchDrivingTypes();
-      setShowAddModal(false);
+      setShowModal(false);
     }).catch((err) => {
       toastWrapper(err?.message, 'error');
     });
@@ -286,8 +287,8 @@ function AdminDrivingTeacherPage() {
         userRole?.includes(ROLE.DRIVING.ADMIN)) && (
         <>
           <Modal
-            show={showAddModal}
-            onHide={() => setShowAddModal(false)}
+            show={showModal}
+            onHide={() => setShowModal(false)}
             size='lg'
             backdrop='static'
           >
@@ -379,7 +380,7 @@ function AdminDrivingTeacherPage() {
               right: '50px',
               zIndex: 1000,
             }}
-            onClick={() => setShowAddModal(true)}
+            onClick={() => setShowModal(true)}
           >
             <MdAdd />
           </Button> */}

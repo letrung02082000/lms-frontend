@@ -8,6 +8,7 @@ import { ROLE } from 'constants/role';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import drivingClassSchema from 'validations/driving-class.validation';
+import TableEditButton from 'components/button/TableEditButton';
 
 function AdminDrivingClassPage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
@@ -21,7 +22,7 @@ function AdminDrivingClassPage() {
   const [drivingTypes, setDrivingTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
   const [gridApi, setGridApi] = useState(null);
-  const [showClassModal, setShowClassModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const { register, handleSubmit, setValue, formState: { errors }, clearErrors, reset } = useForm({
     resolver: yupResolver(drivingClassSchema)
@@ -64,32 +65,13 @@ function AdminDrivingClassPage() {
           setValue(key, selectedRow[key]);
         });
       }
-    }, [selectedRow, setValue, showClassModal]);
-
-  const ActionButton = (props) => {
-    return (
-      <div className='w-100 d-flex justify-content-center'>
-        <button
-          className='btn'
-          onClick={() => {
-              props?.clearErrors();
-              props?.reset();
-              props?.setSelectedRow(props.data);
-              props?.setIsEditMode(true);
-              props?.setShowClassModal(true);
-          }}
-        >
-          <MdEdit />
-        </button>
-      </div>
-    );
-  };
+    }, [selectedRow, setValue, showModal]);
 
   const [colDefs] = useState([
     {
       field: 'action',
       headerName: 'Thao tác',
-      cellRenderer: ActionButton,
+      cellRenderer: TableEditButton,
       width: 60,
       suppressMenu: true,
       pinned: 'left',
@@ -98,7 +80,7 @@ function AdminDrivingClassPage() {
         reset,
         setSelectedRow,
         setIsEditMode,
-        setShowClassModal
+        setShowModal
       }
     },
     {
@@ -201,7 +183,7 @@ function AdminDrivingClassPage() {
   const handleAddClassButton = () => {
     reset();
     setIsEditMode(false);
-    setShowClassModal(true);
+    setShowModal(true);
   };
 
   const handleSaveClass = () => {
@@ -220,7 +202,7 @@ function AdminDrivingClassPage() {
     apiCall.then((res) => {
       toastWrapper(isEditMode ? 'Cập nhật khoá thành công' : 'Thêm khoá thành công', 'success');
       fetchDrivingClass();
-      setShowClassModal(false);
+      setShowModal(false);
     }).catch((err) => {
       toastWrapper(err?.message, 'error');
     });
@@ -291,9 +273,9 @@ function AdminDrivingClassPage() {
         userRole?.includes(ROLE.DRIVING.ADMIN)) && (
         <>
           <Modal
-            show={showClassModal}
+            show={showModal}
             onHide={() => {
-              setShowClassModal(false);
+              setShowModal(false);
             }}
             size='lg'
             backdrop='static'
