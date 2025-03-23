@@ -243,21 +243,13 @@ function AdminDrivingTeacherPage() {
     return {
       rowCount: null,
       getRows: async (params) => {
-        const { 
-          startRow,
-          endRow,
-          sortModel,
-          filterModel,
-        } = params;
+        const { startRow, endRow } = params;
         try {
-          const res = await drivingApi.queryDrivingCenterTeacher({
-            ...(center && { center }),
-            startRow,
-            endRow,
-            sortModel,
-            filterModel,
+          const res = await drivingApi.queryDrivingTeacher({
+            page: Math.floor(startRow / (endRow - startRow)) + 1,
+            limit: endRow - startRow,
           });
-          params.successCallback(res.data, res.pagination.total);
+          params.successCallback(res.data, res.pagination.totalDocs);
         } catch (error) {
           params.failCallback();
         }

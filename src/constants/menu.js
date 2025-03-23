@@ -24,7 +24,7 @@ export const generateDrivingMenu = (drivingType, setting) => {
         },
         setting?.useClassManagement &&{
             label: 'Quản lý khoá học',
-            path: PATH.DRIVING.ADMIN.CLASS,
+            path: PATH.DRIVING.ADMIN.COURSE,
             icon: <FaList />
         },
         setting?.useClassManagement &&{

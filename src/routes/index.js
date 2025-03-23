@@ -9,7 +9,7 @@ import ServiceLayout from 'components/layout/ServiceLayout';
 import AdminLayout from 'components/layout/AdminLayout';
 import AdminGuard from 'components/guard/AdminGuard';
 import AdminPage from 'features/admin/pages/AdminPage';
-import AdminDrivingClassPage from 'features/admin/driving-license/pages/AdminDrivingClassPage';
+import AdminDrivingCoursePage from 'features/admin/driving-license/pages/AdminDrivingCoursePage';
 import AdminDrivingListPage from 'features/admin/driving-license/pages/AdminDrivingListPage';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
@@ -251,8 +251,8 @@ const router = createBrowserRouter([
         element: <AdminDrivingLayout />,
         children: [
           {
-            path: PATH.DRIVING.ADMIN.CLASS,
-            element: <AdminDrivingClassPage />,
+            path: PATH.DRIVING.ADMIN.COURSE,
+            element: <AdminDrivingCoursePage />,
           },
           {
             path: PATH.DRIVING.ADMIN.DATE,

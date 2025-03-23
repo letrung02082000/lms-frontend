@@ -21,25 +21,14 @@ function AdminDrivingTypePage() {
   const [selectedType, setSelectedType] = useState('');
 
   useEffect(() => {
-    if (center) {
-      drivingApi
-        .queryDrivingCenterType({ center })
-        .then((res) => {
-          setDrivingTypes(res.data.map((item) => item.drivingType));
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      drivingApi
-        .queryDrivingType()
-        .then((res) => {
-          setDrivingTypes(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    drivingApi
+    .queryDrivingCenterType()
+    .then((res) => {
+      setDrivingTypes(res.data.map((item) => item.drivingType));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   const [colDefs] = useState([

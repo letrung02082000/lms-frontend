@@ -10,9 +10,7 @@ import CopyToClipboardButton from 'components/button/CopyToClipboardButton';
 
 function AdminDrivingCenterPage() {
   const {role: userRole, center} = JSON.parse(localStorage.getItem('user-info'));
-  const [query, setQuery] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
-  const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
@@ -21,6 +19,7 @@ function AdminDrivingCenterPage() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [initingElearning, setInitingElearning] = useState(false);
   const [elearningInfo, setElearningInfo] = useState(null);
+  const [gridApi, setGridApi] = useState(null);
 
   const [colDefs] = useState([
     {
@@ -97,15 +96,34 @@ function AdminDrivingCenterPage() {
     },
   ]);
 
+  const onGridReady = (params) => {
+    setGridApi(params.api);
+    const dataSource = getDataSource();
+    params.api.setGridOption('datasource', dataSource);
+  };
+
+  const getDataSource = () => {
+    return {
+      rowCount: null,
+      getRows: async (params) => {
+        const { startRow, endRow} = params;
+        try {
+          const res = await drivingApi.queryDrivingCenters({
+            limit: endRow - startRow,
+            page: Math.floor(startRow / (endRow - startRow)) + 1,
+            ...(center && { _id: center }),
+          })
+          params.successCallback(res.data, res.pagination.totalDocs);
+        } catch (error) {
+          params.failCallback();
+        }
+      },
+    };
+  };
+
   const fetchDrivingCenters = async () => {
-    drivingApi
-      .queryDrivingCenters({ _id: center })
-      .then((res) => {
-        setRowData(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const dataSource = getDataSource();
+    gridApi.setDatasource(dataSource);
   }
 
   const onInitCenterElearning = (centerId) => {
@@ -124,10 +142,6 @@ function AdminDrivingCenterPage() {
         setInitingElearning(false);
       });
   };
-
-  useEffect(() => {
-    fetchDrivingCenters();
-  }, [page, query]);
   
   const handleAddDateButton = async () => {
     const body = {
@@ -166,8 +180,6 @@ function AdminDrivingCenterPage() {
     });
   }
 
-  console.log(elearningInfo)
-
   return (
     <div
       style={{
@@ -176,9 +188,14 @@ function AdminDrivingCenterPage() {
     >
       <div className='ag-theme-quartz' style={{ height: '100%' }}>
         <AgGridReact
-          rowData={rowData}
           columnDefs={colDefs}
           onCellValueChanged={onCellValueChanged}
+          pagination={true}
+          paginationPageSize={100}
+          rowModelType={'infinite'}
+          cacheBlockSize={100}
+          paginationPageSizeSelector={[10, 20, 50, 100]}
+          onGridReady={onGridReady}
         />
       </div>
       {(userRole === ROLE.ADMIN || userRole === ROLE.DRIVING.ADMIN) && (

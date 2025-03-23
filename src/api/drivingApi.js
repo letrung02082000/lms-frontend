@@ -279,8 +279,8 @@ class DrivingApi {
     return axiosClient.patch(url, data);
   }
   
-  queryDrivingCenterTeacher = async (q) => {
-    const url = `${API_PATH}/center/teacher`;
+  queryDrivingTeacher = async (q) => {
+    const url = `${API_PATH}/teacher`;
     return axiosClient.get(url, {
       params: q,
     });
@@ -291,13 +291,6 @@ class DrivingApi {
     return axiosClient.post(url, { tel, message });
   }
 
-  queryDrivingCenterTeacher = async (q) => {
-    const url = `${API_PATH}/center/teacher`;
-    return axiosClient.get(url, {
-      params: q,
-    });
-  }
-
   queryDrivingCenterSetting = async (center) => {
     const url = `${API_PATH}/setting`;
     return axiosClient.get(url, {
@@ -305,8 +298,8 @@ class DrivingApi {
     });
   }
 
-  queryDrivingClass = async (q) => {
-    const url = `${API_PATH}/class`;
+  queryDrivingCourse = async (q) => {
+    const url = `${API_PATH}/course`;
     return axiosClient.get(url, {
       params: q,
     });

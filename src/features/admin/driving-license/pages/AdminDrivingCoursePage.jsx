@@ -10,7 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import drivingClassSchema from 'validations/driving-class.validation';
 import TableEditButton from 'components/button/TableEditButton';
 
-function AdminDrivingClassPage() {
+function AdminDrivingCoursePage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
   const [query, setQuery] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
@@ -30,7 +30,7 @@ function AdminDrivingClassPage() {
 
   useEffect(() => {
     drivingApi
-      .queryDrivingCenters({ visible: true, ...(center && { center }) })
+      .queryDrivingCenters({ active: true, ...(center && { center }) })
       .then((res) => {
         setDrivingCenters(res.data);
       })
@@ -40,7 +40,7 @@ function AdminDrivingClassPage() {
 
     if (center) {
       drivingApi
-        .queryDrivingCenterType({ center })
+        .queryDrivingCenterType({ center, active: true })
         .then((res) => {
           setDrivingTypes(res.data.map((item) => item.drivingType));
         })
@@ -49,7 +49,9 @@ function AdminDrivingClassPage() {
         });
     } else {
       drivingApi
-        .queryDrivingType()
+        .queryDrivingType({
+          active: true,
+        })
         .then((res) => {
           setDrivingTypes(res.data);
         })
@@ -238,7 +240,7 @@ function AdminDrivingClassPage() {
       getRows: async (params) => {
         const { startRow, endRow } = params;
         try {
-          const res = await drivingApi.queryDrivingClass({
+          const res = await drivingApi.queryDrivingCourse({
             ...(center && { center }),
             page: Math.floor(startRow / (endRow - startRow)) + 1,
             limit: endRow - startRow,
@@ -386,4 +388,4 @@ function AdminDrivingClassPage() {
   );
 }
 
-export default AdminDrivingClassPage;
+export default AdminDrivingCoursePage;
