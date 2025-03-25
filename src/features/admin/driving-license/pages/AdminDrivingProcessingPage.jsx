@@ -22,8 +22,8 @@ import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { IoMdEye } from "react-icons/io";
 import { toastWrapper } from "utils";
 
-function AdminDrivingListPage() {
-  const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
+function AdminDrivingProcessingPage() {
+  const { center } = JSON.parse(localStorage.getItem('user-info'));
   const [searchParams, setSearchParams] = useSearchParams();
   const [drivingType, setDrivingType] = useState(searchParams.get('type') || 0);
   const [drivingTypes, setDrivingTypes] = useState([]);
@@ -156,9 +156,12 @@ function AdminDrivingListPage() {
     setLoading(true);
     DrivingApi
       .getDrivingDate({
-        isVisible: true,
-        drivingType,
-        center,
+        page: 1,
+        limit: 100,
+        filter: {
+          center,
+          drivingType,
+        }
       })
       .then(async (res) => {
         const temp = res.data;
@@ -762,7 +765,7 @@ function AdminDrivingListPage() {
       setPreventActionButton(false);
     }
   }, [uploadedFiles, action]);
-  console.log(uploadedFiles)
+
   const handleResponse = useCallback((res) => {
     let file = res.data;
 
@@ -1223,4 +1226,4 @@ function AdminDrivingListPage() {
   );
 }
 
-export default AdminDrivingListPage;
+export default AdminDrivingProcessingPage;

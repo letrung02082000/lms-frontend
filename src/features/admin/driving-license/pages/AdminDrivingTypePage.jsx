@@ -5,13 +5,14 @@ import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
 import { MdEdit, MdAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
+import { ActionButton } from './column.defs';
+import TableEditButton from 'components/button/TableEditButton';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 function AdminDrivingTypePage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
-  const [query, setQuery] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
-  const [page, setPage] = useState(1);
-  const [rowData, setRowData] = useState([]);
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
   const [groupLink, setGroupLink] = useState('');
@@ -19,6 +20,20 @@ function AdminDrivingTypePage() {
   const [selectedCenter, setSelectedCenter] = useState(center || '');
   const [drivingTypes, setDrivingTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('');
+  const [gridApi, setGridApi] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    clearErrors,
+    reset,
+  } = useForm({
+    resolver: yupResolver(),
+  });
 
   useEffect(() => {
     drivingApi
@@ -32,6 +47,28 @@ function AdminDrivingTypePage() {
   }, []);
 
   const [colDefs] = useState([
+    {
+      field: 'action',
+      headerName: 'Thao tác',
+      cellRenderer: TableEditButton,
+      cellRendererParams: {
+        clearErrors,
+        reset,
+        setSelectedRow,
+        setIsEditMode,
+        setShowModal,
+      },
+      width: 60,
+      suppressHeaderMenuButton: true,
+      pinned: 'left',
+    },
+    {
+      headerName: 'STT',
+      valueGetter: 'node.rowIndex + 1',
+      suppressHeaderMenuButton: true,
+      pinned: 'left',
+      width: 60,
+    },
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
@@ -57,7 +94,6 @@ function AdminDrivingTypePage() {
       field: 'center.name',
       headerName: 'Trung tâm',
       editable: false,
-      
     },
     ...(userRole?.includes(ROLE.ADMIN) || userRole?.includes(ROLE.DRIVING.ADMIN)
       ? [
@@ -65,30 +101,44 @@ function AdminDrivingTypePage() {
             field: 'visible',
             headerName: 'Hiển thị trên website',
             editable: true,
+            cellRenderer: 'agCheckboxCellRenderer',
           },
           {
             field: 'active',
             headerName: 'Hiển thị',
             editable: true,
+            cellRenderer: 'agCheckboxCellRenderer',
           },
         ]
       : []),
   ]);
 
-  const fetchDrivingTypes = async () => {
-    drivingApi
-      .queryDrivingCenterType({ ...(center && { center }) })
-      .then((res) => {
-        setRowData(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+const onGridReady = (params) => {
+    setGridApi(params.api);
+    const dataSource = getDataSource();
+    params.api.setGridOption('datasource', dataSource);
+  };
 
-  useEffect(() => {
-    fetchDrivingTypes();
-  }, [page, query]);
+  const getDataSource = () => {
+    return {
+      rowCount: null,
+      getRows: async (params) => {
+        const { startRow, endRow } = params;
+        try {
+          const res = await drivingApi.queryDrivingCenterType({
+            page: Math.floor(startRow / (endRow - startRow)) + 1,
+            limit: endRow - startRow,
+            filter: {
+              ...(center && { center }),
+            }
+          });
+          params.successCallback(res.data, res.pagination.totalDocs);
+        } catch (error) {
+          params.failCallback();
+        }
+      },
+    };
+  };
   
   const handleAddTypeButton = async () => {
     const body = {
@@ -102,7 +152,6 @@ function AdminDrivingTypePage() {
 
     drivingApi.addDrivingDate(body).then((res) => {
       toastWrapper('Thêm ngày thành công', 'success');
-      fetchDrivingTypes();
       setShowAddModal(false);
     }).catch((err) => {
       toastWrapper(err?.message, 'error');
@@ -131,9 +180,14 @@ function AdminDrivingTypePage() {
     >
       <div className='ag-theme-quartz' style={{ height: '100%' }}>
         <AgGridReact
-          rowData={rowData}
           columnDefs={colDefs}
           onCellValueChanged={onCellValueChanged}
+          pagination={true}
+          paginationPageSize={100}
+          rowModelType={'infinite'}
+          cacheBlockSize={100}
+          paginationPageSizeSelector={[10, 20, 50, 100]}
+          onGridReady={onGridReady}
         />
       </div>
       {(userRole?.includes(ROLE.ADMIN) || userRole?.includes(ROLE.DRIVING.ADMIN)) && (

@@ -6,11 +6,11 @@ import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 import { EDUCATION_LEVELS, GENDERS, TEACHER_STATUS, TEACHING_CERTIFICATE_LEVELS } from 'constants/driving-teacher.constant';
 import { MdEdit } from 'react-icons/md';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 function AdminDrivingTeacherPage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
-  const [query, setQuery] = useState({});
-  const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
@@ -22,6 +22,16 @@ function AdminDrivingTeacherPage() {
   const [gridApi, setGridApi] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    clearErrors,
+    reset,
+  } = useForm({
+    resolver: yupResolver(),
+  });
 
   useEffect(() => {
     if (center) {
@@ -67,13 +77,13 @@ function AdminDrivingTeacherPage() {
       headerName: 'Thao tác',
       cellRenderer: ActionButton,
       width: 60,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       pinned: 'left',
     },
     {
       headerName: 'STT',
       valueGetter: 'node.rowIndex + 1',
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       pinned: 'left',
       width: 60,
     },
@@ -198,10 +208,6 @@ function AdminDrivingTeacherPage() {
         console.log(err);
       });
   }
-
-  useEffect(() => {
-    fetchDrivingTypes();
-  }, [page, query]);
   
   const handleAddTypeButton = async () => {
     const body = {
@@ -268,9 +274,9 @@ function AdminDrivingTeacherPage() {
           columnDefs={colDefs}
           onCellValueChanged={onCellValueChanged}
           pagination={true}
-          paginationPageSize={100}
+          paginationPageSize={20}
           rowModelType={'infinite'}
-          cacheBlockSize={100}
+          cacheBlockSize={20}
           paginationPageSizeSelector={[10, 20, 50, 100]}
           onGridReady={onGridReady}
         />

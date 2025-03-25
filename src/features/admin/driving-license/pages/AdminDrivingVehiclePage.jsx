@@ -19,9 +19,15 @@ function AdminDrivingVehiclePage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isFormDirty, setIsFormDirty] = useState(false);
   const [gridApi, setGridApi] = useState(null);
-
-  const { register, handleSubmit, setValue, formState: { errors }, clearErrors, reset } = useForm({
-    resolver: yupResolver(drivingVehicleValidation)
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    clearErrors,
+    reset,
+  } = useForm({
+    resolver: yupResolver(drivingVehicleValidation),
   });
 
   const handleVehicleSubmit = (values) => {
@@ -130,7 +136,6 @@ function AdminDrivingVehiclePage() {
         const { startRow, endRow } = params;
         try {
           const res = await drivingApi.queryDrivingVehicle({
-            ...(center && { center }),
             page: Math.floor(startRow / (endRow - startRow)) + 1,
             limit: endRow - startRow,
           });
@@ -167,9 +172,9 @@ function AdminDrivingVehiclePage() {
           })}
           onCellValueChanged={onCellValueChanged}
           pagination={true}
-          paginationPageSize={100}
+          paginationPageSize={20}
           rowModelType={'infinite'}
-          cacheBlockSize={100}
+          cacheBlockSize={20}
           paginationPageSizeSelector={[10, 20, 50, 100]}
           onGridReady={onGridReady}
         />

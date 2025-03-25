@@ -31,9 +31,7 @@ export default function DrivingRegisterPage() {
     control,
     setValue,
     handleSubmit,
-    setError,
     formState: { isSubmitting, errors },
-    watch,
     setFocus,
   } = useForm({
     mode: 'onChange',
@@ -83,7 +81,6 @@ export default function DrivingRegisterPage() {
   const [portraitData, setPortraitData] = useState(null);
   const [drivingCenter, setDrivingCenter] = useState(null);
   const [drivingCenters, setDrivingCenters] = useState([]);
-  console.log(centerShortName)
 
   useEffect(() => {
     if (centerShortName) {

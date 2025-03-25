@@ -5,7 +5,7 @@ export const generateDrivingMenu = (drivingType, setting) => {
     const drivingTypeObj = drivingType.map((t) => {
         return {
             label: t?.label,
-            path: PATH.DRIVING.ADMIN.QUERY + '?type=' + t?.value,
+            path: PATH.DRIVING.ADMIN.PROCESSING + '?type=' + t?.value,
             icon: t?.icon || <FaList />
         }
     })
@@ -18,7 +18,7 @@ export const generateDrivingMenu = (drivingType, setting) => {
         },
         setting?.useInProcessManagement && {
             label: 'Hồ sơ đang xử lý',
-            path: PATH.DRIVING.ADMIN.QUERY,
+            path: PATH.DRIVING.ADMIN.PROCESSING,
             icon: <FaList />,
             children: drivingTypeObj
         },

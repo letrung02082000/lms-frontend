@@ -1,6 +1,5 @@
 import { serializeQuery } from "utils/request.utils";
 import axiosClient from "./axiosClient";
-import { authHeader } from "utils";
 
 const API_PATH = "/driving";
 
@@ -25,7 +24,6 @@ class DrivingApi {
   getAllDrivings = async (state) => {
     const url = `${API_PATH}/all`;
     return axiosClient.get(url, {
-      ...authHeader(),
       params: {
         state,
       },
@@ -34,13 +32,12 @@ class DrivingApi {
 
   updateDriving = async (_id, data) => {
     const url = `${API_PATH}/${_id}`;
-    return axiosClient.patch(url, data, authHeader());
+    return axiosClient.patch(url, data);
   };
 
   query = async (query) => {
     const url = `${API_PATH}/q`;
     return axiosClient.get(url, {
-      ...authHeader(),
       params: query,
     });
   }
@@ -48,7 +45,6 @@ class DrivingApi {
   queryDrivings = async (date, processState, drivingType) => {
     const url = `${API_PATH}/q`;
     return axiosClient.get(url, {
-      ...authHeader(),
       params: {
         date,
         processState,
@@ -60,7 +56,6 @@ class DrivingApi {
   countDrivings = async (state) => {
     const url = `${API_PATH}/count`;
     return axiosClient.get(url, {
-      ...authHeader(),
       params: {
         state,
       },
@@ -70,7 +65,6 @@ class DrivingApi {
   getDrivingByType = async (type) => {
     const url = `${API_PATH}/type`;
     return axiosClient.get(url, {
-      ...authHeader(),
       params: {
         type,
       },
@@ -78,30 +72,34 @@ class DrivingApi {
   };
 
   updateDrivingDate = async (_id, body) => {
-    const url = `${API_PATH}/date`;
-    return axiosClient.put(url, { _id, ...body }, authHeader());
+    const url = `${API_PATH}/date/${_id}`;
+    return axiosClient.patch(url, body);
+  };
+
+  updateDrivingCourse = async (_id, body) => {
+    const url = `${API_PATH}/course/${_id}`;
+    return axiosClient.patch(url, body);
   };
 
   updateDrivingFeedback = async (_id, feedback) => {
     const url = `${API_PATH}/update`;
-    return axiosClient.put(url, { _id, feedback }, authHeader());
+    return axiosClient.put(url, { _id, feedback });
   };
 
   updateProcessState = async (_id, state) => {
     const url = `${API_PATH}/state`;
-    return axiosClient.put(url, { _id, state }, authHeader());
+    return axiosClient.put(url, { _id, state });
   };
 
   updateMessageSent = async (_id, messageSent) => {
     const url = `${API_PATH}/sent`;
-    return axiosClient.put(url, { _id, messageSent }, authHeader());
+    return axiosClient.put(url, { _id, messageSent });
   };
 
   getImage = async (name) => {
     const url = `${API_PATH}/image`;
     return axiosClient.get(url, {
       params: { name },
-      ...authHeader(),
     });
   };
 
@@ -111,7 +109,6 @@ class DrivingApi {
       params: {
         all: true,
       },
-      ...authHeader(),
     });
   };
 
@@ -119,14 +116,12 @@ class DrivingApi {
     const url = `${API_PATH}/date`;
     return axiosClient.get(url, {
       params,
-      ...authHeader(),
     });
   };
-  
+
   getDate = async (params) => {
     const url = `${API_PATH}/date`;
     return axiosClient.get(url, {
-      ...authHeader(),
       params,
     });
   };
@@ -152,7 +147,7 @@ class DrivingApi {
 
   updateDrivingCenter = async (_id, data) => {
     const url = `${API_PATH}/center/${_id}`;
-    return axiosClient.patch(url, data, authHeader());
+    return axiosClient.patch(url, data);
   }
 
   queryDrivingCenterPrice = async (q) => {
@@ -167,7 +162,7 @@ class DrivingApi {
     return axiosClient.put(
       url,
       { _id, date, isVisible, formVisible },
-      authHeader()
+
     );
   };
 
@@ -180,7 +175,7 @@ class DrivingApi {
         isVisible,
         description,
       },
-      authHeader()
+
     );
   };
 
@@ -189,7 +184,7 @@ class DrivingApi {
     return axiosClient.post(
       url,
       body,
-      authHeader()
+
     );
   };
 
@@ -200,7 +195,6 @@ class DrivingApi {
         formVisible: true,
         center,
       },
-      ...authHeader(),
     });
   };
 
@@ -208,7 +202,6 @@ class DrivingApi {
     const url = `${API_PATH}/add`;
     return axiosClient.post(url, data, {
       headers: { "Content-Type": "multipart/form-data" },
-      ...authHeader(),
     });
   };
 
@@ -216,14 +209,12 @@ class DrivingApi {
     const url = `${API_PATH}/search`;
     return axiosClient.get(url, {
       params: { tel },
-      ...authHeader(),
     });
   };
 
   getFile = async (name) => {
     const url = `/upload/${name}`;
     return axiosClient.get(url, {
-      ...authHeader(),
     });
   };
 
@@ -278,7 +269,7 @@ class DrivingApi {
     const url = `${API_PATH}/center/type/${id}`;
     return axiosClient.patch(url, data);
   }
-  
+
   queryDrivingTeacher = async (q) => {
     const url = `${API_PATH}/teacher`;
     return axiosClient.get(url, {

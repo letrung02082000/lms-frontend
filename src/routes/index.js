@@ -10,7 +10,7 @@ import AdminLayout from 'components/layout/AdminLayout';
 import AdminGuard from 'components/guard/AdminGuard';
 import AdminPage from 'features/admin/pages/AdminPage';
 import AdminDrivingCoursePage from 'features/admin/driving-license/pages/AdminDrivingCoursePage';
-import AdminDrivingListPage from 'features/admin/driving-license/pages/AdminDrivingListPage';
+import AdminDrivingProcessingPage from 'features/admin/driving-license/pages/AdminDrivingProcessingPage';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
 import StoreByCategory from 'features/app/pages/StoreByCategory';
@@ -263,8 +263,8 @@ const router = createBrowserRouter([
             element: <AdminDrivingCenterPage />,
           },
           {
-            path: PATH.DRIVING.ADMIN.QUERY,
-            element: <AdminDrivingListPage />,
+            path: PATH.DRIVING.ADMIN.PROCESSING,
+            element: <AdminDrivingProcessingPage />,
           },
           {
             path: PATH.DRIVING.ADMIN.ROOT,

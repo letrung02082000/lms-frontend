@@ -7,14 +7,10 @@ import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import drivingClassSchema from 'validations/driving-class.validation';
 import TableEditButton from 'components/button/TableEditButton'
 
 function AdminDrivingDatePage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
-  const [query, setQuery] = useState({});
-  const [page, setPage] = useState(1);
-  const [rowData, setRowData] = useState([]);
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
   const [groupLink, setGroupLink] = useState('');
@@ -25,8 +21,9 @@ function AdminDrivingDatePage() {
   const [showModal, setShowModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [gridApi, setGridApi] = useState(null);
   const { register, handleSubmit, setValue, formState: { errors }, clearErrors, reset } = useForm({
-    resolver: yupResolver(drivingClassSchema)
+    resolver: yupResolver()
   });
 
   useEffect(() => {
@@ -66,7 +63,7 @@ function AdminDrivingDatePage() {
       headerName: 'Thao tác',
       cellRenderer: TableEditButton,
       width: 60,
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       pinned: 'left',
       cellRendererParams: {
         clearErrors,
@@ -79,7 +76,7 @@ function AdminDrivingDatePage() {
     {
       headerName: 'STT',
       valueGetter: 'node.rowIndex + 1',
-      suppressMenu: true,
+      suppressHeaderMenuButton: true,
       pinned: 'left',
       width: 60,
     },
@@ -133,30 +130,44 @@ function AdminDrivingDatePage() {
             field: 'formVisible',
             headerName: 'Hiển thị trên website',
             editable: true,
+            cellRenderer: 'agCheckboxCellRenderer',
           },
           {
             field: 'isVisible',
             headerName: 'Hiển thị',
             editable: true,
+            cellRenderer: 'agCheckboxCellRenderer',
           },
         ]
       : []),
   ]);
 
-  const fetchDrivingDates = async () => {
-    drivingApi
-      .getDrivingDate({ ...(center && { center }) })
-      .then((res) => {
-        setRowData(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  useEffect(() => {
-    fetchDrivingDates();
-  }, [page, query]);
+  const onGridReady = (params) => {
+      setGridApi(params.api);
+      const dataSource = getDataSource();
+      params.api.setGridOption('datasource', dataSource);
+    };
+  
+    const getDataSource = () => {
+      return {
+        rowCount: null,
+        getRows: async (params) => {
+          const { startRow, endRow } = params;
+          try {
+            const res = await drivingApi.getDrivingDate({
+              filter: {
+                ...(center && { center }),
+              },
+              page: Math.floor(startRow / (endRow - startRow)) + 1,
+              limit: endRow - startRow,
+            });
+            params.successCallback(res.data, res.pagination.totalDocs);
+          } catch (error) {
+            params.failCallback();
+          }
+        },
+      };
+    };
   
   const handleAddDateButton = async () => {
     const body = {
@@ -170,7 +181,6 @@ function AdminDrivingDatePage() {
 
     drivingApi.addDrivingDate(body).then((res) => {
       toastWrapper('Thêm ngày thành công', 'success');
-      fetchDrivingDates();
       setShowModal(false);
     }).catch((err) => {
       toastWrapper(err?.message, 'error');
@@ -203,12 +213,18 @@ function AdminDrivingDatePage() {
     >
       <div className='ag-theme-quartz' style={{ height: '100%' }}>
         <AgGridReact
-          rowData={rowData}
           columnDefs={colDefs}
           onCellValueChanged={onCellValueChanged}
+          rowModelType='infinite'
+          paginationPageSize={20}
+          paginationPageSizeSelectors={[10, 20, 50, 100]}
+          pagination={true}
+          cacheBlockSize={20}
+          onGridReady={onGridReady}
         />
       </div>
-      {(userRole?.includes(ROLE.ADMIN) || userRole?.includes(ROLE.DRIVING.ADMIN)) && (
+      {(userRole?.includes(ROLE.ADMIN) ||
+        userRole?.includes(ROLE.DRIVING.ADMIN)) && (
         <>
           <Modal
             show={showModal}
@@ -244,21 +260,23 @@ function AdminDrivingDatePage() {
                     />
                   </Col>
                 </Row>
-                {!center && <Row>
-                  <Col>
-                    <Form.Select
-                      className='mb-3'
-                      onChange={(e) => setSelectedCenter(e.target.value)}
-                    >
-                      <option>Chọn trung tâm</option>
-                      {drivingCenters.map((center) => (
-                        <option key={center._id} value={center._id}>
-                          {center.name}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                </Row>}
+                {!center && (
+                  <Row>
+                    <Col>
+                      <Form.Select
+                        className='mb-3'
+                        onChange={(e) => setSelectedCenter(e.target.value)}
+                      >
+                        <option>Chọn trung tâm</option>
+                        {drivingCenters.map((center) => (
+                          <option key={center._id} value={center._id}>
+                            {center.name}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </Col>
+                  </Row>
+                )}
                 <Row>
                   <Col>
                     <Form.Select

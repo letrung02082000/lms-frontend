@@ -13,7 +13,12 @@ function AdminDrivingLayout() {
     document.title = 'Quản lý đào tạo lái xe';
     if (center) {
       drivingApi
-        .queryDrivingCenterType({ center, active: true })
+        .queryDrivingCenterType({
+          filter: {
+            ...(center && { center }),
+          },
+          active: true,
+        })
         .then((res) => {
           const drivingCenterTypes = res.data.map((drivingCenterType) => {
             return {

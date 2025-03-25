@@ -7,11 +7,13 @@ import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 import elearningApi from 'api/elearningApi';
 import CopyToClipboardButton from 'components/button/CopyToClipboardButton';
+import TableEditButton from 'components/button/TableEditButton';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 function AdminDrivingCenterPage() {
   const {role: userRole, center} = JSON.parse(localStorage.getItem('user-info'));
   const [showAddModal, setShowAddModal] = useState(false);
-  const [rowData, setRowData] = useState([]);
   const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
   const [description, setDescription] = useState('');
   const [groupLink, setGroupLink] = useState('');
@@ -20,8 +22,42 @@ function AdminDrivingCenterPage() {
   const [initingElearning, setInitingElearning] = useState(false);
   const [elearningInfo, setElearningInfo] = useState(null);
   const [gridApi, setGridApi] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    clearErrors,
+    reset,
+  } = useForm({
+    resolver: yupResolver(),
+  });
 
   const [colDefs] = useState([
+    {
+      field: 'action',
+      headerName: 'Thao tác',
+      cellRenderer: TableEditButton,
+      width: 60,
+      suppressHeaderMenuButton: true,
+      pinned: 'left',
+      cellRendererParams: {
+        clearErrors,
+        reset,
+        setSelectedRow,
+        setIsEditMode,
+        setShowModal,
+      },
+    },
+    {
+      headerName: 'STT',
+      valueGetter: 'node.rowIndex + 1',
+      suppressHeaderMenuButton: true,
+      pinned: 'left',
+      width: 60,
+    },
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
@@ -83,8 +119,8 @@ function AdminDrivingCenterPage() {
                   admin: {
                     username: data?.adminUsername,
                     password: data?.adminPassword,
-                  }
-                })
+                  },
+                });
                 setShowElearningModal(true);
               }}
             >
@@ -111,7 +147,9 @@ function AdminDrivingCenterPage() {
           const res = await drivingApi.queryDrivingCenters({
             limit: endRow - startRow,
             page: Math.floor(startRow / (endRow - startRow)) + 1,
-            ...(center && { _id: center }),
+            filter: {
+              ...(center && { _id: center })
+            },
           })
           params.successCallback(res.data, res.pagination.totalDocs);
         } catch (error) {
@@ -191,9 +229,9 @@ function AdminDrivingCenterPage() {
           columnDefs={colDefs}
           onCellValueChanged={onCellValueChanged}
           pagination={true}
-          paginationPageSize={100}
+          paginationPageSize={20}
           rowModelType={'infinite'}
-          cacheBlockSize={100}
+          cacheBlockSize={20}
           paginationPageSizeSelector={[10, 20, 50, 100]}
           onGridReady={onGridReady}
         />
