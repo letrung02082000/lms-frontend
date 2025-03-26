@@ -10,13 +10,12 @@ import CopyToClipboardButton from 'components/button/CopyToClipboardButton';
 import TableEditButton from 'components/button/TableEditButton';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import InputField from 'components/form/InputField';
+import { IoMdEye } from 'react-icons/io';
+import drivingCenterSchema from 'validations/driving-center.validation';
 
 function AdminDrivingCenterPage() {
   const {role: userRole, center} = JSON.parse(localStorage.getItem('user-info'));
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
-  const [description, setDescription] = useState('');
-  const [groupLink, setGroupLink] = useState('');
   const [showElearningModal, setShowElearningModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [initingElearning, setInitingElearning] = useState(false);
@@ -25,13 +24,13 @@ function AdminDrivingCenterPage() {
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const {
-    register,
     handleSubmit,
     setValue,
+    control,
     clearErrors,
     reset,
   } = useForm({
-    resolver: yupResolver(),
+    resolver: yupResolver(drivingCenterSchema),
   });
 
   const [colDefs] = useState([
@@ -60,7 +59,6 @@ function AdminDrivingCenterPage() {
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
-      flex: 1,
       cellRenderer: (data) => {
         return data.value
           ? new Date(data.value).toLocaleDateString('en-GB')
@@ -70,44 +68,41 @@ function AdminDrivingCenterPage() {
     {
       field: 'name',
       headerName: 'Tên',
-      flex: 6,
       editable: true,
     },
     {
       field: 'description',
       headerName: 'Mô tả',
-      flex: 6,
       editable: true,
     },
     {
       field: 'address',
       headerName: 'Địa chỉ',
-      flex: 6,
       editable: true,
     },
     {
       field: 'priority',
       headerName: 'Độ ưu tiên',
-      flex: 6,
       editable: true,
     },
     {
       field: 'formVisible',
       headerName: 'Hiển thị trên website',
       editable: true,
+      cellRenderer: 'agCheckboxCellRenderer',
     },
     {
       field: 'visible',
       headerName: 'Hiển thị',
       editable: true,
+      cellRenderer: 'agCheckboxCellRenderer',
     },
     {
       field: 'action',
-      headerName: 'Hành động',
+      headerName: 'E-learning',
       cellRenderer: (data) => {
         data = data.data;
         return (
-          <div className='w-100 d-flex justify-content-center'>
             <button
               className='btn'
               onClick={() => {
@@ -123,13 +118,20 @@ function AdminDrivingCenterPage() {
                 setShowElearningModal(true);
               }}
             >
-              <MdEdit />
+              <IoMdEye />
             </button>
-          </div>
         );
       },
     },
   ]);
+  useEffect(() => {
+    if (selectedRow && isEditMode) {
+      Object.keys(selectedRow).forEach((key) => {
+        setValue(key, selectedRow[key]);
+      });
+    } else {
+    }
+  }, [selectedRow, setValue, showModal]);
 
   const onGridReady = (params) => {
     setGridApi(params.api);
@@ -180,42 +182,45 @@ function AdminDrivingCenterPage() {
       });
   };
   
-  const handleAddDateButton = async () => {
+  const handleCenterSubmit = async (formData) => {
     const body = {
-      date: new Date(drivingDate).getTime(),
-      isVisible: true,
-      description,
-      link: groupLink,
+      ...formData,
     };
+    const apiCall = isEditMode
+      ? drivingApi.updateDrivingCenter(formData?._id, body)
+      : drivingApi.createDrivingCenter(body);
 
-    drivingApi.addDrivingDate(body).then((res) => {
-      toastWrapper('Thêm ngày thành công', 'success');
-      fetchDrivingCenters();
-      setShowAddModal(false);
-    }).catch((err) => {
-      toastWrapper(err.response.data.message, 'error');
-    });
-  }
+    apiCall
+      .then((res) => {
+        fetchDrivingCenters();
+        setShowModal(false);
+        toastWrapper(
+          isEditMode
+            ? 'Cập nhật trung tâm thành công'
+            : 'Thêm trung tâm thành công',
+          'success'
+        );
+      })
+      .catch((err) => {
+        toastWrapper(err.response.data.message, 'error');
+      });
+  };
 
   const onCellValueChanged = (event) => {
     const { data } = event;
-    const body = {
-      description: data.description,
-      formVisible: data.formVisible,
-      visible: data.visible,
-      priority: data.priority,
-      address: data.address,
-      name: data.name,
-      tel: data.tel,
-      zalo: data.zalo,
-    };
 
-    drivingApi.updateDrivingCenter(data?._id, body).then((res) => {
+    drivingApi.updateDrivingCenter(data?._id, data).then((res) => {
       toastWrapper('Cập nhật thành công', 'success');
     }).catch((err) => {
       toastWrapper(err.response.data.message, 'error');
     });
   }
+
+  const handleAddCenterBtn = () => {
+    reset();
+    setIsEditMode(false);
+    setShowModal(true);
+  };
 
   return (
     <div
@@ -235,61 +240,92 @@ function AdminDrivingCenterPage() {
           onGridReady={onGridReady}
         />
       </div>
-      {(userRole === ROLE.ADMIN || userRole === ROLE.DRIVING.ADMIN) && (
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        size='lg'
+        backdrop='static'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {isEditMode
+              ? 'Chỉnh sửa trung tâm'
+              : 'Thêm trung tâm mới'}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  label='Tên trung tâm'
+                  name='name'
+                  control={control}
+                  type='text'
+                />
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  label='Tên viết tắt'
+                  name='shortName'
+                  control={control}
+                  type='text'
+                />
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  label='Số điện thoại'
+                  name='tel'
+                  control={control}
+                  type='text'
+                />
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  label='Địa chỉ'
+                  name='address'
+                  control={control}
+                  type='text'
+                />
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  label='Độ ưu tiên'
+                  name='priority'
+                  control={control}
+                  type='number'
+                />
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  label='Mô tả'
+                  name='description'
+                  control={control}
+                  type='text'
+                  as='textarea'
+                  rows={3}
+                />
+              </Col>
+            </Row>
+          </Form>
+          <Button variant='primary' onClick={handleSubmit(handleCenterSubmit)}>
+            {isEditMode ? 'Cập nhật' : 'Thêm'}
+          </Button>
+        </Modal.Body>
+      </Modal>
+      {userRole?.includes(ROLE.ADMIN) && (
         <>
-          <Modal
-            show={showAddModal}
-            onHide={() => setShowAddModal(false)}
-            size='lg'
-            backdrop='static'
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Thêm ngày thi mới</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form>
-                <Row>
-                  <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='date'
-                      id='drivingDate'
-                      name='drivingDate'
-                      defaultValue={drivingDate}
-                      onChange={(e) => setDrivingDate(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='text'
-                      placeholder='Mô tả'
-                      onChange={(e) => setDescription(e.target.value)}
-                      as={'textarea'}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='text'
-                      placeholder='Nhóm thi'
-                      onChange={(e) => setGroupLink(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant='primary' onClick={handleAddDateButton}>
-                Thêm
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          {/* <Button
+          <Button
             className='rounded-circle'
             style={{
               width: '50px',
@@ -299,10 +335,10 @@ function AdminDrivingCenterPage() {
               right: '50px',
               zIndex: 1000,
             }}
-            onClick={() => setShowAddModal(true)}
+            onClick={handleAddCenterBtn}
           >
             <MdAdd />
-          </Button> */}
+          </Button>
         </>
       )}
       <Modal
@@ -312,18 +348,24 @@ function AdminDrivingCenterPage() {
         backdrop='static'
       >
         <Modal.Header closeButton>
-          <Modal.Title>Thông tin điểm thi</Modal.Title>
+          <Modal.Title>Thông tin E-learning</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {elearningInfo?.cohortId ? (
             <div className='text-center'>
               <p>
                 Tên đăng nhập: {elearningInfo?.admin?.username}
-                <CopyToClipboardButton className='btn text-primary' value={elearningInfo?.admin?.username} />
+                <CopyToClipboardButton
+                  className='btn text-primary'
+                  value={elearningInfo?.admin?.username}
+                />
               </p>
               <p>
                 Mật khẩu: {elearningInfo?.admin?.password}
-                <CopyToClipboardButton className='btn text-primary' value={elearningInfo?.admin?.password} />
+                <CopyToClipboardButton
+                  className='btn text-primary'
+                  value={elearningInfo?.admin?.password}
+                />
               </p>
               <p>Cohort ID: {elearningInfo?.cohortId}</p>
               <p>Category ID: {elearningInfo?.categoryId}</p>

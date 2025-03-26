@@ -155,6 +155,11 @@ class DrivingApi {
     return axiosClient.patch(url, data);
   }
 
+  createDrivingCenter = async (data) => {
+    const url = `${API_PATH}/center`;
+    return axiosClient.post(url, data);
+  }
+
   queryDrivingCenterPrice = async (q) => {
     const url = `${API_PATH}/center/price`;
     return axiosClient.get(url, {
