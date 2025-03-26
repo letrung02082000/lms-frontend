@@ -27,21 +27,22 @@ function AdminDrivingVehiclePage() {
     clearErrors,
     reset,
   } = useForm({
-    resolver: yupResolver(drivingVehicleValidation),
+    // resolver: yupResolver(drivingVehicleValidation),
+    resolver: undefined,
   });
 
   const handleVehicleSubmit = (values) => {
-    const apiCall = isEditMode
-      ? drivingApi.updateDrivingVehicle(selectedRow._id, values)
-      : drivingApi.addDrivingVehicle(values);
+    // const apiCall = isEditMode
+    //   ? drivingApi.updateDrivingVehicle(selectedRow._id, values)
+    //   : drivingApi.addDrivingVehicle(values);
 
-    apiCall.then((res) => {
-      toastWrapper(isEditMode ? 'Cập nhật xe thành công' : 'Thêm xe thành công', 'success');
-      fetchDrivingVehicle();
-      setShowVehicleModal(false);
-    }).catch((err) => {
-      toastWrapper(err?.message, 'error');
-    });
+    // apiCall.then((res) => {
+    //   toastWrapper(isEditMode ? 'Cập nhật xe thành công' : 'Thêm xe thành công', 'success');
+    //   fetchDrivingVehicle();
+    //   setShowVehicleModal(false);
+    // }).catch((err) => {
+    //   toastWrapper(err?.message, 'error');
+    // });
   };
 
   const handleFormChange = () => {

@@ -58,7 +58,7 @@ function AdminDrivingTypePage() {
         setIsEditMode,
         setShowModal,
       },
-      width: 60,
+      width: 90,
       suppressHeaderMenuButton: true,
       pinned: 'left',
     },
@@ -72,7 +72,6 @@ function AdminDrivingTypePage() {
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
-      flex: 1,
       cellRenderer: (data) => {
         return data.value
           ? new Date(data.value).toLocaleDateString('en-GB')
@@ -82,18 +81,15 @@ function AdminDrivingTypePage() {
     {
       field: 'drivingType.label',
       headerName: 'Hạng bằng',
-      editable: false,
     },
     {
       field: 'drivingType.description',
       headerName: 'Mô tả',
       flex: 6,
-      editable: false,
     },
     {
       field: 'center.name',
       headerName: 'Trung tâm',
-      editable: false,
     },
     ...(userRole?.includes(ROLE.ADMIN) || userRole?.includes(ROLE.DRIVING.ADMIN)
       ? [

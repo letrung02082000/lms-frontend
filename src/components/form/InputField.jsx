@@ -30,7 +30,7 @@ const InputField = ({
   const showClear = useMemo(() => value && !error && !noClear, [value, error, noClear]);
 
   return (
-    <Styles>
+    <Styles type={props?.type}>
       <Form.Group>
         {label && (
           <Form.Label className="d-block">
@@ -53,7 +53,7 @@ const InputField = ({
           {showClear && (
             <button
               type="button"
-              className="btn clear-btn"
+              className="clear-btn"
               onClick={() => controlProps.onChange('')}
             >
               <AiFillCloseCircle />
@@ -78,7 +78,7 @@ const Styles = styled.div`
 
   .clear-btn {
     position: absolute;
-    right: 8px;
+    right: ${(props) => (props.type === 'date' ? '35px' : '10px')};
     top: 50%;
     transform: translateY(-50%);
     background: transparent;

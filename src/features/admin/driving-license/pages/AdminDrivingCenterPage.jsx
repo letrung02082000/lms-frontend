@@ -28,7 +28,6 @@ function AdminDrivingCenterPage() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
     clearErrors,
     reset,
   } = useForm({

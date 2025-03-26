@@ -24,7 +24,7 @@ const vehicleColDefs = [
     field: 'action',
     headerName: 'Thao tác',
     cellRenderer: ActionButton,
-    width: 60,
+    width: 90,
     suppressHeaderMenuButton: true,
     pinned: 'left',
   },

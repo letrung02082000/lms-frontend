@@ -8,27 +8,27 @@ import { ROLE } from 'constants/role';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import TableEditButton from 'components/button/TableEditButton'
+import InputField from 'components/form/InputField';
+import drivingDateSchema from 'validations/driving-date.validation';
+import { getVietnamDate } from 'utils/commonUtils';
 
 function AdminDrivingDatePage() {
   const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
-  const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
-  const [description, setDescription] = useState('');
-  const [groupLink, setGroupLink] = useState('');
   const [drivingCenters, setDrivingCenters] = useState([]);
-  const [selectedCenter, setSelectedCenter] = useState(center || '');
   const [drivingTypes, setDrivingTypes] = useState([]);
-  const [selectedType, setSelectedType] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [gridApi, setGridApi] = useState(null);
-  const { register, handleSubmit, setValue, formState: { errors }, clearErrors, reset } = useForm({
-    resolver: yupResolver()
+  const { handleSubmit, setValue, control, clearErrors, reset } = useForm({
+    resolver: yupResolver(drivingDateSchema),
   });
 
   useEffect(() => {
     drivingApi
-      .queryDrivingCenters({ visible: true, ...(center && { center }) })
+      .queryDrivingCenters({
+        filter: { active: true, ...(center && { _id: center }) },
+      })
       .then((res) => {
         setDrivingCenters(res.data);
       })
@@ -38,7 +38,9 @@ function AdminDrivingDatePage() {
 
     if (center) {
       drivingApi
-        .queryDrivingCenterType({ center })
+        .queryDrivingCenterType({
+          filter: { ...(center && { center }), active: true },
+        })
         .then((res) => {
           setDrivingTypes(res.data.map((item) => item.drivingType));
         })
@@ -47,7 +49,9 @@ function AdminDrivingDatePage() {
         });
     } else {
       drivingApi
-        .queryDrivingType()
+        .queryDrivingType({
+          filter: { active: true },
+        })
         .then((res) => {
           setDrivingTypes(res.data);
         })
@@ -57,12 +61,29 @@ function AdminDrivingDatePage() {
     }
   }, []);
 
+  useEffect(() => {
+    if (selectedRow && isEditMode) {
+      Object.keys(selectedRow).forEach((key) => {
+        setValue(key, selectedRow[key]);
+      });
+
+      if (selectedRow?.examDate) {
+        setValue('examDate', getVietnamDate(selectedRow.examDate));
+      } else {
+        setValue('examDate', '');
+      }
+    } else {
+      setValue('center', drivingCenters?.[0]);
+      setValue('drivingType', drivingTypes?.[0]);
+    }
+  }, [selectedRow, setValue, showModal]);
+
   const [colDefs] = useState([
     {
       field: 'action',
       headerName: 'Thao tác',
       cellRenderer: TableEditButton,
-      width: 60,
+      width: 90,
       suppressHeaderMenuButton: true,
       pinned: 'left',
       cellRendererParams: {
@@ -127,13 +148,13 @@ function AdminDrivingDatePage() {
             },
           },
           {
-            field: 'formVisible',
+            field: 'visible',
             headerName: 'Hiển thị trên website',
             editable: true,
             cellRenderer: 'agCheckboxCellRenderer',
           },
           {
-            field: 'isVisible',
+            field: 'active',
             headerName: 'Hiển thị',
             editable: true,
             cellRenderer: 'agCheckboxCellRenderer',
@@ -141,6 +162,14 @@ function AdminDrivingDatePage() {
         ]
       : []),
   ]);
+
+  const fetchDrivingDate = async () => {
+    const dataSource = getDataSource();
+
+    if (gridApi) {
+      gridApi.setGridOption('datasource', dataSource);
+    }
+  };
 
   const onGridReady = (params) => {
       setGridApi(params.api);
@@ -169,41 +198,57 @@ function AdminDrivingDatePage() {
       };
     };
   
-  const handleAddDateButton = async () => {
+  const handleDateSubmit = async (formData) => {
     const body = {
-      date: new Date(drivingDate).getTime(),
-      isVisible: true,
-      description,
-      link: groupLink,
-      center: selectedCenter,
-      drivingType: selectedType,
+      ...formData,
+      date: new Date(formData.examDate),
+      center: formData.center._id,
+      drivingType: formData.drivingType._id,
     };
+    const apiCall = isEditMode
+      ? drivingApi.updateDrivingDate(formData?._id, body)
+      : drivingApi.addDrivingDate(body);
 
-    drivingApi.addDrivingDate(body).then((res) => {
-      toastWrapper('Thêm ngày thành công', 'success');
-      setShowModal(false);
-    }).catch((err) => {
-      toastWrapper(err?.message, 'error');
-    });
-  }
+    apiCall
+      .then((res) => {
+        fetchDrivingDate();
+        setShowModal(false);
+        toastWrapper(
+          isEditMode ? 'Cập nhật ngày thành công' : 'Thêm ngày thành công',
+          'success'
+        );
+      })
+      .catch((err) => {
+        toastWrapper(err?.message, 'error');
+      });
+  };
+
+  const handleAddDateBtn = () => {
+    reset();
+    setIsEditMode(false);
+    setShowModal(true);
+  };
 
   const onCellValueChanged = (event) => {
     const { data } = event;
     const body = {
       description: data.description,
-      formVisible: data.formVisible,
-      isVisible: data.isVisible,
+      formVisible: data.visible,
+      isVisible: data.active,
+      visible: data.visible,
+      active: data.active,
       link: data.link,
-      className: data.className,
-      classCode: data.classCode,
     };
 
-    drivingApi.updateDrivingDate(data?._id, body).then((res) => {
-      toastWrapper('Cập nhật thành công', 'success');
-    }).catch((err) => {
-      toastWrapper(err.response.data.message, 'error');
-    });
-  }
+    drivingApi
+      .updateDrivingDate(data?._id, body)
+      .then((res) => {
+        toastWrapper('Cập nhật thành công', 'success');
+      })
+      .catch((err) => {
+        toastWrapper(err.response.data.message, 'error');
+      });
+  };
 
   return (
     <div
@@ -233,82 +278,89 @@ function AdminDrivingDatePage() {
             backdrop='static'
           >
             <Modal.Header closeButton>
-              <Modal.Title>Thêm khoá thi mới</Modal.Title>
+              <Modal.Title>
+                {isEditMode ? 'Chỉnh sửa ngày thi' : 'Thêm ngày thi mới'}
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form>
-                <Row>
+              <Form onSubmit={handleSubmit(handleDateSubmit)}>
+                <Row className='mb-3'>
                   <Col>
-                    <FormControl
-                      className='mb-3'
+                    <InputField
+                      disabled={isEditMode}
+                      label='Ngày thi'
+                      name='examDate'
+                      control={control}
                       type='date'
-                      id='drivingDate'
-                      name='drivingDate'
-                      defaultValue={drivingDate}
-                      onChange={(e) => setDrivingDate(e.target.value)}
+                      noClear={true}
                     />
                   </Col>
                 </Row>
-                <Row>
+                <Row className='mb-3'>
                   <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='text'
-                      placeholder='Mô tả'
-                      onChange={(e) => setDescription(e.target.value)}
-                      as={'textarea'}
-                    />
-                  </Col>
-                </Row>
-                {!center && (
-                  <Row>
-                    <Col>
-                      <Form.Select
-                        className='mb-3'
-                        onChange={(e) => setSelectedCenter(e.target.value)}
-                      >
-                        <option>Chọn trung tâm</option>
-                        {drivingCenters.map((center) => (
-                          <option key={center._id} value={center._id}>
-                            {center.name}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Col>
-                  </Row>
-                )}
-                <Row>
-                  <Col>
-                    <Form.Select
-                      className='mb-3'
-                      onChange={(e) => setSelectedType(e.target.value)}
+                    <InputField
+                      label='Trung tâm'
+                      name='center._id'
+                      control={control}
+                      as='select'
+                      noClear={true}
                     >
-                      <option>Chọn hạng bằng</option>
-                      {drivingTypes.map((type) => (
-                        <option key={type._id} value={type._id}>
-                          {type.label}
+                      {drivingCenters.map((center) => (
+                        <option key={center._id} value={center._id}>
+                          {center.name}
                         </option>
                       ))}
-                    </Form.Select>
+                    </InputField>
                   </Col>
                 </Row>
-                <Row>
+                <Row className='mb-3'>
                   <Col>
-                    <FormControl
-                      className='mb-3'
+                    <InputField
+                      label='Hạng bằng'
+                      name='drivingType._id'
+                      control={control}
+                      as='select'
+                      noClear={true}
+                    >
+                      {drivingTypes?.map(({ _id, label }) => (
+                        <option key={_id} value={_id}>
+                          {label}
+                        </option>
+                      ))}
+                    </InputField>
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <InputField
+                      label='Nhóm thi'
+                      name='link'
+                      control={control}
                       type='text'
-                      placeholder='Nhóm thi'
-                      onChange={(e) => setGroupLink(e.target.value)}
                     />
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <InputField
+                      label='Mô tả'
+                      name='description'
+                      control={control}
+                      type='text'
+                      as='textarea'
+                      rows={3}
+                    />
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <Button type='submit' variant='primary'>
+                      Thêm
+                    </Button>
                   </Col>
                 </Row>
               </Form>
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant='primary' onClick={handleAddDateButton}>
-                Thêm
-              </Button>
-            </Modal.Footer>
           </Modal>
           <Button
             className='rounded-circle'
@@ -320,7 +372,7 @@ function AdminDrivingDatePage() {
               right: '50px',
               zIndex: 1000,
             }}
-            onClick={() => setShowModal(true)}
+            onClick={handleAddDateBtn}
           >
             <MdAdd />
           </Button>

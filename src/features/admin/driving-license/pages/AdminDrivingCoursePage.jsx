@@ -10,6 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import TableEditButton from 'components/button/TableEditButton';
 import drivingCourseSchema from 'validations/driving-course.validation';
 import InputField from 'components/form/InputField';
+import { getVietnamDate } from 'utils/commonUtils';
 
 function AdminDrivingCoursePage() {
   const { center, role: userRole } = JSON.parse(
@@ -25,7 +26,6 @@ function AdminDrivingCoursePage() {
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
     clearErrors,
     reset,
   } = useForm({
@@ -63,7 +63,7 @@ function AdminDrivingCoursePage() {
     } else {
       drivingApi
         .queryDrivingType({
-          active: true,
+          filter: { active: true },
         })
         .then((res) => {
           setDrivingTypes(res.data);
@@ -79,6 +79,15 @@ function AdminDrivingCoursePage() {
       Object.keys(selectedRow).forEach((key) => {
         setValue(key, selectedRow[key]);
       });
+
+      if (selectedRow?.examDate) {
+        setValue('examDate', getVietnamDate(selectedRow.examDate));
+      } else {
+        setValue('examDate', '');
+      }
+    } else {
+      setValue('center', drivingCenters?.[0]);
+      setValue('drivingType', drivingTypes?.[0]);
     }
   }, [selectedRow, setValue, showModal]);
 
@@ -87,7 +96,7 @@ function AdminDrivingCoursePage() {
       field: 'action',
       headerName: 'Thao tác',
       cellRenderer: TableEditButton,
-      width: 60,
+      width: 90,
       suppressHeaderMenuButton: true,
       pinned: 'left',
       cellRendererParams: {
@@ -119,7 +128,7 @@ function AdminDrivingCoursePage() {
       headerName: 'Ngày vào khoá',
       valueFormatter: (data) => {
         return data.value
-          ? new Date(data.value).toLocaleDateString('vi-VN')
+          ? new Date(data.value).toLocaleDateString('en-GB')
           : 'Chưa cập nhật';
       },
     },
@@ -133,9 +142,9 @@ function AdminDrivingCoursePage() {
       },
     },
     {
-      field: 'date',
+      field: 'examDate',
       headerName: 'Ngày thi dự kiến',
-      cellRenderer: (data) => {
+      valueFormatter: (data) => {
         return data.value
           ? new Date(data.value).toLocaleDateString('en-GB')
           : 'Chưa cập nhật';
@@ -187,7 +196,7 @@ function AdminDrivingCoursePage() {
     const dataSource = getDataSource();
 
     if (gridApi) {
-      gridApi.setDatasource(dataSource);
+      gridApi.setGridOption('datasource', dataSource);
     }
   };
 
@@ -197,40 +206,36 @@ function AdminDrivingCoursePage() {
     setShowModal(true);
   };
 
-  const handleSaveCourseBtn = async () => {
-    await handleSubmit((formData) => {
-      const body = {
-        ...formData,
-        date: formData.drivingDate,
-        center: formData.center?._id,
-        drivingType: formData.drivingType?._id,
-      }
-      drivingApi
-      .updateDrivingCourse(formData?._id, body)
+  const handleCourseSubmit = async (formData) => {
+    const body = {
+      ...formData,
+      center: formData.center._id,
+      drivingType: formData.drivingType._id,
+    };
+    const apiCall = isEditMode
+      ? drivingApi.updateDrivingCourse(formData._id, body)
+      : drivingApi.createDrivingCourse(body);
+
+    apiCall
       .then((res) => {
-        setShowModal(false);
         fetchDrivingCourse();
-        toastWrapper('Cập nhật thành công', 'success');
+        setShowModal(false);
+        toastWrapper(isEditMode ? 'Cập nhật thành công' : 'Thêm khoá thi thành công', 'success');
       })
       .catch((err) => {
         toastWrapper(err.response.data.message, 'error');
       });
-    })();
   };
 
   const onCellValueChanged = (event) => {
     const { data } = event;
     const body = {
-      description: data.description,
-      formVisible: data.formVisible,
-      isVisible: data.isVisible,
-      link: data.link,
-      className: data.className,
-      classCode: data.classCode,
+      visible: data.visible,
+      active: data.active,
     };
 
     drivingApi
-      .updateDrivingDate(data?._id, body)
+      .updateDrivingCourse(data?._id, body)
       .then((res) => {
         toastWrapper('Cập nhật thành công', 'success');
       })
@@ -296,14 +301,15 @@ function AdminDrivingCoursePage() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
+          <Form onSubmit={handleSubmit(handleCourseSubmit)}>
             <Row className='mb-3'>
               <Col>
                 <InputField
-                  label='Ngày thi'
-                  name='drivingDate'
+                  label='Ngày thi dự kiến'
+                  name='examDate'
                   control={control}
                   type='date'
+                  noClear={true}
                 />
               </Col>
             </Row>
@@ -314,6 +320,7 @@ function AdminDrivingCoursePage() {
                   name='center._id'
                   control={control}
                   as='select'
+                  noClear={true}
                 >
                   {drivingCenters?.map(({ _id, name }) => (
                     <option key={_id} value={_id}>
@@ -330,6 +337,7 @@ function AdminDrivingCoursePage() {
                   name='drivingType._id'
                   control={control}
                   as='select'
+                  noClear={true}
                 >
                   {drivingTypes?.map(({ _id, label }) => (
                     <option key={_id} value={_id}>
@@ -374,21 +382,15 @@ function AdminDrivingCoursePage() {
                 />
               </Col>
             </Row>
+            <Row>
+              <Col className='text-end'>
+                <Button type='submit' variant='primary'>
+                  {isEditMode ? 'Cập nhật' : 'Thêm'}
+                </Button>
+              </Col>
+            </Row>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Row>
-            <Col className='text-end'>
-              <Button
-                type='button'
-                variant='primary'
-                onClick={handleSaveCourseBtn}
-              >
-                {isEditMode ? 'Cập nhật' : 'Thêm'}
-              </Button>
-            </Col>
-          </Row>
-        </Modal.Footer>
       </Modal>
 
       {(userRole?.includes(ROLE.ADMIN) ||

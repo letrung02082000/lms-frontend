@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-const drivingDateSchema = yup.object().shape({
+const drivingTeacherSchema = yup.object().shape({
     examDate: yup.date().required('Ngày thi là bắt buộc'),
     drivingType: yup.object().shape({
         _id: yup.string().required('Vui lòng chọn hạng bằng'),
@@ -11,4 +11,4 @@ const drivingDateSchema = yup.object().shape({
     link: yup.string().required('Nhóm thi là bắt buộc'),
 });
 
-export default drivingDateSchema;
+export default drivingTeacherSchema;

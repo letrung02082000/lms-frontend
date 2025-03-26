@@ -81,6 +81,11 @@ class DrivingApi {
     return axiosClient.patch(url, body);
   };
 
+  createDrivingCourse = async (body) => {
+    const url = `${API_PATH}/course`;
+    return axiosClient.post(url, body);
+  };
+
   updateDrivingFeedback = async (_id, feedback) => {
     const url = `${API_PATH}/update`;
     return axiosClient.put(url, { _id, feedback });
@@ -275,6 +280,11 @@ class DrivingApi {
     return axiosClient.get(url, {
       params: q,
     });
+  }
+
+  updateDrivingTeacher = async (id, data) => {
+    const url = `${API_PATH}/teacher/${id}`;
+    return axiosClient.patch(url, data);
   }
 
   sendZaloMessage = async (tel, message) => {

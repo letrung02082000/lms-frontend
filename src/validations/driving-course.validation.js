@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 const drivingCourseSchema = yup.object().shape({
-  drivingDate: yup.date().required('Ngày thi là bắt buộc'),
+  examDate: yup.date().required('Ngày thi là bắt buộc'),
   drivingType: yup.object().shape({
     _id: yup.string().required('Vui lòng chọn hạng bằng'),
   }),

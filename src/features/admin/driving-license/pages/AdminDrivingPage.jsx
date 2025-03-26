@@ -105,7 +105,6 @@ function AdminDrivingPage() {
     setValue,
     handleSubmit,
     setError,
-    formState: { isSubmitting, errors },
     watch,
     setFocus,
   } = useForm({
@@ -121,17 +120,15 @@ function AdminDrivingPage() {
 
   const ActionButton = (props) => {
     return (
-      <div className='w-100 d-flex justify-content-center'>
-        <button
-          className='btn'
-          onClick={() => {
-            setSelectedRow(props.value);
-            setShowEditModal(true);
-          }}
-        >
-          <MdEdit />
-        </button>
-      </div>
+      <button
+        className='btn'
+        onClick={() => {
+          setSelectedRow(props.value);
+          setShowEditModal(true);
+        }}
+      >
+        <MdEdit />
+      </button>
     );
   };
 
@@ -140,47 +137,57 @@ function AdminDrivingPage() {
   };
 
   const [colDefs, setColDefs] = useState([
+    ...(userRole?.includes(ROLE.DRIVING.ADMIN) || userRole?.includes(ROLE.ADMIN)
+      ? [
+          {
+            field: 'action',
+            headerName: 'Thao tác',
+            pinned: 'left',
+            suppressHeaderMenuButton: true,
+            cellRenderer: ActionButton,
+            valueGetter: rowDataGetter,
+            width: 90,
+          },
+        ]
+      : []),
+    {
+      headerName: 'STT',
+      valueGetter: 'node.rowIndex + 1',
+      suppressHeaderMenuButton: true,
+      pinned: 'left',
+      width: 60,
+    },
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
-      flex: 1,
       cellRenderer: (data) => {
         return data.value
           ? new Date(data.value).toLocaleDateString('en-GB')
           : '';
       },
     },
-    { field: 'name', headerName: 'Họ và tên', flex: 2 },
+    { field: 'name', headerName: 'Họ và tên' },
     {
       field: 'date',
       headerName: 'Ngày thi',
-      flex: 1,
       valueFormatter: (params) => {
         return params.value
           ? new Date(params.value).toLocaleDateString('en-GB')
           : '';
       },
     },
-    { field: 'cash', headerName: 'Chuyển khoản', flex: 1 },
+    { field: 'drivingType.label', headerName: 'Hạng thi' },
+    { field: 'cash', headerName: 'Chuyển khoản' },
     {
       field: 'processState',
       headerName: 'Tình trạng',
-      flex: 1,
       cellRenderer: (data) => {
         return DRIVING_STATE_LABEL[data.value];
       },
     },
-    { field: 'source', headerName: 'Nguồn', flex: 1 },
-    ...(userRole?.includes(ROLE.DRIVING.ADMIN) || userRole?.includes(ROLE.ADMIN)
-      ? [
-          {
-            field: 'action',
-            headerName: 'Thao tác',
-            flex: 1,
-            cellRenderer: ActionButton,
-            valueGetter: rowDataGetter,
-          },
-        ]
+    { field: 'source', headerName: 'Nguồn' },
+    ...(userRole?.includes(ROLE.ADMIN)
+      ? [{ field: 'center.name', headerName: 'Trung tâm' }]
       : []),
   ]);
 
