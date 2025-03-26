@@ -15,9 +15,9 @@ function AdminDrivingLayout() {
       drivingApi
         .queryDrivingCenterType({
           filter: {
+            active: true,
             ...(center && { center }),
           },
-          active: true,
         })
         .then((res) => {
           const drivingCenterTypes = res.data.map((drivingCenterType) => {

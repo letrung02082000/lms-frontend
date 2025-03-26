@@ -280,6 +280,11 @@ class DrivingApi {
     return axiosClient.patch(url, data);
   }
 
+  createDrivingCenterType = async (data) => {
+    const url = `${API_PATH}/center/type`;
+    return axiosClient.post(url, data);
+  }
+
   queryDrivingTeacher = async (q) => {
     const url = `${API_PATH}/teacher`;
     return axiosClient.get(url, {

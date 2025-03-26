@@ -9,42 +9,62 @@ import { ActionButton } from './column.defs';
 import TableEditButton from 'components/button/TableEditButton';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import InputField from 'components/form/InputField';
+import drivingTypeSchema from 'validations/driving-type.validation';
 
 function AdminDrivingTypePage() {
-  const { center, role : userRole } = JSON.parse(localStorage.getItem('user-info'));
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [drivingDate, setDrivingDate] = useState(new Date().toISOString().split('T')[0]);
-  const [description, setDescription] = useState('');
-  const [groupLink, setGroupLink] = useState('');
+  const { center, role: userRole } = JSON.parse(
+    localStorage.getItem('user-info')
+  );
   const [drivingCenters, setDrivingCenters] = useState([]);
-  const [selectedCenter, setSelectedCenter] = useState(center || '');
   const [drivingTypes, setDrivingTypes] = useState([]);
-  const [selectedType, setSelectedType] = useState('');
   const [gridApi, setGridApi] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-    clearErrors,
-    reset,
-  } = useForm({
-    resolver: yupResolver(),
+  const { control, handleSubmit, setValue, clearErrors, reset } = useForm({
+    resolver: yupResolver(drivingTypeSchema),
   });
 
   useEffect(() => {
     drivingApi
-    .queryDrivingCenterType()
-    .then((res) => {
-      setDrivingTypes(res.data.map((item) => item.drivingType));
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      .queryDrivingCenters({
+        filter: {
+          active: true,
+          ...(center && { _id: center }),
+        },
+      })
+      .then((res) => {
+        setDrivingCenters(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    drivingApi
+      .queryDrivingType({
+        filter: {
+          active: true,
+        },
+      })
+      .then((res) => {
+        setDrivingTypes(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
+
+  useEffect(() => {
+    if (selectedRow && isEditMode) {
+      Object.keys(selectedRow).forEach((key) => {
+        setValue(key, selectedRow[key]);
+      });
+    } else {
+      setValue('center', drivingCenters[0]);
+      setValue('drivingType', drivingTypes?.[0]);
+    }
+  }, [selectedRow, setValue, showModal]);
 
   const [colDefs] = useState([
     {
@@ -109,7 +129,7 @@ function AdminDrivingTypePage() {
       : []),
   ]);
 
-const onGridReady = (params) => {
+  const onGridReady = (params) => {
     setGridApi(params.api);
     const dataSource = getDataSource();
     params.api.setGridOption('datasource', dataSource);
@@ -126,7 +146,7 @@ const onGridReady = (params) => {
             limit: endRow - startRow,
             filter: {
               ...(center && { center }),
-            }
+            },
           });
           params.successCallback(res.data, res.pagination.totalDocs);
         } catch (error) {
@@ -135,24 +155,44 @@ const onGridReady = (params) => {
       },
     };
   };
-  
-  const handleAddTypeButton = async () => {
-    const body = {
-      date: new Date(drivingDate).getTime(),
-      isVisible: true,
-      description,
-      link: groupLink,
-      center: selectedCenter,
-      drivingType: selectedType,
-    };
 
-    drivingApi.addDrivingDate(body).then((res) => {
-      toastWrapper('Thêm ngày thành công', 'success');
-      setShowAddModal(false);
-    }).catch((err) => {
-      toastWrapper(err?.message, 'error');
-    });
-  }
+  const fetchDrivingType = async () => {
+    const dataSource = getDataSource();
+
+    if (gridApi) {
+      gridApi.setGridOption('datasource', dataSource);
+    }
+  };
+
+  const handleAddTypeButton = () => {
+    reset();
+    setIsEditMode(false);
+    setShowModal(true);
+  };
+
+  const handleDrivingTypeSubmit = async (formData) => {
+    const body = {
+      ...formData,
+      center: formData.center._id,
+      drivingType: formData.drivingType._id,
+    };
+    const apiCall = isEditMode
+      ? drivingApi.updateDrivingCenterType(formData._id, body)
+      : drivingApi.createDrivingCenterType(body);
+
+    apiCall
+      .then((res) => {
+        fetchDrivingType();
+        setShowModal(false);
+        toastWrapper(
+          isEditMode ? 'Cập nhật hạng bằng thành công' : 'Thêm hạng bằng thành công',
+          'success'
+        );
+      })
+      .catch((err) => {
+        toastWrapper(err.response.data.message, 'error');
+      });
+  };
 
   const onCellValueChanged = (event) => {
     const { data } = event;
@@ -161,12 +201,15 @@ const onGridReady = (params) => {
       active: data.active,
     };
 
-    drivingApi.updateDrivingCenterType(data?._id, body).then((res) => {
-      toastWrapper('Cập nhật thành công', 'success');
-    }).catch((err) => {
-      toastWrapper(err.response.data.message, 'error');
-    });
-  }
+    drivingApi
+      .updateDrivingCenterType(data?._id, body)
+      .then((res) => {
+        toastWrapper('Cập nhật thành công', 'success');
+      })
+      .catch((err) => {
+        toastWrapper(err.response.data.message, 'error');
+      });
+  };
 
   return (
     <div
@@ -186,105 +229,97 @@ const onGridReady = (params) => {
           onGridReady={onGridReady}
         />
       </div>
-      {(userRole?.includes(ROLE.ADMIN) || userRole?.includes(ROLE.DRIVING.ADMIN)) && (
-        <>
-          <Modal
-            show={showAddModal}
-            onHide={() => setShowAddModal(false)}
-            size='lg'
-            backdrop='static'
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Thêm ngày thi mới</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form>
-                <Row>
-                  <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='date'
-                      id='drivingDate'
-                      name='drivingDate'
-                      defaultValue={drivingDate}
-                      onChange={(e) => setDrivingDate(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='text'
-                      placeholder='Mô tả'
-                      onChange={(e) => setDescription(e.target.value)}
-                      as={'textarea'}
-                    />
-                  </Col>
-                </Row>
-                {!center && <Row>
-                  <Col>
-                    <Form.Select
-                      className='mb-3'
-                      onChange={(e) => setSelectedCenter(e.target.value)}
-                    >
-                      <option>Chọn trung tâm</option>
-                      {drivingCenters.map((center) => (
-                        <option key={center._id} value={center._id}>
-                          {center.name}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                </Row>}
-                <Row>
-                  <Col>
-                    <Form.Select
-                      className='mb-3'
-                      onChange={(e) => setSelectedType(e.target.value)}
-                    >
-                      <option>Chọn hạng bằng</option>
-                      {drivingTypes.map((type) => (
-                        <option key={type._id} value={type._id}>
-                          {type.label}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <FormControl
-                      className='mb-3'
-                      type='text'
-                      placeholder='Nhóm thi'
-                      onChange={(e) => setGroupLink(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant='primary' onClick={handleAddTypeButton}>
-                Thêm
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          {/* <Button
-            className='rounded-circle'
-            style={{
-              width: '50px',
-              height: '50px',
-              position: 'fixed',
-              bottom: '50px',
-              right: '50px',
-              zIndex: 1000,
-            }}
-            onClick={() => setShowAddModal(true)}
-          >
-            <MdAdd />
-          </Button> */}
-        </>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        size='lg'
+        backdrop='static'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {isEditMode ? 'Chỉnh sửa hạng bằng' : 'Thêm hạng bằng mới'}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit(handleDrivingTypeSubmit)}>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  label='Trung tâm'
+                  name='center._id'
+                  control={control}
+                  as='select'
+                  noClear={true}
+                >
+                  {drivingCenters?.map(({ _id, name }) => (
+                    <option key={_id} value={_id}>
+                      {name}
+                    </option>
+                  ))}
+                </InputField>
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  label='Hạng bằng'
+                  name='drivingType._id'
+                  control={control}
+                  as='select'
+                  noClear={true}
+                >
+                  {drivingTypes?.map(({ _id, label }) => (
+                    <option key={_id} value={_id}>
+                      {label}
+                    </option>
+                  ))}
+                </InputField>
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <InputField
+                  label='Mô tả'
+                  name='description'
+                  control={control}
+                  type='text'
+                  rules={{
+                    maxLength: {
+                      value: 50,
+                      message: 'Độ dài tối đa <= 50 ký tự',
+                    },
+                    required: false,
+                  }}
+                  as='textarea'
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col className='text-end'>
+                <Button type='submit' variant='primary'>
+                  {isEditMode ? 'Cập nhật' : 'Thêm'}
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Modal.Body>
+      </Modal>
+      {(userRole?.includes(ROLE.ADMIN) ||
+        userRole?.includes(ROLE.DRIVING.ADMIN)) && (
+        <Button
+          className='rounded-circle'
+          style={{
+            width: '50px',
+            height: '50px',
+            position: 'fixed',
+            bottom: '50px',
+            right: '50px',
+            zIndex: 1000,
+          }}
+          onClick={handleAddTypeButton}
+        >
+          <MdAdd />
+        </Button>
       )}
     </div>
   );
