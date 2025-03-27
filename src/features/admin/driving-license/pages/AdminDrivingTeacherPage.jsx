@@ -4,12 +4,14 @@ import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
-import { EDUCATION_LEVELS, GENDERS, TEACHER_STATUS, TEACHING_CERTIFICATE_LEVELS } from 'constants/driving-teacher.constant';
+import { DRIVING_LICENSE_LEVELS, EDUCATION_LEVELS, GENDERS, TEACHER_STATUS, TEACHING_CERTIFICATE_LEVELS } from 'constants/driving-teacher.constant';
 import { MdAdd } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import TableEditButton from 'components/button/TableEditButton';
 import drivingTeacherSchema from 'validations/driving-teacher.validation';
+import InputField from 'components/form/InputField';
+import SelectField from 'components/form/SelectField';
 
 function AdminDrivingTeacherPage() {
   const { center, role: userRole } = JSON.parse(
@@ -17,9 +19,10 @@ function AdminDrivingTeacherPage() {
   );
   const [gridApi, setGridApi] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [drivingCenters, setDrivingCenters] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const { handleSubmit, setValue, clearErrors, reset } = useForm({
+  const { control, handleSubmit, setValue, clearErrors, reset } = useForm({
     resolver: yupResolver(drivingTeacherSchema),
   });
 
@@ -28,9 +31,53 @@ function AdminDrivingTeacherPage() {
       Object.keys(selectedRow).forEach((key) => {
         setValue(key, selectedRow[key]);
       });
+
+      setValue(
+        'licenseClass',
+        selectedRow?.licenseClass?.map((item) => {
+          return {
+            value: item,
+            label: DRIVING_LICENSE_LEVELS[item],
+          };
+        })
+      );
+
+      setValue(
+        'educationLevel',
+        selectedRow?.educationLevel?.map((item) => {
+          return {
+            value: item,
+            label: EDUCATION_LEVELS[item],
+          };
+        })
+      );
+
+      setValue(
+        'teachingCertificateLevel',
+        selectedRow?.teachingCertificateLevel?.map((item) => {
+          return {
+            value: item,
+            label: TEACHING_CERTIFICATE_LEVELS[item],
+          };
+        })
+      );
     } else {
     }
   }, [selectedRow, setValue, showModal]);
+
+  useEffect(() => {
+    drivingApi
+      .queryDrivingCenters({
+        filter: { active: true, ...(center && { _id: center }) },
+      })
+      .then((res) => {
+        setDrivingCenters(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  
 
   const [colDefs] = useState([
     {
@@ -64,7 +111,6 @@ function AdminDrivingTeacherPage() {
     {
       field: 'drivingClass',
       headerName: 'Hạng GVLX',
-      editable: true,
     },
     {
       field: 'dob',
@@ -133,7 +179,6 @@ function AdminDrivingTeacherPage() {
     {
       headerName: 'Hạng GPLX',
       field: 'licenseClass',
-      editable: true,
     },
     {
       headerName: 'Tên trường',
@@ -166,32 +211,33 @@ function AdminDrivingTeacherPage() {
     }
   ]);
 
-  const fetchDrivingTeacher = async () => {
-    const dataSource = getDataSource();
-    gridApi.setDatasource(dataSource);
-  }
+  const refreshGrid = () => {
+    if (gridApi) {
+      gridApi.refreshInfiniteCache();
+    }
+  };
   
    const handleTeacherSubmit = async (formData) => {
       const body = {
         ...formData,
       };
-      console.log(body);
-      // const apiCall = isEditMode
-      //   ? drivingApi.updateDrivingTeacher(formData?._id, body)
-      //   : drivingApi.createDrivingTeacher(body);
+
+      const apiCall = isEditMode
+        ? drivingApi.updateDrivingTeacher(formData?._id, body)
+        : drivingApi.createDrivingTeacher(body);
   
-      // apiCall
-      //   .then((res) => {
-      //     fetchDrivingTeacher();
-      //     setShowModal(false);
-      //     toastWrapper(
-      //       isEditMode ? 'Cập nhật ngày thành công' : 'Thêm ngày thành công',
-      //       'success'
-      //     );
-      //   })
-      //   .catch((err) => {
-      //     toastWrapper(err?.message, 'error');
-      //   });
+      apiCall
+        .then((res) => {
+          refreshGrid();
+          setShowModal(false);
+          toastWrapper(
+            isEditMode ? 'Cập nhật ngày thành công' : 'Thêm ngày thành công',
+            'success'
+          );
+        })
+        .catch((err) => {
+          toastWrapper(err?.message, 'error');
+        });
     };
   
     const handleAddTeacherBtn = () => {
@@ -271,6 +317,201 @@ function AdminDrivingTeacherPage() {
             </Modal.Header>
             <Modal.Body>
               <Form onSubmit={handleSubmit(handleTeacherSubmit)}>
+                <Row className='mb-3'>
+                  <Col>
+                    <InputField
+                      label='Họ và tên'
+                      name='fullName'
+                      control={control}
+                    />
+                  </Col>
+                  <Col>
+                    {/* <InputField
+                      label='Hạng GPLX'
+                      name='licenseClass'
+                      control={control}
+                    /> */}
+                    <SelectField
+                      label='Hạng GPLX'
+                      name='licenseClass'
+                      control={control}
+                      options={Object.keys(DRIVING_LICENSE_LEVELS).map(
+                        (key) => {
+                          return {
+                            label: DRIVING_LICENSE_LEVELS[key],
+                            value: key,
+                          };
+                        }
+                      )}
+                      isMulti={true}
+                      isClearable={false}
+                    />
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <InputField
+                      label='Ngày sinh'
+                      name='dob'
+                      type='date'
+                      control={control}
+                      noClear={true}
+                    />
+                  </Col>
+                  <Col>
+                    <InputField
+                      label='Số GPLX'
+                      name='driverLicenseNumber'
+                      control={control}
+                    />
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <InputField
+                      label='Giới tính'
+                      name='gender'
+                      as='select'
+                      control={control}
+                      noClear={true}
+                    >
+                      {Object.keys(GENDERS).map((key) => {
+                        return (
+                          <option key={key} value={key}>
+                            {GENDERS[key]}
+                          </option>
+                        );
+                      })}
+                    </InputField>
+                  </Col>
+                  <Col>
+                    <InputField
+                      label='Ngày cấp GPLX'
+                      name='issueDate'
+                      type='date'
+                      control={control}
+                      noClear={true}
+                    />
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <InputField
+                      label='Số CCCD'
+                      name='identityNumber'
+                      control={control}
+                    />
+                  </Col>
+                  <Col>
+                    <InputField
+                      label='Ngày hết hạn GPLX'
+                      name='expirationDate'
+                      type='date'
+                      control={control}
+                      noClear={true}
+                    />
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <InputField
+                      label='Hạng GVLX'
+                      name='drivingClass'
+                      control={control}
+                    />
+                  </Col>
+                  <Col>
+                    <InputField
+                      label='Thời hạn GPLX'
+                      name='licenseDuration'
+                      control={control}
+                    />
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <SelectField
+                      label='Trình độ chuyên môn'
+                      name='educationLevel'
+                      control={control}
+                      options={Object.keys(EDUCATION_LEVELS).map((key) => {
+                        return {
+                          label: EDUCATION_LEVELS[key],
+                          value: key,
+                        };
+                      })}
+                      isMulti={true}
+                      isClearable={false}
+                    />
+                  </Col>
+                  <Col>
+                    <InputField
+                      label='Tên trường'
+                      name='schoolName'
+                      control={control}
+                    />
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <SelectField
+                      label='Chứng chỉ sư phạm'
+                      name='teachingCertificateLevel'
+                      control={control}
+                      options={Object.keys(TEACHING_CERTIFICATE_LEVELS).map(
+                        (key) => {
+                          return {
+                            label: TEACHING_CERTIFICATE_LEVELS[key],
+                            value: key,
+                          };
+                        }
+                      )}
+                      isMulti={true}
+                      isClearable={false}
+                    />
+                  </Col>
+                  <Col>
+                    <InputField
+                      label='Nơi cấp CCSP'
+                      name='teachingCertificateIssuer'
+                      control={control}
+                    />
+                  </Col>
+                </Row>
+                <Row className='mb-3'>
+                  <Col>
+                    <InputField
+                      label='Trung tâm'
+                      name='center._id'
+                      control={control}
+                      as='select'
+                      noClear={true}
+                    >
+                      {drivingCenters.map((center) => (
+                        <option key={center._id} value={center._id}>
+                          {center.name}
+                        </option>
+                      ))}
+                    </InputField>
+                  </Col>
+                  <Col>
+                    <InputField
+                      label='Tình trạng'
+                      name='status'
+                      control={control}
+                      as='select'
+                      noClear={true}
+                    >
+                      {Object.keys(TEACHER_STATUS).map((key) => {
+                        return (
+                          <option key={key} value={key}>
+                            {TEACHER_STATUS[key]}
+                          </option>
+                        );
+                      })}
+                    </InputField>
+                  </Col>
+                </Row>
                 <Row>
                   <Col>
                     <Button variant='primary' type='submit'>

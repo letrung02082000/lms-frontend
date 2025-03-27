@@ -192,11 +192,9 @@ function AdminDrivingCoursePage() {
       : []),
   ]);
 
-  const fetchDrivingCourse = async () => {
-    const dataSource = getDataSource();
-
+  const refreshGrid = () => {
     if (gridApi) {
-      gridApi.setGridOption('datasource', dataSource);
+      gridApi.refreshInfiniteCache();
     }
   };
 
@@ -218,7 +216,7 @@ function AdminDrivingCoursePage() {
 
     apiCall
       .then((res) => {
-        fetchDrivingCourse();
+        refreshGrid();
         setShowModal(false);
         toastWrapper(isEditMode ? 'Cập nhật thành công' : 'Thêm khoá thi thành công', 'success');
       })

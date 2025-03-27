@@ -1,20 +1,31 @@
-import React from 'react'
-import { Form } from 'react-bootstrap'
-import { useController } from 'react-hook-form'
-import Select from 'react-select'
-import styled from 'styled-components'
-import Asterisk from './Asterisk'
+import React from 'react';
+import { Form } from 'react-bootstrap';
+import { useController } from 'react-hook-form';
+import Select from 'react-select';
+import styled from 'styled-components';
+import Asterisk from './Asterisk';
 
-function SelectField({ name, control, rules, defaultValue, hasAsterisk, ...props }) {
+function SelectField({
+  name,
+  control,
+  rules,
+  defaultValue,
+  hasAsterisk,
+  options,
+  label,
+  children,
+  subLabel,
+  ...props
+}) {
   const {
     field: { ref, ...controlProps },
-    fieldState: { invalid, isTouched, isDirty, error }
+    fieldState: { invalid, isTouched, isDirty, error },
   } = useController({
     name,
     control,
     rules: rules || { required: 'Vui lòng nhập trường này' },
-    defaultValue
-  })
+    defaultValue,
+  });
 
   const customStyles = {
     control: (base, state) => ({
@@ -22,30 +33,43 @@ function SelectField({ name, control, rules, defaultValue, hasAsterisk, ...props
       borderColor: state.isFocused ? '#ddd' : !invalid ? '#ddd' : 'red',
       // overwrittes hover style
       '&:hover': {
-        borderColor: state.isFocused ? '#ddd' : !invalid ? '#ddd' : 'red'
-      }
-    })
-  }
+        borderColor: state.isFocused ? '#ddd' : !invalid ? '#ddd' : 'red',
+      },
+    }),
+  };
 
   return (
     <Styles>
       <Form.Group>
-        {props?.label && <Form.Label className='mb-2'>{props?.label || props?.children || ''}{hasAsterisk && <Asterisk/>}</Form.Label>}
+        <>
+          {label && (
+            <Form.Label>
+              {label || children || ''}
+              {hasAsterisk && <Asterisk />}
+            </Form.Label>
+          )}
+          {subLabel && (
+            <Form.Text className='d-block mb-2'>{subLabel}</Form.Text>
+          )}
+        </>
         <Select
           styles={customStyles}
-          options={props?.options || []}
+          options={options || []}
           control={control}
           ref={ref}
           isInvalid={invalid}
           {...controlProps}
-          onChange={e => controlProps?.onChange(e)}
+          {...props}
+          onChange={(e) => controlProps?.onChange(e)}
         />
-        {error && <Form.Text style={{ color: 'red' }}>{error?.message}</Form.Text>}
+        {error && (
+          <Form.Text style={{ color: 'red' }}>{error?.message}</Form.Text>
+        )}
       </Form.Group>
     </Styles>
-  )
+  );
 }
 
-export default SelectField
+export default SelectField;
 
-const Styles = styled.div``
+const Styles = styled.div``;

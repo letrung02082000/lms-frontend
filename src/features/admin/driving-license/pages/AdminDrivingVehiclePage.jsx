@@ -101,9 +101,10 @@ function AdminDrivingVehiclePage() {
     }
   }, []);
 
-  const fetchDrivingVehicle = async () => {
-    const dataSource = getDataSource();
-    gridApi.setDatasource(dataSource);
+  const refreshGrid = () => {
+    if (gridApi) {
+      gridApi.refreshInfiniteCache();
+    }
   };
 
   const onCellValueChanged = (event) => {

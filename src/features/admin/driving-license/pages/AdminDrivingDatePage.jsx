@@ -163,11 +163,9 @@ function AdminDrivingDatePage() {
       : []),
   ]);
 
-  const fetchDrivingDate = async () => {
-    const dataSource = getDataSource();
-
+  const refreshGrid = () => {
     if (gridApi) {
-      gridApi.setGridOption('datasource', dataSource);
+      gridApi.refreshInfiniteCache();
     }
   };
 
@@ -201,17 +199,17 @@ function AdminDrivingDatePage() {
   const handleDateSubmit = async (formData) => {
     const body = {
       ...formData,
-      date: new Date(formData.examDate),
       center: formData.center._id,
       drivingType: formData.drivingType._id,
     };
+
     const apiCall = isEditMode
       ? drivingApi.updateDrivingDate(formData?._id, body)
       : drivingApi.addDrivingDate(body);
 
     apiCall
       .then((res) => {
-        fetchDrivingDate();
+        refreshGrid();
         setShowModal(false);
         toastWrapper(
           isEditMode ? 'Cập nhật ngày thành công' : 'Thêm ngày thành công',
@@ -287,7 +285,6 @@ function AdminDrivingDatePage() {
                 <Row className='mb-3'>
                   <Col>
                     <InputField
-                      disabled={isEditMode}
                       label='Ngày thi'
                       name='examDate'
                       control={control}

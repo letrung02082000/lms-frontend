@@ -156,11 +156,9 @@ function AdminDrivingTypePage() {
     };
   };
 
-  const fetchDrivingType = async () => {
-    const dataSource = getDataSource();
-
+  const refreshGrid = () => {
     if (gridApi) {
-      gridApi.setGridOption('datasource', dataSource);
+      gridApi.refreshInfiniteCache();
     }
   };
 
@@ -182,7 +180,7 @@ function AdminDrivingTypePage() {
 
     apiCall
       .then((res) => {
-        fetchDrivingType();
+        refreshGrid();
         setShowModal(false);
         toastWrapper(
           isEditMode ? 'Cập nhật hạng bằng thành công' : 'Thêm hạng bằng thành công',

@@ -297,6 +297,11 @@ class DrivingApi {
     return axiosClient.patch(url, data);
   }
 
+  createDrivingTeacher = async (data) => {
+    const url = `${API_PATH}/teacher`;
+    return axiosClient.post(url, data);
+  }
+
   sendZaloMessage = async (tel, message) => {
     const url = `${API_PATH}/message`;
     return axiosClient.post(url, { tel, message });

@@ -27,8 +27,10 @@ const TEACHER_STATUS = {
 const DRIVING_LICENSE_LEVELS = {
     A1: 'A1',
     A: 'A',
+    A2: 'A2',
     B1: 'B1',
     B: 'B',
+    B2: 'B2',
     C: 'C',
     C1: 'C1',
     D: 'D',

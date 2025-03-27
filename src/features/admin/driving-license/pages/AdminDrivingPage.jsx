@@ -1,18 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
-import {
-  Button,
-  Col,
-  Form,
-  Modal,
-  Offcanvas,
-  Row,
-} from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import {
   MdClear,
   MdEdit,
-  MdFilterList,
   MdRotateLeft,
   MdSearch,
   MdQrCodeScanner,
@@ -20,7 +12,6 @@ import {
 } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
-import SelectField from 'components/form/SelectField';
 import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
 import { toastWrapper } from 'utils';
@@ -37,6 +28,7 @@ import {
 } from '../constant';
 import QRCode from 'react-qr-code';
 import fileApi from 'api/fileApi';
+import SelectField from 'components/form/SelectField';
 
 function AdminDrivingPage() {
   const { center, role: userRole } = JSON.parse(
@@ -54,59 +46,22 @@ function AdminDrivingPage() {
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
   const [pagination, setPagination] = useState({});
-  const [show, setShow] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrData, setQrData] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
-  const [visibleDate, setVisibleDate] = useState([{}]);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [drivingDates, setDrivingDates] = useState([{}]);
+  const [drivingCourses, setdrivingCourses] = useState([]);
   const [frontUrl, setFrontUrl] = useState('');
   const [backUrl, setBackUrl] = useState('');
   const [portraitUrl, setPortraitUrl] = useState('');
   const [portraitUploading, setPortraitUploading] = useState(false);
   const [fixedDate, setFixedDate] = useState(null);
-  const [drivingTypes, setDrivingTypes] = useState([]);
   const [gridApi, setGridApi] = useState(null);
-
-  useEffect(() => {
-    const selectedDate = visibleDate.find((item) => {
-      return item.value === selectedRow?.date;
-    });
-    setSelectedDate(selectedDate);
-  }, [selectedRow]);
-
-  useEffect(() => {
-    drivingApi
-      .queryDrivingType()
-      .then((res) => {
-        const drivingTypes = res.data.map((drivingType) => {
-          return {
-            label: drivingType.label,
-            value: drivingType._id,
-          };
-        });
-        setDrivingTypes(drivingTypes);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const DRIVING_TYPES_LABEL = useMemo(() => {
-    return drivingTypes.reduce((acc, cur) => {
-      acc[cur.value] = cur.label;
-      return acc;
-    }, {});
-  }, [drivingTypes]);
-
   const {
     control,
     setValue,
     handleSubmit,
-    setError,
-    watch,
-    setFocus,
   } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -117,6 +72,31 @@ function AdminDrivingPage() {
     shouldUseNativeValidation: false,
     delayError: false,
   });
+
+  useEffect(() => {
+    drivingApi
+      .queryDrivingCourse({
+        filter: {
+          ...(center && { center }),
+          active: true,
+        },
+        page: 1,
+        limit: 100,
+      })
+      .then((res) => {
+        setdrivingCourses(
+          res.data.map((item) => {
+            return {
+              label: `${item.name} - ${item?.drivingType?.label || 'Chưa phân hạng'}`,
+              value: item._id,
+            };
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const ActionButton = (props) => {
     return (
@@ -176,6 +156,10 @@ function AdminDrivingPage() {
           : '';
       },
     },
+    {
+      field: 'course.name',
+      headerName: 'Khoá',
+    },
     { field: 'drivingType.label', headerName: 'Hạng thi' },
     { field: 'cash', headerName: 'Chuyển khoản' },
     {
@@ -193,154 +177,159 @@ function AdminDrivingPage() {
 
   useEffect(() => {
     drivingApi
-      .getDate()
-      .then((res) => {
-        const date = res.data.map((item) => {
-          return {
-            label: new Date(item?.date).toLocaleDateString('en-GB'),
-            value: item?.date,
-            description: item?.description,
-          };
-        });
-        setVisibleDate(date);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [query]);
-
-  useEffect(() => {
-    const readQrData = async () => {
-      if (qrData) {
-        const qrText = qrData?.trim();
-        const qrDataArr = qrText?.split('|');
-        const searchText =
-          qrText?.length === 10
-            ? qrText
-            : qrDataArr[2] ||
-              cryptojs.AES.decrypt(qrDataArr[0], key)
-                ?.toString(cryptojs.enc.Utf8)
-                ?.split('.')[0] ||
-              '';
-
-        if (searchText?.length === 0) {
-          return toastWrapper('Mã QR không hợp lệ', 'error');
+      .getDrivingDate({
+        filter: {
+          ...(center && { center }),
+          active: true,
         }
-
-        setSearchText(searchText);
-        drivingApi
-          .getDrivings({ query, search: searchText, page: 1 })
-          .then((res) => {
-            setRowData(res.data);
-            setPagination(res.pagination);
-
-            if (res.data?.length === 0) {
-              toastWrapper('Không tìm thấy hồ sơ', 'error');
-            }
-
-            if (
-              updateParams?.date != undefined ||
-              updateParams?.processState != undefined
-            ) {
-              const count = res.data.reduce((acc, cur) => {
-                return (
-                  acc + (cur.processState != DRIVING_STATE.CANCELLED ? 1 : 0)
-                );
-              }, 0);
-
-              if (count > 1) {
-                setShowQRModal(false);
-                return toastWrapper(
-                  `Tìm thấy ${count} hồ sơ cần xem xét`,
-                  'warning'
-                );
-              }
-
-              for (let i = 0; i < res.data?.length; i++) {
-                if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
-                  setSelectedRow(res.data[i]);
-
-                  if (fixedDate && fixedDate !== res.data[i].date) {
-                    return toastWrapper('Không khớp ngày cố định', 'error');
-                  }
-
-                  drivingApi
-                    .updateDriving(res.data[i]._id, updateParams)
-                    .then((res) => {
-                      if (updateParams?.date != undefined) {
-                        toastWrapper(
-                          'Đã cập nhật thành ngày ' +
-                            new Date(updateParams?.date).toLocaleDateString(
-                              'en-GB'
-                            ),
-                          'success'
-                        );
-                      }
-
-                      if (updateParams?.processState != undefined) {
-                        toastWrapper(
-                          `${DRIVING_STATE_LABEL[updateParams.processState]}`,
-                          'success'
-                        );
-                      }
-                      fetchDrivings(query, searchText, 1);
-                    })
-                    .catch((err) => {
-                      toastWrapper(err.toString(), 'error');
-                    });
-
-                  break;
-                }
-              }
-            } else {
-              for (let i = 0; i < res.data?.length; i++) {
-                if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
-                  setSelectedRow(res.data[i]);
-
-                  if (fixedDate && fixedDate !== res.data[i].date) {
-                    return toastWrapper('Không khớp ngày cố định', 'error');
-                  }
-
-                  break;
-                }
-              }
-            }
-          })
-          .catch((err) => {
-            toastWrapper(err.toString(), 'error');
-          });
-      }
-    };
-    readQrData();
-  }, [qrData]);
-
-  const fetchDrivings = async (query, searchText, page) => {
-    drivingApi
-      .getDrivings({ query, search: searchText, page })
+      })
       .then((res) => {
-        setRowData(res.data);
-        setPagination(res.pagination);
+        setDrivingDates(res.data.map((item) => {
+          return {
+            label: `${new Date(item.date).toLocaleDateString('en-GB')} - ${item?.drivingType?.label || 'Chưa phân hạng'} - ${item?.description}`,
+            value: item.date,
+            center: item.center?._id,
+            drivingType: item.drivingType?._id,
+          };
+        }));
       })
       .catch((err) => {
         console.log(err);
       });
+  }, []);
+
+  // useEffect(() => {
+  //   const readQrData = async () => {
+  //     if (qrData) {
+  //       const qrText = qrData?.trim();
+  //       const qrDataArr = qrText?.split('|');
+  //       const searchText =
+  //         qrText?.length === 10
+  //           ? qrText
+  //           : qrDataArr[2] ||
+  //             cryptojs.AES.decrypt(qrDataArr[0], key)
+  //               ?.toString(cryptojs.enc.Utf8)
+  //               ?.split('.')[0] ||
+  //             '';
+
+  //       if (searchText?.length === 0) {
+  //         return toastWrapper('Mã QR không hợp lệ', 'error');
+  //       }
+
+  //       setSearchText(searchText);
+  //       drivingApi
+  //         .getDrivings({ search: searchText, page: 1 })
+  //         .then((res) => {
+  //           setRowData(res.data);
+  //           setPagination(res.pagination);
+
+  //           if (res.data?.length === 0) {
+  //             toastWrapper('Không tìm thấy hồ sơ', 'error');
+  //           }
+
+  //           if (
+  //             updateParams?.date != undefined ||
+  //             updateParams?.processState != undefined
+  //           ) {
+  //             const count = res.data.reduce((acc, cur) => {
+  //               return (
+  //                 acc + (cur.processState != DRIVING_STATE.CANCELLED ? 1 : 0)
+  //               );
+  //             }, 0);
+
+  //             if (count > 1) {
+  //               setShowQRModal(false);
+  //               return toastWrapper(
+  //                 `Tìm thấy ${count} hồ sơ cần xem xét`,
+  //                 'warning'
+  //               );
+  //             }
+
+  //             for (let i = 0; i < res.data?.length; i++) {
+  //               if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
+  //                 setSelectedRow(res.data[i]);
+
+  //                 if (fixedDate && fixedDate !== res.data[i].date) {
+  //                   return toastWrapper('Không khớp ngày cố định', 'error');
+  //                 }
+
+  //                 drivingApi
+  //                   .updateDriving(res.data[i]._id, updateParams)
+  //                   .then((res) => {
+  //                     if (updateParams?.date != undefined) {
+  //                       toastWrapper(
+  //                         'Đã cập nhật thành ngày ' +
+  //                           new Date(updateParams?.date).toLocaleDateString(
+  //                             'en-GB'
+  //                           ),
+  //                         'success'
+  //                       );
+  //                     }
+
+  //                     if (updateParams?.processState != undefined) {
+  //                       toastWrapper(
+  //                         `${DRIVING_STATE_LABEL[updateParams.processState]}`,
+  //                         'success'
+  //                       );
+  //                     }
+  //                     refreshGrid(query, searchText, 1);
+  //                   })
+  //                   .catch((err) => {
+  //                     toastWrapper(err.toString(), 'error');
+  //                   });
+
+  //                 break;
+  //               }
+  //             }
+  //           } else {
+  //             for (let i = 0; i < res.data?.length; i++) {
+  //               if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
+  //                 setSelectedRow(res.data[i]);
+
+  //                 if (fixedDate && fixedDate !== res.data[i].date) {
+  //                   return toastWrapper('Không khớp ngày cố định', 'error');
+  //                 }
+
+  //                 break;
+  //               }
+  //             }
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           toastWrapper(err.toString(), 'error');
+  //         });
+  //     }
+  //   };
+  //   readQrData();
+  // }, [qrData]);
+
+  const refreshGrid = async (query, searchText, page) => {
+    if(gridApi) {
+      gridApi.refreshInfiniteCache();
+    }
   };
 
   useEffect(() => {
-    setValue('name', selectedRow?.name);
-    setValue('tel', selectedRow?.tel);
-    setValue('zalo', selectedRow?.zalo);
-    setValue('feedback', selectedRow?.feedback);
-    setValue('cash', selectedRow?.cash);
+    if (selectedRow && showEditModal) {
+      Object.keys(selectedRow).forEach((key) => {
+        setValue(key, selectedRow[key]);
+      });
 
-    if (showEditModal) {
-      fetchImage();
-    } else {
-      setPortraitUrl('');
-      setFrontUrl('');
-      setBackUrl('');
+      if(selectedRow?.examDate) {
+        setValue('examDate', {
+          label: new Date(selectedRow?.examDate).toLocaleDateString('en-GB'),
+          value: selectedRow?.examDate,
+        });
+      }
+
+      if(selectedRow?.course) {
+        setValue('course', {
+          label: `${selectedRow?.course?.name}`,
+          value: selectedRow?.course?._id,
+        });
+      }
     }
-  }, [selectedRow, showEditModal]);
+  }, [selectedRow, setValue, showEditModal]);
   const fetchImage = async (type, url) => {
     if (type === 'portrait' || type === undefined) {
       fileApi
@@ -398,7 +387,7 @@ function AdminDrivingPage() {
       .then((res) => {
         setSelectedRow({ ...selectedRow, ...res.data });
         fetchImage(type);
-        fetchDrivings(query, searchText);
+        refreshGrid(query, searchText);
         toastWrapper('Cập nhật thành công', 'success');
       })
       .catch((e) => {
@@ -409,21 +398,26 @@ function AdminDrivingPage() {
   const handleClose = () => setShowEditModal(false);
 
   const handleUpdateDrivingButton = async () => {
-    await handleSubmit(async (data) => {
-      if (data?.date === undefined) {
-        delete data?.date;
-      } else {
-        data.date = data?.date?.value;
+    await handleSubmit(async (formData) => {
+      const dateInfo = drivingDates.filter(
+        (item) => item?.value === formData.examDate?.value
+      );
+
+      console.log(dateInfo);
+
+      const body = {
+        ...formData,
+        center: dateInfo[0]?.center,
+        drivingType: dateInfo[0]?.drivingType,
+        date: formData.examDate?.value,
+        examDate: formData.examDate?.value,
+        course: formData.course?.value,
       }
 
-      if (data?.drivingType === undefined) {
-        delete data?.drivingType;
-      } else {
-        data.drivingType = data?.drivingType?.value;
-      }
+      console.log(formData);
 
       drivingApi
-        .updateDriving(selectedRow._id, data)
+        .updateDriving(selectedRow._id, body)
         .then((res) => {
           toastWrapper('Cập nhật thành công', 'success');
           setShowEditModal(false);
@@ -452,7 +446,7 @@ function AdminDrivingPage() {
           'Đã cập nhật thành ' + DRIVING_STATE_LABEL[processState],
           'success'
         );
-        fetchDrivings(query, searchText);
+        refreshGrid(query, searchText);
         setShowEditModal(false);
       })
       .catch((err) => {
@@ -498,12 +492,6 @@ function AdminDrivingPage() {
     };
   };
 
-  const refreshGrid = () => {
-    if (gridApi) {
-      gridApi.refreshInfiniteCache();
-    }
-  };
-
   return (
     <div
       style={{
@@ -532,9 +520,6 @@ function AdminDrivingPage() {
         <button className='btn ms-2' onClick={handleSearchButton}>
           <MdSearch size={25} />
         </button>
-        {/* <button className='btn ms-2' onClick={() => setShow(true)}>
-          <MdFilterList size={25} />
-        </button> */}
         <button className='btn ms-2' onClick={() => setShowQRModal(true)}>
           <MdQrCodeScanner size={25} />
         </button>
@@ -550,95 +535,6 @@ function AdminDrivingPage() {
           onGridReady={onGridReady}
         />
       </div>
-      <Offcanvas
-        show={show}
-        onHide={() => setShow(false)}
-        placement='end'
-        backdrop={false}
-        scroll={true}
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Lọc theo</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <Form>
-            <Form.Group className='mb-3' as={Row}>
-              <Form.Label column sm='10'>
-                Đã thanh toán
-              </Form.Label>
-              <Col sm='2'>
-                <Form.Check
-                  className='pt-2'
-                  type='switch'
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setQuery({ ...query, isPaid: e.target.checked });
-                    } else {
-                      setQuery({ ...query, isPaid: undefined });
-                    }
-                  }}
-                  defaultChecked={query.isPaid}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group className='mb-3' as={Row}>
-              <Form.Label column sm='10'>
-                Đã khám sức khoẻ
-              </Form.Label>
-              <Col sm='2'>
-                <Form.Check
-                  className='pt-2'
-                  type='switch'
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setQuery({ ...query, healthChecked: e.target.checked });
-                    } else {
-                      setQuery({ ...query, healthChecked: undefined });
-                    }
-                  }}
-                  defaultChecked={query.healthChecked}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group className='mb-3' as={Row}>
-              <Form.Label column sm='10'>
-                Đã có hồ sơ
-              </Form.Label>
-              <Col sm='2'>
-                <Form.Check
-                  className='pt-2'
-                  type='switch'
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setQuery({ ...query, hasFile: e.target.checked });
-                    } else {
-                      setQuery({ ...query, hasFile: undefined });
-                    }
-                  }}
-                  defaultChecked={query.hasFile}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group className='mb-3' as={Row}>
-              <Form.Label column sm='4'>
-                Ngày dự thi
-              </Form.Label>
-              <Col sm='8'>
-                <Select
-                  defaultValue={visibleDate.find(
-                    (item) => item.value === query?.date
-                  )}
-                  isClearable
-                  options={visibleDate}
-                  onChange={(val) =>
-                    setQuery({ ...query, date: val?.value || undefined })
-                  }
-                />
-              </Col>
-            </Form.Group>
-          </Form>
-        </Offcanvas.Body>
-      </Offcanvas>
       <Modal
         show={showEditModal}
         onHide={handleClose}
@@ -689,15 +585,11 @@ function AdminDrivingPage() {
               </Col>
               <Col>
                 <SelectField
-                  rules={{
-                    required: false,
-                  }}
-                  options={drivingTypes}
-                  label={`Hạng thi hiện tại: ${
-                    DRIVING_TYPES_LABEL[selectedRow?.drivingType]
-                  }`}
+                  label='Khoá'
+                  name='course'
                   control={control}
-                  name='drivingType'
+                  options={drivingCourses}
+                  isClearable={false}
                 />
               </Col>
             </Row>
@@ -725,7 +617,7 @@ function AdminDrivingPage() {
                 />
               </Col>
               <Col xs={1}>
-                <QRCode value={selectedRow?.tel} size={41} />
+                <QRCode value={selectedRow?.tel || ''} size={41} />
               </Col>
               <Col>
                 <InputField
@@ -750,25 +642,19 @@ function AdminDrivingPage() {
               </Col>
               <Col xs={1}>
                 <QRCode
-                  value={`https://zalo.me/${selectedRow?.zalo}`}
+                  value={`https://zalo.me/${selectedRow?.zalo || ''}`}
                   size={41}
                 />
               </Col>
             </Row>
             <Row className='mb-3'>
               <Col>
-                <label className='d-block form-label'>
-                  Ngày dự thi hiện tại:{' '}
-                  {new Date(selectedRow?.date).toLocaleDateString('en-GB')}
-                </label>
                 <SelectField
-                  rules={{
-                    required: false,
-                  }}
-                  options={visibleDate}
-                  label={`${selectedDate?.description}`}
+                  label='Ngày thi'
+                  name='examDate'
                   control={control}
-                  name='date'
+                  options={drivingDates}
+                  isClearable={false}
                 />
               </Col>
             </Row>
@@ -1000,12 +886,12 @@ function AdminDrivingPage() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Scanner
+          {/* <Scanner
             constraints={{ facingMode: facingMode }}
             onScan={(result) => {
               setQrData(result[0]?.rawValue);
             }}
-          />
+          /> */}
           <Form.Group className='my-3' as={Row}>
             {selectedRow?.name && (
               <>
@@ -1029,7 +915,7 @@ function AdminDrivingPage() {
             <Col>
               <Select
                 isClearable
-                options={visibleDate}
+                options={drivingDates}
                 onChange={(val) => setFixedDate(val?.value || undefined)}
               />
             </Col>
@@ -1041,7 +927,7 @@ function AdminDrivingPage() {
             <Col>
               <Select
                 isClearable
-                options={visibleDate}
+                options={drivingDates}
                 onChange={(val) => {
                   setUpdateParams({
                     ...updateParams,
