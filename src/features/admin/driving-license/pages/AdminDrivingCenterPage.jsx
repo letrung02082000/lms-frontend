@@ -30,6 +30,8 @@ function AdminDrivingCenterPage() {
     clearErrors,
     reset,
   } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
     resolver: yupResolver(drivingCenterSchema),
   });
 
@@ -86,13 +88,13 @@ function AdminDrivingCenterPage() {
       editable: true,
     },
     {
-      field: 'formVisible',
+      field: 'visible',
       headerName: 'Hiển thị trên website',
       editable: true,
       cellRenderer: 'agCheckboxCellRenderer',
     },
     {
-      field: 'visible',
+      field: 'active',
       headerName: 'Hiển thị',
       editable: true,
       cellRenderer: 'agCheckboxCellRenderer',

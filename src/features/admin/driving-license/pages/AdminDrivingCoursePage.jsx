@@ -11,6 +11,7 @@ import TableEditButton from 'components/button/TableEditButton';
 import drivingCourseSchema from 'validations/driving-course.validation';
 import InputField from 'components/form/InputField';
 import { getVietnamDate } from 'utils/commonUtils';
+import SelectField from 'components/form/SelectField';
 
 function AdminDrivingCoursePage() {
   const { center, role: userRole } = JSON.parse(
@@ -43,7 +44,14 @@ function AdminDrivingCoursePage() {
         },
       })
       .then((res) => {
-        setDrivingCenters(res.data);
+        setDrivingCenters(
+          res.data?.map((item) => {
+            return {
+              label: item.name,
+              value: item._id,
+            };
+          })
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -55,7 +63,14 @@ function AdminDrivingCoursePage() {
           filter: { ...(center && { center }), active: true },
         })
         .then((res) => {
-          setDrivingTypes(res.data?.map((item) => item.drivingType));
+          setDrivingTypes(
+            res.data?.map((item) => {
+              return {
+                label: item?.drivingType?.label,
+                value: item?.drivingType?._id,
+              };
+            })
+          );
         })
         .catch((err) => {
           console.log(err);
@@ -85,9 +100,16 @@ function AdminDrivingCoursePage() {
       } else {
         setValue('examDate', '');
       }
-    } else {
-      setValue('center', drivingCenters?.[0]);
-      setValue('drivingType', drivingTypes?.[0]);
+
+      setValue('center', {
+        label: selectedRow?.center?.name,
+        value: selectedRow?.center?._id,
+      });
+
+      setValue('drivingType', {
+        label: selectedRow?.drivingType?.label,
+        value: selectedRow?.drivingType?._id,
+      });
     }
   }, [selectedRow, setValue, showModal]);
 
@@ -207,8 +229,8 @@ function AdminDrivingCoursePage() {
   const handleCourseSubmit = async (formData) => {
     const body = {
       ...formData,
-      center: formData.center._id,
-      drivingType: formData.drivingType._id,
+      center: formData?.center?.value,
+      drivingType: formData?.drivingType?.value,
     };
     const apiCall = isEditMode
       ? drivingApi.updateDrivingCourse(formData._id, body)
@@ -313,36 +335,24 @@ function AdminDrivingCoursePage() {
             </Row>
             <Row className='mb-3'>
               <Col>
-                <InputField
+                <SelectField
                   label='Trung tâm'
-                  name='center._id'
+                  name='center'
                   control={control}
-                  as='select'
                   noClear={true}
-                >
-                  {drivingCenters?.map(({ _id, name }) => (
-                    <option key={_id} value={_id}>
-                      {name}
-                    </option>
-                  ))}
-                </InputField>
+                  options={drivingCenters}
+                />
               </Col>
             </Row>
             <Row className='mb-3'>
               <Col>
-                <InputField
+                <SelectField
                   label='Hạng bằng'
-                  name='drivingType._id'
+                  name='drivingType'
                   control={control}
-                  as='select'
                   noClear={true}
-                >
-                  {drivingTypes?.map(({ _id, label }) => (
-                    <option key={_id} value={_id}>
-                      {label}
-                    </option>
-                  ))}
-                </InputField>
+                  options={drivingTypes}
+                />
               </Col>
             </Row>
             {[

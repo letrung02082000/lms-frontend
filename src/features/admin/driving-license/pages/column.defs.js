@@ -35,15 +35,15 @@ const vehicleColDefs = [
     pinned: 'left',
     width: 60,
   },
-  // {
-  //   field: 'createdAt',
-  //   headerName: 'Ngày tạo',
-  //   cellRenderer: (data) => {
-  //     return data.value
-  //       ? new Date(data.value).toLocaleDateString('en-GB')
-  //       : '';
-  //   },
-  // },
+  {
+    field: 'createdAt',
+    headerName: 'Ngày tạo',
+    valueFormatter: (data) => {
+      return data.value
+        ? new Date(data.value).toLocaleDateString('en-GB')
+        : '';
+    },
+  },
   {
     field: 'plate',
     headerName: 'Biển số',
@@ -82,10 +82,20 @@ const vehicleColDefs = [
   {
     field: 'inspectionCertificateDate',
     headerName: 'Ngày kiểm định',
+    valueFormatter: (data) => {
+      return data.value
+        ? new Date(data.value).toLocaleDateString('en-GB')
+        : '';
+    },
   },
   {
     field: 'inspectionCertificateExpiryDate',
     headerName: 'Ngày hết hạn kiểm định',
+    valueFormatter: (data) => {
+      return data.value
+        ? new Date(data.value).toLocaleDateString('en-GB')
+        : '';
+    },
   },
   {
     field: 'DatSerialNumber',
@@ -94,6 +104,11 @@ const vehicleColDefs = [
   {
     field: 'DatInstallationDate',
     headerName: 'Ngày lắp Dat',
+    valueFormatter: (data) => {
+      return data.value
+        ? new Date(data.value).toLocaleDateString('en-GB')
+        : '';
+    },
   },
   {
     field: 'supplier',
@@ -118,6 +133,11 @@ const vehicleColDefs = [
   {
     field: 'insuranceExpiryDate',
     headerName: 'Ngày hết hạn bảo hiểm',
+    valueFormatter: (data) => {
+      return data.value
+        ? new Date(data.value).toLocaleDateString('en-GB')
+        : '';
+    },
   },
   {
     field: 'gptlNumber',
@@ -126,6 +146,11 @@ const vehicleColDefs = [
   {
     field: 'validFromDate',
     headerName: 'Ngày có hiệu lực',
+    valueFormatter: (data) => {
+      return data.value
+        ? new Date(data.value).toLocaleDateString('en-GB')
+        : '';
+    },
   },
   {
     field: 'productionYear',

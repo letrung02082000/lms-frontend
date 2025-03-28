@@ -23,6 +23,8 @@ function AdminDrivingTeacherPage() {
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const { control, handleSubmit, setValue, clearErrors, reset } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
     resolver: yupResolver(drivingTeacherSchema),
   });
 
@@ -218,8 +220,15 @@ function AdminDrivingTeacherPage() {
   };
   
    const handleTeacherSubmit = async (formData) => {
+    console.log(formData);
       const body = {
         ...formData,
+        center: formData?.center?._id,
+        licenseClass: formData?.licenseClass?.map((item) => item.value),
+        educationLevel: formData?.educationLevel?.map((item) => item.value),
+        teachingCertificateLevel: formData?.teachingCertificateLevel?.map(
+          (item) => item.value
+        ),
       };
 
       const apiCall = isEditMode
@@ -415,10 +424,19 @@ function AdminDrivingTeacherPage() {
                 <Row className='mb-3'>
                   <Col>
                     <InputField
+                      as='select'
                       label='Hạng GVLX'
                       name='drivingClass'
                       control={control}
-                    />
+                    >
+                      {Object.keys(DRIVING_LICENSE_LEVELS).map((key) => {
+                        return (
+                          <option key={key} value={key}>
+                            {DRIVING_LICENSE_LEVELS[key]}
+                          </option>
+                        );
+                      })}
+                    </InputField>
                   </Col>
                   <Col>
                     <InputField

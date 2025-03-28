@@ -21,6 +21,8 @@ function AdminDrivingDatePage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [gridApi, setGridApi] = useState(null);
   const { handleSubmit, setValue, control, clearErrors, reset } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
     resolver: yupResolver(drivingDateSchema),
   });
 
@@ -111,7 +113,7 @@ function AdminDrivingDatePage() {
       },
     },
     {
-      field: 'date',
+      field: 'examDate',
       headerName: 'Ngày thi',
       cellRenderer: (data) => {
         return data.value
@@ -199,6 +201,7 @@ function AdminDrivingDatePage() {
   const handleDateSubmit = async (formData) => {
     const body = {
       ...formData,
+      date: formData.examDate,
       center: formData.center._id,
       drivingType: formData.drivingType._id,
     };

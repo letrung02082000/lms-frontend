@@ -53,14 +53,9 @@ export default function DrivingRegisterPage() {
   }
 
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
-  let drivingDateInfo = JSON.parse(localStorage.getItem('driving-date') || '{}');
+  let drivingCourseInfo = JSON.parse(localStorage.getItem('driving-date') || '{}');
   const [drivingTel, setDrivingTel] = useState(drivingInfo?.tel || '');
-  const drivingLink = drivingDateInfo?.link;
-  const drivingDate = useMemo(() => {
-    if (drivingInfo?.date) {
-      return new Date(drivingInfo?.date).toLocaleDateString('en-GB').split("/").join("");
-    } else return null;
-  }, [drivingInfo?.date]);
+  const drivingLink = drivingCourseInfo?.link;
   const { search } = useLocation();
   const source = new URLSearchParams(search).get("s") || 0;
 
@@ -68,8 +63,8 @@ export default function DrivingRegisterPage() {
   const [paymentMethod, setPaymentMethod] = useState(1);
   const [drivingType, setDrivingType] = useState(null);
   const [drivingCenterTypes, setDrivingCenterTypes] = useState([]);
-  const [date, setDate] = useState(false);
-  const [dateList, setDateList] = useState([]);
+  const [date, setCourse] = useState(false);
+  const [courseList, setCourseList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchData, setSearchData] = useState(null);
@@ -84,7 +79,11 @@ export default function DrivingRegisterPage() {
 
   useEffect(() => {
     if (centerShortName) {
-      drivingApi.queryDrivingCenters({ shortName: centerShortName }).then((res) => {
+      drivingApi.queryDrivingCenters({
+        filter: {
+          shortName: centerShortName,
+        }
+      }).then((res) => {
         if (res?.data?.length > 0) {
           const center = res?.data[0];
           document.title = center.name;
@@ -95,7 +94,11 @@ export default function DrivingRegisterPage() {
         toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
       });
     } else {
-      drivingApi.queryDrivingCenters({ formVisible: true }).then((res) => {
+      drivingApi.queryDrivingCenters({
+        filter: {
+          visible: true,
+        }
+      }).then((res) => {
         setDrivingCenters(res?.data || []);
       }).catch((e) => {
         toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
@@ -105,20 +108,15 @@ export default function DrivingRegisterPage() {
 
   useEffect(() => {
     if (drivingCenter) {
-      drivingApi.queryDrivingCenterType({ visible: true, center: drivingCenter }).then((res) => {
+      drivingApi.queryDrivingCenterType({
+        filter: { visible: true, center: drivingCenter },
+      }).then((res) => {
         setDrivingCenterTypes(res?.data || []);
       }).catch((e) => {
         toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
       });
     }
   }, [drivingCenter]);
-
-  const DRIVING_TYPE_LABEL = useMemo(() => {
-    return drivingCenterTypes.reduce((acc, cur) => {
-      acc[cur?.drivingType?._id] = cur?.drivingType?.label;
-      return acc;
-    }, {});
-  }, [drivingCenterTypes]);
 
   const DRIVING_CENTER_LIST = useMemo(() => {
     return drivingCenters.map((center) => {
@@ -127,10 +125,10 @@ export default function DrivingRegisterPage() {
   }, [drivingCenters]);
 
   const DRIVING_DATE_LIST = useMemo(() => {
-    return dateList.map((date) => {
+    return courseList.map((date) => {
       return { label: date?.description, value: date?._id };
     });
-  }, [dateList]);
+  }, [courseList]);
 
   const DRIVING_TYPE_LIST = useMemo(() => {
     return drivingCenterTypes.map((centerType) => {
@@ -143,29 +141,31 @@ export default function DrivingRegisterPage() {
   }, [drivingCenter]);
 
   useEffect(() => {
-    const getDrivingDates = async (center, drivingType) => {
-      drivingApi.getDate({ center, drivingType, formVisible: true, }).then((res) => {
+    const getDrivingCourses = async (center, drivingType) => {
+      drivingApi.queryDrivingCourse({
+        filter: { center, drivingType, visible: true }
+      }).then((res) => {
         let dates = res?.data || [];
 
         if (!dates.length) {
-          setDateList([]);
-          return toastWrapper('Hiện tại không có ngày thi nào được mở đăng ký, vui lòng quay lại sau', 'error');
+          setCourseList([]);
+          return toastWrapper('Hiện tại không có khoá thi nào được mở đăng ký, vui lòng quay lại sau', 'error');
         }
 
-        setDateList(dates)
+        setCourseList(dates)
       }).catch((e) => {
         toastWrapper('Lỗi hệ thống, vui lòng thử lại sau', 'error');
       });
     }
 
     if (drivingCenter && drivingType) {
-      getDrivingDates(drivingCenter, drivingType);
+      getDrivingCourses(drivingCenter, drivingType);
     }
   }, [drivingType]);
 
   const handleSubmitButton = async () => {
     await handleSubmit((formData) => {
-      // setIsLoading(true);
+      setIsLoading(true);
       if (!frontData) {
         toastWrapper('Vui lòng tải lên mặt trước CCCD', 'error');
         setIsLoading(false);
@@ -197,7 +197,7 @@ export default function DrivingRegisterPage() {
         return toastWrapper('Vui lòng chọn hạng bằng lái', 'error');
       }
 
-      drivingDateInfo = dateList.filter((d) => d._id === date)[0] || {};
+      drivingCourseInfo = courseList.filter((d) => d._id === date)[0] || {};
 
       const data = {
         ...formData,
@@ -207,15 +207,15 @@ export default function DrivingRegisterPage() {
         drivingType,
         source,
         center: drivingCenter,
-        date: drivingDateInfo?.date,
-        drivingLink: drivingDateInfo?.link,
-      }
-
+        examDate: drivingCourseInfo?.examDate,
+        date: drivingCourseInfo?.examDate,
+        course: drivingCourseInfo?._id,
+      };
 
       drivingApi.addDriving(data)
         .then((res) => {
           localStorage.setItem('driving-info', JSON.stringify(res?.data));
-          localStorage.setItem('driving-date', JSON.stringify(drivingDateInfo));
+          localStorage.setItem('driving-date', JSON.stringify(drivingCourseInfo));
           setDrivingTel(res?.data?.tel);
         })
         .catch((error) => {
@@ -270,7 +270,7 @@ export default function DrivingRegisterPage() {
         searchData.map((child) => {
           const date = new Date(child.createdAt);
           const processDate = new Date(date);
-          processDate.setDate(date.getDate() + 1);
+          processDate.setCourse(date.getDate() + 1);
 
           return (
             <Card key={child?._id} className="my-3">
@@ -349,7 +349,7 @@ export default function DrivingRegisterPage() {
               label='Số điện thoại liên hệ'
               control={control}
               name='tel'
-              type='number'
+              type='text'
               rules={{
                 maxLength: {
                   value: 10,
@@ -373,7 +373,7 @@ export default function DrivingRegisterPage() {
               label='Số điện thoại Zalo'
               control={control}
               name='zalo'
-              type='number'
+              type='text'
               rules={{
                 maxLength: {
                   value: 10,
@@ -427,7 +427,7 @@ export default function DrivingRegisterPage() {
                 name='center'
                 onClear={handleClearButton}
                 onChange={(value) => {
-                  setDate(null)
+                  setCourse(null)
                   setDrivingType(null)
                   setDrivingCenterTypes([])
                   setDrivingCenter(value)
@@ -447,8 +447,8 @@ export default function DrivingRegisterPage() {
               name='drivingType'
               onClear={handleClearButton}
               onChange={value => {
-                setDate(null)
-                setDateList([])
+                setCourse(null)
+                setCourseList([])
                 setDrivingType(value)
               }}
               defaultChecked={0}
@@ -461,11 +461,11 @@ export default function DrivingRegisterPage() {
             <RadioField
               hasAsterisk={true}
               options={DRIVING_DATE_LIST}
-              label='Chọn điểm thi và ngày dự thi'
+              label='Chọn điểm thi và khoá thi'
               control={control}
               name='date'
               onClear={handleClearButton}
-              onChange={setDate}
+              onChange={setCourse}
               />
             {date && <Form.Text>Xem hướng dẫn chi tiết điểm thi và các gói thi <a href={DRIVING_CENTER_INFO?.instructionLink} target="_blank" rel="noopener noreferrer">tại đây.</a></Form.Text>}
           </Col>
@@ -539,7 +539,7 @@ export default function DrivingRegisterPage() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} aPrice={drivingDateInfo?.aPrice} bPrice={drivingDateInfo?.bPrice} />
+      <AccountModal bankName='Ngân hàng Quân đội (MBBANK)' bankCode='970422' show={accountShow} setShow={setAccountShow} accountNumber='7899996886' accountName='NGUYEN NGOC HUAN' tel={drivingTel} aPrice={drivingCourseInfo?.aPrice} bPrice={drivingCourseInfo?.bPrice} />
     </Styles>
   );
 }

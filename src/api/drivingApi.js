@@ -210,9 +210,7 @@ class DrivingApi {
 
   addDriving = async (data) => {
     const url = `${API_PATH}/add`;
-    return axiosClient.post(url, data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    return axiosClient.post(url, data);
   };
 
   searchDriving = async (tel) => {
@@ -326,6 +324,16 @@ class DrivingApi {
     return axiosClient.get(url, {
       params: q,
     });
+  }
+
+  updateDrivingVehicle = async (id, data) => {
+    const url = `${API_PATH}/vehicle/${id}`;
+    return axiosClient.patch(url, data);
+  }
+
+  createDrivingVehicle = async (data) => {
+    const url = `${API_PATH}/vehicle`;
+    return axiosClient.post(url, data);
   }
 }
 

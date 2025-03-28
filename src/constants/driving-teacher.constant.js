@@ -36,6 +36,8 @@ const DRIVING_LICENSE_LEVELS = {
     D: 'D',
     D1: 'D1',
     D2: 'D2',
+    E: 'E',
+    FC: 'FC',
   }
 
 export {

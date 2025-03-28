@@ -23,6 +23,8 @@ function AdminDrivingTypePage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const { control, handleSubmit, setValue, clearErrors, reset } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
     resolver: yupResolver(drivingTypeSchema),
   });
 

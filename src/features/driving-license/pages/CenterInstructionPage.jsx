@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-
-import styles from "./instructionPage.module.css";
-
-import { DRIVING_LICENSE_NUMBER, ZALO_OA_NUMBER } from "constants/contact";
-import ZaloLink from "components/link/ZaloLink";
-import { convertPhoneNumber, toastWrapper } from "utils";
-
-import AccountModal from "../components/AccountModal";
-import { useMemo } from "react";
-import { Button } from "react-bootstrap";
+import { toastWrapper } from "utils";
 import drivingApi from "api/drivingApi";
 
 export default function CenterInstructionPage(props) {
@@ -19,8 +10,6 @@ export default function CenterInstructionPage(props) {
   const source = search.get("s");
   const navigate = useNavigate();
   const [dateList, setDateList] = useState([]);
-  const [accountShow, setAccountShow] = useState(false);
-  const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
 
   const centerShortName = useParams().shortName;
   const [drivingCenter, setDrivingCenter] = useState({});
@@ -59,7 +48,12 @@ export default function CenterInstructionPage(props) {
 
     if (centerShortName) {
       drivingApi
-        .queryDrivingCenters({ shortName: centerShortName })
+        .queryDrivingCenters({
+          filter: {
+            visible: true,
+            shortName: centerShortName,
+          }
+        })
         .then((res) => {
           if (res?.data?.length > 0) {
             const center = res?.data[0];

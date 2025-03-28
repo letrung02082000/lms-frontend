@@ -29,6 +29,8 @@ import {
 import QRCode from 'react-qr-code';
 import fileApi from 'api/fileApi';
 import SelectField from 'components/form/SelectField';
+import { yupResolver } from '@hookform/resolvers/yup';
+import drivingStudentSchema from 'validations/driving-student.validation';
 
 function AdminDrivingPage() {
   const { center, role: userRole } = JSON.parse(
@@ -65,7 +67,7 @@ function AdminDrivingPage() {
   } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: undefined,
+    resolver: yupResolver(drivingStudentSchema),
     context: undefined,
     shouldFocusError: true,
     shouldUnregister: true,
@@ -311,6 +313,8 @@ function AdminDrivingPage() {
 
   useEffect(() => {
     if (selectedRow && showEditModal) {
+      fetchImage();
+
       Object.keys(selectedRow).forEach((key) => {
         setValue(key, selectedRow[key]);
       });
@@ -367,7 +371,11 @@ function AdminDrivingPage() {
 
   const downloadImage = async (url, name) => {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+      });
       const blob = await res.blob();
       const urlBlob = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -569,17 +577,9 @@ function AdminDrivingPage() {
             <Row className='mb-3'>
               <Col>
                 <InputField
-                  hasAsterisk={true}
                   label='Tên học viên'
                   control={control}
                   name='name'
-                  rules={{
-                    maxLength: {
-                      value: 50,
-                      message: 'Độ dài tối đa <= 50 ký tự',
-                    },
-                    required: 'Vui lòng nhập trường này',
-                  }}
                   onClear={handleClearButton}
                 />
               </Col>
@@ -597,22 +597,10 @@ function AdminDrivingPage() {
             <Row className='mb-3 align-items-end'>
               <Col>
                 <InputField
-                  hasAsterisk={true}
                   label='Số điện thoại liên hệ'
                   control={control}
                   name='tel'
-                  type='number'
-                  rules={{
-                    maxLength: {
-                      value: 10,
-                      message: 'Số điện thoại phải có 10 chữ số',
-                    },
-                    minLength: {
-                      value: 10,
-                      message: 'Số điện thoại phải có 10 chữ số',
-                    },
-                    required: 'Vui lòng nhập trường này',
-                  }}
+                  type='text'
                   onClear={handleClearButton}
                 />
               </Col>
@@ -621,22 +609,10 @@ function AdminDrivingPage() {
               </Col>
               <Col>
                 <InputField
-                  hasAsterisk={true}
                   label='Số điện thoại Zalo'
                   control={control}
                   name='zalo'
-                  type='number'
-                  rules={{
-                    maxLength: {
-                      value: 10,
-                      message: 'Số điện thoại Zalo phải có 10 chữ số',
-                    },
-                    minLength: {
-                      value: 10,
-                      message: 'Số điện thoại Zalo phải có 10 chữ số',
-                    },
-                    required: 'Vui lòng nhập trường này',
-                  }}
+                  type='text'
                   onClear={handleClearButton}
                 />
               </Col>
@@ -712,9 +688,6 @@ function AdminDrivingPage() {
                   label='Ghi chú'
                   control={control}
                   name='feedback'
-                  rules={{
-                    required: false,
-                  }}
                   onClear={handleClearButton}
                 />
               </Col>
@@ -722,6 +695,7 @@ function AdminDrivingPage() {
 
             <Row className='mb-5'>
               <Col xs={5}>
+                <label className='d-block form-label'>Ảnh chân dung</label>
                 <div>
                   <img
                     id='portrait'
@@ -769,6 +743,7 @@ function AdminDrivingPage() {
                 </div>
               </Col>
               <Col>
+                <label className='d-block form-label'>Ảnh mặt trước</label>
                 <div>
                   <img
                     id='front-card'
@@ -814,6 +789,7 @@ function AdminDrivingPage() {
                     }
                   />
                 </div>
+                <label className='d-block form-label'>Ảnh mặt sau</label>
                 <div>
                   <img
                     id='back-card'

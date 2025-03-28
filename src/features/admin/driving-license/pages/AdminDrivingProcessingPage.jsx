@@ -161,6 +161,7 @@ function AdminDrivingProcessingPage() {
         filter: {
           center,
           drivingType,
+          active: true,
         }
       })
       .then(async (res) => {
