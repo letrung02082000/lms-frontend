@@ -19,7 +19,7 @@ function AdminDrivingVehiclePage() {
   const [drivingCenters, setDrivingCenters] = useState([]);
   const [drivingTypes, setDrivingTypes] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [showVehicleModal, setShowVehicleModal] = useState(false);
+  const [showVehicleModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isFormDirty, setIsFormDirty] = useState(false);
   const [gridApi, setGridApi] = useState(null);
@@ -52,7 +52,7 @@ function AdminDrivingVehiclePage() {
           'success'
         );
         refreshGrid();
-        setShowVehicleModal(false);
+        setShowModal(false);
       })
       .catch((err) => {
         toastWrapper(
@@ -70,12 +70,12 @@ function AdminDrivingVehiclePage() {
     if (isFormDirty) {
       if (window.confirm('Bạn có chắc chắn muốn đóng mà không lưu thay đổi?')) {
         clearErrors();
-        setShowVehicleModal(false);
+        setShowModal(false);
         setIsFormDirty(false);
       }
     } else {
       clearErrors();
-      setShowVehicleModal(false);
+      setShowModal(false);
     }
   };
 
@@ -187,6 +187,31 @@ function AdminDrivingVehiclePage() {
     };
   };
 
+  const downloadRentalContract = (data) => {
+    if (!data) return;
+  
+    drivingApi
+      .downloadVehicleRentalContract(data._id)
+      .then((res) => {
+        const blob = new Blob([res], {
+          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        });
+  
+        const fileURL = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = fileURL;
+        link.download = `Hop_dong_thue_xe_${data.plate}.docx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(fileURL);
+      })
+      .catch((err) => {
+        console.log(err);
+        toastWrapper(err?.response?.data?.message || "Có lỗi xảy ra trong quá trình xử lý", "error");
+      });
+  };  
+
   return (
     <div
       style={{
@@ -204,7 +229,8 @@ function AdminDrivingVehiclePage() {
                   reset,
                   setSelectedRow,
                   setIsEditMode,
-                  setShowVehicleModal,
+                  setShowModal,
+                  downloadRentalContract,
                 },
               };
             }
@@ -432,7 +458,7 @@ function AdminDrivingVehiclePage() {
               clearErrors();
               reset();
               setIsEditMode(false);
-              setShowVehicleModal(true);
+              setShowModal(true);
             }}
           >
             <MdAdd />

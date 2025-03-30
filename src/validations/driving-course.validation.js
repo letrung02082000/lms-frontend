@@ -10,7 +10,7 @@ const drivingCourseSchema = yup.object().shape({
   }),
   code: yup.string().required('Mã khoá là bắt buộc'),
   name: yup.string().required('Tên khoá là bắt buộc'),
-  link: yup.string().required('Nhóm thi là bắt buộc'),
+  // link: yup.string().required('Nhóm thi là bắt buộc'),
 });
 
 export default drivingCourseSchema;

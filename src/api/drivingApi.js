@@ -335,6 +335,13 @@ class DrivingApi {
     const url = `${API_PATH}/vehicle`;
     return axiosClient.post(url, data);
   }
+
+  downloadVehicleRentalContract = async (id) => {
+    const url = `${API_PATH}/vehicle/download-rental-contract/${id}`;
+    return axiosClient.get(url, {
+      responseType: "blob",
+    });
+  }
 }
 
 export default new DrivingApi();

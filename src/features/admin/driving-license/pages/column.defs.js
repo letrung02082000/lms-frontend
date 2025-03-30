@@ -1,4 +1,4 @@
-import { MdEdit } from 'react-icons/md';
+import { MdEdit, MdFileDownload } from 'react-icons/md';
 
 const ActionButton = (props) => {
   return (
@@ -10,10 +10,18 @@ const ActionButton = (props) => {
             props?.reset();
             props?.setSelectedRow(props.data);
             props?.setIsEditMode(true);
-            props?.setShowVehicleModal(true);
+            props?.setShowModal(true);
         }}
       >
         <MdEdit />
+      </button>
+      <button
+        className='btn'
+        onClick={() => {
+            props?.downloadRentalContract(props.data);
+        }}
+      >
+        <MdFileDownload/>
       </button>
     </div>
   );
