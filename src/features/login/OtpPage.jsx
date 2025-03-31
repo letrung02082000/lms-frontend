@@ -59,7 +59,7 @@ export default function OtpPage() {
             })
           );
           dispatch(updateUser({ isLoggedIn: true, data: { zalo: data.zalo } }));
-          navigate(PATH.ACCOUNT);
+          window.location.href = state.from;
         })
         .catch((err) => {
           toastWrapper(err?.response?.data?.message, 'error');

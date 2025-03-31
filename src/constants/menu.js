@@ -37,9 +37,9 @@ export const generateDrivingMenu = (drivingType, setting) => {
             path: PATH.DRIVING.ADMIN.TEACHER,
             icon: <FaList />
         },
-        {
-            label: 'Quản lý trung tâm',
-            path: PATH.DRIVING.ADMIN.CENTER,
+        setting?.useVehicleManagement && {
+            label: 'Quản lý xe',
+            path: PATH.DRIVING.ADMIN.VEHICLE,
             icon: <FaList />
         },
         setting?.useTypeManagement && {
@@ -47,9 +47,9 @@ export const generateDrivingMenu = (drivingType, setting) => {
             path: PATH.DRIVING.ADMIN.TYPE,
             icon: <FaList />
         },
-        setting?.useVehicleManagement && {
-            label: 'Quản lý xe',
-            path: PATH.DRIVING.ADMIN.VEHICLE,
+        {
+            label: 'Quản lý trung tâm',
+            path: PATH.DRIVING.ADMIN.CENTER,
             icon: <FaList />
         },
     ].filter(Boolean);

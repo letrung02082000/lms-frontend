@@ -10,6 +10,7 @@ import AdminLayout from 'components/layout/AdminLayout';
 import AdminGuard from 'components/guard/AdminGuard';
 import AdminPage from 'features/admin/pages/AdminPage';
 import AdminDrivingCoursePage from 'features/admin/driving-license/pages/AdminDrivingCoursePage';
+import AdminDrivingPage from 'features/admin/driving-license/pages/AdminDrivingPage';
 import AdminDrivingProcessingPage from 'features/admin/driving-license/pages/AdminDrivingProcessingPage';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
@@ -31,7 +32,7 @@ import MyStatisticsPage from 'features/app/pages/MyStatisticsPage';
 import AdminDrivingCenterPage from 'features/admin/driving-license/pages/AdminDrivingCenterPage';
 import CenterInstructionPage from 'features/driving-license/pages/CenterInstructionPage';
 import AdminDrivingLayout from 'components/layout/AdminDrivingLayout';
-import AdminDrivingPage from 'features/admin/driving-license/pages/AdminDrivingPage';
+import AdminDrivingStudentPage from 'features/admin/driving-license/pages/AdminDrivingStudentPage';
 import AdminElearningGuard from 'components/guard/AdminElearningGuard';
 import AdminElearningLayout from 'components/layout/AdminElearningLayout';
 import AdminElearningPage from 'features/admin/elearning/pages/AdminElearningPage';
@@ -39,7 +40,6 @@ import AdminElearningStudentPage from 'features/admin/elearning/pages/AdminElear
 import StudentElearningGuard from 'components/guard/StudentElearningGuard';
 import StudentElearningLayout from 'components/layout/StudentElearningLayout';
 import ElearningStudentPage from 'features/elearning/pages/ElearningStudentPage';
-import ElearningStudentCoursePage from 'features/elearning/pages/ElearningStudentCoursePage';
 import ElearningStudentCourseDetailPage from 'features/elearning/pages/ElearningStudentCourseDetailPage';
 import ElearningStudentResultPage from 'features/elearning/pages/ElearningStudentResultPage';
 import AdminDrivingTypePage from 'features/admin/driving-license/pages/AdminDrivingTypePage';
@@ -251,6 +251,10 @@ const router = createBrowserRouter([
         element: <AdminDrivingLayout />,
         children: [
           {
+            path: PATH.DRIVING.ADMIN.ROOT,
+            element: <AdminDrivingPage />,
+          },
+          {
             path: PATH.DRIVING.ADMIN.COURSE,
             element: <AdminDrivingCoursePage />,
           },
@@ -267,8 +271,8 @@ const router = createBrowserRouter([
             element: <AdminDrivingProcessingPage />,
           },
           {
-            path: PATH.DRIVING.ADMIN.ROOT,
-            element: <AdminDrivingPage />,
+            path: PATH.DRIVING.ADMIN.STUDENT,
+            element: <AdminDrivingStudentPage />,
           },
           {
             path: PATH.DRIVING.ADMIN.TYPE,
