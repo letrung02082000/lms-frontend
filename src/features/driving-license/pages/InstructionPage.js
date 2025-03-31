@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import styles from "./instructionPage.module.css";
-
 import { DRIVING_LICENSE_NUMBER, ZALO_OA_NUMBER } from "constants/contact";
 import ZaloLink from "components/link/ZaloLink";
-import { convertPhoneNumber } from "utils";
-
 import DrivingApi from "api/drivingApi";
 import AccountModal from "../components/AccountModal";
-import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 
 export default function DrivingInstructionPage(props) {
@@ -21,12 +16,6 @@ export default function DrivingInstructionPage(props) {
   const [dateList, setDateList] = useState([]);
   const [accountShow, setAccountShow] = useState(false);
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
-
-  const drivingDate = useMemo(()=>{
-    if(drivingInfo?.date) {
-      return new Date(drivingInfo?.date).toLocaleDateString('en-GB')
-    } else return null;
-  }, [drivingInfo?.date]);
 
   useEffect(() => {
     const fetchData = async () => {

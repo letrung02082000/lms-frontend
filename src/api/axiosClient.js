@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000'
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5050'
 // const baseURL = process.env.REACT_APP_API_URL || 'https://api.uniapp.vn'
 const token = localStorage.getItem("user-jwt-tk");
 

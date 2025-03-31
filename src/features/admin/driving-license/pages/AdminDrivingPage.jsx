@@ -1,19 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
-import {
-  Button,
-  Col,
-  Form,
-  Modal,
-  Offcanvas,
-  Pagination,
-  Row,
-} from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import {
   MdClear,
   MdEdit,
-  MdFilterList,
   MdRotateLeft,
   MdSearch,
   MdQrCodeScanner,
@@ -21,7 +12,6 @@ import {
 } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
-import SelectField from 'components/form/SelectField';
 import FileUploader from 'components/form/FileUploader';
 import { FILE_UPLOAD_URL } from 'constants/endpoints';
 import { toastWrapper } from 'utils';
@@ -38,6 +28,9 @@ import {
 } from '../constant';
 import QRCode from 'react-qr-code';
 import fileApi from 'api/fileApi';
+import SelectField from 'components/form/SelectField';
+import { yupResolver } from '@hookform/resolvers/yup';
+import drivingStudentSchema from 'validations/driving-student.validation';
 
 function AdminDrivingPage() {
   const { center, role: userRole } = JSON.parse(
@@ -52,67 +45,29 @@ function AdminDrivingPage() {
   const [query, setQuery] = useState({});
   const [facingMode, setFacingMode] = useState('environment');
   const [searchText, setSearchText] = useState('');
-  const [page, setPage] = useState(1);
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
   const [pagination, setPagination] = useState({});
-  const [show, setShow] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrData, setQrData] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
-  const [visibleDate, setVisibleDate] = useState([{}]);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [drivingDates, setDrivingDates] = useState([{}]);
+  const [drivingCourses, setdrivingCourses] = useState([]);
   const [frontUrl, setFrontUrl] = useState('');
   const [backUrl, setBackUrl] = useState('');
   const [portraitUrl, setPortraitUrl] = useState('');
   const [portraitUploading, setPortraitUploading] = useState(false);
   const [fixedDate, setFixedDate] = useState(null);
-  const [drivingTypes, setDrivingTypes] = useState([]);
-
-  useEffect(() => {
-    const selectedDate = visibleDate.find((item) => {
-      return item.value === selectedRow?.date;
-    });
-    setSelectedDate(selectedDate);
-  }, [selectedRow]);
-
-  useEffect(() => {
-    drivingApi
-      .queryDrivingType()
-      .then((res) => {
-        const drivingTypes = res.data.map((drivingType) => {
-          return {
-            label: drivingType.label,
-            value: drivingType._id,
-          };
-        });
-        setDrivingTypes(drivingTypes);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const DRIVING_TYPES_LABEL = useMemo(() => {
-    return drivingTypes.reduce((acc, cur) => {
-      acc[cur.value] = cur.label;
-      return acc;
-    }, {});
-  }, [drivingTypes]);
-
+  const [gridApi, setGridApi] = useState(null);
   const {
     control,
     setValue,
     handleSubmit,
-    setError,
-    formState: { isSubmitting, errors },
-    watch,
-    setFocus,
   } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: undefined,
+    resolver: yupResolver(drivingStudentSchema),
     context: undefined,
     shouldFocusError: true,
     shouldUnregister: true,
@@ -120,19 +75,42 @@ function AdminDrivingPage() {
     delayError: false,
   });
 
+  useEffect(() => {
+    drivingApi
+      .queryDrivingCourse({
+        filter: {
+          ...(center && { center }),
+          active: true,
+        },
+        page: 1,
+        limit: 100,
+      })
+      .then((res) => {
+        setdrivingCourses(
+          res.data.map((item) => {
+            return {
+              label: `${item.name} - ${item?.drivingType?.label || 'Chưa phân hạng'}`,
+              value: item._id,
+            };
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   const ActionButton = (props) => {
     return (
-      <div className='w-100 d-flex justify-content-center'>
-        <button
-          className='btn'
-          onClick={() => {
-            setSelectedRow(props.value);
-            setShowEditModal(true);
-          }}
-        >
-          <MdEdit />
-        </button>
-      </div>
+      <button
+        className='btn'
+        onClick={() => {
+          setSelectedRow(props.value);
+          setShowEditModal(true);
+        }}
+      >
+        <MdEdit />
+      </button>
     );
   };
 
@@ -141,202 +119,221 @@ function AdminDrivingPage() {
   };
 
   const [colDefs, setColDefs] = useState([
-    {
-      field: 'createdAt',
-      headerName: 'Ngày tạo',
-      flex: 1,
-      cellRenderer: (data) => {
-        return data.value
-          ? new Date(data.value).toLocaleDateString('en-GB')
-          : '';
-      },
-    },
-    { field: 'name', headerName: 'Họ và tên', flex: 2 },
-    {
-      field: 'date',
-      headerName: 'Ngày dự thi',
-      flex: 1,
-      cellRenderer: (data) => {
-        return data.value
-          ? new Date(data.value).toLocaleDateString('en-GB')
-          : '';
-      },
-    },
-    { field: 'cash', headerName: 'Chuyển khoản', flex: 1 },
-    {
-      field: 'processState',
-      headerName: 'Tình trạng',
-      flex: 1,
-      cellRenderer: (data) => {
-        return DRIVING_STATE_LABEL[data.value];
-      },
-    },
-    { field: 'source', headerName: 'Nguồn', flex: 1 },
     ...(userRole?.includes(ROLE.DRIVING.ADMIN) || userRole?.includes(ROLE.ADMIN)
       ? [
           {
             field: 'action',
             headerName: 'Thao tác',
-            flex: 1,
+            pinned: 'left',
+            suppressHeaderMenuButton: true,
             cellRenderer: ActionButton,
             valueGetter: rowDataGetter,
+            width: 90,
           },
         ]
+      : []),
+    {
+      headerName: 'STT',
+      valueGetter: 'node.rowIndex + 1',
+      suppressHeaderMenuButton: true,
+      pinned: 'left',
+      width: 60,
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Ngày tạo',
+      cellRenderer: (data) => {
+        return data.value
+          ? new Date(data.value).toLocaleDateString('en-GB')
+          : '';
+      },
+    },
+    { field: 'name', headerName: 'Họ và tên' },
+    {
+      field: 'date',
+      headerName: 'Ngày thi',
+      valueFormatter: (params) => {
+        return params.value
+          ? new Date(params.value).toLocaleDateString('en-GB')
+          : '';
+      },
+    },
+    {
+      field: 'course.name',
+      headerName: 'Khoá',
+    },
+    { field: 'drivingType.label', headerName: 'Hạng thi' },
+    { field: 'cash', headerName: 'Chuyển khoản' },
+    {
+      field: 'processState',
+      headerName: 'Tình trạng',
+      cellRenderer: (data) => {
+        return DRIVING_STATE_LABEL[data.value];
+      },
+    },
+    { field: 'source', headerName: 'Nguồn' },
+    ...(userRole?.includes(ROLE.ADMIN)
+      ? [{ field: 'center.name', headerName: 'Trung tâm' }]
       : []),
   ]);
 
   useEffect(() => {
-    fetchDrivings(query, searchText, page);
-
     drivingApi
-      .getDate()
-      .then((res) => {
-        const date = res.data.map((item) => {
-          return {
-            label: new Date(item?.date).toLocaleDateString('en-GB'),
-            value: item?.date,
-            description: item?.description,
-          };
-        });
-        setVisibleDate(date);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [page, query]);
-
-  useEffect(() => {
-    const readQrData = async () => {
-      if (qrData) {
-        const qrText = qrData?.trim();
-        const qrDataArr = qrText?.split('|');
-        const searchText =
-          qrText?.length === 10
-            ? qrText
-            : qrDataArr[2] ||
-              cryptojs.AES.decrypt(qrDataArr[0], key)
-                ?.toString(cryptojs.enc.Utf8)
-                ?.split('.')[0] ||
-              '';
-
-        if (searchText?.length === 0) {
-          return toastWrapper('Mã QR không hợp lệ', 'error');
+      .getDrivingDate({
+        filter: {
+          ...(center && { center }),
+          active: true,
         }
-
-        setSearchText(searchText);
-        drivingApi
-          .getDrivings(query, searchText, 1)
-          .then((res) => {
-            setRowData(res.data);
-            setPagination(res.pagination);
-
-            if (res.data.length === 0) {
-              toastWrapper('Không tìm thấy hồ sơ', 'error');
-            }
-
-            if (
-              updateParams?.date != undefined ||
-              updateParams?.processState != undefined
-            ) {
-              const count = res.data.reduce((acc, cur) => {
-                return (
-                  acc + (cur.processState != DRIVING_STATE.CANCELLED ? 1 : 0)
-                );
-              }, 0);
-
-              if (count > 1) {
-                setShowQRModal(false);
-                return toastWrapper(
-                  `Tìm thấy ${count} hồ sơ cần xem xét`,
-                  'warning'
-                );
-              }
-
-              for (let i = 0; i < res.data.length; i++) {
-                if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
-                  setSelectedRow(res.data[i]);
-
-                  if (fixedDate && fixedDate !== res.data[i].date) {
-                    return toastWrapper('Không khớp ngày cố định', 'error');
-                  }
-
-                  drivingApi
-                    .updateDriving(res.data[i]._id, updateParams)
-                    .then((res) => {
-                      if (updateParams?.date != undefined) {
-                        toastWrapper(
-                          'Đã cập nhật thành ngày ' +
-                            new Date(updateParams?.date).toLocaleDateString(
-                              'en-GB'
-                            ),
-                          'success'
-                        );
-                      }
-
-                      if (updateParams?.processState != undefined) {
-                        toastWrapper(
-                          `${DRIVING_STATE_LABEL[updateParams.processState]}`,
-                          'success'
-                        );
-                      }
-                      fetchDrivings(query, searchText, 1);
-                    })
-                    .catch((err) => {
-                      toastWrapper(err.toString(), 'error');
-                    });
-
-                  break;
-                }
-              }
-            } else {
-              for (let i = 0; i < res.data.length; i++) {
-                if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
-                  setSelectedRow(res.data[i]);
-
-                  if (fixedDate && fixedDate !== res.data[i].date) {
-                    return toastWrapper('Không khớp ngày cố định', 'error');
-                  }
-
-                  break;
-                }
-              }
-            }
-          })
-          .catch((err) => {
-            toastWrapper(err.toString(), 'error');
-          });
-      }
-    };
-    readQrData();
-  }, [qrData]);
-
-  const fetchDrivings = async (query, searchText, page) => {
-    drivingApi
-      .getDrivings(query, searchText, page)
+      })
       .then((res) => {
-        setRowData(res.data);
-        setPagination(res.pagination);
+        setDrivingDates(res.data.map((item) => {
+          return {
+            label: `${new Date(item.date).toLocaleDateString('en-GB')} - ${item?.drivingType?.label || 'Chưa phân hạng'} - ${item?.description}`,
+            value: item.date,
+            center: item.center?._id,
+            drivingType: item.drivingType?._id,
+          };
+        }));
       })
       .catch((err) => {
         console.log(err);
       });
+  }, []);
+
+  // useEffect(() => {
+  //   const readQrData = async () => {
+  //     if (qrData) {
+  //       const qrText = qrData?.trim();
+  //       const qrDataArr = qrText?.split('|');
+  //       const searchText =
+  //         qrText?.length === 10
+  //           ? qrText
+  //           : qrDataArr[2] ||
+  //             cryptojs.AES.decrypt(qrDataArr[0], key)
+  //               ?.toString(cryptojs.enc.Utf8)
+  //               ?.split('.')[0] ||
+  //             '';
+
+  //       if (searchText?.length === 0) {
+  //         return toastWrapper('Mã QR không hợp lệ', 'error');
+  //       }
+
+  //       setSearchText(searchText);
+  //       drivingApi
+  //         .getDrivings({ search: searchText, page: 1 })
+  //         .then((res) => {
+  //           setRowData(res.data);
+  //           setPagination(res.pagination);
+
+  //           if (res.data?.length === 0) {
+  //             toastWrapper('Không tìm thấy hồ sơ', 'error');
+  //           }
+
+  //           if (
+  //             updateParams?.date != undefined ||
+  //             updateParams?.processState != undefined
+  //           ) {
+  //             const count = res.data.reduce((acc, cur) => {
+  //               return (
+  //                 acc + (cur.processState != DRIVING_STATE.CANCELLED ? 1 : 0)
+  //               );
+  //             }, 0);
+
+  //             if (count > 1) {
+  //               setShowQRModal(false);
+  //               return toastWrapper(
+  //                 `Tìm thấy ${count} hồ sơ cần xem xét`,
+  //                 'warning'
+  //               );
+  //             }
+
+  //             for (let i = 0; i < res.data?.length; i++) {
+  //               if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
+  //                 setSelectedRow(res.data[i]);
+
+  //                 if (fixedDate && fixedDate !== res.data[i].date) {
+  //                   return toastWrapper('Không khớp ngày cố định', 'error');
+  //                 }
+
+  //                 drivingApi
+  //                   .updateDriving(res.data[i]._id, updateParams)
+  //                   .then((res) => {
+  //                     if (updateParams?.date != undefined) {
+  //                       toastWrapper(
+  //                         'Đã cập nhật thành ngày ' +
+  //                           new Date(updateParams?.date).toLocaleDateString(
+  //                             'en-GB'
+  //                           ),
+  //                         'success'
+  //                       );
+  //                     }
+
+  //                     if (updateParams?.processState != undefined) {
+  //                       toastWrapper(
+  //                         `${DRIVING_STATE_LABEL[updateParams.processState]}`,
+  //                         'success'
+  //                       );
+  //                     }
+  //                     refreshGrid(query, searchText, 1);
+  //                   })
+  //                   .catch((err) => {
+  //                     toastWrapper(err.toString(), 'error');
+  //                   });
+
+  //                 break;
+  //               }
+  //             }
+  //           } else {
+  //             for (let i = 0; i < res.data?.length; i++) {
+  //               if (res.data[i].processState != DRIVING_STATE.CANCELLED) {
+  //                 setSelectedRow(res.data[i]);
+
+  //                 if (fixedDate && fixedDate !== res.data[i].date) {
+  //                   return toastWrapper('Không khớp ngày cố định', 'error');
+  //                 }
+
+  //                 break;
+  //               }
+  //             }
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           toastWrapper(err.toString(), 'error');
+  //         });
+  //     }
+  //   };
+  //   readQrData();
+  // }, [qrData]);
+
+  const refreshGrid = async (query, searchText, page) => {
+    if(gridApi) {
+      gridApi.refreshInfiniteCache();
+    }
   };
 
   useEffect(() => {
-    setValue('name', selectedRow?.name);
-    setValue('tel', selectedRow?.tel);
-    setValue('zalo', selectedRow?.zalo);
-    setValue('feedback', selectedRow?.feedback);
-    setValue('cash', selectedRow?.cash);
-
-    if (showEditModal) {
+    if (selectedRow && showEditModal) {
       fetchImage();
-    } else {
-      setPortraitUrl('');
-      setFrontUrl('');
-      setBackUrl('');
+
+      Object.keys(selectedRow).forEach((key) => {
+        setValue(key, selectedRow[key]);
+      });
+
+      if(selectedRow?.examDate) {
+        setValue('examDate', {
+          label: new Date(selectedRow?.examDate).toLocaleDateString('en-GB'),
+          value: selectedRow?.examDate,
+        });
+      }
+
+      if(selectedRow?.course) {
+        setValue('course', {
+          label: `${selectedRow?.course?.name}`,
+          value: selectedRow?.course?._id,
+        });
+      }
     }
-  }, [selectedRow, showEditModal]);
+  }, [selectedRow, setValue, showEditModal]);
   const fetchImage = async (type, url) => {
     if (type === 'portrait' || type === undefined) {
       fileApi
@@ -374,7 +371,11 @@ function AdminDrivingPage() {
 
   const downloadImage = async (url, name) => {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+      });
       const blob = await res.blob();
       const urlBlob = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -394,7 +395,7 @@ function AdminDrivingPage() {
       .then((res) => {
         setSelectedRow({ ...selectedRow, ...res.data });
         fetchImage(type);
-        fetchDrivings(query, searchText, page);
+        refreshGrid(query, searchText);
         toastWrapper('Cập nhật thành công', 'success');
       })
       .catch((e) => {
@@ -405,25 +406,30 @@ function AdminDrivingPage() {
   const handleClose = () => setShowEditModal(false);
 
   const handleUpdateDrivingButton = async () => {
-    await handleSubmit(async (data) => {
-      if (data?.date === undefined) {
-        delete data?.date;
-      } else {
-        data.date = data?.date?.value;
+    await handleSubmit(async (formData) => {
+      const dateInfo = drivingDates.filter(
+        (item) => item?.value === formData.examDate?.value
+      );
+
+      console.log(dateInfo);
+
+      const body = {
+        ...formData,
+        center: dateInfo[0]?.center,
+        drivingType: dateInfo[0]?.drivingType,
+        date: formData.examDate?.value,
+        examDate: formData.examDate?.value,
+        course: formData.course?.value,
       }
 
-      if (data?.drivingType === undefined) {
-        delete data?.drivingType;
-      } else {
-        data.drivingType = data?.drivingType?.value;
-      }
+      console.log(formData);
 
       drivingApi
-        .updateDriving(selectedRow._id, data)
+        .updateDriving(selectedRow._id, body)
         .then((res) => {
           toastWrapper('Cập nhật thành công', 'success');
           setShowEditModal(false);
-          fetchDrivings(query, searchText, page);
+          refreshGrid();
         })
         .catch((err) => {
           toastWrapper(err.response.data.message, 'error');
@@ -432,7 +438,8 @@ function AdminDrivingPage() {
   };
 
   const handleSearchButton = () => {
-    fetchDrivings(query, searchText, page);
+    const dataSource = getDataSource(searchText, query);
+    gridApi.setGridOption('datasource', dataSource);
   };
 
   const handleClearButton = (name) => {
@@ -447,7 +454,7 @@ function AdminDrivingPage() {
           'Đã cập nhật thành ' + DRIVING_STATE_LABEL[processState],
           'success'
         );
-        fetchDrivings(query, searchText, page);
+        refreshGrid(query, searchText);
         setShowEditModal(false);
       })
       .catch((err) => {
@@ -464,6 +471,33 @@ function AdminDrivingPage() {
       'data-rotate',
       (tmp.getAttribute('data-rotate') || 0) - 90
     );
+  };
+
+  const onGridReady = (params) => {
+    setGridApi(params.api);
+    const dataSource = getDataSource();
+    params.api.setGridOption('datasource', dataSource);
+  };
+
+  const getDataSource = (search, query) => {
+    return {
+      rowCount: null,
+      getRows: async (params) => {
+        const { startRow, endRow } = params;
+        try {
+          const res = await drivingApi.getDrivings({
+            ...(center && { center }),
+            limit: endRow - startRow,
+            page: Math.floor(startRow / (endRow - startRow)) + 1,
+            ...(query && { query }),
+            ...(search && { search }),
+          });
+          params.successCallback(res.data, res.pagination.totalDocs);
+        } catch (error) {
+          params.failCallback();
+        }
+      },
+    };
   };
 
   return (
@@ -484,7 +518,8 @@ function AdminDrivingPage() {
             className='btn position-absolute end-0 top-50 translate-middle p-0'
             onClick={() => {
               setSearchText('');
-              fetchDrivings(query, '', page);
+              const dataSource = getDataSource('', query);
+              gridApi.setGridOption('datasource', dataSource);
             }}
           >
             <MdClear />
@@ -493,134 +528,21 @@ function AdminDrivingPage() {
         <button className='btn ms-2' onClick={handleSearchButton}>
           <MdSearch size={25} />
         </button>
-        {/* <button className='btn ms-2' onClick={() => setShow(true)}>
-          <MdFilterList size={25} />
-        </button> */}
         <button className='btn ms-2' onClick={() => setShowQRModal(true)}>
           <MdQrCodeScanner size={25} />
         </button>
       </div>
-      <div className='ag-theme-quartz' style={{ height: '85%' }}>
-        <AgGridReact rowData={rowData} columnDefs={colDefs} />
+      <div className='ag-theme-quartz' style={{ height: '90%' }}>
+        <AgGridReact
+          columnDefs={colDefs}
+          pagination={true}
+          paginationPageSize={20}
+          rowModelType={'infinite'}
+          cacheBlockSize={20}
+          paginationPageSizeSelector={[20, 50, 100]}
+          onGridReady={onGridReady}
+        />
       </div>
-      <Pagination
-        className='d-flex justify-content-center align-items-center'
-        style={{
-          height: '6%',
-        }}
-      >
-        <Pagination.Item>
-          {pagination.start +
-            '-' +
-            pagination.end +
-            ' của ' +
-            pagination.totalCount}
-        </Pagination.Item>
-        <Pagination.First onClick={() => setPage(1)}></Pagination.First>
-        <Pagination.Prev
-          onClick={() => setPage(page - 1)}
-          disabled={page <= 1}
-        />
-        <Pagination.Item active>
-          {pagination.page}/{pagination.totalPage}
-        </Pagination.Item>
-        <Pagination.Next
-          onClick={() => setPage(page + 1)}
-          disabled={page >= pagination.totalPage}
-        />
-        <Pagination.Last
-          onClick={() => setPage(pagination.totalPage)}
-        ></Pagination.Last>
-      </Pagination>
-      <Offcanvas
-        show={show}
-        onHide={() => setShow(false)}
-        placement='end'
-        backdrop={false}
-        scroll={true}
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Lọc theo</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <Form>
-            <Form.Group className='mb-3' as={Row}>
-              <Form.Label column sm='10'>
-                Đã thanh toán
-              </Form.Label>
-              <Col sm='2'>
-                <Form.Check
-                  className='pt-2'
-                  type='switch'
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setQuery({ ...query, isPaid: e.target.checked });
-                    } else {
-                      setQuery({ ...query, isPaid: undefined });
-                    }
-                  }}
-                  defaultChecked={query.isPaid}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group className='mb-3' as={Row}>
-              <Form.Label column sm='10'>
-                Đã khám sức khoẻ
-              </Form.Label>
-              <Col sm='2'>
-                <Form.Check
-                  className='pt-2'
-                  type='switch'
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setQuery({ ...query, healthChecked: e.target.checked });
-                    } else {
-                      setQuery({ ...query, healthChecked: undefined });
-                    }
-                  }}
-                  defaultChecked={query.healthChecked}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group className='mb-3' as={Row}>
-              <Form.Label column sm='10'>
-                Đã có hồ sơ
-              </Form.Label>
-              <Col sm='2'>
-                <Form.Check
-                  className='pt-2'
-                  type='switch'
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setQuery({ ...query, hasFile: e.target.checked });
-                    } else {
-                      setQuery({ ...query, hasFile: undefined });
-                    }
-                  }}
-                  defaultChecked={query.hasFile}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group className='mb-3' as={Row}>
-              <Form.Label column sm='4'>
-                Ngày dự thi
-              </Form.Label>
-              <Col sm='8'>
-                <Select
-                  defaultValue={visibleDate.find(
-                    (item) => item.value === query?.date
-                  )}
-                  isClearable
-                  options={visibleDate}
-                  onChange={(val) =>
-                    setQuery({ ...query, date: val?.value || undefined })
-                  }
-                />
-              </Col>
-            </Form.Group>
-          </Form>
-        </Offcanvas.Body>
-      </Offcanvas>
       <Modal
         show={showEditModal}
         onHide={handleClose}
@@ -655,31 +577,19 @@ function AdminDrivingPage() {
             <Row className='mb-3'>
               <Col>
                 <InputField
-                  hasAsterisk={true}
                   label='Tên học viên'
                   control={control}
                   name='name'
-                  rules={{
-                    maxLength: {
-                      value: 50,
-                      message: 'Độ dài tối đa <= 50 ký tự',
-                    },
-                    required: 'Vui lòng nhập trường này',
-                  }}
                   onClear={handleClearButton}
                 />
               </Col>
               <Col>
                 <SelectField
-                  rules={{
-                    required: false,
-                  }}
-                  options={drivingTypes}
-                  label={`Hạng thi hiện tại: ${
-                    DRIVING_TYPES_LABEL[selectedRow?.drivingType]
-                  }`}
+                  label='Khoá'
+                  name='course'
                   control={control}
-                  name='drivingType'
+                  options={drivingCourses}
+                  isClearable={false}
                 />
               </Col>
             </Row>
@@ -687,70 +597,40 @@ function AdminDrivingPage() {
             <Row className='mb-3 align-items-end'>
               <Col>
                 <InputField
-                  hasAsterisk={true}
                   label='Số điện thoại liên hệ'
                   control={control}
                   name='tel'
-                  type='number'
-                  rules={{
-                    maxLength: {
-                      value: 10,
-                      message: 'Số điện thoại phải có 10 chữ số',
-                    },
-                    minLength: {
-                      value: 10,
-                      message: 'Số điện thoại phải có 10 chữ số',
-                    },
-                    required: 'Vui lòng nhập trường này',
-                  }}
+                  type='text'
                   onClear={handleClearButton}
                 />
               </Col>
               <Col xs={1}>
-                <QRCode value={selectedRow?.tel} size={41} />
+                <QRCode value={selectedRow?.tel || ''} size={41} />
               </Col>
               <Col>
                 <InputField
-                  hasAsterisk={true}
                   label='Số điện thoại Zalo'
                   control={control}
                   name='zalo'
-                  type='number'
-                  rules={{
-                    maxLength: {
-                      value: 10,
-                      message: 'Số điện thoại Zalo phải có 10 chữ số',
-                    },
-                    minLength: {
-                      value: 10,
-                      message: 'Số điện thoại Zalo phải có 10 chữ số',
-                    },
-                    required: 'Vui lòng nhập trường này',
-                  }}
+                  type='text'
                   onClear={handleClearButton}
                 />
               </Col>
               <Col xs={1}>
                 <QRCode
-                  value={`https://zalo.me/${selectedRow?.zalo}`}
+                  value={`https://zalo.me/${selectedRow?.zalo || ''}`}
                   size={41}
                 />
               </Col>
             </Row>
             <Row className='mb-3'>
               <Col>
-                <label className='d-block form-label'>
-                  Ngày dự thi hiện tại:{' '}
-                  {new Date(selectedRow?.date).toLocaleDateString('en-GB')}
-                </label>
                 <SelectField
-                  rules={{
-                    required: false,
-                  }}
-                  options={visibleDate}
-                  label={`${selectedDate?.description}`}
+                  label='Ngày thi'
+                  name='examDate'
                   control={control}
-                  name='date'
+                  options={drivingDates}
+                  isClearable={false}
                 />
               </Col>
             </Row>
@@ -808,9 +688,6 @@ function AdminDrivingPage() {
                   label='Ghi chú'
                   control={control}
                   name='feedback'
-                  rules={{
-                    required: false,
-                  }}
                   onClear={handleClearButton}
                 />
               </Col>
@@ -818,6 +695,7 @@ function AdminDrivingPage() {
 
             <Row className='mb-5'>
               <Col xs={5}>
+                <label className='d-block form-label'>Ảnh chân dung</label>
                 <div>
                   <img
                     id='portrait'
@@ -865,6 +743,7 @@ function AdminDrivingPage() {
                 </div>
               </Col>
               <Col>
+                <label className='d-block form-label'>Ảnh mặt trước</label>
                 <div>
                   <img
                     id='front-card'
@@ -910,6 +789,7 @@ function AdminDrivingPage() {
                     }
                   />
                 </div>
+                <label className='d-block form-label'>Ảnh mặt sau</label>
                 <div>
                   <img
                     id='back-card'
@@ -982,12 +862,12 @@ function AdminDrivingPage() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Scanner
+          {/* <Scanner
             constraints={{ facingMode: facingMode }}
             onScan={(result) => {
               setQrData(result[0]?.rawValue);
             }}
-          />
+          /> */}
           <Form.Group className='my-3' as={Row}>
             {selectedRow?.name && (
               <>
@@ -1011,7 +891,7 @@ function AdminDrivingPage() {
             <Col>
               <Select
                 isClearable
-                options={visibleDate}
+                options={drivingDates}
                 onChange={(val) => setFixedDate(val?.value || undefined)}
               />
             </Col>
@@ -1023,7 +903,7 @@ function AdminDrivingPage() {
             <Col>
               <Select
                 isClearable
-                options={visibleDate}
+                options={drivingDates}
                 onChange={(val) => {
                   setUpdateParams({
                     ...updateParams,

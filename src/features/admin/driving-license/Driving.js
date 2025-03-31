@@ -6,7 +6,7 @@ import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
-import { MdMoreVert, MdOutlineQuickreply, MdPhone, MdRotateLeft, MdWeb } from "react-icons/md";
+import { MdExpandMore, MdMore, MdMoreVert, MdOutlineQuickreply, MdOutlineSave, MdPhone, MdRotateLeft, MdSave, MdWeb } from "react-icons/md";
 import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, IDENTITY_CARD_TYPE, PAYMENT_METHODS, PAYMENT_METHODS_LABEL } from "./constant";
 import * as faceapi from '@vladmandic/face-api';
 import { Jimp } from 'jimp';
@@ -791,18 +791,15 @@ function Driving(props) {
                     ) : null}
                   </select>
                 </Col>
-                <Col xs={2}>
-                  <Button
-                    className="w-100"
+                <Col xs={5}>
+                <Button
                     variant="outline-primary"
                     onClick={updateDate}
                   >
-                    Lưu lại
+                    <MdOutlineSave />
                   </Button>
-                </Col>
-                <Col xs={3}>
-                  <Button variant='outline-primary' onClick={() => setShowDateInfo(true)}>
-                    <IoMdEye />
+                  <Button variant='outline-primary' className="ms-3" onClick={() => setShowDateInfo(true)}>
+                    <MdExpandMore />
                   </Button>
                   <CopyToClipboardButton className='btn btn-outline-primary ms-3' value={QUICK_MESSAGE}/>
                 </Col>

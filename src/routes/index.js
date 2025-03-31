@@ -9,8 +9,8 @@ import ServiceLayout from 'components/layout/ServiceLayout';
 import AdminLayout from 'components/layout/AdminLayout';
 import AdminGuard from 'components/guard/AdminGuard';
 import AdminPage from 'features/admin/pages/AdminPage';
-import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDrivingDatePage';
-import AdminDrivingListPage from 'features/admin/driving-license/pages/AdminDrivingListPage';
+import AdminDrivingCoursePage from 'features/admin/driving-license/pages/AdminDrivingCoursePage';
+import AdminDrivingProcessingPage from 'features/admin/driving-license/pages/AdminDrivingProcessingPage';
 import SuccessPage from 'features/app/pages/SuccessPage';
 import AllStorePage from 'features/app/pages/AllStorePage';
 import StoreByCategory from 'features/app/pages/StoreByCategory';
@@ -42,6 +42,10 @@ import ElearningStudentPage from 'features/elearning/pages/ElearningStudentPage'
 import ElearningStudentCoursePage from 'features/elearning/pages/ElearningStudentCoursePage';
 import ElearningStudentCourseDetailPage from 'features/elearning/pages/ElearningStudentCourseDetailPage';
 import ElearningStudentResultPage from 'features/elearning/pages/ElearningStudentResultPage';
+import AdminDrivingTypePage from 'features/admin/driving-license/pages/AdminDrivingTypePage';
+import AdminDrivingTeacherPage from 'features/admin/driving-license/pages/AdminDrivingTeacherPage';
+import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDrivingDatePage';
+import AdminDrivingVehiclePage from 'features/admin/driving-license/pages/AdminDrivingVehiclePage';
 
 const router = createBrowserRouter([
   {
@@ -247,6 +251,10 @@ const router = createBrowserRouter([
         element: <AdminDrivingLayout />,
         children: [
           {
+            path: PATH.DRIVING.ADMIN.COURSE,
+            element: <AdminDrivingCoursePage />,
+          },
+          {
             path: PATH.DRIVING.ADMIN.DATE,
             element: <AdminDrivingDatePage />,
           },
@@ -255,12 +263,24 @@ const router = createBrowserRouter([
             element: <AdminDrivingCenterPage />,
           },
           {
-            path: PATH.DRIVING.ADMIN.QUERY,
-            element: <AdminDrivingListPage />,
+            path: PATH.DRIVING.ADMIN.PROCESSING,
+            element: <AdminDrivingProcessingPage />,
           },
           {
             path: PATH.DRIVING.ADMIN.ROOT,
             element: <AdminDrivingPage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.TYPE,
+            element: <AdminDrivingTypePage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.TEACHER,
+            element: <AdminDrivingTeacherPage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.VEHICLE,
+            element: <AdminDrivingVehiclePage />,
           },
         ],
       },

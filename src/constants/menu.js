@@ -1,30 +1,40 @@
 import { PATH } from "./path";
 import { FaList } from "react-icons/fa";
 
-export const generateDrivingMenu = (drivingType) => {
+export const generateDrivingMenu = (drivingType, setting) => {
     const drivingTypeObj = drivingType.map((t) => {
         return {
             label: t?.label,
-            path: PATH.DRIVING.ADMIN.QUERY + '?type=' + t?.value,
+            path: PATH.DRIVING.ADMIN.PROCESSING + '?type=' + t?.value,
             icon: t?.icon || <FaList />
         }
     })
 
     const ADMIN_DRIVING_MENU = [
-        {
+        setting?.useStudentManagement && {
             label: 'Danh sách hồ sơ',
             path: PATH.DRIVING.ADMIN.ROOT,
             icon: <FaList />,
         },
-        ...(drivingType.length ? [{
-            label: 'Quản lý hồ sơ',
-            path: PATH.DRIVING.ADMIN.QUERY,
+        setting?.useInProcessManagement && {
+            label: 'Hồ sơ đang xử lý',
+            path: PATH.DRIVING.ADMIN.PROCESSING,
             icon: <FaList />,
             children: drivingTypeObj
-        }] : []),
-        {
+        },
+        setting?.useClassManagement &&{
+            label: 'Quản lý khoá học',
+            path: PATH.DRIVING.ADMIN.COURSE,
+            icon: <FaList />
+        },
+        setting?.useClassManagement &&{
             label: 'Quản lý ngày thi',
             path: PATH.DRIVING.ADMIN.DATE,
+            icon: <FaList />
+        },
+        setting?.useTeacherManagement && {
+            label: 'Quản lý giáo viên',
+            path: PATH.DRIVING.ADMIN.TEACHER,
             icon: <FaList />
         },
         {
@@ -32,7 +42,17 @@ export const generateDrivingMenu = (drivingType) => {
             path: PATH.DRIVING.ADMIN.CENTER,
             icon: <FaList />
         },
-    ];
+        setting?.useTypeManagement && {
+            label: 'Quản lý hạng bằng',
+            path: PATH.DRIVING.ADMIN.TYPE,
+            icon: <FaList />
+        },
+        setting?.useVehicleManagement && {
+            label: 'Quản lý xe',
+            path: PATH.DRIVING.ADMIN.VEHICLE,
+            icon: <FaList />
+        },
+    ].filter(Boolean);
     return ADMIN_DRIVING_MENU;
 }
 

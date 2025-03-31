@@ -30,7 +30,6 @@ export const DRIVING_STATE_LABEL = {
     [DRIVING_STATE.APPROVED]: "Đã duyệt",
     [DRIVING_STATE.HAS_FILE_1]: "Đã có hồ sơ 1",
     [DRIVING_STATE.HAS_FILE_2]: "Đã có hồ sơ 2",
-    [DRIVING_STATE.HAS_FILE_3]: "Đã có hồ sơ 3",
     [DRIVING_STATE.HEALTH_CHECKED]: "Đã khám SK",
     [DRIVING_STATE.WAITING_FOR_SCHEDULE]: "Chờ xếp lịch",
     [DRIVING_STATE.FINISHED]: "Đã hoàn tất",
