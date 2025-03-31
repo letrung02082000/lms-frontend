@@ -67,6 +67,7 @@ function AdminDrivingLayout() {
           useTeacherManagement: true,
           useTypeManagement: true,
           useVehicleManagement: true,
+          useDateManagement: true,
         });
       }
     }

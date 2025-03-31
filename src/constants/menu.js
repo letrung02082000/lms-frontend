@@ -27,7 +27,7 @@ export const generateDrivingMenu = (drivingType, setting) => {
             path: PATH.DRIVING.ADMIN.COURSE,
             icon: <FaList />
         },
-        setting?.useClassManagement &&{
+        setting?.useDateManagement &&{
             label: 'Quản lý ngày thi',
             path: PATH.DRIVING.ADMIN.DATE,
             icon: <FaList />
