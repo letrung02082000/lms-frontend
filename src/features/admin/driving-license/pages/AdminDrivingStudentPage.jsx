@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
@@ -9,6 +9,7 @@ import {
   MdSearch,
   MdQrCodeScanner,
   MdFlipCameraAndroid,
+  MdAdd,
 } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
@@ -31,12 +32,14 @@ import fileApi from 'api/fileApi';
 import SelectField from 'components/form/SelectField';
 import { yupResolver } from '@hookform/resolvers/yup';
 import drivingStudentSchema from 'validations/driving-student.validation';
+import TableEditButton from 'components/button/TableEditButton';
+import { DRIVING_LICENSE_LEVELS, GENDERS } from 'constants/driving-student.constant';
 
 function AdminDrivingStudentPage() {
   const { center, role: userRole } = JSON.parse(
     localStorage.getItem('user-info')
   );
-
+  const [drivingCenters, setDrivingCenters] = useState([]);
   const key = 'aes123456789101112131415';
   const [updateParams, setUpdateParams] = useState({
     date: undefined,
@@ -50,7 +53,8 @@ function AdminDrivingStudentPage() {
   const [pagination, setPagination] = useState({});
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrData, setQrData] = useState('');
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [drivingDates, setDrivingDates] = useState([{}]);
   const [drivingCourses, setdrivingCourses] = useState([]);
@@ -60,11 +64,7 @@ function AdminDrivingStudentPage() {
   const [portraitUploading, setPortraitUploading] = useState(false);
   const [fixedDate, setFixedDate] = useState(null);
   const [gridApi, setGridApi] = useState(null);
-  const {
-    control,
-    setValue,
-    handleSubmit,
-  } = useForm({
+  const { control, setValue, handleSubmit, reset, clearErrors } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: yupResolver(drivingStudentSchema),
@@ -89,8 +89,37 @@ function AdminDrivingStudentPage() {
         setdrivingCourses(
           res.data.map((item) => {
             return {
-              label: `${item.name} - ${item?.drivingType?.label || 'Chưa phân hạng'}`,
+              label: `${item.name} - ${
+                item?.drivingType?.label || 'Chưa phân hạng'
+              }`,
               value: item._id,
+            };
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    drivingApi
+      .getDrivingDate({
+        filter: {
+          ...(center && { center }),
+          active: true,
+        },
+      })
+      .then((res) => {
+        setDrivingDates(
+          res.data.map((item) => {
+            return {
+              label: `${new Date(item.date).toLocaleDateString('en-GB')} - ${
+                item?.description
+              } - ${item?.drivingType?.label || 'Chưa phân hạng'} - ${
+                item?.center?.name
+              }`,
+              value: item.date,
+              center: item.center?._id,
+              drivingType: item.drivingType?._id,
             };
           })
         );
@@ -100,105 +129,75 @@ function AdminDrivingStudentPage() {
       });
   }, []);
 
-  const ActionButton = (props) => {
-    return (
-      <button
-        className='btn'
-        onClick={() => {
-          setSelectedRow(props.value);
-          setShowEditModal(true);
-        }}
-      >
-        <MdEdit />
-      </button>
-    );
-  };
-
   const rowDataGetter = function (params) {
     return params.data;
   };
 
-  const [colDefs, setColDefs] = useState([
-    ...(userRole?.includes(ROLE.DRIVING.ADMIN) || userRole?.includes(ROLE.ADMIN)
-      ? [
-          {
-            field: 'action',
-            headerName: 'Thao tác',
-            pinned: 'left',
-            suppressHeaderMenuButton: true,
-            cellRenderer: ActionButton,
-            valueGetter: rowDataGetter,
-            width: 90,
-          },
-        ]
-      : []),
-    {
-      headerName: 'STT',
-      valueGetter: 'node.rowIndex + 1',
-      suppressHeaderMenuButton: true,
-      pinned: 'left',
-      width: 60,
-    },
-    {
-      field: 'createdAt',
-      headerName: 'Ngày tạo',
-      cellRenderer: (data) => {
-        return data.value
-          ? new Date(data.value).toLocaleDateString('en-GB')
-          : '';
+  const [colDefs] = useState(
+    [
+      (userRole?.includes(ROLE.DRIVING.ADMIN) ||
+        userRole?.includes(ROLE.ADMIN)) && {
+        field: 'action',
+        headerName: 'Thao tác',
+        pinned: 'left',
+        suppressHeaderMenuButton: true,
+        cellRenderer: TableEditButton,
+        cellRendererParams: {
+          clearErrors,
+          reset,
+          setSelectedRow,
+          setIsEditMode,
+          setShowModal,
+        },
+        valueGetter: rowDataGetter,
+        width: 90,
       },
-    },
-    { field: 'name', headerName: 'Họ và tên' },
-    {
-      field: 'date',
-      headerName: 'Ngày thi',
-      valueFormatter: (params) => {
-        return params.value
-          ? new Date(params.value).toLocaleDateString('en-GB')
-          : '';
+      {
+        headerName: 'STT',
+        valueGetter: 'node.rowIndex + 1',
+        suppressHeaderMenuButton: true,
+        pinned: 'left',
+        width: 60,
       },
-    },
-    {
-      field: 'course.name',
-      headerName: 'Khoá',
-    },
-    { field: 'drivingType.label', headerName: 'Hạng thi' },
-    { field: 'cash', headerName: 'Chuyển khoản' },
-    {
-      field: 'processState',
-      headerName: 'Tình trạng',
-      cellRenderer: (data) => {
-        return DRIVING_STATE_LABEL[data.value];
+      {
+        field: 'createdAt',
+        headerName: 'Ngày tạo',
+        cellRenderer: (data) => {
+          return data.value
+            ? new Date(data.value).toLocaleDateString('en-GB')
+            : '';
+        },
       },
-    },
-    { field: 'source', headerName: 'Nguồn' },
-    ...(userRole?.includes(ROLE.ADMIN)
-      ? [{ field: 'center.name', headerName: 'Trung tâm' }]
-      : []),
-  ]);
-
-  useEffect(() => {
-    drivingApi
-      .getDrivingDate({
-        filter: {
-          ...(center && { center }),
-          active: true,
-        }
-      })
-      .then((res) => {
-        setDrivingDates(res.data.map((item) => {
-          return {
-            label: `${new Date(item.date).toLocaleDateString('en-GB')} - ${item?.drivingType?.label || 'Chưa phân hạng'} - ${item?.description}`,
-            value: item.date,
-            center: item.center?._id,
-            drivingType: item.drivingType?._id,
-          };
-        }));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+      { field: 'name', headerName: 'Họ và tên' },
+      {
+        field: 'date',
+        headerName: 'Ngày thi',
+        valueFormatter: (params) => {
+          return params.value
+            ? new Date(params.value).toLocaleDateString('en-GB')
+            : '';
+        },
+      },
+      {
+        field: 'course.name',
+        headerName: 'Khoá',
+      },
+      { field: 'drivingType.label', headerName: 'Hạng thi' },
+      { field: 'cash', headerName: 'Chuyển khoản' },
+      {
+        field: 'processState',
+        headerName: 'Tình trạng',
+        cellRenderer: (data) => {
+          return DRIVING_STATE_LABEL[data.value];
+        },
+      },
+      { field: 'source', headerName: 'Nguồn' },
+      userRole?.includes(ROLE.ADMIN) && {
+        field: 'center.name',
+        headerName: 'Trung tâm',
+      },
+    ].filter(Boolean)
+  );
 
   // useEffect(() => {
   //   const readQrData = async () => {
@@ -306,13 +305,13 @@ function AdminDrivingStudentPage() {
   // }, [qrData]);
 
   const refreshGrid = async (query, searchText, page) => {
-    if(gridApi) {
+    if (gridApi) {
       gridApi.refreshInfiniteCache();
     }
   };
 
   useEffect(() => {
-    if (selectedRow && showEditModal) {
+    if (selectedRow && showModal && isEditMode) {
       fetchImage();
 
       Object.keys(selectedRow).forEach((key) => {
@@ -332,8 +331,28 @@ function AdminDrivingStudentPage() {
           value: selectedRow?.course?._id,
         });
       }
+
+      setValue(
+        'otherLicense',
+        selectedRow?.otherLicense?.map((item) => {
+          return {
+            value: item,
+            label: DRIVING_LICENSE_LEVELS[item],
+          };
+        })
+      );
+
+      setValue('gender', {
+        value: selectedRow?.gender,
+        label: GENDERS[selectedRow?.gender],
+      });
+    } else {
+      setValue('center', {
+        label: drivingCenters[0]?.name,
+        value: drivingCenters[0]?._id,
+      });
     }
-  }, [selectedRow, setValue, showEditModal]);
+  }, [selectedRow, setValue, showModal]);
   const fetchImage = async (type, url) => {
     if (type === 'portrait' || type === undefined) {
       fileApi
@@ -403,15 +422,13 @@ function AdminDrivingStudentPage() {
       });
   };
 
-  const handleClose = () => setShowEditModal(false);
+  const handleClose = () => setShowModal(false);
 
   const handleUpdateDrivingButton = async () => {
     await handleSubmit(async (formData) => {
       const dateInfo = drivingDates.filter(
         (item) => item?.value === formData.examDate?.value
       );
-
-      console.log(dateInfo);
 
       const body = {
         ...formData,
@@ -420,7 +437,9 @@ function AdminDrivingStudentPage() {
         date: formData.examDate?.value,
         examDate: formData.examDate?.value,
         course: formData.course?.value,
-      }
+        gender: formData.gender?.value,
+        otherLicense: formData.otherLicense?.map((item) => item.value),
+      };
 
       console.log(formData);
 
@@ -428,7 +447,7 @@ function AdminDrivingStudentPage() {
         .updateDriving(selectedRow._id, body)
         .then((res) => {
           toastWrapper('Cập nhật thành công', 'success');
-          setShowEditModal(false);
+          setShowModal(false);
           refreshGrid();
         })
         .catch((err) => {
@@ -455,7 +474,7 @@ function AdminDrivingStudentPage() {
           'success'
         );
         refreshGrid(query, searchText);
-        setShowEditModal(false);
+        setShowModal(false);
       })
       .catch((err) => {
         toastWrapper(err.response.data.message, 'error');
@@ -498,6 +517,12 @@ function AdminDrivingStudentPage() {
         }
       },
     };
+  };
+
+  const handleAddStudentBtn = () => {
+    reset();
+    setIsEditMode(false);
+    setShowModal(true);
   };
 
   return (
@@ -544,13 +569,15 @@ function AdminDrivingStudentPage() {
         />
       </div>
       <Modal
-        show={showEditModal}
+        show={showModal}
         onHide={handleClose}
-        size={'lg'}
+        size={'xl'}
         backdrop={'static'}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Cập nhật hồ sơ</Modal.Title>
+          <Modal.Title>
+            {isEditMode ? 'Cập nhật thông tin học viên' : 'Thêm học viên'}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className='d-flex flex-wrap justify-content-center mb-3'>
@@ -573,271 +600,346 @@ function AdminDrivingStudentPage() {
               );
             })}
           </div>
-          <div>
-            <Row className='mb-3'>
-              <Col>
-                <InputField
-                  label='Tên học viên'
-                  control={control}
-                  name='name'
-                  onClear={handleClearButton}
-                />
-              </Col>
-              <Col>
-                <SelectField
-                  label='Khoá'
-                  name='course'
-                  control={control}
-                  options={drivingCourses}
-                  isClearable={false}
-                />
-              </Col>
-            </Row>
+          <Row>
+            <Col>
+              <Row className='mb-3'>
+                <Col>
+                  <InputField
+                    label='Tên học viên'
+                    control={control}
+                    name='name'
+                  />
+                </Col>
+                <Col>
+                  <SelectField
+                    label='Khoá'
+                    name='course'
+                    control={control}
+                    options={drivingCourses}
+                    isClearable={false}
+                  />
+                </Col>
+              </Row>
 
-            <Row className='mb-3 align-items-end'>
-              <Col>
-                <InputField
-                  label='Số điện thoại liên hệ'
-                  control={control}
-                  name='tel'
-                  type='text'
-                  onClear={handleClearButton}
-                />
-              </Col>
-              <Col xs={1}>
-                <QRCode value={selectedRow?.tel || ''} size={41} />
-              </Col>
-              <Col>
-                <InputField
-                  label='Số điện thoại Zalo'
-                  control={control}
-                  name='zalo'
-                  type='text'
-                  onClear={handleClearButton}
-                />
-              </Col>
-              <Col xs={1}>
-                <QRCode
-                  value={`https://zalo.me/${selectedRow?.zalo || ''}`}
-                  size={41}
-                />
-              </Col>
-            </Row>
-            <Row className='mb-3'>
-              <Col>
-                <SelectField
-                  label='Ngày thi'
-                  name='examDate'
-                  control={control}
-                  options={drivingDates}
-                  isClearable={false}
-                />
-              </Col>
-            </Row>
+              <Row className='mb-3 align-items-end'>
+                <Col>
+                  <InputField
+                    label='Số điện thoại liên hệ'
+                    control={control}
+                    name='tel'
+                  />
+                </Col>
+                <Col xs={1}>
+                  <QRCode value={selectedRow?.tel || ''} size={41} />
+                </Col>
+                <Col>
+                  <InputField
+                    label='Số điện thoại Zalo'
+                    control={control}
+                    name='zalo'
+                  />
+                </Col>
+                <Col xs={1}>
+                  <QRCode
+                    value={`https://zalo.me/${selectedRow?.zalo || ''}`}
+                    size={41}
+                  />
+                </Col>
+              </Row>
+              <Row className='mb-3 align-items-end'>
+                <Col>
+                  <SelectField
+                    label='Giới tính'
+                    name='gender'
+                    control={control}
+                    options={Object.keys(GENDERS).map((key) => ({
+                      value: key,
+                      label: GENDERS[key],
+                    }))}
+                    isClearable={false}
+                  />
+                </Col>
+                <Col>
+                  <InputField
+                    label='Ngày sinh'
+                    control={control}
+                    name='dob'
+                    type='date'
+                    noClear={true}
+                  />
+                </Col>
+              </Row>
+              <Row className='mb-3 align-items-end'>
+                <Col>
+                  <InputField
+                    label='Số CCCD/CMND'
+                    control={control}
+                    name='cardNumber'
+                  />
+                </Col>
+                <Col>
+                  <InputField
+                    label='Nơi cấp'
+                    control={control}
+                    name='cardProvider'
+                  />
+                </Col>
+              </Row>
+              <Row className='mb-3 align-items-end'>
+                <Col>
+                  <InputField
+                    label='Địa chỉ'
+                    control={control}
+                    name='address'
+                  />
+                </Col>
+                <Col>
+                  <InputField
+                    label='Ngày cấp'
+                    control={control}
+                    name='cardProvidedDate'
+                    type='date'
+                    noClear={true}
+                  />
+                </Col>
+              </Row>
+              <Row className='mb-3'>
+                <Col>
+                  <SelectField
+                    label='Ngày thi'
+                    name='examDate'
+                    control={control}
+                    options={drivingDates}
+                    isClearable={false}
+                  />
+                </Col>
+                <Col>
+                  <SelectField
+                    label='Hạng khác'
+                    name='otherLicense'
+                    control={control}
+                    options={Object.keys(DRIVING_LICENSE_LEVELS).map((key) => {
+                      return {
+                        label: DRIVING_LICENSE_LEVELS[key],
+                        value: key,
+                      };
+                    })}
+                    isMulti={true}
+                    isClearable={false}
+                  />
+                </Col>
+              </Row>
 
-            <Row className='mb-3'>
-              <Col>
-                <label
-                  className='d-block form-label'
-                  style={{ marginBottom: '0.5rem' }}
-                >
-                  Phương thức
-                </label>
-                <div>
-                  {' '}
-                  {selectedRow?.paymentMethod === PAYMENT_METHODS.DIRECT &&
-                    'Thanh toán trực tiếp'}
-                  {selectedRow?.paymentMethod ===
-                    PAYMENT_METHODS.BANK_TRANSFER && 'Chuyển khoản'}
-                </div>
-              </Col>
-              <Col>
-                <label className='d-block form-label'>Mã giao dịch</label>
-                <div>{selectedRow?.transactionId}</div>
-              </Col>
-              <Col>
-                <InputField
-                  noClear={true}
-                  label='Số tiền'
-                  control={control}
-                  name='cash'
-                  type='number'
-                  disabled={true}
-                />
-              </Col>
-              <Col>
-                <label
-                  className='d-block form-label'
-                  style={{ marginBottom: '0.5rem' }}
-                >
-                  Thanh toán
-                </label>
-                <Button
-                  className='w-100'
-                  onClick={() => setShowAccountModal(true)}
-                >
-                  Hiện mã
-                </Button>
-              </Col>
-            </Row>
+              {selectedRow?.center?.useOnlinePayment && (
+                <Row className='mb-3'>
+                  <Col>
+                    <label
+                      className='d-block form-label'
+                      style={{ marginBottom: '0.5rem' }}
+                    >
+                      Phương thức
+                    </label>
+                    <div>
+                      {' '}
+                      {selectedRow?.paymentMethod === PAYMENT_METHODS.DIRECT &&
+                        'Thanh toán trực tiếp'}
+                      {selectedRow?.paymentMethod ===
+                        PAYMENT_METHODS.BANK_TRANSFER && 'Chuyển khoản'}
+                    </div>
+                  </Col>
+                  <Col>
+                    <label className='d-block form-label'>Mã giao dịch</label>
+                    <div>{selectedRow?.transactionId}</div>
+                  </Col>
+                  <Col>
+                    <InputField
+                      noClear={true}
+                      label='Số tiền'
+                      control={control}
+                      name='cash'
+                      type='number'
+                      disabled={true}
+                    />
+                  </Col>
+                  <Col>
+                    <label
+                      className='d-block form-label'
+                      style={{ marginBottom: '0.5rem' }}
+                    >
+                      Thanh toán
+                    </label>
+                    <Button
+                      className='w-100'
+                      onClick={() => setShowAccountModal(true)}
+                    >
+                      Hiện mã
+                    </Button>
+                  </Col>
+                </Row>
+              )}
 
-            <Row className='mb-5'>
-              <Col>
-                <InputField
-                  as='textarea'
-                  label='Ghi chú'
-                  control={control}
-                  name='feedback'
-                  onClear={handleClearButton}
-                />
-              </Col>
-            </Row>
+              <Row className='mb-5'>
+                <Col>
+                  <InputField
+                    as='textarea'
+                    label='Ghi chú'
+                    control={control}
+                    name='feedback'
+                    onClear={handleClearButton}
+                  />
+                </Col>
+              </Row>
+            </Col>
 
-            <Row className='mb-5'>
-              <Col xs={5}>
-                <label className='d-block form-label'>Ảnh chân dung</label>
-                <div>
-                  <img
-                    id='portrait'
-                    alt='portrait'
-                    src={portraitUrl}
-                    width='100%'
-                  />
-                </div>
-                <div className='my-3 d-flex justify-content-center align-items-center'>
-                  <Button
-                    variant='outline-primary'
-                    onClick={() => rotateImage('portrait')}
-                  >
-                    <MdRotateLeft /> Xoay
-                  </Button>
-                  <Button
-                    className='ms-3'
-                    onClick={() =>
-                      downloadImage(
-                        portraitUrl,
-                        `${selectedRow?.name}-${selectedRow?.tel}-portrait.png`
-                      )
-                    }
-                  >
-                    Tải xuống
-                  </Button>
-                  <FileUploader
-                    className='ms-3'
-                    name='file'
-                    text='Tải lên'
-                    hasLabel={false}
-                    url={FILE_UPLOAD_URL}
-                    uploading={portraitUploading}
-                    setUploading={setPortraitUploading}
-                    onResponse={(res) =>
-                      handleUpdateImageButton(
-                        selectedRow?._id,
-                        {
-                          portraitUrl: res?.data?.url,
-                        },
-                        'portrait'
-                      )
-                    }
-                  />
-                </div>
-              </Col>
+            {(frontUrl || backUrl || portraitUrl) && (
               <Col>
-                <label className='d-block form-label'>Ảnh mặt trước</label>
-                <div>
-                  <img
-                    id='front-card'
-                    alt='front-card'
-                    src={frontUrl}
-                    width='100%'
-                  />
-                </div>
-                <div className='my-3 d-flex justify-content-center align-items-center'>
-                  <Button
-                    variant='outline-primary'
-                    onClick={() => rotateImage('front-card')}
-                  >
-                    <MdRotateLeft /> Xoay
-                  </Button>
-                  <Button
-                    className='ms-3'
-                    onClick={() =>
-                      downloadImage(
-                        frontUrl,
-                        `${selectedRow?.name}-${selectedRow?.tel}-front.png`
-                      )
-                    }
-                  >
-                    Tải xuống
-                  </Button>
-                  <FileUploader
-                    className='ms-3'
-                    name='file'
-                    text='Tải lên'
-                    hasLabel={false}
-                    url={FILE_UPLOAD_URL}
-                    uploading={portraitUploading}
-                    setUploading={setPortraitUploading}
-                    onResponse={(res) =>
-                      handleUpdateImageButton(
-                        selectedRow?._id,
-                        {
-                          frontUrl: res?.data?.url,
-                        },
-                        'front'
-                      )
-                    }
-                  />
-                </div>
-                <label className='d-block form-label'>Ảnh mặt sau</label>
-                <div>
-                  <img
-                    id='back-card'
-                    alt='back-card'
-                    src={backUrl}
-                    width='100%'
-                  />
-                </div>
-                <div className='my-3 d-flex justify-content-center align-items-center'>
-                  <Button
-                    variant='outline-primary'
-                    onClick={() => rotateImage('back-card')}
-                  >
-                    <MdRotateLeft /> Xoay
-                  </Button>
-                  <Button
-                    className='ms-3'
-                    onClick={() =>
-                      downloadImage(
-                        backUrl,
-                        `${selectedRow?.name}-${selectedRow?.tel}-back.png`
-                      )
-                    }
-                  >
-                    Tải xuống
-                  </Button>
-                  <FileUploader
-                    className='ms-3'
-                    name='file'
-                    text='Tải lên'
-                    hasLabel={false}
-                    url={FILE_UPLOAD_URL}
-                    uploading={portraitUploading}
-                    setUploading={setPortraitUploading}
-                    onResponse={(res) =>
-                      handleUpdateImageButton(
-                        selectedRow?._id,
-                        {
-                          backUrl: res?.data?.url,
-                        },
-                        'back'
-                      )
-                    }
-                  />
-                </div>
+                <Row className='mb-5'>
+                  <Col xs={5}>
+                    <label className='d-block form-label'>Ảnh chân dung</label>
+                    <div>
+                      <img
+                        id='portrait'
+                        alt='portrait'
+                        src={portraitUrl}
+                        width='100%'
+                      />
+                    </div>
+                    <div className='my-3 d-flex justify-content-center align-items-center'>
+                      <Button
+                        variant='outline-primary'
+                        onClick={() => rotateImage('portrait')}
+                      >
+                        <MdRotateLeft /> Xoay
+                      </Button>
+                      <Button
+                        className='ms-3'
+                        onClick={() =>
+                          downloadImage(
+                            portraitUrl,
+                            `${selectedRow?.name}-${selectedRow?.tel}-portrait.png`
+                          )
+                        }
+                      >
+                        Tải xuống
+                      </Button>
+                      <FileUploader
+                        className='ms-3'
+                        name='file'
+                        text='Tải lên'
+                        hasLabel={false}
+                        url={FILE_UPLOAD_URL}
+                        uploading={portraitUploading}
+                        setUploading={setPortraitUploading}
+                        onResponse={(res) =>
+                          handleUpdateImageButton(
+                            selectedRow?._id,
+                            {
+                              portraitUrl: res?.data?.url,
+                            },
+                            'portrait'
+                          )
+                        }
+                      />
+                    </div>
+                  </Col>
+                  <Col>
+                    <label className='d-block form-label'>Ảnh mặt trước</label>
+                    <div>
+                      <img
+                        id='front-card'
+                        alt='front-card'
+                        src={frontUrl}
+                        width='100%'
+                      />
+                    </div>
+                    <div className='my-3 d-flex justify-content-center align-items-center'>
+                      <Button
+                        variant='outline-primary'
+                        onClick={() => rotateImage('front-card')}
+                      >
+                        <MdRotateLeft /> Xoay
+                      </Button>
+                      <Button
+                        className='ms-3'
+                        onClick={() =>
+                          downloadImage(
+                            frontUrl,
+                            `${selectedRow?.name}-${selectedRow?.tel}-front.png`
+                          )
+                        }
+                      >
+                        Tải xuống
+                      </Button>
+                      <FileUploader
+                        className='ms-3'
+                        name='file'
+                        text='Tải lên'
+                        hasLabel={false}
+                        url={FILE_UPLOAD_URL}
+                        uploading={portraitUploading}
+                        setUploading={setPortraitUploading}
+                        onResponse={(res) =>
+                          handleUpdateImageButton(
+                            selectedRow?._id,
+                            {
+                              frontUrl: res?.data?.url,
+                            },
+                            'front'
+                          )
+                        }
+                      />
+                    </div>
+                    <label className='d-block form-label'>Ảnh mặt sau</label>
+                    <div>
+                      <img
+                        id='back-card'
+                        alt='back-card'
+                        src={backUrl}
+                        width='100%'
+                      />
+                    </div>
+                    <div className='my-3 d-flex justify-content-center align-items-center'>
+                      <Button
+                        variant='outline-primary'
+                        onClick={() => rotateImage('back-card')}
+                      >
+                        <MdRotateLeft /> Xoay
+                      </Button>
+                      <Button
+                        className='ms-3'
+                        onClick={() =>
+                          downloadImage(
+                            backUrl,
+                            `${selectedRow?.name}-${selectedRow?.tel}-back.png`
+                          )
+                        }
+                      >
+                        Tải xuống
+                      </Button>
+                      <FileUploader
+                        className='ms-3'
+                        name='file'
+                        text='Tải lên'
+                        hasLabel={false}
+                        url={FILE_UPLOAD_URL}
+                        uploading={portraitUploading}
+                        setUploading={setPortraitUploading}
+                        onResponse={(res) =>
+                          handleUpdateImageButton(
+                            selectedRow?._id,
+                            {
+                              backUrl: res?.data?.url,
+                            },
+                            'back'
+                          )
+                        }
+                      />
+                    </div>
+                  </Col>
+                </Row>
               </Col>
-            </Row>
-          </div>
+            )}
+          </Row>
         </Modal.Body>
         <Modal.Footer>
           <Button variant='primary' onClick={handleUpdateDrivingButton}>
@@ -937,6 +1039,20 @@ function AdminDrivingStudentPage() {
           </Form.Group>
         </Modal.Body>
       </Modal>
+      <Button
+        className='rounded-circle'
+        style={{
+          width: '50px',
+          height: '50px',
+          position: 'fixed',
+          bottom: '50px',
+          right: '50px',
+          zIndex: 1000,
+        }}
+        onClick={handleAddStudentBtn}
+      >
+        <MdAdd />
+      </Button>
       <AccountModal
         show={showAccountModal}
         setShow={() => setShowAccountModal(false)}

@@ -12,8 +12,8 @@ export const generateDrivingMenu = (drivingType, setting) => {
 
     const ADMIN_DRIVING_MENU = [
         setting?.useStudentManagement && {
-            label: 'Danh sách hồ sơ',
-            path: PATH.DRIVING.ADMIN.ROOT,
+            label: 'Quản lý học viên',
+            path: PATH.DRIVING.ADMIN.STUDENT,
             icon: <FaList />,
         },
         setting?.useInProcessManagement && {
