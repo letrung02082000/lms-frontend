@@ -8,7 +8,7 @@ const drivingDateSchema = yup.object().shape({
     center: yup.object().shape({
         _id: yup.string().required('Vui lòng chọn trung tâm'),
     }),
-    link: yup.string().required('Nhóm thi là bắt buộc'),
+    // link: yup.string().required('Nhóm thi là bắt buộc'),
 });
 
 export default drivingDateSchema;

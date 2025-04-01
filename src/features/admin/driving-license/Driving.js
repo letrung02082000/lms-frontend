@@ -444,21 +444,20 @@ function Driving(props) {
     }
   }
 
-  if (date) {
-    date = new Date(date);
-  } else {
-    date = null;
-  }
+  console.log(dateInfo)
 
   const updateDate = () => {
-    const tmpDate = new Date(selectedDate);
+    const body = {
+      date: dateInfo?.date,
+      examDate: dateInfo?.examDate,
+      center: dateInfo?.center?._id,
+      drivingType: drivingInfo?.drivingType?._id,
+    }
 
-    DrivingApi.updateDriving(_id, {
-      date: tmpDate,
-    })
+    DrivingApi.updateDriving(_id, body)
       .then((res) => {
         if (res.data) {
-          toastWrapper("Đã cập nhật ngày thành " + new Date(res?.data?.date).toLocaleDateString(), "success")
+          toastWrapper("Đã cập nhật ngày thành " + new Date(res?.data?.date).toLocaleDateString('en-GB'), "success")
         } else {
           toastWrapper("Không thể cập nhật ngày. Id không hợp lệ", 'error')
         }
