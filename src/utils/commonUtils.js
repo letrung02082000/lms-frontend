@@ -37,5 +37,4 @@ const getVietnamDate = (date) => new Date(date).toLocaleString('sv-SE', {
     timeZone: 'Asia/Ho_Chi_Minh'
 }).replaceAll('/', '-').split(' ')[0]; // YYYY-MM-DD format
 
-
 export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate }

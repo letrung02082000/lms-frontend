@@ -31,10 +31,6 @@
   padding: 0.5rem;
 }
 
-input[type='file'] {
-  display: none;
-}
-
 .formUploadButton {
   border: 1px solid var(--primary);
   border-radius: 5px;
@@ -134,10 +130,6 @@ input[type='file'] {
 
 .formInput {
   padding: 0.5rem;
-}
-
-input[type='file'] {
-  display: none;
 }
 
 .formUploadButton {

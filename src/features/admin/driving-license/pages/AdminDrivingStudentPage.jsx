@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
-import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+import { Button, Col, Form, Modal, Row, Table } from 'react-bootstrap';
 import {
   MdClear,
   MdEdit,
@@ -10,6 +12,9 @@ import {
   MdQrCodeScanner,
   MdFlipCameraAndroid,
   MdAdd,
+  MdImportExport,
+  MdDelete,
+  MdDeleteOutline,
 } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import InputField from 'components/form/InputField';
@@ -33,7 +38,14 @@ import SelectField from 'components/form/SelectField';
 import { yupResolver } from '@hookform/resolvers/yup';
 import drivingStudentSchema from 'validations/driving-student.validation';
 import TableEditButton from 'components/button/TableEditButton';
-import { DRIVING_LICENSE_LEVELS, GENDERS } from 'constants/driving-student.constant';
+import {
+  DRIVING_LICENSE_LEVELS,
+  EXCEL_TYPE,
+  EXPORT_HEADERS,
+  GENDERS,
+  IMPORT_HEADERS,
+} from 'constants/driving-student.constant';
+import moment from 'moment';
 
 function AdminDrivingStudentPage() {
   const { center, role: userRole } = JSON.parse(
@@ -46,14 +58,15 @@ function AdminDrivingStudentPage() {
     processState: undefined,
   });
   const [query, setQuery] = useState({});
+  const [selectedCourse, setSelectedCourse] = useState('');
   const [facingMode, setFacingMode] = useState('environment');
   const [searchText, setSearchText] = useState('');
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
-  const [pagination, setPagination] = useState({});
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrData, setQrData] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showImportExportModal, setShowImportExportModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [drivingDates, setDrivingDates] = useState([{}]);
@@ -74,6 +87,7 @@ function AdminDrivingStudentPage() {
     shouldUseNativeValidation: false,
     delayError: false,
   });
+  const [importData, setImportData] = useState([]);
 
   useEffect(() => {
     drivingApi
@@ -318,14 +332,14 @@ function AdminDrivingStudentPage() {
         setValue(key, selectedRow[key]);
       });
 
-      if(selectedRow?.examDate) {
+      if (selectedRow?.examDate) {
         setValue('examDate', {
           label: new Date(selectedRow?.examDate).toLocaleDateString('en-GB'),
           value: selectedRow?.examDate,
         });
       }
 
-      if(selectedRow?.course) {
+      if (selectedRow?.course) {
         setValue('course', {
           label: `${selectedRow?.course?.name}`,
           value: selectedRow?.course?._id,
@@ -422,7 +436,9 @@ function AdminDrivingStudentPage() {
       });
   };
 
-  const handleClose = () => setShowModal(false);
+  const handleClose = () => {
+    setShowModal(false);
+  };
 
   const handleUpdateDrivingButton = async () => {
     await handleSubmit(async (formData) => {
@@ -440,8 +456,6 @@ function AdminDrivingStudentPage() {
         gender: formData.gender?.value,
         otherLicense: formData.otherLicense?.map((item) => item.value),
       };
-
-      console.log(formData);
 
       drivingApi
         .updateDriving(selectedRow._id, body)
@@ -525,6 +539,172 @@ function AdminDrivingStudentPage() {
     setShowModal(true);
   };
 
+  const handleExportBtn = () => {
+    if (!selectedCourse) {
+      return toastWrapper('Vui lòng chọn khoá học cần xuất danh sách', 'error');
+    }
+    
+    drivingApi
+      .getDrivings({
+        limit: 1000,
+        page: 1,
+        ...(center && { center }),
+        query: {
+          course: selectedCourse,
+        },
+      })
+      .then((res) => {
+        const excelData = res.data.map((item, index) => {
+          const ret = Object.keys(EXPORT_HEADERS).reduce((acc, key) => {
+            acc[EXPORT_HEADERS[key]] = item[key] || '';
+
+            if (key === 'examDate') {
+              acc[EXPORT_HEADERS[key]] = item.examDate
+                ? new Date(item.examDate).toLocaleDateString('en-GB')
+                : '';
+            }
+
+            return acc;
+          }, {});
+          return ret;
+        });
+
+        const ws = XLSX.utils.json_to_sheet(excelData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Học viên');
+        const excelBuffer = XLSX.write(wb, {
+          bookType: 'xlsx',
+          type: 'array',
+        });
+        const data = new Blob([excelBuffer], {
+          type: EXCEL_TYPE,
+        });
+        FileSaver.saveAs(data, 'driving-student.xlsx');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleImportBtn = () => {
+    if (!selectedCourse) {
+      return toastWrapper('Vui lòng chọn khoá học cần nhập danh sách', 'error');
+    }
+
+    const file = document.getElementById('student_file').files[0];
+
+    if (!file) {
+      return toastWrapper('Vui lòng chọn tệp để nhập danh sách', 'error');
+    }
+
+    setImportData([]);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1,
+      });
+      const headers = jsonData[0];
+      const rows = jsonData.slice(1);
+      const result = rows
+        .map((row) => {
+          const obj = {};
+          headers.forEach((header, index) => {
+            if (Object.keys(IMPORT_HEADERS).includes(header)) {
+              obj[IMPORT_HEADERS[header]] = row[index];
+            }
+          });
+
+          if (Object.keys(obj).length === 0) {
+            return false;
+          }
+
+          return obj;
+        })
+        .filter(Boolean);
+
+      console.log(result);
+
+      if (
+        result.filter(
+          (item) =>
+            item?.name === '' ||
+            item?.registrationCode === '' ||
+            item?.name === undefined ||
+            item?.registrationCode === undefined
+        ).length > 0
+      ) {
+        return toastWrapper('Tên và mã học viên không được để trống', 'error');
+      }
+
+      setImportData((_prev) => [..._prev, ...result]);
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleStartImportBtn = async () => {
+    if (!importData || importData.length === 0) {
+      return;
+    }
+
+    const courseInfo = drivingCourses.filter(
+      (item) => item.value === selectedCourse
+    )[0];
+
+    if (
+      !window.confirm(
+        `Bạn có chắc chắn muốn nhập ${importData.length} học viên vào khoá ${courseInfo.label}?`
+      )
+    ) {
+      return;
+    }
+
+    let statusMessages = {};
+    let successCount = 0;
+
+    await Promise.all(
+      importData.map(async (item) => {
+        const body = {
+          ...item,
+          center: center,
+          course: selectedCourse,
+        };
+
+        try {
+          const res = await drivingApi.getDrivings({
+            query: { registrationCode: body.registrationCode },
+          });
+          if (res.data.length > 0) {
+            statusMessages[body.registrationCode] = 'existed';
+          } else {
+            await drivingApi.addDriving(body);
+            statusMessages[body.registrationCode] = 'success';
+            successCount++;
+          }
+        } catch (error) {
+          statusMessages[body.registrationCode] = 'error';
+        }
+      })
+    );
+
+    setImportData((prev) =>
+      prev.map((item) => ({
+        ...item,
+        status: statusMessages[item.registrationCode],
+      }))
+    );
+
+    if (successCount > 0) {
+      toastWrapper(
+        `Đã nhập ${successCount} học viên thành công vào khoá ${courseInfo.label}`,
+        'success'
+      );
+    }
+  };
+
   return (
     <div
       style={{
@@ -553,8 +733,14 @@ function AdminDrivingStudentPage() {
         <button className='btn ms-2' onClick={handleSearchButton}>
           <MdSearch size={25} />
         </button>
-        <button className='btn ms-2' onClick={() => setShowQRModal(true)}>
+        {/* <button className='btn ms-2' onClick={() => setShowQRModal(true)}>
           <MdQrCodeScanner size={25} />
+        </button> */}
+        <button
+          className='btn mx-2'
+          onClick={() => setShowImportExportModal(true)}
+        >
+          <MdImportExport size={25} />
         </button>
       </div>
       <div className='ag-theme-quartz' style={{ height: '90%' }}>
@@ -1037,6 +1223,117 @@ function AdminDrivingStudentPage() {
               />
             </Col>
           </Form.Group>
+        </Modal.Body>
+      </Modal>
+      <Modal
+        size='xl'
+        show={showImportExportModal}
+        onHide={() => {
+          refreshGrid(query, searchText);
+          setSelectedCourse('');
+          setShowImportExportModal(false)
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Nhập/Xuất danh sách học viên</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className='mb-3'>
+            <Col>
+              <Form.Select
+                onChange={(e) => {
+                  setSelectedCourse(e.target.value);
+                }}
+              >
+                <option value=''>Chọn Khoá</option>
+                {drivingCourses.map((item) => {
+                  return (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  );
+                })}
+              </Form.Select>
+            </Col>
+            <Col xs={2}>
+              <Button className='w-100' onClick={handleExportBtn}>
+                Xuất danh sách
+              </Button>
+            </Col>
+          </Row>
+          <Row className='mb-3'>
+            <Col>
+              <Form.Control
+                className='w-100'
+                type='file'
+                accept='.xlsx, .xls'
+                id='student_file'
+              />
+            </Col>
+            <Col xs={2}>
+              <Button className='w-100' onClick={handleImportBtn}>
+                Đọc danh sách
+              </Button>
+            </Col>
+          </Row>
+          <Row>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  {Object.keys(IMPORT_HEADERS).map((header) => {
+                    return <th key={header}>{header}</th>;
+                  })}
+                  <th>Thao tác</th>
+                  <th>Kết quả</th>
+                </tr>
+              </thead>
+              <tbody>
+                {importData?.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      {Object.keys(IMPORT_HEADERS).map((header) => {
+                        return (
+                          <td key={header}>{item[IMPORT_HEADERS[header]]}</td>
+                        );
+                      })}
+                      <td>
+                        <button
+                          className='btn text-danger'
+                          onClick={() => {
+                            setImportData((prev) =>
+                              prev.filter((_, i) => i !== index)
+                            );
+                          }}
+                        >
+                          <MdDeleteOutline />
+                        </button>
+                      </td>
+                      <td>
+                        {item?.status === 'success' && (
+                          <span className='text-success'>Thành công</span>
+                        )}
+                        {item?.status === 'error' && (
+                          <span className='text-danger'>Lỗi</span>
+                        )}
+                        {item?.status === 'existed' && (
+                          <span className='text-danger'>
+                            Lỗi (mã học viên đã tồn tại)
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Row>
+          <Row>
+            <Col>
+              <Button onClick={handleStartImportBtn}>Tiến hành nhập</Button>
+            </Col>
+          </Row>
         </Modal.Body>
       </Modal>
       <Button
