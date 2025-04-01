@@ -81,7 +81,14 @@ function AdminDrivingCoursePage() {
           filter: { active: true },
         })
         .then((res) => {
-          setDrivingTypes(res.data);
+          setDrivingTypes(
+            res.data?.map((item) => {
+              return {
+                label: item.label,
+                value: item._id,
+              };
+            })
+          );
         })
         .catch((err) => {
           console.log(err);
