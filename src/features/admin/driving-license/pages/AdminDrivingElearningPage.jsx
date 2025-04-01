@@ -274,6 +274,12 @@ function AdminDrivingElearningPage() {
             value: item?.course?.name || '',
           },
         ],
+        preferences: [
+          {
+            type: 'auth_forcepasswordchange',
+            value: 1,
+          },
+        ],
       };
     });
 
