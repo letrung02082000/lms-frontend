@@ -13,6 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import InputField from 'components/form/InputField';
 import { IoMdEye } from 'react-icons/io';
 import drivingCenterSchema from 'validations/driving-center.validation';
+import { ELEARNING_URL } from 'constants/url';
 
 function AdminDrivingCenterPage() {
   const {role: userRole, center} = JSON.parse(localStorage.getItem('user-info'));
@@ -373,7 +374,7 @@ function AdminDrivingCenterPage() {
               <p>Category ID: {elearningInfo?.categoryId}</p>
               <Button
                 onClick={() =>
-                  window.open('https://lms.uniapp.vn/my/courses.php')
+                  window.open(`${ELEARNING_URL}/my/courses.php`)
                 }
               >
                 Quản lý E-learning

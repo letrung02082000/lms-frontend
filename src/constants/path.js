@@ -59,6 +59,7 @@ export const PATH = {
             COURSE: '/driving/admin/course',
             DATE: '/driving/admin/date',
             CENTER: '/driving/admin/center',
+            ELEARNING: '/driving/admin/elearning',
             TYPE: '/driving/admin/type',
             TEACHER: '/driving/admin/teacher',
             VEHICLE: '/driving/admin/vehicle',

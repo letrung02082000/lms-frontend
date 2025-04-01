@@ -52,6 +52,11 @@ export const generateDrivingMenu = (drivingType, setting) => {
             path: PATH.DRIVING.ADMIN.CENTER,
             icon: <FaList />
         },
+        {
+            label: 'Quản lý Elearning',
+            path: PATH.DRIVING.ADMIN.ELEARNING,
+            icon: <FaList />
+        },
     ].filter(Boolean);
     return ADMIN_DRIVING_MENU;
 }

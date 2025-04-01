@@ -46,6 +46,7 @@ import AdminDrivingTypePage from 'features/admin/driving-license/pages/AdminDriv
 import AdminDrivingTeacherPage from 'features/admin/driving-license/pages/AdminDrivingTeacherPage';
 import AdminDrivingDatePage from 'features/admin/driving-license/pages/AdminDrivingDatePage';
 import AdminDrivingVehiclePage from 'features/admin/driving-license/pages/AdminDrivingVehiclePage';
+import AdminDrivingElearningPage from 'features/admin/driving-license/pages/AdminDrivingElearningPage';
 
 const router = createBrowserRouter([
   {
@@ -257,6 +258,10 @@ const router = createBrowserRouter([
           {
             path: PATH.DRIVING.ADMIN.COURSE,
             element: <AdminDrivingCoursePage />,
+          },
+          {
+            path: PATH.DRIVING.ADMIN.ELEARNING,
+            element: <AdminDrivingElearningPage />,
           },
           {
             path: PATH.DRIVING.ADMIN.DATE,

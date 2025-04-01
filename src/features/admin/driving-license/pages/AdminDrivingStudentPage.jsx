@@ -45,7 +45,6 @@ import {
   GENDERS,
   IMPORT_HEADERS,
 } from 'constants/driving-student.constant';
-import moment from 'moment';
 
 function AdminDrivingStudentPage() {
   const { center, role: userRole } = JSON.parse(

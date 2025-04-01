@@ -8,12 +8,23 @@ class ElearningApi {
     return axiosClient.post(url, { centerId },);
   }
 
-  getCenterCourses = async (centerId) => {
+  getCoursesByCatId = async (catId, page, limit) => {
     const url = `${API_PATH}/course`;
     return axiosClient.get(url, { params: {
       field: 'category',
-      value: centerId,
+      value: catId,
+      page: page,
+      limit: limit,
     } });
+  }
+
+  getCoursesByCenter = async (center, page, limit) => {
+    const url = `${API_PATH}/center/course`;
+    return axiosClient.get(url, {
+      params: {
+        center
+      }
+    });
   }
 
   getStudentCourses = async (elearningUserId) => {
@@ -35,6 +46,16 @@ class ElearningApi {
   getCohortUsers = async (cohortId) => {
     const url = `${API_PATH}/cohort/user`;
     return axiosClient.get(url, { params: { cohortId } });
+  }
+
+  getCourseUsers = async (courseId) => {
+    const url = `${API_PATH}/course/user`;
+    return axiosClient.get(url, { params: { courseId } });
+  }
+
+  createCourseUsers = async (courseId, users) => {
+    const url = `${API_PATH}/course/user`;
+    return axiosClient.post(url, { courseId, users });
   }
 }
 
