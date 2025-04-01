@@ -444,11 +444,9 @@ function Driving(props) {
     }
   }
 
-  console.log(dateInfo)
-
   const updateDate = () => {
     const body = {
-      date: dateInfo?.date,
+      date: dateInfo?.examDate,
       examDate: dateInfo?.examDate,
       center: dateInfo?.center?._id,
       drivingType: drivingInfo?.drivingType?._id,
