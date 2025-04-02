@@ -107,8 +107,9 @@ function AdminDrivingElearningPage() {
   const [colDefs] = useState([
     {
       field: 'students',
-      headerName: 'Tài khoản',
+      headerName: 'Quản lý',
       pinned: 'left',
+      width: 150,
       suppressHeaderMenuButton: true,
       cellRenderer: (params) => {
         return (
@@ -132,21 +133,26 @@ function AdminDrivingElearningPage() {
         );
       },
     },
-    // {
-    //   field: 'action',
-    //   headerName: 'Thao tác',
-    //   cellRenderer: TableEditButton,
-    //   width: 90,
-    //   suppressHeaderMenuButton: true,
-    //   pinned: 'left',
-    //   cellRendererParams: {
-    //     clearErrors,
-    //     reset,
-    //     setSelectedRow,
-    //     setIsEditMode,
-    //     setShowAddModal,
-    //   },
-    // },
+    {
+      field: 'course',
+      headerName: 'Thao tác',
+      pinned: 'left',
+      width: 90,
+      cellRenderer: (params) => {
+        return (
+          <>
+            <a
+              className='btn'
+              href={`${ELEARNING_URL}/course/view.php?id=${params?.data?.id}`}
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              <IoMdEye />
+            </a>
+          </>
+        );
+      },
+    },
     {
       field: 'timecreated',
       headerName: 'Ngày tạo',
@@ -205,24 +211,6 @@ function AdminDrivingElearningPage() {
         }
 
         return 'Đang diễn ra';
-      },
-    },
-    {
-      field: 'course',
-      headerName: 'Thao tác',
-      cellRenderer: (params) => {
-        return (
-          <>
-            <a
-              className='btn'
-              href={`${ELEARNING_URL}/course/view.php?id=${params?.data?.id}`}
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              <IoMdEye />
-            </a>
-          </>
-        );
       },
     },
   ]);
@@ -407,6 +395,7 @@ function AdminDrivingElearningPage() {
                     {
                       field: 'fullname',
                       headerName: 'Họ và tên',
+                      width: 350,
                     },
                     {
                       field: 'roles',

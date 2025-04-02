@@ -498,6 +498,7 @@ function AdminDrivingCoursePage() {
                     {
                       field: 'fullname',
                       headerName: 'Họ và tên',
+                      width: 350,
                     },
                     {
                       field: 'email',
