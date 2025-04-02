@@ -441,7 +441,7 @@ function AdminDrivingElearningPage() {
                 />
               </div>
             ) : (
-              <p>Không có tài khoản nào trong lớp học Elearning này</p>
+              <p>Không có tài khoản nào trong lớp học này</p>
             )}
           </Row>
           <Row>
