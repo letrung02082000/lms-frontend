@@ -13,7 +13,7 @@ import InputField from 'components/form/InputField';
 import { getVietnamDate } from 'utils/commonUtils';
 import SelectField from 'components/form/SelectField';
 import elearningApi from 'api/elearningApi';
-import { ELEARNING_ROLES } from 'constants/driving-elearning.constant';
+import { PiChalkboardTeacherFill } from "react-icons/pi";
 
 function AdminDrivingCoursePage() {
   const { center, role: userRole } = JSON.parse(
@@ -171,11 +171,11 @@ function AdminDrivingCoursePage() {
       headerName: 'Elearning',
       suppressHeaderMenuButton: true,
       pinned: 'left',
-      width: 90,
+      width: 100,
       cellRenderer: (params) => {
         return (
           <button className='btn' onClick={() => getCourseUsers(params?.data)}>
-            <MdPeople />
+            <PiChalkboardTeacherFill />
           </button>
         );
       },
@@ -487,7 +487,7 @@ function AdminDrivingCoursePage() {
         backdrop='static'
       >
         <Modal.Header closeButton>
-          <Modal.Title>Danh sách tài khoản Elearning khoá {selectedRow?.name}</Modal.Title>
+          <Modal.Title>Danh sách tài khoản Elearning: khoá {selectedRow?.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row className='mb-3'>
