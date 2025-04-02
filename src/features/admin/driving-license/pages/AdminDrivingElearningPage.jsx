@@ -16,6 +16,7 @@ import elearningApi from 'api/elearningApi';
 import { IoMdEye } from 'react-icons/io';
 import { ELEARNING_URL } from 'constants/url';
 import { IoDownload } from 'react-icons/io5';
+import { ELEARNING_ROLES } from 'constants/driving-elearning.constant';
 
 function AdminDrivingElearningPage() {
   const { center, role: userRole } = JSON.parse(
@@ -61,6 +62,8 @@ function AdminDrivingElearningPage() {
                 item?.drivingType?.label || 'Chưa phân hạng'
               }`,
               value: item._id,
+              elearningCourseId: item?.elearningCourseId,
+              elearningCourseGroupId: item?.elearningCourseGroupId,
             };
           })
         );
@@ -92,15 +95,43 @@ function AdminDrivingElearningPage() {
   }, [center]);
 
   const getCourseUsers = (data) => {
+    setSelectedRow(data);
+    setShowStudentModal(true);
     elearningApi.getCourseUsers(data?.id).then((res) => {
       setCourseUsers(res?.data);
-      setShowStudentModal(true);
     }).catch((err) => {
       console.log(err);
     });
   }
 
   const [colDefs] = useState([
+    {
+      field: 'students',
+      headerName: 'Tài khoản',
+      pinned: 'left',
+      suppressHeaderMenuButton: true,
+      cellRenderer: (params) => {
+        return (
+          <>
+            <button
+              className='btn'
+              onClick={() => getCourseUsers(params?.data)}
+            >
+              <MdPeople />
+            </button>
+            <button
+              className='btn'
+              onClick={() => {
+                setShowAddModal(true);
+                setSelectedRow(params?.data);
+              }}
+            >
+              <MdPersonAdd />
+            </button>
+          </>
+        );
+      },
+    },
     // {
     //   field: 'action',
     //   headerName: 'Thao tác',
@@ -138,8 +169,43 @@ function AdminDrivingElearningPage() {
       headerName: 'Trung tâm',
     },
     {
-      field: 'summary',
-      headerName: 'Mô tả',
+      field: 'startdate',
+      headerName: 'Ngày khai giảng',
+      valueFormatter: (params) => {
+        return new Date(params?.data?.startdate * 1000).toLocaleDateString(
+          'en-GB'
+        );
+      },
+    },
+    {
+      field: 'enddate',
+      headerName: 'Ngày bế giảng',
+      valueFormatter: (params) => {
+        if (params?.data?.enddate === 0) {
+          return 'Chưa cập nhật';
+        }
+        return new Date(params?.data?.enddate * 1000).toLocaleDateString(
+          'en-GB'
+        );
+      },
+    },
+    {
+      field: 'status',
+      headerName: 'Trạng thái',
+      valueFormatter: (params) => {
+        if (params?.data?.startdate * 1000 > Date.now()) {
+          return 'Chưa bắt đầu';
+        }
+
+        if (
+          params?.data?.enddate * 1000 < Date.now() &&
+          params?.data?.enddate !== 0
+        ) {
+          return 'Đã kết thúc';
+        }
+
+        return 'Đang diễn ra';
+      },
     },
     {
       field: 'course',
@@ -155,29 +221,6 @@ function AdminDrivingElearningPage() {
             >
               <IoMdEye />
             </a>
-          </>
-        );
-      },
-    },
-    {
-      field: 'students',
-      headerName: 'Học viên',
-      cellRenderer: (params) => {
-        return (
-          <>
-            <button
-              className='btn'
-              onClick={() => getCourseUsers(params?.data)}
-            >
-              <MdPeople />
-            </button>
-            <button className='btn' onClick={() => {
-              setShowAddModal(true);
-              setSelectedRow(params?.data);
-            }
-            }>
-              <MdPersonAdd />
-            </button>
           </>
         );
       },
@@ -240,6 +283,14 @@ function AdminDrivingElearningPage() {
       toastWrapper('Vui lòng chọn khoá học', 'error');
       return;
     }
+    
+    const courseInfo = drivingCourses.find(
+      (item) => item.value === selectedCourse
+    );
+
+    if (!courseInfo) {
+      return toastWrapper('Không tìm thấy khoá học', 'error');
+    }
 
     const isConfirmed = window.confirm(
       'Tên đăng nhập và mật khẩu mặc định là số CCCD của học viên. Bạn có chắc chắn muốn nhập học viên không?'
@@ -249,11 +300,21 @@ function AdminDrivingElearningPage() {
 
     const data = importData?.map((item) => {
       if (!item?.cardNumber) {
-        toastWrapper('Học viên chưa có số CCCD', 'error');
         return null;
       }
       if (!item?.name) {
-        toastWrapper('Họ tên chưa đầy đủ', 'error');
+        return null;
+      }
+
+      if(item?.elearningUserId) {
+        return null;
+      }
+
+      if (
+        !item?.course?.elearningCourseId ||
+        !item?.course?.elearningCourseGroupId
+      ) {
+        toastWrapper('Khoá học chưa được đồng bộ với Elearning', 'error');
         return null;
       }
 
@@ -273,6 +334,10 @@ function AdminDrivingElearningPage() {
             type: 'className',
             value: item?.course?.name || '',
           },
+          {
+            type: 'studentId',
+            value: item?._id,
+          },
         ],
         preferences: [
           {
@@ -283,19 +348,24 @@ function AdminDrivingElearningPage() {
       };
     });
 
-    const filteredData = data.filter((item) => item === null);
+    const filteredData = data.filter((item) => item !== null);
 
-    if (filteredData?.length > 0) {
-      toastWrapper('Có học viên chưa đủ thông tin', 'error');
-      return;
+    if(filteredData?.length === 0) {
+      return toastWrapper('Không có học viên nào để nhập', 'error');
     }
 
-
     elearningApi
-      .createCourseUsers(selectedRow?.id, data)
+      .createCourseUsers(
+        courseInfo?.elearningCourseId,
+        courseInfo?.elearningCourseGroupId,
+        filteredData
+      )
       .then((res) => {
         console.log(res);
-        toastWrapper('Nhập học viên thành công', 'success');
+        toastWrapper(`Nhập thành công ${filteredData.length} học viên`, 'success');
+        setImportData([]);
+        setSelectedCourse(null);
+        setSelectedRow(null);
         setShowAddModal(false);
       })
       .catch((err) => {
@@ -326,7 +396,7 @@ function AdminDrivingElearningPage() {
         backdrop='static'
       >
         <Modal.Header closeButton>
-          <Modal.Title>Danh sách học viên</Modal.Title>
+          <Modal.Title>Danh sách tài khoản Elearning: {selectedRow?.fullname}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row className='mb-3'>
@@ -339,6 +409,17 @@ function AdminDrivingElearningPage() {
                       headerName: 'Họ và tên',
                     },
                     {
+                      field: 'roles',
+                      headerName: 'Vai trò',
+                      valueFormatter: (params) => {
+                        return params?.data?.roles
+                          ?.map((item) => {
+                            return ELEARNING_ROLES[item.shortname];
+                          })
+                          .join(', ');
+                      },
+                    },
+                    {
                       field: 'email',
                       headerName: 'Email',
                     },
@@ -348,7 +429,7 @@ function AdminDrivingElearningPage() {
                     },
                     {
                       field: 'groups',
-                      headerName: 'Nhóm',
+                      headerName: 'Khoá',
                       valueFormatter: (params) => {
                         return params?.data?.groups
                           ?.map((item) => item.name)
@@ -360,7 +441,7 @@ function AdminDrivingElearningPage() {
                 />
               </div>
             ) : (
-              <p>Không có học viên nào trong khoá học này</p>
+              <p>Không có tài khoản nào trong lớp học Elearning này</p>
             )}
           </Row>
           <Row>
@@ -383,7 +464,7 @@ function AdminDrivingElearningPage() {
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            Thêm học viên vào môn học: {selectedRow?.fullname}
+            Thêm học viên vào Elearning: {selectedRow?.fullname}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -428,12 +509,17 @@ function AdminDrivingElearningPage() {
                       headerName: 'Số CCCD',
                     },
                     {
-                      field: 'dob',
-                      headerName: 'Ngày sinh',
+                      field: 'course.name',
+                      headerName: 'Khoá học',
                     },
                     {
-                      field: 'drivingType.label',
-                      headerName: 'Hạng bằng',
+                      field: 'elearningUserId',
+                      headerName: 'Elearning',
+                      cellRenderer: (params) => {
+                        return params?.data?.elearningUserId
+                          ? <span className='text-success'>Đã có tài khoản</span>
+                          : <span className='text-warning'>Chưa có tài khoản</span>;
+                      },
                     },
                     {
                       field: 'action',

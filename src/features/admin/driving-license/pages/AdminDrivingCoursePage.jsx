@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
-import { MdAdd } from 'react-icons/md';
+import { MdAdd, MdPeople } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 import { useForm } from 'react-hook-form';
@@ -12,6 +12,8 @@ import drivingCourseSchema from 'validations/driving-course.validation';
 import InputField from 'components/form/InputField';
 import { getVietnamDate } from 'utils/commonUtils';
 import SelectField from 'components/form/SelectField';
+import elearningApi from 'api/elearningApi';
+import { ELEARNING_ROLES } from 'constants/driving-elearning.constant';
 
 function AdminDrivingCoursePage() {
   const { center, role: userRole } = JSON.parse(
@@ -22,6 +24,9 @@ function AdminDrivingCoursePage() {
   const [drivingTypes, setDrivingTypes] = useState([]);
   const [gridApi, setGridApi] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showStudentModal, setShowStudentModal] = useState(false);
+  const [courseUsers, setCourseUsers] = useState([]);
+  const [elearningCourses, setElearningCourses] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const {
     control,
@@ -75,6 +80,18 @@ function AdminDrivingCoursePage() {
         .catch((err) => {
           console.log(err);
         });
+
+      elearningApi.getCoursesByCenter(center).then((res) => {
+        setElearningCourses(
+          res.data?.courses?.map((item) => {
+            return {
+              label: item.fullname,
+              value: item.id,
+            };
+          }));
+        }).catch((err) => {
+          console.log(err);
+        });
     } else {
       drivingApi
         .queryDrivingType({
@@ -108,15 +125,28 @@ function AdminDrivingCoursePage() {
         setValue('examDate', '');
       }
 
-      setValue('center', {
-        label: selectedRow?.center?.name,
-        value: selectedRow?.center?._id,
-      });
+      if(selectedRow?.center) {
+        setValue('center', {
+          label: selectedRow?.center?.name,
+          value: selectedRow?.center?._id,
+        });
+      }
 
-      setValue('drivingType', {
-        label: selectedRow?.drivingType?.label,
-        value: selectedRow?.drivingType?._id,
-      });
+      if(selectedRow?.drivingType) {
+        setValue('drivingType', {
+          label: selectedRow?.drivingType?.label,
+          value: selectedRow?.drivingType?._id,
+        });
+      }
+
+      const elearningCourse = elearningCourses.find((course) => course.value === selectedRow?.elearningCourseId);
+      
+      if(elearningCourse) {
+        setValue('elearningCourseId', {
+          label: elearningCourse?.label,
+          value: elearningCourse?.value,
+        });
+      }
     }
   }, [selectedRow, setValue, showModal]);
 
@@ -134,6 +164,20 @@ function AdminDrivingCoursePage() {
         setSelectedRow,
         setIsEditMode,
         setShowModal,
+      },
+    },
+    {
+      field: 'elearning',
+      headerName: 'Elearning',
+      suppressHeaderMenuButton: true,
+      pinned: 'left',
+      width: 90,
+      cellRenderer: (params) => {
+        return (
+          <button className='btn' onClick={() => getCourseUsers(params?.data)}>
+            <MdPeople />
+          </button>
+        );
       },
     },
     {
@@ -221,6 +265,20 @@ function AdminDrivingCoursePage() {
       : []),
   ]);
 
+  const getCourseUsers = (data) => {
+    setCourseUsers([]);
+    setSelectedRow(data);
+    setShowStudentModal(true);
+    elearningApi
+      .getGroupUsers(data?.elearningCourseGroupId)
+      .then((res) => {
+        setCourseUsers(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const refreshGrid = () => {
     if (gridApi) {
       gridApi.refreshInfiniteCache();
@@ -228,6 +286,7 @@ function AdminDrivingCoursePage() {
   };
 
   const handleAddCourseButton = () => {
+    setSelectedRow(null);
     reset();
     setIsEditMode(false);
     setShowModal(true);
@@ -238,6 +297,7 @@ function AdminDrivingCoursePage() {
       ...formData,
       center: formData?.center?.value,
       drivingType: formData?.drivingType?.value,
+      elearningCourseId: formData?.elearningCourseId?.value,
     };
     const apiCall = isEditMode
       ? drivingApi.updateDrivingCourse(formData._id, body)
@@ -324,7 +384,8 @@ function AdminDrivingCoursePage() {
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            {isEditMode ? 'Chỉnh sửa khoá thi' : 'Thêm khoá thi mới'}
+            {isEditMode ? 'Chỉnh sửa khoá' : 'Thêm khoá thi mới'}{' '}
+            {selectedRow?.name || ''}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -381,6 +442,17 @@ function AdminDrivingCoursePage() {
             ))}
             <Row className='mb-3'>
               <Col>
+                <SelectField
+                  label='Elearning'
+                  name='elearningCourseId'
+                  control={control}
+                  noClear={true}
+                  options={elearningCourses}
+                />
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
                 <InputField
                   label='Mô tả'
                   name='description'
@@ -405,6 +477,54 @@ function AdminDrivingCoursePage() {
               </Col>
             </Row>
           </Form>
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={showStudentModal}
+        onHide={() => setShowStudentModal(false)}
+        size='xl'
+        backdrop='static'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Danh sách tài khoản Elearning khoá {selectedRow?.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className='mb-3'>
+            {courseUsers?.length > 0 ? (
+              <div className='ag-theme-quartz' style={{ height: '400px' }}>
+                <AgGridReact
+                  columnDefs={[
+                    {
+                      field: 'fullname',
+                      headerName: 'Họ và tên',
+                    },
+                    {
+                      field: 'email',
+                      headerName: 'Email',
+                    },
+                    {
+                      field: 'username',
+                      headerName: 'Tên đăng nhập',
+                    },
+                  ]}
+                  rowData={courseUsers}
+                />
+              </div>
+            ) : (
+              <p>Không có tài khoản nào trong lớp học Elearning này</p>
+            )}
+          </Row>
+          <Row>
+            <Col className='text-end'>
+              <Button
+                variant='secondary'
+                onClick={() => setShowStudentModal(false)}
+              >
+                Đóng
+              </Button>
+            </Col>
+          </Row>
         </Modal.Body>
       </Modal>
 

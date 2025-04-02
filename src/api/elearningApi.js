@@ -48,14 +48,19 @@ class ElearningApi {
     return axiosClient.get(url, { params: { cohortId } });
   }
 
-  getCourseUsers = async (courseId) => {
+  getCourseUsers = async (courseId, groupId) => {
     const url = `${API_PATH}/course/user`;
-    return axiosClient.get(url, { params: { courseId } });
+    return axiosClient.get(url, { params: { courseId, groupId } });
   }
 
-  createCourseUsers = async (courseId, users) => {
+  createCourseUsers = async (courseId, groupId, users) => {
     const url = `${API_PATH}/course/user`;
-    return axiosClient.post(url, { courseId, users });
+    return axiosClient.post(url, { courseId, groupId, users });
+  }
+
+  getGroupUsers = async (groupId) => {
+    const url = `${API_PATH}/group/user`;
+    return axiosClient.get(url, { params: { groupId } });
   }
 }
 
