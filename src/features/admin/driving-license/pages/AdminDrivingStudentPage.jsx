@@ -539,7 +539,7 @@ function AdminDrivingStudentPage() {
   };
 
   const handleExportBtn = () => {
-    if (!selectedCourse) {
+    if (!selectedCourse?.value) {
       return toastWrapper('Vui lòng chọn khoá học cần xuất danh sách', 'error');
     }
     
@@ -549,7 +549,7 @@ function AdminDrivingStudentPage() {
         page: 1,
         ...(center && { center }),
         query: {
-          course: selectedCourse,
+          course: selectedCourse?.value,
         },
       })
       .then((res) => {
@@ -578,7 +578,7 @@ function AdminDrivingStudentPage() {
         const data = new Blob([excelBuffer], {
           type: EXCEL_TYPE,
         });
-        FileSaver.saveAs(data, 'driving-student.xlsx');
+        FileSaver.saveAs(data, `driving-student-${selectedCourse.label}.xlsx`);
       })
       .catch((err) => {
         console.log(err);
@@ -586,7 +586,7 @@ function AdminDrivingStudentPage() {
   };
 
   const handleImportBtn = () => {
-    if (!selectedCourse) {
+    if (!selectedCourse?.value) {
       return toastWrapper('Vui lòng chọn khoá học cần nhập danh sách', 'error');
     }
 
@@ -649,13 +649,9 @@ function AdminDrivingStudentPage() {
       return;
     }
 
-    const courseInfo = drivingCourses.filter(
-      (item) => item.value === selectedCourse
-    )[0];
-
     if (
       !window.confirm(
-        `Bạn có chắc chắn muốn nhập ${importData.length} học viên vào khoá ${courseInfo.label}?`
+        `Bạn có chắc chắn muốn nhập ${importData.length} học viên vào khoá ${selectedCourse.label}?`
       )
     ) {
       return;
@@ -669,7 +665,7 @@ function AdminDrivingStudentPage() {
         const body = {
           ...item,
           center: center,
-          course: selectedCourse,
+          course: selectedCourse.value,
         };
 
         try {
@@ -698,7 +694,7 @@ function AdminDrivingStudentPage() {
 
     if (successCount > 0) {
       toastWrapper(
-        `Đã nhập ${successCount} học viên thành công vào khoá ${courseInfo.label}`,
+        `Đã nhập ${successCount} học viên thành công vào khoá ${selectedCourse.label}`,
         'success'
       );
     }
@@ -1230,7 +1226,7 @@ function AdminDrivingStudentPage() {
         onHide={() => {
           refreshGrid(query, searchText);
           setSelectedCourse('');
-          setShowImportExportModal(false)
+          setShowImportExportModal(false);
         }}
       >
         <Modal.Header closeButton>
@@ -1239,20 +1235,14 @@ function AdminDrivingStudentPage() {
         <Modal.Body>
           <Row className='mb-3'>
             <Col>
-              <Form.Select
-                onChange={(e) => {
-                  setSelectedCourse(e.target.value);
+              <Select
+                isClearable={true}
+                isSearchable={true}
+                options={drivingCourses}
+                onChange={(val) => {
+                  setSelectedCourse(val);
                 }}
-              >
-                <option value=''>Chọn Khoá</option>
-                {drivingCourses.map((item) => {
-                  return (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  );
-                })}
-              </Form.Select>
+              />
             </Col>
             <Col xs={2}>
               <Button className='w-100' onClick={handleExportBtn}>
