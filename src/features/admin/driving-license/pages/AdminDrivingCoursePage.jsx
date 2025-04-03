@@ -22,6 +22,7 @@ function AdminDrivingCoursePage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [drivingCenters, setDrivingCenters] = useState([]);
   const [drivingTypes, setDrivingTypes] = useState([]);
+  const [drivingDates, setDrivingDates] = useState([]);
   const [gridApi, setGridApi] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showStudentModal, setShowStudentModal] = useState(false);
@@ -54,6 +55,31 @@ function AdminDrivingCoursePage() {
             return {
               label: item.name,
               value: item._id,
+            };
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    drivingApi
+      .getDrivingDate({
+        filter: {
+          active: true,
+          ...(center && { center }),
+        },
+      })
+      .then((res) => {
+        setDrivingDates(
+          res.data?.map((item) => {
+            return {
+              label: `${new Date(item.date).toLocaleDateString('en-GB')} - ${
+                item?.description
+              } - ${item?.drivingType?.label || 'Chưa phân hạng'} - ${
+                item?.center?.name
+              }`,
+              value: item.date,
             };
           })
         );
@@ -136,6 +162,13 @@ function AdminDrivingCoursePage() {
         setValue('drivingType', {
           label: selectedRow?.drivingType?.label,
           value: selectedRow?.drivingType?._id,
+        });
+      }
+
+      if(selectedRow?.examDate) {
+        setValue('examDate', {
+          label: new Date(selectedRow?.examDate).toLocaleDateString('en-GB'),
+          value: selectedRow?.examDate,
         });
       }
 
@@ -298,6 +331,7 @@ function AdminDrivingCoursePage() {
       center: formData?.center?.value,
       drivingType: formData?.drivingType?.value,
       elearningCourseId: formData?.elearningCourseId?.value,
+      examDate: formData?.examDate?.value,
     };
     const apiCall = isEditMode
       ? drivingApi.updateDrivingCourse(formData._id, body)
@@ -392,12 +426,12 @@ function AdminDrivingCoursePage() {
           <Form onSubmit={handleSubmit(handleCourseSubmit)}>
             <Row className='mb-3'>
               <Col>
-                <InputField
+                 <SelectField
                   label='Ngày thi dự kiến'
                   name='examDate'
                   control={control}
-                  type='date'
                   noClear={true}
+                  options={drivingDates}
                 />
               </Col>
             </Row>
