@@ -62,6 +62,11 @@ class ElearningApi {
     const url = `${API_PATH}/group/user`;
     return axiosClient.get(url, { params: { groupId } });
   }
+
+  getCourseReport = async (courseId) => {
+    const url = `${API_PATH}/course/report`;
+    return axiosClient.get(url, { params: { courseId } });
+  }
 }
 
 export default new ElearningApi();

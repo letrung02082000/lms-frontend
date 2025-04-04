@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
 import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
-import { MdAdd, MdPeople } from 'react-icons/md';
+import { MdAdd, MdDelete, MdPeople, MdPersonAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 import { useForm } from 'react-hook-form';
@@ -13,7 +13,8 @@ import InputField from 'components/form/InputField';
 import { getVietnamDate } from 'utils/commonUtils';
 import SelectField from 'components/form/SelectField';
 import elearningApi from 'api/elearningApi';
-import { PiChalkboardTeacherFill } from "react-icons/pi";
+import { TbReportAnalytics } from "react-icons/tb";
+import CopyToClipboardButton from 'components/button/CopyToClipboardButton';
 
 function AdminDrivingCoursePage() {
   const { center, role: userRole } = JSON.parse(
@@ -26,8 +27,12 @@ function AdminDrivingCoursePage() {
   const [gridApi, setGridApi] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showStudentModal, setShowStudentModal] = useState(false);
-  const [courseUsers, setCourseUsers] = useState([]);
-  const [elearningCourses, setElearningCourses] = useState([]);
+  const [showAddModal, setShowAddMemberModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportData, setReportData] = useState([]);
+  const [courseStudents, setCourseStudents] = useState([]);
+  const [importData, setImportData] = useState([]);
+  const [lessons, setLessons] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const {
     control,
@@ -108,7 +113,7 @@ function AdminDrivingCoursePage() {
         });
 
       elearningApi.getCoursesByCenter(center).then((res) => {
-        setElearningCourses(
+        setLessons(
           res.data?.courses?.map((item) => {
             return {
               label: item.fullname,
@@ -171,15 +176,6 @@ function AdminDrivingCoursePage() {
           value: selectedRow?.examDate,
         });
       }
-
-      const elearningCourse = elearningCourses.find((course) => course.value === selectedRow?.elearningCourseId);
-      
-      if(elearningCourse) {
-        setValue('elearningCourseId', {
-          label: elearningCourse?.label,
-          value: elearningCourse?.value,
-        });
-      }
     }
   }, [selectedRow, setValue, showModal]);
 
@@ -201,15 +197,36 @@ function AdminDrivingCoursePage() {
     },
     {
       field: 'elearning',
-      headerName: 'Elearning',
+      headerName: 'Quản lý',
       suppressHeaderMenuButton: true,
       pinned: 'left',
-      width: 100,
+      width: 150,
       cellRenderer: (params) => {
         return (
-          <button className='btn' onClick={() => getCourseUsers(params?.data)}>
-            <PiChalkboardTeacherFill />
-          </button>
+          <>
+            <button
+              className='btn'
+              onClick={() => {
+                setCourseStudents([]);
+                setSelectedRow(params?.data);
+                setShowStudentModal(true);
+                getCourseStudents(params?.data);
+              }}
+            >
+              <MdPeople />
+            </button>
+            <button
+              className='btn'
+              onClick={() => {
+                setReportData([]);
+                setSelectedRow(params?.data);
+                setShowReportModal(true)
+                getCourseReport(params?.data);
+              }}
+            >
+            <TbReportAnalytics />
+            </button>
+          </>
         );
       },
     },
@@ -298,19 +315,42 @@ function AdminDrivingCoursePage() {
       : []),
   ]);
 
-  const getCourseUsers = (data) => {
-    setCourseUsers([]);
-    setSelectedRow(data);
-    setShowStudentModal(true);
-    elearningApi
-      .getGroupUsers(data?.elearningCourseGroupId)
-      .then((res) => {
-        setCourseUsers(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const getCourseStudents = (data) => {
+    drivingApi.getDrivings({
+      query: {
+        limit: 1000,
+        page: 1,
+        ...(center && { center }),
+        course: data?._id,
+      }
+    }).then((res) => {
+      setCourseStudents(res.data);
+    }
+    ).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  const getCourseReport = (data) => {
+    elearningApi.getCourseReport(data?.elearningCourseId).then((res) => {
+      setReportData(res.data?.filter((item) => item?.groupid == data?.elearningCourseGroupId));
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  const initElearning = () => {
+    if(window.confirm('Khởi tạo tài khoản Elearning cho học viên trong khoá này?')) {
+      drivingApi
+        .createElearningUsers(selectedRow?._id)
+        .then((res) => {
+          toastWrapper('Khởi tạo tài khoản Elearning thành công', 'success');
+        })
+        .catch((err) => {
+          toastWrapper(err.response.data.message, 'error');
+        });
+    }
+  }
 
   const refreshGrid = () => {
     if (gridApi) {
@@ -426,7 +466,7 @@ function AdminDrivingCoursePage() {
           <Form onSubmit={handleSubmit(handleCourseSubmit)}>
             <Row className='mb-3'>
               <Col>
-                 <SelectField
+                <SelectField
                   label='Ngày thi dự kiến'
                   name='examDate'
                   control={control}
@@ -476,17 +516,6 @@ function AdminDrivingCoursePage() {
             ))}
             <Row className='mb-3'>
               <Col>
-                <SelectField
-                  label='Elearning'
-                  name='elearningCourseId'
-                  control={control}
-                  noClear={true}
-                  options={elearningCourses}
-                />
-              </Col>
-            </Row>
-            <Row className='mb-3'>
-              <Col>
                 <InputField
                   label='Mô tả'
                   name='description'
@@ -521,40 +550,133 @@ function AdminDrivingCoursePage() {
         backdrop='static'
       >
         <Modal.Header closeButton>
-          <Modal.Title>Danh sách tài khoản Elearning: khoá {selectedRow?.name}</Modal.Title>
+          <Modal.Title>Danh sách học viên khoá {selectedRow?.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row className='mb-3'>
-            {courseUsers?.length > 0 ? (
+            {courseStudents?.length > 0 ? (
               <div className='ag-theme-quartz' style={{ height: '400px' }}>
                 <AgGridReact
                   columnDefs={[
                     {
-                      field: 'fullname',
+                      field: 'name',
                       headerName: 'Họ và tên',
                       width: 350,
                     },
                     {
-                      field: 'email',
-                      headerName: 'Email',
+                      field: 'cardNumber',
+                      headerName: 'Số CCCD',
+                      cellRenderer: (data) => {
+                        return (
+                          <span>
+                            {data.value ? data.value : 'Chưa cập nhật'}
+                            <CopyToClipboardButton
+                              className='btn'
+                              value={data.value}
+                            />
+                          </span>
+                        );
+                      },
+                    },
+                    {
+                      field: 'registrationCode',
+                      headerName: 'Mã học viên',
+                    },
+                    {
+                      field: 'tel',
+                      headerName: 'Số điện thoại',
+                    },
+                    {
+                      field: 'elearningUserId',
+                      headerName: 'Elearning',
+                      cellRenderer: (data) => {
+                        return data.value ? (
+                          <span className='text-success'>Đã có tài khoản</span>
+                        ) : (
+                          <span className='text-warning'>
+                            Chưa có tài khoản
+                          </span>
+                        );
+                      },
+                    },
+                  ]}
+                  rowData={courseStudents}
+                />
+              </div>
+            ) : (
+              <p>Không có học viên nào trong khoá học này</p>
+            )}
+          </Row>
+          <Row>
+            <Col className='text-end'>
+              <Button onClick={initElearning}>
+                Khởi tạo tài khoản Elearning cho tất cả học viên
+              </Button>
+              <Button
+                variant='secondary'
+                className='ms-2'
+                onClick={() => setShowStudentModal(false)}
+              >
+                Đóng
+              </Button>
+            </Col>
+          </Row>
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={showReportModal}
+        onHide={() => setShowReportModal(false)}
+        size='xl'
+        backdrop='static'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Báo cáo khoá học {selectedRow?.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className='mb-3'>
+            {reportData?.length > 0 ? (
+              <div className='ag-theme-quartz' style={{ height: '400px' }}>
+                <AgGridReact
+                  columnDefs={[
+                    {
+                      field: 'firstname',
+                      headerName: 'Họ và tên',
+                      width: 350,
                     },
                     {
                       field: 'username',
                       headerName: 'Tên đăng nhập',
                     },
+                    {
+                      field: 'itemname',
+                      headerName: 'Học phần',
+                      width: 500,
+                      cellRenderer: (data) => {
+                        return (
+                          <div
+                            dangerouslySetInnerHTML={{ __html: data.value }}
+                          />
+                        );
+                      },
+                    },
+                    {
+                      field: 'finalgrade',
+                      headerName: 'Điểm thi',
+                    },
                   ]}
-                  rowData={courseUsers}
+                  rowData={reportData}
                 />
               </div>
             ) : (
-              <p>Không có tài khoản nào trong lớp học này</p>
+              <p>Không có kết quả học viên</p>
             )}
           </Row>
           <Row>
             <Col className='text-end'>
               <Button
                 variant='secondary'
-                onClick={() => setShowStudentModal(false)}
+                onClick={() => setShowReportModal(false)}
               >
                 Đóng
               </Button>

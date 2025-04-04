@@ -11,6 +11,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import InputField from 'components/form/InputField';
 import drivingTypeSchema from 'validations/driving-type.validation';
+import elearningApi from 'api/elearningApi';
+import SelectField from 'components/form/SelectField';
 
 function AdminDrivingTypePage() {
   const { center, role: userRole } = JSON.parse(
@@ -22,6 +24,7 @@ function AdminDrivingTypePage() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [lessons, setLessons] = useState([]);
   const { control, handleSubmit, setValue, clearErrors, reset } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -55,6 +58,17 @@ function AdminDrivingTypePage() {
       .catch((err) => {
         console.log(err);
       });
+
+    if (center) {
+      elearningApi.getCoursesByCenter(center).then((res) => {
+        setLessons(
+          res?.data?.courses?.map((course) => ({
+            label: course.fullname,
+            value: course.id,
+          }))
+        );
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -62,11 +76,16 @@ function AdminDrivingTypePage() {
       Object.keys(selectedRow).forEach((key) => {
         setValue(key, selectedRow[key]);
       });
+
+      setValue(
+        'lessons',
+        lessons.filter((lesson) => selectedRow?.lessons?.includes(lesson.value))
+      );
     } else {
       setValue('center', drivingCenters[0]);
       setValue('drivingType', drivingTypes?.[0]);
     }
-  }, [selectedRow, setValue, showModal]);
+  }, [selectedRow, setValue, showModal, lessons]);
 
   const [colDefs] = useState([
     {
@@ -175,6 +194,7 @@ function AdminDrivingTypePage() {
       ...formData,
       center: formData.center._id,
       drivingType: formData.drivingType._id,
+      lessons: formData.lessons.map((lesson) => lesson.value),
     };
     const apiCall = isEditMode
       ? drivingApi.updateDrivingCenterType(formData._id, body)
@@ -274,6 +294,18 @@ function AdminDrivingTypePage() {
                     </option>
                   ))}
                 </InputField>
+              </Col>
+            </Row>
+            <Row className='mb-3'>
+              <Col>
+                <SelectField
+                  label='Bài giảng'
+                  name='lessons'
+                  control={control}
+                  noClear={true}
+                  options={lessons}
+                  isMulti={true}
+                />
               </Col>
             </Row>
             <Row className='mb-3'>

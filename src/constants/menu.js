@@ -43,7 +43,7 @@ export const generateDrivingMenu = (drivingType, setting) => {
             icon: <FaList />
         },
         setting?.useTypeManagement && {
-            label: 'Quản lý hạng bằng',
+            label: 'Quản lý hạng thi',
             path: PATH.DRIVING.ADMIN.TYPE,
             icon: <FaList />
         },

@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import drivingApi from 'api/drivingApi';
-import { Button, Col, Form, FormControl, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { MdAdd, MdDelete, MdPeople, MdPersonAdd } from 'react-icons/md';
 import { toastWrapper } from 'utils';
 import { ROLE } from 'constants/role';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import TableEditButton from 'components/button/TableEditButton';
 import drivingCourseSchema from 'validations/driving-course.validation';
-import InputField from 'components/form/InputField';
-import { getVietnamDate } from 'utils/commonUtils';
-import SelectField from 'components/form/SelectField';
 import elearningApi from 'api/elearningApi';
 import { IoMdEye } from 'react-icons/io';
 import { ELEARNING_URL } from 'constants/url';
 import { IoDownload } from 'react-icons/io5';
 import { ELEARNING_ROLES } from 'constants/driving-elearning.constant';
+import { TbReportAnalytics } from "react-icons/tb";
 
 function AdminDrivingElearningPage() {
   const { center, role: userRole } = JSON.parse(
@@ -106,34 +103,6 @@ function AdminDrivingElearningPage() {
 
   const [colDefs] = useState([
     {
-      field: 'students',
-      headerName: 'Quản lý',
-      pinned: 'left',
-      width: 150,
-      suppressHeaderMenuButton: true,
-      cellRenderer: (params) => {
-        return (
-          <>
-            <button
-              className='btn'
-              onClick={() => getCourseUsers(params?.data)}
-            >
-              <MdPeople />
-            </button>
-            <button
-              className='btn'
-              onClick={() => {
-                setShowAddModal(true);
-                setSelectedRow(params?.data);
-              }}
-            >
-              <MdPersonAdd />
-            </button>
-          </>
-        );
-      },
-    },
-    {
       field: 'course',
       headerName: 'Thao tác',
       pinned: 'left',
@@ -154,6 +123,43 @@ function AdminDrivingElearningPage() {
       },
     },
     {
+      field: 'students',
+      headerName: 'Quản lý',
+      pinned: 'left',
+      width: 160,
+      suppressHeaderMenuButton: true,
+      cellRenderer: (params) => {
+        return (
+          <>
+            <button
+              className='btn'
+              onClick={() => getCourseUsers(params?.data)}
+            >
+              <MdPeople />
+            </button>
+            <button
+              className='btn'
+              onClick={() => {
+                setShowAddModal(true);
+                setSelectedRow(params?.data);
+              }}
+            >
+              <MdPersonAdd />
+            </button>
+            <button
+              className='btn'
+              onClick={() => {
+                setShowAddModal(true);
+                setSelectedRow(params?.data);
+              }}
+            >
+              <TbReportAnalytics />
+            </button>
+          </>
+        );
+      },
+    },
+    {
       field: 'timecreated',
       headerName: 'Ngày tạo',
       valueFormatter: (params) => {
@@ -164,55 +170,55 @@ function AdminDrivingElearningPage() {
     },
     {
       field: 'id',
-      headerName: 'Mã lớp học',
+      headerName: 'Mã môn học',
     },
     {
       field: 'fullname',
-      headerName: 'Lớp học',
+      headerName: 'Môn học',
     },
     {
       field: 'categoryname',
       headerName: 'Trung tâm',
     },
-    {
-      field: 'startdate',
-      headerName: 'Ngày khai giảng',
-      valueFormatter: (params) => {
-        return new Date(params?.data?.startdate * 1000).toLocaleDateString(
-          'en-GB'
-        );
-      },
-    },
-    {
-      field: 'enddate',
-      headerName: 'Ngày bế giảng',
-      valueFormatter: (params) => {
-        if (params?.data?.enddate === 0) {
-          return 'Chưa cập nhật';
-        }
-        return new Date(params?.data?.enddate * 1000).toLocaleDateString(
-          'en-GB'
-        );
-      },
-    },
-    {
-      field: 'status',
-      headerName: 'Trạng thái',
-      valueFormatter: (params) => {
-        if (params?.data?.startdate * 1000 > Date.now()) {
-          return 'Chưa bắt đầu';
-        }
+    // {
+    //   field: 'startdate',
+    //   headerName: 'Ngày khai giảng',
+    //   valueFormatter: (params) => {
+    //     return new Date(params?.data?.startdate * 1000).toLocaleDateString(
+    //       'en-GB'
+    //     );
+    //   },
+    // },
+    // {
+    //   field: 'enddate',
+    //   headerName: 'Ngày bế giảng',
+    //   valueFormatter: (params) => {
+    //     if (params?.data?.enddate === 0) {
+    //       return 'Chưa cập nhật';
+    //     }
+    //     return new Date(params?.data?.enddate * 1000).toLocaleDateString(
+    //       'en-GB'
+    //     );
+    //   },
+    // },
+    // {
+    //   field: 'status',
+    //   headerName: 'Trạng thái',
+    //   valueFormatter: (params) => {
+    //     if (params?.data?.startdate * 1000 > Date.now()) {
+    //       return 'Chưa bắt đầu';
+    //     }
 
-        if (
-          params?.data?.enddate * 1000 < Date.now() &&
-          params?.data?.enddate !== 0
-        ) {
-          return 'Đã kết thúc';
-        }
+    //     if (
+    //       params?.data?.enddate * 1000 < Date.now() &&
+    //       params?.data?.enddate !== 0
+    //     ) {
+    //       return 'Đã kết thúc';
+    //     }
 
-        return 'Đang diễn ra';
-      },
-    },
+    //     return 'Đang diễn ra';
+    //   },
+    // },
   ]);
 
   const refreshGrid = () => {
@@ -453,7 +459,7 @@ function AdminDrivingElearningPage() {
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            Thêm học viên vào Elearning: {selectedRow?.fullname}
+            Thêm học viên vào môn học: {selectedRow?.fullname}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

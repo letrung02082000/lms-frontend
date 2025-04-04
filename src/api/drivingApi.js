@@ -342,6 +342,11 @@ class DrivingApi {
       responseType: "blob",
     });
   }
+
+  createElearningUsers = async (courseId) => {
+    const url = `${API_PATH}/course/elearning`;
+    return axiosClient.post(url, { courseId });
+  }
 }
 
 export default new DrivingApi();
