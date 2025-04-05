@@ -332,8 +332,8 @@ function AdminDrivingCoursePage() {
   }
 
   const getCourseReport = (data) => {
-    elearningApi.getCourseReport(data?.elearningCourseId).then((res) => {
-      setReportData(res.data?.filter((item) => item?.groupid == data?.elearningCourseGroupId));
+    elearningApi.getCourseReport(data?._id).then((res) => {
+      setReportData(res.data);
     }).catch((err) => {
       console.log(err);
     });
@@ -669,7 +669,7 @@ function AdminDrivingCoursePage() {
                 />
               </div>
             ) : (
-              <p>Không có kết quả học viên</p>
+              <p>Không có kết quả học viên nào</p>
             )}
           </Row>
           <Row>
