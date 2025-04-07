@@ -79,7 +79,10 @@ export const PATH = {
             LESSON: '/elearning/student/lesson',
             LESSON_DETAIL: '/elearning/student/lesson/:lessonId',
             RESULT: '/elearning/student/result',
-        }
+            TEST: '/elearning/student/test',
+            VIDEO: '/elearning/student/video/:id',
+        },
+        LOGIN: '/elearning/login'
     },
     UNIFORM: {
         ROOT: '/shop/666195bad4fed7a40f1016fe',

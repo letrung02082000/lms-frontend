@@ -76,8 +76,18 @@ export const ADMIN_ELEARNING_MENU = [
 
 export const STUDENT_ELEARNING_MENU = [
     {
-        label: 'Khoá học của tôi',
+        label: 'Trang chủ',
         path: PATH.ELEARNING.STUDENT.ROOT,
+        icon: <FaList />,
+    },
+    {
+        label: 'Chương trình học',
+        path: PATH.ELEARNING.STUDENT.COURSE,
+        icon: <FaList />,
+    },
+    {
+        label: 'Bài kiểm tra',
+        path: PATH.ELEARNING.STUDENT.TEST,
         icon: <FaList />,
     },
     {

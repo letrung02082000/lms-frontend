@@ -67,6 +67,11 @@ class ElearningApi {
     const url = `${API_PATH}/course/report`;
     return axiosClient.get(url, { params: { courseId } });
   }
+
+  getUserByMoodleToken = async (moodleToken) => {
+    const url = `${API_PATH}/user/moodle`;
+    return axiosClient.get(url, { params: { moodleToken } });
+  }
 }
 
 export default new ElearningApi();

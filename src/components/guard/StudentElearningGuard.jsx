@@ -4,16 +4,12 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 function StudentElearningGuard() {
-  let user = JSON.parse(localStorage.getItem('user-info'));
+  let moodleToken = localStorage.getItem('moodleToken');
 
-  if(!Array.isArray(user.role)) {
-    user = {...user, role: [user.role]};
-  }
-
-  if (user?.role.includes(ROLE.ELEARNING.STUDENT)) {
+  if (moodleToken) {
     return <Outlet />;
   } else {
-    window.location.href = PATH.AUTH.SIGNIN;
+    window.location.href = PATH.ELEARNING.LOGIN; // Chuyển hướng đến trang đăng nhập Moodle
   }
 }
 
