@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import styled from "styled-components";
 import { PATH } from "constants/path";
@@ -10,6 +10,7 @@ import accountApi from "api/accountApi";
 import { toastWrapper } from "utils";
 
 export default function LoginPage() {
+  const { state } = useLocation();
   const {
     control,
     setValue,
@@ -50,7 +51,8 @@ export default function LoginPage() {
 
       accountApi.sendOtp(data.zalo).then((res) => {
         toastWrapper(res?.message, 'success');
-        navigate(PATH.AUTH.OTP, { state: { zalo: data.zalo } });
+        navigate(PATH.AUTH.OTP, { state: { zalo: data.zalo,
+          from: state.from || PATH.ACCOUNT } });
       }).catch((err) => {
         toastWrapper(err?.response?.data?.message, 'error');
       });

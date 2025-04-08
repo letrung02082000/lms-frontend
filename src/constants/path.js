@@ -48,15 +48,21 @@ export const PATH = {
         HEALTH_CHECK: '/driving/health',
         ADMIN: {
             ROOT: '/driving/admin',
-            QUERY: '/driving/admin/query',
+            STUDENT: '/driving/admin/student',
+            PROCESSING: '/driving/admin/processing',
             A1: '/driving/admin/a1',
             A2: '/driving/admin/a2',
             B1: '/driving/admin/b1',
             B2: '/driving/admin/b2',
             C: '/driving/admin/c',
             B12: '/driving/admin/b12',
+            COURSE: '/driving/admin/course',
             DATE: '/driving/admin/date',
             CENTER: '/driving/admin/center',
+            ELEARNING: '/driving/admin/elearning',
+            TYPE: '/driving/admin/type',
+            TEACHER: '/driving/admin/teacher',
+            VEHICLE: '/driving/admin/vehicle',
         },
     },
     ELEARNING: {
@@ -73,7 +79,10 @@ export const PATH = {
             LESSON: '/elearning/student/lesson',
             LESSON_DETAIL: '/elearning/student/lesson/:lessonId',
             RESULT: '/elearning/student/result',
-        }
+            TEST: '/elearning/student/test',
+            VIDEO: '/elearning/student/video/:id',
+        },
+        LOGIN: '/elearning/login'
     },
     UNIFORM: {
         ROOT: '/shop/666195bad4fed7a40f1016fe',

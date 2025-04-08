@@ -14,7 +14,7 @@ import {
 import { Link, Outlet } from "react-router-dom";
 import styled from "styled-components";
 
-const AdminLayout = ({ menu, children, title, root }) => {
+const AdminLayout = ({ menu, children, title, root, ...props }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = () => {
@@ -79,7 +79,7 @@ const AdminLayout = ({ menu, children, title, root }) => {
         <SidebarFooter>
           <Menu>
             <MenuItem icon={<IoMdExit />}>
-              <div onClick={handleLogout}>Đăng xuất</div>
+              <div onClick={props?.handleLogout || handleLogout}>Đăng xuất</div>
             </MenuItem>
           </Menu>
         </SidebarFooter>

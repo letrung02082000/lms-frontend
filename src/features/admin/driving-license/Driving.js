@@ -6,7 +6,7 @@ import FileUploader from "components/form/FileUploader";
 import { FILE_UPLOAD_URL } from "constants/endpoints";
 import { toastWrapper } from "utils";
 import CopyToClipboardButton from "components/button/CopyToClipboardButton";
-import { MdMoreVert, MdOutlineQuickreply, MdPhone, MdRotateLeft, MdWeb } from "react-icons/md";
+import { MdExpandMore, MdMore, MdMoreVert, MdOutlineQuickreply, MdOutlineSave, MdPhone, MdRotateLeft, MdSave, MdWeb } from "react-icons/md";
 import { DRIVING_STATE, DRIVING_STATE_LABEL, DRIVING_TYPE_LABEL, IDENTITY_CARD_TYPE, PAYMENT_METHODS, PAYMENT_METHODS_LABEL } from "./constant";
 import * as faceapi from '@vladmandic/face-api';
 import { Jimp } from 'jimp';
@@ -14,16 +14,19 @@ import moment from 'moment'
 import { FaQrcode } from "react-icons/fa";
 import QRCode from "react-qr-code";
 import ZaloImage from "assets/images/ZaloImage";
-import { IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
+import { IoMdEye, IoMdGlobe, IoMdPhonePortrait } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import ocrApi from "api/ocrApi";
 import AccountInfo from "./components/AccountInfo";
 import { Page, View, Document, StyleSheet, Text, Image as PDFImage, Svg, Path, pdf } from '@react-pdf/renderer';
-import { genergateDrivingQuickMessage } from "utils/message.utils";
+import { genDrivingQuickMessage, genInvalidCardMessage, genInvalidPortraitMessage } from "utils/message.utils";
 import fileApi from "api/fileApi";
+import zaloApi from "api/zaloApi";
+import drivingApi from "api/drivingApi";
 
 function Driving(props) {
   const [drivingInfo, setDrivingInfo] = useState(props?.info);
+  const [zaloSent, setZaloSent] = useState(props?.info?.zaloSent);
   const [portraitCropBlob, setPortraitCropBlob] = useState(null);
   const [portraitHealthBlob, setPortraitHealthBlob] = useState(null);
   const [portraitPrintInfo, setPortraitPrintInfo] = useState({
@@ -244,7 +247,9 @@ function Driving(props) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [transactionId, setTransactionId] = useState(drivingInfo.transactionId || null);
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS_LABEL[drivingInfo.paymentMethod] ? drivingInfo.paymentMethod : PAYMENT_METHODS.BANK_TRANSFER);
-  const QUICK_MESSAGE = genergateDrivingQuickMessage(name, dateInfo, isPaid);
+  const QUICK_MESSAGE = genDrivingQuickMessage(name, dateInfo, isPaid);
+  const INVALID_PORTRAIT_MESSAGE = genInvalidPortraitMessage(name);
+  const INVALID_CARD_MESSAGE = genInvalidCardMessage(name);
 
   
   useEffect(() => {
@@ -439,21 +444,18 @@ function Driving(props) {
     }
   }
 
-  if (date) {
-    date = new Date(date);
-  } else {
-    date = null;
-  }
-
   const updateDate = () => {
-    const tmpDate = new Date(selectedDate);
+    const body = {
+      date: dateInfo?.examDate,
+      examDate: dateInfo?.examDate,
+      center: dateInfo?.center?._id,
+      drivingType: drivingInfo?.drivingType?._id,
+    }
 
-    DrivingApi.updateDriving(_id, {
-      date: tmpDate,
-    })
+    DrivingApi.updateDriving(_id, body)
       .then((res) => {
         if (res.data) {
-          toastWrapper("Đã cập nhật ngày thành " + new Date(res?.data?.date).toLocaleDateString(), "success")
+          toastWrapper("Đã cập nhật ngày thành " + new Date(res?.data?.date).toLocaleDateString('en-GB'), "success")
         } else {
           toastWrapper("Không thể cập nhật ngày. Id không hợp lệ", 'error')
         }
@@ -515,6 +517,13 @@ function Driving(props) {
         console.log(error);
         alert(error);
       });
+
+    if (!invalidCard) {
+      const confirmed = window.confirm('Bạn có muốn gửi tin nhắn thông báo với nội dung sau không? ' + INVALID_CARD_MESSAGE);
+      if (confirmed) {
+        sendZaloMessage(INVALID_CARD_MESSAGE);
+      }
+    }
   };
 
   const handleInvalidPortrait = () => {
@@ -528,6 +537,13 @@ function Driving(props) {
         console.log(error);
         alert(error);
       });
+
+    if(!invalidPortrait) {
+      const confirmed = window.confirm('Bạn có muốn gửi tin nhắn thông báo với nội dung sau không? ' + INVALID_PORTRAIT_MESSAGE);
+      if (confirmed) {
+        sendZaloMessage(INVALID_PORTRAIT_MESSAGE);
+      }
+    }
   };
 
   const handleDateChange = (e) => {
@@ -577,7 +593,7 @@ function Driving(props) {
         setIdentityInfo({
           _id: res?.data?.identityInfo,
         });
-        toastWrapper('Đọc CCCD thành công', 'success')
+        toastWrapper('Đọc căn cước thành công', 'success')
       }).catch(e => {
         toastWrapper(e.toString(), 'error')
       }).finally(() => {
@@ -588,7 +604,7 @@ function Driving(props) {
         setIdentityInfo({
           _id: res?.data?.identityInfo,
         });
-        toastWrapper('Đọc CCCD thành công', 'success')
+        toastWrapper('Đọc căn cước thành công', 'success')
       }).catch(e => {
         toastWrapper(e.toString(), 'error')
       }).finally(() => {
@@ -631,6 +647,47 @@ function Driving(props) {
     }).catch(e => {
       alert(e);
       return;
+    });
+  }
+
+  const handleZaloMessageButton = () => {
+    zaloApi.findUserbyPhoneNumber(dateInfo?.center?._id, drivingInfo?.zalo).then(res => {
+      if (res?.data?.uid) {
+        zaloApi.sendTextMessage(dateInfo?.center?._id, res?.data?.uid, QUICK_MESSAGE).then(res => {
+          toastWrapper('Gửi tin nhắn thành công', 'success');
+          drivingApi.updateDriving(drivingInfo._id, {
+            zaloSent: true
+          }).then(res => {
+            setZaloSent(true);
+          }).catch(e => {
+            toastWrapper('Cập nhật trạng thái hồ sơ thất bại', 'error');
+          })
+        }).catch(e => {
+          toastWrapper('Gửi tin nhắn thất bại', 'error');
+        });
+      } else {
+        toastWrapper('Không tìm thấy người dùng trên Zalo', 'error');
+      }
+    }
+    ).catch(e => {
+      toastWrapper('Không tìm thấy người dùng trên Zalo', 'error');
+    });
+  }
+
+  const sendZaloMessage = (message) => {
+    zaloApi.findUserbyPhoneNumber(dateInfo?.center?._id, drivingInfo?.zalo).then(res => {
+      if (res?.data?.uid) {
+        zaloApi.sendTextMessage(dateInfo?.center?._id, res?.data?.uid, message).then(res => {
+          toastWrapper('Gửi tin nhắn thành công', 'success');
+        }).catch(e => {
+          toastWrapper('Gửi tin nhắn thất bại', 'error');
+        });
+      } else {
+        toastWrapper('Không tìm thấy người dùng trên Zalo', 'error');
+      }
+    }
+    ).catch(e => {
+      toastWrapper('Không tìm thấy người dùng trên Zalo', 'error');
     });
   }
 
@@ -731,18 +788,15 @@ function Driving(props) {
                     ) : null}
                   </select>
                 </Col>
-                <Col xs={2}>
-                  <Button
-                    className="w-100"
+                <Col xs={5}>
+                <Button
                     variant="outline-primary"
                     onClick={updateDate}
                   >
-                    Lưu lại
+                    <MdOutlineSave />
                   </Button>
-                </Col>
-                <Col xs={3}>
-                  <Button variant='outline-primary' onClick={() => setShowDateInfo(true)}>
-                    <MdMoreVert />
+                  <Button variant='outline-primary' className="ms-3" onClick={() => setShowDateInfo(true)}>
+                    <MdExpandMore />
                   </Button>
                   <CopyToClipboardButton className='btn btn-outline-primary ms-3' value={QUICK_MESSAGE}/>
                 </Col>
@@ -782,8 +836,8 @@ function Driving(props) {
           </div>
           <div>
             <div className="d-flex justify-content-end align-items-center mt-2">
-              {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang trích xuất' : 'Trích xuất CCCD'}</Button>)}
-              {DRIVING_STATE.APPROVED !== processState && identityInfo?._id && <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin trích xuất</Button>}
+              {DRIVING_STATE.APPROVED === processState && (identityInfo?._id ? <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin</Button> : <Button className="ms-2" disabled={extracting} variant="outline-primary" onClick={() => extractIdentity()}>{extracting ? 'Đang đọc' : 'Đọc thông tin'}</Button>)}
+              {DRIVING_STATE.APPROVED !== processState && identityInfo?._id && <Button className="ms-2" variant="outline-primary" onClick={handleShowIdentityInfo}>Xem thông tin</Button>}
               <Button className="ms-2" variant="outline-primary" onClick={() => {
                 setImageVisible(true);
               }}>Xem ảnh hồ sơ</Button>
@@ -1011,7 +1065,7 @@ function Driving(props) {
               <p>Ngày hệ thống: <b>{new Date(dateInfo?.date)?.toLocaleDateString('en-GB')}</b></p>
               <p>Mô tả: <b>{dateInfo?.description}</b></p>
               <p>Link nhóm: <a target="_blank" rel='noreferrer noopener' href={dateInfo?.link || ''}>{dateInfo?.link || ''}</a><CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={dateInfo?.link || ''} /></p>
-              {dateInfo?.link && <p>Tin nhắn nhanh:<br />{QUICK_MESSAGE}<CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={QUICK_MESSAGE} /></p>}
+              {dateInfo?.link && <p>Tin nhắn nhanh:<br />{QUICK_MESSAGE}<CopyToClipboardButton className='ms-3 btn btn-outline-primary' value={QUICK_MESSAGE} /><Button variant={zaloSent ? "outline-warning" : "outline-primary"} className="ms-2" onClick={handleZaloMessageButton}>{zaloSent ? 'Gửi lại' : 'Gửi tin nhắn'}</Button></p>}
             </Col>
             <Col xs={3}>
               {dateInfo?.link && <QRCode value={dateInfo?.link} size={100} />}

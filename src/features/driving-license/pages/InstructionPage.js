@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import styles from "./instructionPage.module.css";
-
 import { DRIVING_LICENSE_NUMBER, ZALO_OA_NUMBER } from "constants/contact";
 import ZaloLink from "components/link/ZaloLink";
-import { convertPhoneNumber } from "utils";
-
 import DrivingApi from "api/drivingApi";
 import AccountModal from "../components/AccountModal";
-import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 
 export default function DrivingInstructionPage(props) {
@@ -18,41 +13,8 @@ export default function DrivingInstructionPage(props) {
   const search = new URLSearchParams(location.search);
   const source = search.get("s");
   const navigate = useNavigate();
-  const [dateList, setDateList] = useState([]);
   const [accountShow, setAccountShow] = useState(false);
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
-
-  const drivingDate = useMemo(()=>{
-    if(drivingInfo?.date) {
-      return new Date(drivingInfo?.date).toLocaleDateString('en-GB')
-    } else return null;
-  }, [drivingInfo?.date]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await DrivingApi.getFormVisible();
-      let data = response.data;
-
-      if (data.length > 0) {
-        data = data.map((child) => {
-          return {
-            ...child,
-            date: new Date(child.date),
-          };
-        });
-
-        setDateList(data);
-      } else {
-        alert("Chưa có danh sách ngày thi mới");
-      }
-    };
-
-    try {
-      fetchData();
-    } catch (e) {
-      alert("Lỗi: " + e);
-    }
-  }, []);
 
   return (
     <div className={styles.container}>
@@ -163,14 +125,8 @@ export default function DrivingInstructionPage(props) {
           <div id="date">
             <h3 className={styles.sectionTitle}>Ngày thi</h3>
             <p>
-              Thí sinh chọn ngày dự thi căn cứ theo lịch thi mỗi tháng như sau:
+              Thí sinh chọn ngày dự thi căn cứ theo lịch thi mỗi tháng trên link đăng ký <a href='/driving-registration' target="_blank" rel="noopener noreferrer">tại đây.</a>
             </p>
-            <ul>
-              {dateList &&
-                dateList.map((child) => {
-                  return <li key={child._id}>{child.description}</li>;
-                })}
-            </ul>
           </div>
           <div id="online">
             <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký online</h3>

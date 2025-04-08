@@ -1,49 +1,48 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { getYoutubeId } from 'utils/commonUtils';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
+import 'videojs-youtube';
 
-const VideoPlayer = ({ videoUrl, updateMapa }) => {
+const VideoPlayer = ({ youtubeUrl }) => {
+  const videoId = getYoutubeId(youtubeUrl);
+  console.log(videoId);
   const videoRef = useRef(null);
-  const [player, setPlayer] = useState(null);
-  
+  const playerRef = useRef(null);
+
   useEffect(() => {
-    if (!videoRef.current) return;
-
-    const videoJsPlayer = videojs(videoRef.current, {
-      controls: true,
-      autoplay: false,
-      fluid: true
-    });
-
-    // Chặn tua nhanh
-    videoJsPlayer.on('timeupdate', () => {
-      const currentTime = videoJsPlayer.currentTime();
-      const lastTime = localStorage.getItem('lastWatched') || 0;
-      if (currentTime > lastTime + 10) {
-        videoJsPlayer.currentTime(lastTime); // Reset lại thời gian xem
-      }
-    });
-
-    // Lưu trạng thái xem video
-    videoJsPlayer.on('timeupdate', () => {
-      updateMapa(videoJsPlayer.currentTime());
-      localStorage.setItem('lastWatched', videoJsPlayer.currentTime());
-    });
-
-    setPlayer(videoJsPlayer);
+    if (videoRef.current && !playerRef.current) {
+      playerRef.current = videojs(videoRef.current, {
+        techOrder: ['youtube'],
+        sources: [
+          {
+            type: 'video/youtube',
+            src: `https://www.youtube.com/watch?v=${videoId}`,
+          },
+        ],
+        youtube: {
+          modestbranding: 1,
+          rel: 0,
+        },
+        controls: true,
+        responsive: true,
+        fluid: true,
+      });
+    }
 
     return () => {
-      if (videoJsPlayer) {
-        videoJsPlayer.dispose();
+      if (playerRef.current) {
+        playerRef.current.dispose();
+        playerRef.current = null;
       }
     };
-  }, [videoUrl]);
+  }, [videoId]);
 
-  return (
-    <div>
-      <video ref={videoRef} className="video-js vjs-default-skin" />
+  return videoId ? (
+    <div data-vjs-player>
+      <video ref={videoRef} className="video-js vjs-big-play-centered" />
     </div>
-  );
+  ) : null;
 };
 
 export default VideoPlayer;

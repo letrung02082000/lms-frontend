@@ -8,11 +8,11 @@ const formatCurrency = (value) => {
 }
 
 const formatPhoneNumber = (value) => {
-    if(!value) return '';
-    if(value?.slice(0,2) === '84') {
+    if (!value) return '';
+    if (value?.slice(0, 2) === '84') {
         return value.replace(/(\d{2})(\d{3})(\d{3})(\d{3})/, '+$1 $2 $3 $4');
     }
-    
+
     return value.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
 }
 
@@ -33,5 +33,14 @@ const blobToBase64 = (blob) => {
     });
 }
 
+const getYoutubeId = (url = '') => {
+    const regex = /(?:\?v=|\/embed\/|\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+};
 
-export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64 }
+const getVietnamDate = (date) => new Date(date).toLocaleString('sv-SE', {
+    timeZone: 'Asia/Ho_Chi_Minh'
+}).replaceAll('/', '-').split(' ')[0]; // YYYY-MM-DD format
+
+export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId }
