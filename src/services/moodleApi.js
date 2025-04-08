@@ -434,6 +434,42 @@ const getVideoInstance = async (id) => {
     return response.data;
 }
 
+const getVideoView = async (id) => {
+    const response = await apiClient.post('', null, {
+        params: {
+            wstoken: MOODLE_TOKEN,
+            wsfunction: 'local_supervideoapi_get_views_by_cm_id',
+            cm_id: id,
+        },
+    });
+
+    if (response.data && response.data.exception) {
+        throw new Error(response.data.message || `Lỗi API khi lấy video${id}.`);
+    }
+
+    return response.data;
+}
+
+const updateVideoView = async (viewId, currentTime, duration, percent, mapa) => {
+    const response = await apiClient.post('', null, {
+        params: {
+            wstoken: MOODLE_TOKEN,
+            wsfunction: 'mod_supervideo_progress_save',
+            view_id: viewId,
+            currenttime: currentTime,
+            duration,
+            percent,
+            mapa: JSON.stringify(mapa),
+        },
+    });
+
+    if (response.data && response.data.exception) {
+        throw new Error(response.data.message || `Lỗi API khi cập nhật view ${viewId}.`);
+    }
+
+    return response.data;
+}
+
 const moodleApi = {
     getSiteInfo,
     getQuizzesByCourses,
@@ -447,6 +483,8 @@ const moodleApi = {
     getMyEnrolledCourses,
     getCourseContents,
     getCoursesContents,
-    getVideoInstance
+    getVideoInstance,
+    getVideoView,
+    updateVideoView,
 };
 export default moodleApi;

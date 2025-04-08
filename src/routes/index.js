@@ -36,6 +36,9 @@ import ElearningStudentLoginPage from 'features/elearning/pages/ElearningStudent
 import ElearningStudentCoursePage from 'features/elearning/pages/ElearningStudentCoursePage';
 import ElearningStudentMyPage from 'features/elearning/pages/ElearningStudentMyPage';
 import ElearningStudentVideoPage from 'features/elearning/pages/ElearningStudentVideoPage';
+import ElearningStudentTestDetailPage from 'features/elearning/pages/ElearningStudentTestDetailPage';
+import ElearningStudentArticlePage from 'features/elearning/pages/ElearningStudentArticlePage';
+import ElearningStudentBookPage from 'features/elearning/pages/ElearningStudentBookPage';
 
 const router = createBrowserRouter([
   {
@@ -223,6 +226,18 @@ const router = createBrowserRouter([
           {
             path: PATH.ELEARNING.STUDENT.TEST,
             element: <ElearningStudentTestPage />,
+          },
+          {
+            path: PATH.ELEARNING.STUDENT.TEST_DETAIL,
+            element: <ElearningStudentTestDetailPage />,
+          },
+          {
+            path: PATH.ELEARNING.STUDENT.ARTICLE,
+            element: <ElearningStudentArticlePage />,
+          },
+          {
+            path: PATH.ELEARNING.STUDENT.BOOK,
+            element: <ElearningStudentBookPage />,
           },
         ],
       },

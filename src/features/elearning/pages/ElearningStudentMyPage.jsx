@@ -30,7 +30,7 @@ function ElearningStudentMyPage() {
           <Row>
             <Col md={2} className='text-center'>
               <Image
-                src={student?.portraitUrl || 'https://via.placeholder.com/100'}
+                src={student?.portraitUrl || 'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'}
                 roundedCircle
                 width={100}
                 height={100}

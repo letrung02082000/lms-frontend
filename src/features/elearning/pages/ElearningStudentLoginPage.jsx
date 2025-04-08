@@ -11,6 +11,7 @@ import Alert from 'react-bootstrap/Alert';
 import moodleApi from 'services/moodleApi'; // Import moodleApi chứa hàm getToken
 import { useNavigate } from 'react-router-dom';
 import { PATH } from 'constants/path';
+import elearningApi from 'api/elearningApi';
 
 function ElearningStudentLoginPage() {
   // onLoginSuccess sẽ nhận token
@@ -33,6 +34,15 @@ function ElearningStudentLoginPage() {
       .catch((error) => {
         console.error('Lỗi khi lấy thông tin trang Moodle:', error);
       });
+
+    elearningApi.getUserByMoodleToken(token).then((res) => {
+      console.log('Thông tin người dùng:', res);
+      localStorage.setItem('center', JSON.stringify(res?.data?.center));
+
+    }).catch((error) => {
+      console.error('Lỗi khi lấy thông tin người dùng:', error);
+    });
+
     navigate(PATH.ELEARNING.STUDENT.ROOT); // Chuyển hướng đến trang Moodle
   }, []);
 

@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
+import 'videojs-youtube';
+import { getYoutubeId } from 'utils/commonUtils';
 import VideoProgressMapa from './VideoProgressBar';
 
 const VideoPlayer = ({
@@ -10,36 +12,34 @@ const VideoPlayer = ({
   intervalTime = 5,
 }) => {
   const [mapa, setMapa] = useState(videoView?.mapa || []);
+  const youtubeId = getYoutubeId(url);
   const videoRef = useRef(null);
   const playerRef = useRef(null);
   const mapaRef = useRef(videoView?.mapa || []);
   const lastValidTime = useRef(videoView?.currenttime || 0);
 
   useEffect(() => {
-    if (!url || !videoRef.current || playerRef.current) return;
+    if (!youtubeId || !videoRef.current || playerRef.current) return;
 
     const player = videojs(videoRef.current, {
-      techOrder: ['html5'],
+      techOrder: ['youtube'],
       sources: [
         {
-          src: url,
-          type: 'video/mp4',
+          type: 'video/youtube',
+          src: `https://www.youtube.com/watch?v=${youtubeId}`,
         },
       ],
+      youtube: {
+        modestbranding: 1,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3
+      },
       controls: true,
       responsive: true,
       fluid: true,
     });
-
     playerRef.current = player;
-
-    player.ready(() => {
-      const startTime =
-        (videoView?.duration * videoView?.percent) / 100 ||
-        videoView?.currenttime ||
-        0;
-      player.currentTime(startTime);
-    });
 
     return () => {
       if (playerRef.current) {
@@ -47,7 +47,7 @@ const VideoPlayer = ({
         playerRef.current = null;
       }
     };
-  }, [url]);
+  }, [youtubeId]);
 
   useEffect(() => {
     const updateMapa = () => {
@@ -63,22 +63,28 @@ const VideoPlayer = ({
         return;
       }
 
-      const currentTime = Math.floor(player.currentTime());
-      const duration = Math.floor(player.duration());
-
-      const viewedCount = mapaRef.current.filter((v) => v === 1).length;
-      const percent = Math.floor((viewedCount / mapaRef.current.length) * 100) || 0;
-
-      onMapaUpdate(mapaRef.current, currentTime, duration, percent);
-      setMapa([...mapaRef.current]);
+      onMapaUpdate(
+        mapaRef.current,
+        Math.floor(playerRef.current.currentTime()),
+        Math.floor(playerRef.current.duration()),
+        Math.floor(
+          (mapaRef.current.filter((item) => item === 1).length /
+            mapaRef.current.length || 0) * 100
+        )
+      );
+      setMapa(mapaRef.current);
     };
 
     const intervalId = setInterval(updateMapa, intervalTime * 1000);
-    return () => clearInterval(intervalId);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   useEffect(() => {
     const player = playerRef.current;
+
     if (!player) return;
 
     const handleTimeUpdate = () => {
@@ -91,7 +97,7 @@ const VideoPlayer = ({
         mapaRef.current = initialMapa;
       }
 
-      if (lastValidTime.current > currentTime) {
+      if(lastValidTime.current > currentTime){
         player.currentTime(lastValidTime.current);
         return;
       }
@@ -102,31 +108,29 @@ const VideoPlayer = ({
       }
 
       if (currentTime - lastValidTime.current > intervalTime + 1) {
-        player.currentTime(lastValidTime.current);
+        playerRef.current.currentTime(lastValidTime.current);
         return;
+      } else {
+        lastValidTime.current = currentTime;
+        mapaRef.current = [...mapaRef.current];
+        const currentIndex = Math.floor(currentTime / intervalTime);
+        mapaRef.current[currentIndex] = 1;
       }
-
-      lastValidTime.current = currentTime;
-
-      const currentIndex = Math.floor(currentTime / intervalTime);
-      mapaRef.current = [...mapaRef.current];
-      mapaRef.current[currentIndex] = 1;
     };
 
     player.on('timeupdate', handleTimeUpdate);
+
     return () => {
-      player.off('timeupdate', handleTimeUpdate);
+      if (player) {
+        player.off('timeupdate', handleTimeUpdate);
+      }
     };
   }, []);
 
-  return (
+  return videoRef ? (
     <div className='my-4'>
       <div data-vjs-player>
-        <video
-          ref={videoRef}
-          className='video-js vjs-big-play-centered'
-          playsInline
-        />
+        <video ref={videoRef} className='video-js vjs-big-play-centered' />
       </div>
       <div className='my-2'></div>
       <VideoProgressMapa mapa={mapa} />
@@ -135,7 +139,7 @@ const VideoPlayer = ({
         <p>
           {Math.floor(
             (mapa.filter((item) => item === 1).length / mapa.length || 0) * 100
-          )}
+          )}{' '}
           %
         </p>
         <p>
@@ -143,6 +147,8 @@ const VideoPlayer = ({
         </p>
       </div>
     </div>
+  ) : (
+    <div>Không thể phát video</div>
   );
 };
 
