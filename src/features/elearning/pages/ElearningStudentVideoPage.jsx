@@ -1,39 +1,91 @@
-import React, { useEffect } from 'react';
-import { Container } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Spinner, Alert } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import moodleApi from 'services/moodleApi';
+import YoutubePlayer from '../components/YoutubePlayer';
 import VideoPlayer from '../components/VideoPlayer';
 
 function ElearningStudentVideoPage() {
-  const videoId = useParams()?.id;
-  const [videoInstance, setVideoInstance] = React.useState(null);
-  console.log(videoInstance);
+  const { id: videoId } = useParams();
+  const moduleId = new URLSearchParams(window.location.search).get('m');
+  const [videoInstance, setVideoInstance] = useState(null);
+  const [videoView, setVideoView] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
+    if (!videoId) return;
+
     moodleApi
       .getVideoInstance(videoId)
       .then((data) => {
+        console.log('Video instance data:', data);
         setVideoInstance(data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching video module:', error);
+        setError('Không thể tải video. Vui lòng thử lại sau.');
+        setLoading(false);
       });
-  }, []);
 
-  useEffect(() => {
-    if (videoInstance) {
+    moodleApi.getVideoView(moduleId).then((data) => {
+      setVideoView(data?.at(-1));
+    }).catch((error) => {
+      console.error('Error fetching video view:', error);
+    });
+  }, [videoId]);
 
-    }
-  }, [videoInstance]);
+  const onMapaUpdate = (mapa, current, duration, percent) => {
+    console.log('Mapa updated:', mapa);
+    if(!videoView?.id) return;
+
+    moodleApi
+      .updateVideoView(videoView.id, current, duration, percent, mapa)
+      .then((data) => {
+        console.log('Video view updated:', data);
+      })
+      .catch((error) => {
+        console.error('Error updating video view:', error);
+      });
+  };
+
+  console.log(videoView);
 
   return (
-    <div style={{
-      height: '100vh',
-      overflowY: 'scroll',
-    }}>
+    <div style={{ height: '100vh', overflowY: 'scroll' }}>
       <Container className='mt-4'>
-      <h3 className='mb-4'>Bài giảng video: {videoInstance?.name}</h3>
-      <VideoPlayer youtubeUrl={videoInstance?.videourl} />
-    </Container>
+        {loading && (
+          <div className='text-center my-5'>
+            <Spinner animation='border' />
+            <p>Đang tải video...</p>
+          </div>
+        )}
+
+        {error && <Alert variant='danger'>{error}</Alert>}
+
+        {videoInstance && (
+          <div className='w-75 mx-auto'>
+            <h3 className='mb-4'>Bài giảng video: {videoInstance.name}</h3>
+            {videoInstance?.origem === 'youtube' && (
+              <YoutubePlayer
+                url={videoInstance.videourl}
+                videoView={videoView}
+                onMapaUpdate={onMapaUpdate}
+                intervalTime={5}
+              />
+            )}
+            {videoInstance?.origem === 'link' && (
+              <VideoPlayer
+                url={videoInstance.videourl}
+                videoView={videoView}
+                onMapaUpdate={onMapaUpdate}
+                intervalTime={5}
+              />
+            )}
+          </div>
+        )}
+      </Container>
     </div>
   );
 }

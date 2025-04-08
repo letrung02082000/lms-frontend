@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Row, Col, ListGroup, Card, Accordion } from 'react-bootstrap';
 import elearningApi from 'api/elearningApi';
-import VideoPlayer from '../components/VideoPlayer';
+import VideoPlayer from '../components/YoutubePlayer';
 
 function ElearningStudentCourseDetailPage() {
   const { courseId } = useParams();

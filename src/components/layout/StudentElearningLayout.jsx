@@ -3,10 +3,18 @@ import AdminLayout from './AdminLayout';
 import { STUDENT_ELEARNING_MENU } from 'constants/menu';
 
 function StudentElearningLayout() {
+  const center = JSON.parse(localStorage.getItem('center') || '{}');
+
   return (
     <AdminLayout
       menu={STUDENT_ELEARNING_MENU}
-      title='E-DRIVING'
+      title={
+        <img
+          src={center?.logo || '/logo.png'}
+          alt='Logo'
+          style={{ width: '100%', height: 'auto' }}
+        />
+      }
       handleLogout={() => {
         localStorage.removeItem('moodleToken');
         window.location.reload();

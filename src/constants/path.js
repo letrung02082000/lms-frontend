@@ -80,7 +80,10 @@ export const PATH = {
             LESSON_DETAIL: '/elearning/student/lesson/:lessonId',
             RESULT: '/elearning/student/result',
             TEST: '/elearning/student/test',
+            TEST_DETAIL: '/elearning/student/test/:id',
             VIDEO: '/elearning/student/video/:id',
+            ARTICLE: '/elearning/student/article/:id',
+            BOOK: '/elearning/student/book/:id',
         },
         LOGIN: '/elearning/login'
     },
