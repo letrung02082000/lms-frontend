@@ -194,8 +194,7 @@ export const getAttemptReview = async (attemptId, page = -1) => {
     }
 };
 
-export const getUserAttempts = async (quizId, status = 'inprogress', includePreviews = false) => {
-    console.log(`Gọi API: mod_quiz_get_user_attempts với quizId: ${quizId}, status: ${status}`);
+export const getUserAttempts = async (quizId, status = 'unfinished', includePreviews = false) => {
     if (!quizId) throw new Error('quizId là bắt buộc cho getUserAttempts.');
 
     try {
