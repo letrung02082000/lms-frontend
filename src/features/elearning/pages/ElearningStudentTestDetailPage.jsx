@@ -31,8 +31,7 @@ function ElearningStudentTestDetailPage() {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [attemptSummary, setAttemptSummary] = useState(null);
-  console.log(answers)
-  // Tách xử lý URLSearchParams
+
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const cId = parseInt(searchParams.get('c'));
@@ -152,6 +151,19 @@ function ElearningStudentTestDetailPage() {
       // Gọi API lưu trễ với các câu trả lời của cùng slot
       debouncedSaveAnswer(slotAnswers);
   
+      return updated;
+    });
+    setAttemptSummary((prev) => {
+      const updated = { ...prev };
+      updated.questions = updated.questions.map((question) => {
+        if (question.slot === slot) {
+          return {
+            ...question,
+            stateclass: 'answersaved',
+          };
+        }
+        return question;
+      });
       return updated;
     });
   };
@@ -299,6 +311,7 @@ function ElearningStudentTestDetailPage() {
                             question={parseQuestionHTML(question.html)}
                             onAnswerChange={handleAnswerChange}
                             slot={question.slot}
+                            sequenceCheck={question.sequencecheck}
                           />
                         </Card.Body>
                       </Card>
@@ -309,13 +322,13 @@ function ElearningStudentTestDetailPage() {
                         onClick={() => setCurrentPage(currentPage - 1)}
                         disabled={currentPage === 0}
                       >
-                        Câu trước
+                        Trang trước
                       </Button>
                       <Button
                         variant='primary'
                         onClick={() => setCurrentPage(currentPage + 1)}
                       >
-                        Câu tiếp
+                        Trang tiếp
                       </Button>
                     </div>
                   </Col>

@@ -57,19 +57,22 @@ const parseQuestionHTML = (htmlString) => {
 
     // Lấy danh sách đáp án
     const answerElements = doc.querySelectorAll('.answer .d-flex');
-    const answers = Array.from(answerElements).map((el) => {
+    const allInputElements = doc.querySelectorAll('input[type="radio"]');
+
+    const answers = Array.from(answerElements).map((el, idx) => {
+        const input = allInputElements[idx];
         const label = el.querySelector('p')?.innerHTML.trim() || '';
-        return { label };
+        const value = input?.value || '';
+        const checked = input?.checked || false;
+        return { label, value, checked };
     });
 
     // Trả về đối tượng tương thích React component
     return {
         id: questionId,
         text: questionText,
-        answers: answers
+        answers: answers,
     };
-}
-
-
+};
 
 export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId, parseQuestionHTML }
