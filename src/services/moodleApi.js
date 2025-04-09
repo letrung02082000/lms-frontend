@@ -469,6 +469,49 @@ const updateVideoView = async (viewId, currentTime, duration, percent, mapa) => 
     return response.data;
 }
 
+const getCourseById = async (courseId) => {
+    console.log(`Gọi API: core_course_get_courses cho courseId: ${courseId}`);
+  
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+      console.error("Lỗi: Không tìm thấy token trong localStorage để gọi getCourseById.");
+      throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+  
+    if (!courseId || typeof courseId !== 'number' || courseId <= 0) {
+      throw new Error("courseId không hợp lệ.");
+    }
+  
+    try {
+      const response = await apiClient.post('', null, {
+        params: {
+          wstoken: currentToken,
+          wsfunction: 'core_course_get_courses',
+          moodlewsrestformat: 'json',
+          'options[ids][0]': courseId,
+        },
+      });
+  
+      if (response.data && response.data.exception) {
+        if (response.data.errorcode === 'invalidtoken') {
+          console.error(`Token không hợp lệ khi gọi getCourseById cho courseId: ${courseId}.`);
+        }
+        throw new Error(response.data.message || `Lỗi API khi lấy thông tin khóa học ID ${courseId}.`);
+      }
+  
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        console.log(`Lấy thông tin thành công cho courseId: ${courseId}`);
+        return response.data[0]; // Vì API trả về mảng, lấy phần tử đầu tiên
+      } else {
+        throw new Error(`Không tìm thấy thông tin khóa học với ID ${courseId}.`);
+      }
+    } catch (error) {
+      console.error(`Lỗi khi gọi getCourseById cho courseId ${courseId}:`, error.response?.data || error.message);
+      throw error;
+    }
+  };
+  
+
 const moodleApi = {
     getSiteInfo,
     getQuizzesByCourses,
@@ -485,5 +528,6 @@ const moodleApi = {
     getVideoInstance,
     getVideoView,
     updateVideoView,
+    getCourseById,
 };
 export default moodleApi;

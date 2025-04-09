@@ -43,4 +43,30 @@ const getVietnamDate = (date) => new Date(date).toLocaleString('sv-SE', {
     timeZone: 'Asia/Ho_Chi_Minh'
 }).replaceAll('/', '-').split(' ')[0]; // YYYY-MM-DD format
 
-export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId }
+const parseQuestionHTML = (htmlString) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+
+    const questionId = doc.querySelector('.que')?.id;
+    const questionText = doc.querySelector('.qtext')?.innerText.trim();
+
+    const answers = Array.from(doc.querySelectorAll('.answer > div')).map((div, index) => {
+        const input = div.querySelector('input[type="radio"]');
+        const label = div.querySelector('p')?.innerText || div.innerText;
+
+        return {
+            id: input?.id,
+            value: input?.value,
+            name: input?.name,
+            label: label.trim(),
+        };
+    });
+
+    return {
+        id: questionId,
+        text: questionText,
+        answers,
+    };
+}
+
+export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId, parseQuestionHTML }
