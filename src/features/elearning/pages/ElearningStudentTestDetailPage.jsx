@@ -1,6 +1,7 @@
 import { QUIZ_ATTEMPT_STATUS } from 'constants/driving-elearning.constant';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import debounce from 'lodash.debounce';
 import moodleApi from 'services/moodleApi';
 import {
   Button,
@@ -13,6 +14,8 @@ import {
 } from 'react-bootstrap';
 import QuestionItem from '../components/QuestionItem';
 import { parseQuestionHTML } from 'utils/commonUtils';
+import QuestionNavigator from '../components/QuestionNavigator';
+import { toastWrapper } from 'utils';
 
 function ElearningStudentTestDetailPage() {
   const testId = useParams().id;
@@ -27,7 +30,8 @@ function ElearningStudentTestDetailPage() {
   const [quiz, setQuiz] = useState(null);
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [attemptSummary, setAttemptSummary] = useState(null);
+  console.log(answers)
   // Tách xử lý URLSearchParams
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -75,6 +79,20 @@ function ElearningStudentTestDetailPage() {
     }
   }, [courseId]);
 
+  useEffect(() => {
+    if (quizAttemptId) {
+      moodleApi
+        .getQuizAttemptSummary(quizAttemptId)
+        .then((data) => {
+          console.log('Attempt summary:', data);
+          setAttemptSummary(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching attempt summary:', error);
+        });
+    }
+  }, [quizAttemptId]);
+
   const startNewAttempt = () => {
     moodleApi
       .startQuizAttempt(testId)
@@ -88,7 +106,12 @@ function ElearningStudentTestDetailPage() {
     moodleApi
       .getAttemptData(attemptId, page)
       .then((data) => setQuizAttemptData(data))
-      .catch(console.error);
+      .catch(error => {
+        toastWrapper(error.message, 'error');
+        setQuizAttemptData(null);
+        setQuizAttemptId(null);
+        console.error('Error fetching attempt data:', error);
+      });
   };
 
   useEffect(() => {
@@ -97,16 +120,50 @@ function ElearningStudentTestDetailPage() {
     }
   }, [quizAttemptId, currentPage]);
 
-  const handleAnswerChange = (questionId, value) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: value,
-    }));
+  const debouncedSaveAnswer = useMemo(() => {
+    return debounce(async (slotAnswers) => {
+      const data = Object.entries(slotAnswers).map(([key, value]) => ({
+        name: key,
+        value,
+      }));
+  
+      try {
+        await moodleApi.saveAttemptData(quizAttemptId, data);
+      } catch (err) {
+        console.error('Error saving answer:', err);
+      }
+    }, 1000);
+  }, [quizAttemptId]);
+  
+  const handleAnswerChange = (slot, payload) => {
+    setAnswers((prev) => {
+      const updated = { ...prev };
+  
+      // Cập nhật lại câu trả lời mới vào answers
+      payload.forEach(({ name, value }) => {
+        updated[name] = value;
+      });
+  
+      // Lọc ra tất cả các câu trả lời liên quan đến cùng slot
+      const slotAnswers = Object.fromEntries(
+        Object.entries(updated).filter(([key]) => key.includes(`:${slot}_`))
+      );
+  
+      // Gọi API lưu trễ với các câu trả lời của cùng slot
+      debouncedSaveAnswer(slotAnswers);
+  
+      return updated;
+    });
   };
+
+  useEffect(() => {
+    return () => {
+      debouncedSaveAnswer.cancel();
+    };
+  }, [debouncedSaveAnswer]);
 
   const continueQuizAttempt = (attempt) => {
     setQuizAttemptId(attempt.id);
-    setCurrentPage(0);
     setShowHistory(false);
   };
 
@@ -229,36 +286,46 @@ function ElearningStudentTestDetailPage() {
               <div className='mt-5'>
                 <h2 className='mb-4'>Danh sách câu hỏi</h2>
                 <Row className='g-4'>
-                  {quizAttemptData.questions.map((question) => (
-                    <Col xs={12} key={question.number}>
-                      <Card className='shadow-sm'>
+                  <Col md={9}>
+                    {quizAttemptData.questions.map((question) => (
+                      <Card key={question.number} className='mb-3 shadow-sm'>
                         <Card.Header>
-                          <Card.Title className='mb-0'>Câu {question.number}</Card.Title>
+                          <Card.Title className='mb-0'>
+                            Câu {question.number}
+                          </Card.Title>
                         </Card.Header>
                         <Card.Body>
                           <QuestionItem
                             question={parseQuestionHTML(question.html)}
                             onAnswerChange={handleAnswerChange}
+                            slot={question.slot}
                           />
                         </Card.Body>
                       </Card>
-                    </Col>
-                  ))}
-                  <div className='d-flex justify-content-between mt-4'>
-                    <Button
-                      variant='secondary'
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      disabled={currentPage === 0}
-                    >
-                      Câu trước
-                    </Button>
-                    <Button
-                      variant='primary'
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                    >
-                      Câu tiếp
-                    </Button>
-                  </div>
+                    ))}
+                    <div className='d-flex justify-content-between mt-4'>
+                      <Button
+                        variant='secondary'
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        disabled={currentPage === 0}
+                      >
+                        Câu trước
+                      </Button>
+                      <Button
+                        variant='primary'
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                      >
+                        Câu tiếp
+                      </Button>
+                    </div>
+                  </Col>
+                  <Col md={3}>
+                    <QuestionNavigator
+                      summaryQuestions={attemptSummary?.questions || []}
+                      currentPage={currentPage}
+                      setCurrentPage={setCurrentPage}
+                    />
+                  </Col>
                 </Row>
               </div>
             )}

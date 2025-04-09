@@ -47,26 +47,29 @@ const parseQuestionHTML = (htmlString) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
 
-    const questionId = doc.querySelector('.que')?.id;
-    const questionText = doc.querySelector('.qtext')?.innerText.trim();
+    // Lấy ID câu hỏi (từ thẻ div id="question-XXX")
+    const questionWrapper = doc.querySelector('[id^="question-"]');
+    const questionId = questionWrapper?.id?.split('-')[1] || null;
 
-    const answers = Array.from(doc.querySelectorAll('.answer > div')).map((div, index) => {
-        const input = div.querySelector('input[type="radio"]');
-        const label = div.querySelector('p')?.innerText || div.innerText;
+    // Lấy nội dung câu hỏi
+    const questionTextElement = doc.querySelector('.qtext');
+    const questionText = questionTextElement?.innerHTML?.trim() || '';
 
-        return {
-            id: input?.id,
-            value: input?.value,
-            name: input?.name,
-            label: label.trim(),
-        };
+    // Lấy danh sách đáp án
+    const answerElements = doc.querySelectorAll('.answer .d-flex');
+    const answers = Array.from(answerElements).map((el) => {
+        const label = el.querySelector('p')?.innerHTML.trim() || '';
+        return { label };
     });
 
+    // Trả về đối tượng tương thích React component
     return {
         id: questionId,
         text: questionText,
-        answers,
+        answers: answers
     };
 }
+
+
 
 export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId, parseQuestionHTML }
