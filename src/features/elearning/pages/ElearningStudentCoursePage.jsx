@@ -4,31 +4,36 @@ import { Button, Card, Col, Container, Navbar, Row } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import moodleApi from 'services/moodleApi';
 import CourseCard from '../components/CourseCard';
+import { toastWrapper } from 'utils';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function ElearningStudentCoursePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [courses, setCourses] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const [courseContents, setCourseContents] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
-    moodleApi
-      .getMyEnrolledCourses()
-      .then((data) => {
-        setCourses(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    moodleApi
-      .getCoursesContents()
-      .then((data) => {
-        setCourseContents(data);
-      })
-      .catch((error) => {
+    setLoading(true);
+    const fetchData = async () => {
+      try {
+        const [courses, courseContents] = await Promise.all([
+          moodleApi.getMyEnrolledCourses(),
+          moodleApi.getCoursesContents(),
+        ]);
+        setCourses(courses);
+        setCourseContents(courseContents);
+      } catch (error) {
         console.error('Error fetching courses:', error);
-      });
+        toastWrapper.error(
+          'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.'
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   const handleSelectCourse = (course) => {
@@ -52,7 +57,15 @@ function ElearningStudentCoursePage() {
             ))}
           </Row>
         ) : (
-          <p>Bạn chưa tham gia khóa học nào đang diễn ra.</p>
+          <>
+            {loading ? (
+              <LoadingSpinner />
+            ) : (
+              <div className='text-center mt-5'>
+                <h4>Không có môn học nào</h4>
+              </div>
+            )}
+          </>
         )}
       </Container>
     </div>

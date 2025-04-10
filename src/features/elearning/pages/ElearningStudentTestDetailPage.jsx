@@ -325,7 +325,7 @@ function ElearningStudentTestDetailPage() {
                                         attempt.timefinish * 1000
                                       ).toLocaleString('en-GB')}
                                     </div>
-                                    <div>Điểm: {attempt.sumgrades}</div>
+                                    <div>Số câu đúng: {attempt.sumgrades}</div>
                                   </>
                                 )}
                               </Card.Text>

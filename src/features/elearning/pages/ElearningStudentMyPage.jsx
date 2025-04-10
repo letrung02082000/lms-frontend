@@ -4,16 +4,19 @@ import React, { useEffect } from 'react';
 import { Card, Col, Container, Image, Row, Table } from 'react-bootstrap';
 import moodleApi from 'services/moodleApi';
 import { groupByUserCourseModule } from 'utils/elearning.utils';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function ElearningStudentMyPage() {
   const moodleToken = localStorage.getItem('moodleToken');
   const [student, setStudent] = React.useState(null);
   const [courseReport, setCourseReport] = React.useState(null);
-  console.log(courseReport);
+  const [loading, setLoading] = React.useState(true);
+
   useEffect(() => {
     if (!moodleToken) {
       window.location.href = '/elearning/login';
     } else {
+      setLoading(true);
       elearningApi
         .getUserByMoodleToken(moodleToken)
         .then((res) => {
@@ -23,6 +26,9 @@ function ElearningStudentMyPage() {
           console.error('Error fetching site info:', error);
           localStorage.removeItem('moodleToken');
           window.location.href = '/elearning/login';
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [moodleToken]);
@@ -50,7 +56,8 @@ function ElearningStudentMyPage() {
         overflowY: 'scroll',
       }}
     >
-      <Container className='mt-4'>
+      {!loading ? (
+        <Container className='mt-4'>
         <Card className='mb-4 shadow-sm'>
           <Card.Body>
             <Row>
@@ -122,7 +129,6 @@ function ElearningStudentMyPage() {
           </Card.Body>
         </Card>
 
-        {/* Quá trình học tập */}
         <Card className='shadow-sm'>
           <Card.Header>
             <h5>Quá trình học tập</h5>
@@ -151,6 +157,9 @@ function ElearningStudentMyPage() {
           </Card.Body>
         </Card>
       </Container>
+      ) : (
+        <LoadingSpinner/>
+      )}
     </div>
   );
 }

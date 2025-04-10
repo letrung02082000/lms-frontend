@@ -104,6 +104,9 @@ function ElearningStudentTestPage() {
               >
                 <div className='ms-2 me-auto'>
                   <div className='fw-bold'>{quiz.name}</div>
+                  <small className='d-block text-muted'>
+                    {quiz.sumgrades} câu hỏi
+                  </small>
                   {quiz.timeopen > 0 && (
                     <small className='d-block text-muted'>
                       Mở lúc: {new Date(quiz.timeopen * 1000).toLocaleString()}
@@ -115,9 +118,13 @@ function ElearningStudentTestPage() {
                       {new Date(quiz.timeclose * 1000).toLocaleString()}
                     </small>
                   )}
-                  {quiz.timelimit > 0 && (
+                  {quiz.timelimit > 0 ? (
                     <small className='d-block text-muted'>
                       Thời gian làm bài: {Math.floor(quiz.timelimit / 60)} phút
+                    </small>
+                  ) : (
+                    <small className='d-block text-muted'>
+                      Không giới hạn thời gian
                     </small>
                   )}
                 </div>
