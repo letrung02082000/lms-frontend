@@ -30,7 +30,10 @@ function ElearningStudentMyPage() {
           <Row>
             <Col md={2} className='text-center'>
               <Image
-                src={student?.portraitUrl || 'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'}
+                src={
+                  student?.portraitUrl ||
+                  'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
+                }
                 roundedCircle
                 width={100}
                 height={100}
@@ -73,15 +76,19 @@ function ElearningStudentMyPage() {
               </p>
               <p>
                 <strong>Khai giảng:</strong>{' '}
-                {new Date(student?.course?.enrollmentDate).toLocaleDateString(
-                  'en-GB'
-                ) || 'Chưa cập nhật'}
+                {student?.course?.enrollmentDate
+                  ? new Date(
+                      student?.course?.enrollmentDate
+                    ).toLocaleDateString('en-GB')
+                  : 'Chưa cập nhật'}
               </p>
               <p>
                 <strong>Bế giảng:</strong>{' '}
-                {new Date(student?.course?.graduationDate).toLocaleDateString(
-                  'en-GB'
-                ) || 'Chưa cập nhật'}
+                {student?.course?.graduationDate
+                  ? new Date(
+                      student?.course?.enrollmentDate
+                    ).toLocaleDateString('en-GB')
+                  : 'Chưa cập nhật'}
               </p>
             </Col>
           </Row>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-const MOODLE_URL = 'https://lms.uniapp.vn';
+const MOODLE_URL = 'https://moodle.uniapp.vn';
 const MOODLE_TOKEN = localStorage.getItem('moodleToken');
 const MOODLE_SERVICE_SHORTNAME = 'react_app';
 
