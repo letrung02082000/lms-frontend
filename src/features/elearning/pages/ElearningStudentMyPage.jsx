@@ -2,12 +2,14 @@ import elearningApi from 'api/elearningApi';
 import { GENDERS } from 'constants/driving-student.constant';
 import React, { useEffect } from 'react';
 import { Card, Col, Container, Image, Row, Table } from 'react-bootstrap';
+import moodleApi from 'services/moodleApi';
+import { groupByUserCourseModule } from 'utils/elearning.utils';
 
 function ElearningStudentMyPage() {
   const moodleToken = localStorage.getItem('moodleToken');
   const [student, setStudent] = React.useState(null);
-  const [learningProgress, setLearningProgress] = React.useState([]);
-
+  const [courseReport, setCourseReport] = React.useState(null);
+  console.log(courseReport)
   useEffect(() => {
     if (!moodleToken) {
       window.location.href = '/elearning/login';
@@ -22,6 +24,22 @@ function ElearningStudentMyPage() {
         });
     }
   }, [moodleToken]);
+
+  useEffect(() => {
+    if (student) {
+      moodleApi
+        .getUserCourseReport({
+          userIds: [student?.elearningUserId],
+        })
+        .then((data) => {
+          const reportData = groupByUserCourseModule(data);
+          setCourseReport(reportData[student?.elearningUserId]);
+        })
+        .catch((error) => {
+          console.error('Error fetching course report:', error);
+        });
+    }
+  }, [student]);
 
   return (
     <Container className='mt-4'>
@@ -113,10 +131,10 @@ function ElearningStudentMyPage() {
               </tr>
             </thead>
             <tbody>
-              {learningProgress?.map((item, index) => (
+              {Object.values(courseReport?.courses || {}).map((item, index) => (
                 <tr key={item.courseId}>
                   <td>{index + 1}</td>
-                  <td>{item.courseName}</td>
+                  <td>{item.coursename}</td>
                   <td>{item.startDate}</td>
                   <td>{item.progress}%</td>
                   <td>{item.grade}</td>

@@ -591,6 +591,51 @@ const finishQuizAttempt = async (attemptId, timeUp = false) => {
     }
 };
 
+const getUserCourseReport = async ({ userIds = [], courseId = null }) => {
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!Array.isArray(userIds) || userIds.length === 0) {
+        throw new Error("Danh sách userIds phải là mảng và không được rỗng.");
+    }
+
+    // Chuẩn bị dữ liệu form
+    const formData = new URLSearchParams();
+    formData.append('wstoken', currentToken);
+    formData.append('wsfunction', 'local_usercoursereport_get_course_report');
+    formData.append('moodlewsrestformat', 'json');
+
+    // Thêm userids dạng userids[0], userids[1], ...
+    userIds.forEach((id, index) => {
+        formData.append(`userids[${index}]`, id);
+    });
+
+    // Thêm courseid nếu có
+    if (courseId) {
+        formData.append('courseid', courseId);
+    }
+
+    try {
+        const response = await apiClient.post('', formData, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            throw new Error(response.data.message || 'Lỗi khi gọi local_usercoursereport_get_course_report');
+        }
+
+        return response.data;
+    } catch (error) {
+        console.error('Lỗi khi gọi getUserCourseReport:', error.response?.data || error.message);
+        throw error;
+    }
+};
+  
+
 const moodleApi = {
     getSiteInfo,
     getQuizzesByCourses,
@@ -610,5 +655,6 @@ const moodleApi = {
     getCourseById,
     getQuizAttemptSummary,
     finishQuizAttempt,
+    getUserCourseReport,
 };
 export default moodleApi;
