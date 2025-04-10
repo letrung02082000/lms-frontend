@@ -9,7 +9,7 @@ function ElearningStudentMyPage() {
   const moodleToken = localStorage.getItem('moodleToken');
   const [student, setStudent] = React.useState(null);
   const [courseReport, setCourseReport] = React.useState(null);
-  console.log(courseReport)
+  console.log(courseReport);
   useEffect(() => {
     if (!moodleToken) {
       window.location.href = '/elearning/login';
@@ -21,6 +21,8 @@ function ElearningStudentMyPage() {
         })
         .catch((error) => {
           console.error('Error fetching site info:', error);
+          localStorage.removeItem('moodleToken');
+          window.location.href = '/elearning/login';
         });
     }
   }, [moodleToken]);
@@ -122,12 +124,9 @@ function ElearningStudentMyPage() {
           <Table striped bordered hover responsive>
             <thead>
               <tr>
-                <th>#</th>
+                <th>STT</th>
                 <th>Môn học</th>
-                <th>Ngày bắt đầu</th>
                 <th>Tiến độ</th>
-                <th>Điểm số</th>
-                <th>Trạng thái</th>
               </tr>
             </thead>
             <tbody>
@@ -135,10 +134,7 @@ function ElearningStudentMyPage() {
                 <tr key={item.courseId}>
                   <td>{index + 1}</td>
                   <td>{item.coursename}</td>
-                  <td>{item.startDate}</td>
-                  <td>{item.progress}%</td>
-                  <td>{item.grade}</td>
-                  <td>{item.status}</td>
+                  <td>{item.progress}</td>
                 </tr>
               ))}
             </tbody>
