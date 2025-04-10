@@ -249,10 +249,14 @@ function ElearningStudentTestDetailPage() {
                 <div className='mb-4'>
                   <h2>{quiz.name}</h2>
                   <p>{quiz.intro}</p>
-                  <p>
-                    Thời gian làm bài: {Math.floor(quiz.timelimit / 60)} phút
-                  </p>
                   <p>Môn học: {course?.displayname || ''}</p>
+                  <p>
+                    Thời gian làm bài:{' '}
+                    {quiz.timelimit != 0
+                      ? `${Math.floor(quiz.timelimit / 60)} phút`
+                      : 'Không giới hạn'}
+                  </p>
+                  <p>Số câu hỏi: {quiz?.sumgrades || ''}</p>
                 </div>
                 <div className='mb-4'>
                   {userAttempts.length === 0 && !quizAttempt?.id && (
@@ -271,7 +275,7 @@ function ElearningStudentTestDetailPage() {
                         onClick={startNewAttempt}
                         size='lg'
                       >
-                        Làm lại bài thi
+                        Thực hiện lại
                       </Button>
                     )}
                   {userAttempts.at(-1)?.state === 'inprogress' &&
@@ -382,13 +386,15 @@ function ElearningStudentTestDetailPage() {
                     </div>
                   </Col>
                   <Col md={3}>
-                    <Timer
-                      timestart={quizAttempt?.timestart * 1000 - 5000}
-                      timelimit={quiz?.timelimit / 60}
-                      onTimeUp={() => {
-                        handleFinishQuiz(true);
-                      }}
-                    />
+                    {quiz.timelimit > 0 && (
+                      <Timer
+                        timestart={quizAttempt?.timestart * 1000 - 5000}
+                        timelimit={quiz?.timelimit / 60}
+                        onTimeUp={() => {
+                          handleFinishQuiz(true);
+                        }}
+                      />
+                    )}
                     <div className='d-flex flex-column align-items-center mt-4'>
                       <Button
                         variant='success'

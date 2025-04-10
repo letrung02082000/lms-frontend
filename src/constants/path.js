@@ -73,7 +73,7 @@ export const PATH = {
             COURSE: '/elearning/admin/course',
         },
         STUDENT: {
-            ROOT: '/elearning/student',
+            ROOT: '/',
             COURSE: '/elearning/student/course',
             COURSE_DETAIL: '/elearning/student/course/:courseId',
             LESSON: '/elearning/student/lesson',
