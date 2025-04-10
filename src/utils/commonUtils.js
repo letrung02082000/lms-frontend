@@ -76,4 +76,11 @@ const parseQuestionHTML = (htmlString) => {
     };
 };
 
-export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId, parseQuestionHTML }
+const formatTime = (seconds) => {
+    if (!seconds || seconds === 0) return "0 giây";
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m} phút ${s} giây`;
+  };
+
+export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId, parseQuestionHTML, formatTime }
