@@ -12,13 +12,13 @@ const CourseReportAccordion = ({ courseReport }) => {
           <Accordion.Header>{course.coursename}</Accordion.Header>
           <Accordion.Body>
             {Object.entries(course.modules).map(([moduleType, items]) => (
-              <div key={moduleType} className="mb-4">
-                <h5>{moduleType === "quiz" ? "Bài kiểm tra" : "Bài giảng"}</h5>
+              <div key={moduleType} className='mb-4'>
+                <h5>{moduleType === 'quiz' ? 'Bài kiểm tra' : 'Bài giảng'}</h5>
                 <Table striped bordered hover>
                   <thead>
                     <tr>
                       <th>Tên</th>
-                      {moduleType === "quiz" ? (
+                      {moduleType === 'quiz' ? (
                         <>
                           <th>Điểm</th>
                           <th>Tổng điểm</th>
@@ -27,6 +27,7 @@ const CourseReportAccordion = ({ courseReport }) => {
                         <>
                           <th>Điểm</th>
                           <th>Thời lượng đã xem</th>
+                          <th>Thời lượng bài giảng</th>
                         </>
                       )}
                     </tr>
@@ -35,11 +36,34 @@ const CourseReportAccordion = ({ courseReport }) => {
                     {items.map((item, idx) => (
                       <tr key={idx}>
                         <td>{item.itemname}</td>
-                        <td>{item.finalgrade != null ? item.finalgrade : "Chưa có"}</td>
-                        {moduleType === "quiz" ? (
-                          <td>{item.quizsumgrades != null ? item.quizsumgrades : "N/A"}</td>
+                        <td>
+                          {item.finalgrade != null
+                            ? item.finalgrade
+                            : 'Chưa có'}
+                        </td>
+                        {moduleType === 'quiz' ? (
+                          <td>
+                            {item.quizsumgrades != null
+                              ? item.quizsumgrades
+                              : 'N/A'}
+                          </td>
                         ) : (
-                          <td>{item.duration != null ? formatTime(item.duration) : "0 giây"}</td>
+                          <>
+                            <td>
+                              {item.finalgrade != null
+                                ? formatTime(
+                                    Math.floor(
+                                      (item.duration * item.finalgrade) / 100
+                                    )
+                                  )
+                                : '0 giây'}
+                            </td>
+                            <td>
+                              {item.duration != null
+                                ? formatTime(item.duration)
+                                : '0 giây'}
+                            </td>
+                          </>
                         )}
                       </tr>
                     ))}

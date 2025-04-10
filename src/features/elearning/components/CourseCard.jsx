@@ -26,6 +26,7 @@ const CourseCard = ({ course, courseContent }) => {
             <h5>{course.fullnamedisplay}</h5>
             <p>{course.summary}</p>
             <Button
+              variant='outline-primary'
               onClick={() => setOpen(!open)}
               aria-controls={`lessons-${course.id}`}
               aria-expanded={open}

@@ -29,6 +29,7 @@ const VideoPlayer = ({
       controls: true,
       responsive: true,
       fluid: true,
+      loop: false,
     });
 
     playerRef.current = player;
@@ -39,6 +40,10 @@ const VideoPlayer = ({
         videoView?.currenttime ||
         0;
       player.currentTime(startTime);
+    });
+
+    player.on('ended', function () {
+      player.pause();
     });
 
     return () => {
@@ -69,6 +74,10 @@ const VideoPlayer = ({
       const viewedCount = mapaRef.current.filter((v) => v === 1).length;
       const percent = Math.floor((viewedCount / mapaRef.current.length) * 100) || 0;
 
+      if(percent >= 100) {
+        player.pause();
+      }
+
       onMapaUpdate(mapaRef.current, currentTime, duration, percent);
       setMapa([...mapaRef.current]);
     };
@@ -87,7 +96,12 @@ const VideoPlayer = ({
 
       if(!videoView) return;
 
-      if (mapaRef.current.length === 0 || mapaRef.current.length !== Math.floor(duration / intervalTime)) {
+      if (currentTime >= duration) {
+        player.pause();
+        return;
+      }
+
+      if (mapaRef.current.length === 0) {
         const totalIntervals = Math.floor(duration / intervalTime);
         const initialMapa = new Array(totalIntervals).fill(0);
         mapaRef.current = initialMapa;
@@ -98,11 +112,6 @@ const VideoPlayer = ({
 
       if (lastValidTime.current > currentTime) {
         player.currentTime(lastValidTime.current);
-        return;
-      }
-
-      if (currentTime >= duration) {
-        player.pause();
         return;
       }
 
