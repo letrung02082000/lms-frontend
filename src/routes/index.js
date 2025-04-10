@@ -41,91 +41,91 @@ import ElearningStudentArticlePage from 'features/elearning/pages/ElearningStude
 import ElearningStudentBookPage from 'features/elearning/pages/ElearningStudentBookPage';
 
 const router = createBrowserRouter([
-  {
-    path: PATH.HOME,
-    element: <MainGuard />,
-    errorElement: <NotFoundPage />,
-    children: [
-      {
-        element: <MainLayout />,
-        children: [
-          {
-            path: PATH.ACCOUNT,
-            element: <AccountPage />
-          },
-          {
-            path: PATH.USER.ROOT,
-            element: <UserGuard />,
-            errorElement: <NotFoundPage />,
-            children: [
-              {
-                path: PATH.USER.PROFILE,
-                element: <AccountPage />,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        path: PATH.SHORT_LINK,
-        element: <ShortLinkPage />
-      },
-      {
-        path: PATH.DRIVING.HEALTH_CHECK,
-        element: <ServiceLayout pageTitle="Đăng ký thông tin" backTo={PATH.HOME}>
-          <DrivingHealthPage />
-        </ServiceLayout>
-      },
-      {
-        path: PATH.DRIVING.ROOT,
-        element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
-          <DrivingInfoPage />
-        </ServiceLayout>
-      },
-      {
-        path: PATH.DRIVING.HOC_LAI_XE,
-        element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
-          <DrivingRegisterPage />
-        </ServiceLayout>
-      },
-      {
-        path: PATH.DRIVING.INSTRUCTION,
-        element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
-          <DrivingInstructionPage />
-        </ServiceLayout>
-      },
-      {
-        path: PATH.DRIVING.REGISTRATION,
-        element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
-          <DrivingRegisterPage />
-        </ServiceLayout>
-      },
-      {
-        path: PATH.DRIVING.CENTER.INSTRUCTION,
-        element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
-          <CenterInstructionPage />
-        </ServiceLayout>
-      },
-      {
-        path: PATH.DRIVING.CENTER.REGISTRATION,
-        element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
-          <DrivingRegisterPage />
-        </ServiceLayout>
-      },
-      {
-        path: PATH.DRIVING.CENTER.HUONG_DAN,
-        element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
-          <CenterInstructionPage />
-        </ServiceLayout>
-      },
-      {
-        path: PATH.DRIVING.CENTER.DANG_KY,
-        element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
-          <DrivingRegisterPage />
-        </ServiceLayout>
-      },
-    ],
-  },
+  // {
+  //   path: PATH.HOME,
+  //   element: <MainGuard />,
+  //   errorElement: <NotFoundPage />,
+  //   children: [
+  //     {
+  //       element: <MainLayout />,
+  //       children: [
+  //         {
+  //           path: PATH.ACCOUNT,
+  //           element: <AccountPage />
+  //         },
+  //         {
+  //           path: PATH.USER.ROOT,
+  //           element: <UserGuard />,
+  //           errorElement: <NotFoundPage />,
+  //           children: [
+  //             {
+  //               path: PATH.USER.PROFILE,
+  //               element: <AccountPage />,
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       path: PATH.SHORT_LINK,
+  //       element: <ShortLinkPage />
+  //     },
+  //     {
+  //       path: PATH.DRIVING.HEALTH_CHECK,
+  //       element: <ServiceLayout pageTitle="Đăng ký thông tin" backTo={PATH.HOME}>
+  //         <DrivingHealthPage />
+  //       </ServiceLayout>
+  //     },
+  //     {
+  //       path: PATH.DRIVING.ROOT,
+  //       element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
+  //         <DrivingInfoPage />
+  //       </ServiceLayout>
+  //     },
+  //     {
+  //       path: PATH.DRIVING.HOC_LAI_XE,
+  //       element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
+  //         <DrivingRegisterPage />
+  //       </ServiceLayout>
+  //     },
+  //     {
+  //       path: PATH.DRIVING.INSTRUCTION,
+  //       element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
+  //         <DrivingInstructionPage />
+  //       </ServiceLayout>
+  //     },
+  //     {
+  //       path: PATH.DRIVING.REGISTRATION,
+  //       element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
+  //         <DrivingRegisterPage />
+  //       </ServiceLayout>
+  //     },
+  //     {
+  //       path: PATH.DRIVING.CENTER.INSTRUCTION,
+  //       element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
+  //         <CenterInstructionPage />
+  //       </ServiceLayout>
+  //     },
+  //     {
+  //       path: PATH.DRIVING.CENTER.REGISTRATION,
+  //       element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
+  //         <DrivingRegisterPage />
+  //       </ServiceLayout>
+  //     },
+  //     {
+  //       path: PATH.DRIVING.CENTER.HUONG_DAN,
+  //       element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
+  //         <CenterInstructionPage />
+  //       </ServiceLayout>
+  //     },
+  //     {
+  //       path: PATH.DRIVING.CENTER.DANG_KY,
+  //       element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
+  //         <DrivingRegisterPage />
+  //       </ServiceLayout>
+  //     },
+  //   ],
+  // },
   {
     element: <AdminDrivingGuard />,
     errorElement: <NotFoundPage />,
@@ -241,10 +241,6 @@ const router = createBrowserRouter([
           },
         ],
       },
-      // {
-      //   path: PATH.ELEARNING.STUDENT.COURSE_DETAIL,
-      //   element: <ElearningStudentCourseDetailPage />,
-      // },
     ],
   },
   {

@@ -250,7 +250,10 @@ function ElearningStudentTestDetailPage() {
                   <h2>{quiz.name}</h2>
                   <p>{quiz.intro}</p>
                   <p>
-                    Thời gian làm bài: {Math.floor(quiz.timelimit / 60)} phút
+                    Thời gian làm bài:{' '}
+                    {quiz.timelimit != 0
+                      ? `${Math.floor(quiz.timelimit / 60)} phút`
+                      : 'Không giới hạn'}
                   </p>
                   <p>Môn học: {course?.displayname || ''}</p>
                 </div>
@@ -382,13 +385,15 @@ function ElearningStudentTestDetailPage() {
                     </div>
                   </Col>
                   <Col md={3}>
-                    <Timer
-                      timestart={quizAttempt?.timestart * 1000 - 5000}
-                      timelimit={quiz?.timelimit / 60}
-                      onTimeUp={() => {
-                        handleFinishQuiz(true);
-                      }}
-                    />
+                    {quiz.timelimit > 0 && (
+                      <Timer
+                        timestart={quizAttempt?.timestart * 1000 - 5000}
+                        timelimit={quiz?.timelimit / 60}
+                        onTimeUp={() => {
+                          handleFinishQuiz(true);
+                        }}
+                      />
+                    )}
                     <div className='d-flex flex-column align-items-center mt-4'>
                       <Button
                         variant='success'

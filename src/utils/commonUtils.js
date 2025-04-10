@@ -58,10 +58,11 @@ const parseQuestionHTML = (htmlString) => {
     // Lấy danh sách đáp án
     const answerElements = doc.querySelectorAll('.answer .d-flex');
     const allInputElements = doc.querySelectorAll('input[type="radio"]');
+    console.log(answerElements);
 
     const answers = Array.from(answerElements).map((el, idx) => {
         const input = allInputElements[idx];
-        const label = el.querySelector('p')?.innerHTML.trim() || '';
+        const label = el.innerText.trim();
         const value = input?.value || '';
         const checked = input?.checked || false;
         return { label, value, checked };
