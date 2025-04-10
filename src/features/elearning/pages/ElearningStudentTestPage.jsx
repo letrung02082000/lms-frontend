@@ -10,6 +10,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import moodleApi from 'services/moodleApi';
 import { Badge } from 'react-bootstrap';
+import { PATH } from 'constants/path';
 
 function ElearningStudentTestPage() {
   const [quizzes, setQuizzes] = useState([]);
@@ -120,7 +121,15 @@ function ElearningStudentTestPage() {
                     </small>
                   )}
                 </div>
-                <Button variant='outline-primary' size='sm'>
+                <Button
+                  variant='outline-primary'
+                  size='sm'
+                  href={`${PATH.ELEARNING.STUDENT.TEST_DETAIL.replace(
+                    ':id',
+                    quiz.id
+                  )}?c=${quiz.course}&m=${quiz.coursemodule}`}
+                  target='_blank'
+                >
                   Thực hiện
                 </Button>
               </ListGroup.Item>

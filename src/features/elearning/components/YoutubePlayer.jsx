@@ -39,6 +39,15 @@ const VideoPlayer = ({
       responsive: true,
       fluid: true,
     });
+    player.on('loadedmetadata', () => {
+      setTimeout(() => {
+        player.currentTime(lastValidTime.current || 0);
+        player.play();
+      }, 300); // Delay nhỏ để YouTube kịp tải
+    });
+    player.on('error', (e) => {
+      console.error('Video player error:', e);
+    });
     playerRef.current = player;
 
     return () => {
@@ -51,6 +60,7 @@ const VideoPlayer = ({
 
   useEffect(() => {
     const updateMapa = () => {
+      console.log(mapaRef.current)
       const player = playerRef.current;
       if (!player || player.paused()) return;
 
@@ -58,19 +68,17 @@ const VideoPlayer = ({
         return;
       }
 
-      if(lastValidTime.current > playerRef.current.currentTime()) {
-        playerRef.current.currentTime(lastValidTime.current);
-        return;
-      }
+      const percent = Math.floor(
+        (mapaRef.current.filter((item) => item === 1).length /
+          mapaRef.current.length || 0) * 100
+      );
+      console.log('percent', percent)
 
       onMapaUpdate(
         mapaRef.current,
         Math.floor(playerRef.current.currentTime()),
         Math.floor(playerRef.current.duration()),
-        Math.floor(
-          (mapaRef.current.filter((item) => item === 1).length /
-            mapaRef.current.length || 0) * 100
-        )
+        percent
       );
       setMapa(mapaRef.current);
     };
@@ -89,16 +97,15 @@ const VideoPlayer = ({
 
     const handleTimeUpdate = () => {
       const currentTime = player.currentTime();
+      console.log('currentTime', currentTime)
       const duration = player.duration();
 
-      if (mapaRef.current.length === 0 || mapaRef.current.length !== Math.floor(duration / intervalTime)) {
+      if (!videoView) return;
+
+      if (mapaRef.current.length === 0) {
         const totalIntervals = Math.floor(duration / intervalTime);
         const initialMapa = new Array(totalIntervals).fill(0);
         mapaRef.current = initialMapa;
-      }
-
-      if(lastValidTime.current > currentTime){
-        player.currentTime(lastValidTime.current);
         return;
       }
 
@@ -107,15 +114,15 @@ const VideoPlayer = ({
         return;
       }
 
-      if (currentTime - lastValidTime.current > intervalTime + 1) {
-        playerRef.current.currentTime(lastValidTime.current);
-        return;
-      } else {
+      // if (currentTime - lastValidTime.current > intervalTime * 2) {
+      //   playerRef.current.currentTime(lastValidTime.current);
+      //   return;
+      // } else {
         lastValidTime.current = currentTime;
         mapaRef.current = [...mapaRef.current];
         const currentIndex = Math.floor(currentTime / intervalTime);
         mapaRef.current[currentIndex] = 1;
-      }
+      // }
     };
 
     player.on('timeupdate', handleTimeUpdate);
@@ -126,6 +133,14 @@ const VideoPlayer = ({
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (videoView?.mapa) {
+      setMapa(videoView.mapa);
+      mapaRef.current = videoView.mapa;
+      lastValidTime.current = videoView.currenttime || 0;
+    }
+  }, [videoView]);
 
   return videoRef ? (
     <div className='my-4'>

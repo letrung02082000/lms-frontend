@@ -12,7 +12,7 @@ function StudentElearningLayout() {
         <img
           src={center?.logo || '/logo.png'}
           alt='Logo'
-          style={{ width: '100%', height: 'auto' }}
+          style={{ height: '15vh' }}
         />
       }
       handleLogout={() => {

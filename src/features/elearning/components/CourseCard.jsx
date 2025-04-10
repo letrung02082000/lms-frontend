@@ -37,7 +37,7 @@ const CourseCard = ({ course, courseContent }) => {
             <Collapse in={open}>
               <div id={`lessons-${course.id}`}>
                 <ListGroup className='mt-3'>
-                  {courseContent?.map((lesson, index) => (
+                  {courseContent?.map((lesson) => (
                     <ListGroup.Item key={lesson?.id}>
                       <h6>{lesson?.name}</h6>
                       {lesson.modules?.map((mod) => (
@@ -64,16 +64,14 @@ const CourseCard = ({ course, courseContent }) => {
                               )}
                               {mod.modname === 'quiz' && (
                                 <Button
-                                  variant='outline-primary'
                                   size='sm'
-                                  href={`${PATH.ELEARNING.STUDENT.TEST.replace(
+                                  href={`${PATH.ELEARNING.STUDENT.TEST_DETAIL.replace(
                                     ':id',
                                     mod?.instance
-                                  )}?m=${mod?.id}`}
+                                  )}?m=${mod?.id}&c=${course.id}`}
                                   target='_blank'
                                 >
-                                  <IoMdEye className='me-1' />
-                                  Xem
+                                  Thực hiện
                                 </Button>
                               )}
                               {mod.modname === 'resource' && (

@@ -85,10 +85,15 @@ const VideoPlayer = ({
       const currentTime = player.currentTime();
       const duration = player.duration();
 
+      if(!videoView) return;
+
       if (mapaRef.current.length === 0 || mapaRef.current.length !== Math.floor(duration / intervalTime)) {
         const totalIntervals = Math.floor(duration / intervalTime);
         const initialMapa = new Array(totalIntervals).fill(0);
         mapaRef.current = initialMapa;
+        lastValidTime.current = 0;
+        player.currentTime(0);
+        return;
       }
 
       if (lastValidTime.current > currentTime) {
@@ -118,6 +123,14 @@ const VideoPlayer = ({
       player.off('timeupdate', handleTimeUpdate);
     };
   }, []);
+
+  useEffect(() => {
+    if (videoView?.mapa) {
+      setMapa(videoView.mapa);
+      mapaRef.current = videoView.mapa;
+      lastValidTime.current = videoView.currenttime || 0;
+    }
+  }, [videoView]);
 
   return (
     <div className='my-4'>

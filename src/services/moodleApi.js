@@ -194,8 +194,7 @@ export const getAttemptReview = async (attemptId, page = -1) => {
     }
 };
 
-export const getUserAttempts = async (quizId, status = 'inprogress', includePreviews = false) => {
-    console.log(`Gọi API: mod_quiz_get_user_attempts với quizId: ${quizId}, status: ${status}`);
+export const getUserAttempts = async (quizId, status = 'unfinished', includePreviews = false) => {
     if (!quizId) throw new Error('quizId là bắt buộc cho getUserAttempts.');
 
     try {
@@ -470,6 +469,128 @@ const updateVideoView = async (viewId, currentTime, duration, percent, mapa) => 
     return response.data;
 }
 
+const getCourseById = async (courseId) => {
+    console.log(`Gọi API: core_course_get_courses cho courseId: ${courseId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage để gọi getCourseById.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!courseId || typeof courseId !== 'number' || courseId <= 0) {
+        throw new Error("courseId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'core_course_get_courses',
+                moodlewsrestformat: 'json',
+                'options[ids][0]': courseId,
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi getCourseById cho courseId: ${courseId}.`);
+            }
+            throw new Error(response.data.message || `Lỗi API khi lấy thông tin khóa học ID ${courseId}.`);
+        }
+
+        if (Array.isArray(response.data) && response.data.length > 0) {
+            console.log(`Lấy thông tin thành công cho courseId: ${courseId}`);
+            return response.data[0]; // Vì API trả về mảng, lấy phần tử đầu tiên
+        } else {
+            throw new Error(`Không tìm thấy thông tin khóa học với ID ${courseId}.`);
+        }
+    } catch (error) {
+        console.error(`Lỗi khi gọi getCourseById cho courseId ${courseId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
+const getQuizAttemptSummary = async (attemptId) => {
+    console.log(`Gọi API: mod_quiz_get_attempt_summary cho attemptId: ${attemptId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!attemptId || typeof attemptId !== 'number' || attemptId <= 0) {
+        throw new Error("attemptId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'mod_quiz_get_attempt_summary',
+                moodlewsrestformat: 'json',
+                attemptid: attemptId
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi mod_quiz_get_attempt_summary.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API mod_quiz_get_attempt_summary');
+        }
+
+        console.log(`Lấy attempt summary thành công cho attemptId: ${attemptId}`);
+        return response.data;
+
+    } catch (error) {
+        console.error(`Lỗi khi gọi getQuizAttemptSummary với attemptId ${attemptId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
+const finishQuizAttempt = async (attemptId, timeUp = false) => {
+    console.log(`Gọi API: mod_quiz_process_attempt để kết thúc attemptId: ${attemptId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!attemptId || typeof attemptId !== 'number' || attemptId <= 0) {
+        throw new Error("attemptId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'mod_quiz_process_attempt',
+                moodlewsrestformat: 'json',
+                attemptid: attemptId,
+                finishattempt: 1,
+                timeup: timeUp ? 1 : 0
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi mod_quiz_process_attempt.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API mod_quiz_process_attempt');
+        }
+
+        console.log(`Kết thúc attempt thành công cho attemptId: ${attemptId}`);
+        return response.data;
+
+    } catch (error) {
+        console.error(`Lỗi khi gọi finishQuizAttempt với attemptId ${attemptId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
 const moodleApi = {
     getSiteInfo,
     getQuizzesByCourses,
@@ -486,5 +607,8 @@ const moodleApi = {
     getVideoInstance,
     getVideoView,
     updateVideoView,
+    getCourseById,
+    getQuizAttemptSummary,
+    finishQuizAttempt,
 };
 export default moodleApi;
