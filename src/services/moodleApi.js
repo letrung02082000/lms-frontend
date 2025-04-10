@@ -550,7 +550,46 @@ const getQuizAttemptSummary = async (attemptId) => {
     }
 };
 
+const finishQuizAttempt = async (attemptId, timeUp = false) => {
+    console.log(`Gọi API: mod_quiz_process_attempt để kết thúc attemptId: ${attemptId}`);
 
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!attemptId || typeof attemptId !== 'number' || attemptId <= 0) {
+        throw new Error("attemptId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'mod_quiz_process_attempt',
+                moodlewsrestformat: 'json',
+                attemptid: attemptId,
+                finishattempt: 1,
+                timeup: timeUp ? 1 : 0
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi mod_quiz_process_attempt.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API mod_quiz_process_attempt');
+        }
+
+        console.log(`Kết thúc attempt thành công cho attemptId: ${attemptId}`);
+        return response.data;
+
+    } catch (error) {
+        console.error(`Lỗi khi gọi finishQuizAttempt với attemptId ${attemptId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
 
 const moodleApi = {
     getSiteInfo,
@@ -570,5 +609,6 @@ const moodleApi = {
     updateVideoView,
     getCourseById,
     getQuizAttemptSummary,
+    finishQuizAttempt,
 };
 export default moodleApi;

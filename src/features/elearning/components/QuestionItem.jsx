@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { Card, Form } from 'react-bootstrap';
 
-const QuestionItem = ({ question, slot, sequenceCheck, onAnswerChange}) => {
+const QuestionItem = ({
+  question,
+  slot,
+  sequenceCheck,
+  onAnswerChange,
+  disabled = false,
+}) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
+
   const handleChange = (index) => {
+    if (disabled) return;
+
     setSelectedIndex(index);
 
     const payload = [
@@ -36,12 +45,13 @@ const QuestionItem = ({ question, slot, sequenceCheck, onAnswerChange}) => {
                 key={index}
                 type='radio'
                 id={id}
-                name={`q${question.id}:${slot}_answer`} // tên này Moodle cần
+                name={`q${question.id}:${slot}_answer`}
                 label={ans.label}
                 value={index}
                 defaultChecked={ans?.checked}
                 onChange={() => handleChange(index)}
                 className='mb-2'
+                disabled={disabled && !ans.checked}
               />
             );
           })}

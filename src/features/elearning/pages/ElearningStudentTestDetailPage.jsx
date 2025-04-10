@@ -2,7 +2,7 @@ import { QUIZ_ATTEMPT_STATUS } from 'constants/driving-elearning.constant';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import debounce from 'lodash.debounce';
-import moodleApi from 'services/moodleApi';
+import moodleApi, { getUserAttempts } from 'services/moodleApi';
 import {
   Button,
   Card,
@@ -16,12 +16,15 @@ import QuestionItem from '../components/QuestionItem';
 import { parseQuestionHTML } from 'utils/commonUtils';
 import QuestionNavigator from '../components/QuestionNavigator';
 import { toastWrapper } from 'utils';
+import { usePromptWithUnload } from 'hooks/usePromptWithUnload';
+import Timer from '../components/Timer';
+import QuestionReviewModal from '../components/QuestionReviewModal';
 
 function ElearningStudentTestDetailPage() {
   const testId = useParams().id;
   const [courseId, setCourseId] = useState(null);
   const [userAttempts, setUserAttempts] = useState([]);
-  const [quizAttemptId, setQuizAttemptId] = useState(null);
+  const [quizAttempt, setQuizAttempt] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [quizAttemptData, setQuizAttemptData] = useState(null);
   const [answers, setAnswers] = useState({});
@@ -31,12 +34,19 @@ function ElearningStudentTestDetailPage() {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [attemptSummary, setAttemptSummary] = useState(null);
+  const [showQuestionReviewModal, setShowQuestionReviewModal] = useState(false);
+  const [preventFinish, setPreventFinish] = useState(false);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const cId = parseInt(searchParams.get('c'));
     setCourseId(cId);
   }, []);
+
+  usePromptWithUnload(
+    'Bạn có chắc muốn rời đi? Dữ liệu chưa được lưu.',
+    quizAttempt?.id != null
+  );
 
   useEffect(() => {
     if (!testId) return;
@@ -48,6 +58,10 @@ function ElearningStudentTestDetailPage() {
           moodleApi.getUserAttempts(testId, 'all'),
           moodleApi.getQuizzesByCourses([courseId]),
         ]);
+
+        if (attemptsRes?.attempts.at(-1)?.state === 'inprogress') {
+          setQuizAttempt(attemptsRes.attempts.at(-1));
+        }
 
         setUserAttempts(attemptsRes.attempts);
         const foundQuiz = quizzesRes?.quizzes?.find((q) => q.id == testId);
@@ -79,24 +93,27 @@ function ElearningStudentTestDetailPage() {
   }, [courseId]);
 
   useEffect(() => {
-    if (quizAttemptId) {
-      moodleApi
-        .getQuizAttemptSummary(quizAttemptId)
-        .then((data) => {
-          console.log('Attempt summary:', data);
-          setAttemptSummary(data);
-        })
-        .catch((error) => {
-          console.error('Error fetching attempt summary:', error);
-        });
+    if (quizAttempt?.id) {
+      getQuizAttemptSummary(quizAttempt?.id);
     }
-  }, [quizAttemptId]);
+  }, [quizAttempt?.id]);
+
+  const getQuizAttemptSummary = async (attemptId) => {
+    try {
+      const data = await moodleApi.getQuizAttemptSummary(attemptId);
+      setAttemptSummary(data);
+    } catch (error) {
+      console.error('Error fetching attempt summary:', error);
+    }
+  };
 
   const startNewAttempt = () => {
+    if (!testId) return;
+
     moodleApi
       .startQuizAttempt(testId)
       .then((attemptData) => {
-        setQuizAttemptId(attemptData.attempt.id);
+        setQuizAttempt(attemptData.attempt);
       })
       .catch(console.error);
   };
@@ -105,67 +122,71 @@ function ElearningStudentTestDetailPage() {
     moodleApi
       .getAttemptData(attemptId, page)
       .then((data) => setQuizAttemptData(data))
-      .catch(error => {
+      .catch((error) => {
         toastWrapper(error.message, 'error');
         setQuizAttemptData(null);
-        setQuizAttemptId(null);
+        setQuizAttempt(null);
         console.error('Error fetching attempt data:', error);
+      })
+      .finally(() => {
+        setShowHistory(false);
       });
   };
 
   useEffect(() => {
-    if (quizAttemptId != null) {
-      handleGetAttemptData(quizAttemptId, currentPage);
+    if (quizAttempt?.id != null) {
+      handleGetAttemptData(quizAttempt?.id, currentPage);
     }
-  }, [quizAttemptId, currentPage]);
+  }, [quizAttempt?.id, currentPage]);
 
   const debouncedSaveAnswer = useMemo(() => {
-    return debounce(async (slotAnswers) => {
+    return debounce(async (slotAnswers, slot) => {
       const data = Object.entries(slotAnswers).map(([key, value]) => ({
         name: key,
         value,
       }));
-  
+
       try {
-        await moodleApi.saveAttemptData(quizAttemptId, data);
+        await moodleApi.saveAttemptData(quizAttempt?.id, data);
+        setAttemptSummary((prev) => {
+          const updated = { ...prev };
+          updated.questions = updated.questions.map((question) => {
+            if (question.slot === slot) {
+              return {
+                ...question,
+                stateclass: 'answersaved',
+              };
+            }
+            return question;
+          });
+          return updated;
+        });
       } catch (err) {
         console.error('Error saving answer:', err);
       }
     }, 1000);
-  }, [quizAttemptId]);
-  
+  }, [quizAttempt?.id]);
+
   const handleAnswerChange = (slot, payload) => {
+    setPreventFinish(true);
     setAnswers((prev) => {
       const updated = { ...prev };
-  
+
       // Cập nhật lại câu trả lời mới vào answers
       payload.forEach(({ name, value }) => {
         updated[name] = value;
       });
-  
+
       // Lọc ra tất cả các câu trả lời liên quan đến cùng slot
       const slotAnswers = Object.fromEntries(
         Object.entries(updated).filter(([key]) => key.includes(`:${slot}_`))
       );
-  
+
       // Gọi API lưu trễ với các câu trả lời của cùng slot
-      debouncedSaveAnswer(slotAnswers);
-  
+      debouncedSaveAnswer(slotAnswers, slot);
       return updated;
     });
-    setAttemptSummary((prev) => {
-      const updated = { ...prev };
-      updated.questions = updated.questions.map((question) => {
-        if (question.slot === slot) {
-          return {
-            ...question,
-            stateclass: 'answersaved',
-          };
-        }
-        return question;
-      });
-      return updated;
-    });
+    setPreventFinish(false);
   };
 
   useEffect(() => {
@@ -175,8 +196,36 @@ function ElearningStudentTestDetailPage() {
   }, [debouncedSaveAnswer]);
 
   const continueQuizAttempt = (attempt) => {
-    setQuizAttemptId(attempt.id);
+    setQuizAttempt(attempt);
     setShowHistory(false);
+  };
+
+  const handleFinishQuiz = async (timeUp = false) => {
+    if (!quizAttempt?.id || preventFinish) return;
+    setPreventFinish(true);
+
+    try {
+      await moodleApi.finishQuizAttempt(quizAttempt?.id, timeUp);
+      toastWrapper('Nộp bài thành công!', 'success');
+      setQuizAttempt(null);
+      setQuizAttemptData(null);
+      setAttemptSummary(null);
+      setAnswers({});
+      setCurrentPage(0);
+      setShowHistory(true);
+      getUserAttempts(testId, 'all')
+        .then((data) => {
+          setUserAttempts(data.attempts);
+        })
+        .catch((error) => {
+          console.error('Error fetching user attempts:', error);
+        });
+    } catch (error) {
+      console.error('Error finishing quiz:', error);
+    } finally {
+      setShowQuestionReviewModal(false);
+      setPreventFinish(false);
+    }
   };
 
   return (
@@ -206,7 +255,7 @@ function ElearningStudentTestDetailPage() {
                   <p>Môn học: {course?.displayname || ''}</p>
                 </div>
                 <div className='mb-4'>
-                  {userAttempts.length === 0 && !quizAttemptId && (
+                  {userAttempts.length === 0 && !quizAttempt?.id && (
                     <Button
                       variant='primary'
                       onClick={startNewAttempt}
@@ -216,7 +265,7 @@ function ElearningStudentTestDetailPage() {
                     </Button>
                   )}
                   {userAttempts.at(-1)?.state === 'finished' &&
-                    !quizAttemptId && (
+                    !quizAttempt?.id && (
                       <Button
                         variant='primary'
                         onClick={startNewAttempt}
@@ -226,7 +275,7 @@ function ElearningStudentTestDetailPage() {
                       </Button>
                     )}
                   {userAttempts.at(-1)?.state === 'inprogress' &&
-                    !quizAttemptId && (
+                    !quizAttempt?.id && (
                       <Button
                         variant='primary'
                         onClick={() => continueQuizAttempt(userAttempts.at(-1))}
@@ -294,7 +343,7 @@ function ElearningStudentTestDetailPage() {
               </Accordion>
             )}
 
-            {quizAttemptId && quizAttemptData?.questions?.length > 0 && (
+            {quizAttempt?.id && quizAttemptData?.questions?.length > 0 && (
               <div className='mt-5'>
                 <h2 className='mb-4'>Danh sách câu hỏi</h2>
                 <Row className='g-4'>
@@ -333,6 +382,26 @@ function ElearningStudentTestDetailPage() {
                     </div>
                   </Col>
                   <Col md={3}>
+                    <Timer
+                      timestart={quizAttempt?.timestart * 1000 - 5000}
+                      timelimit={quiz?.timelimit / 60}
+                      onTimeUp={() => {
+                        handleFinishQuiz(true);
+                      }}
+                    />
+                    <div className='d-flex flex-column align-items-center mt-4'>
+                      <Button
+                        variant='success'
+                        size='lg'
+                        className='mb-5'
+                        onClick={() => {
+                          getQuizAttemptSummary(quizAttempt?.id);
+                          setShowQuestionReviewModal(true);
+                        }}
+                      >
+                        Nộp bài
+                      </Button>
+                    </div>
                     <QuestionNavigator
                       summaryQuestions={attemptSummary?.questions || []}
                       currentPage={currentPage}
@@ -345,6 +414,13 @@ function ElearningStudentTestDetailPage() {
           </>
         )}
       </Container>
+      <QuestionReviewModal
+        key={Date.now()}
+        show={showQuestionReviewModal && !preventFinish}
+        onHide={() => setShowQuestionReviewModal(false)}
+        summary={attemptSummary}
+        onFinish={handleFinishQuiz}
+      />
     </div>
   );
 }
