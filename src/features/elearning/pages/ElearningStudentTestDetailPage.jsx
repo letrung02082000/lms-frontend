@@ -123,10 +123,10 @@ function ElearningStudentTestDetailPage() {
       .getAttemptData(attemptId, page)
       .then((data) => setQuizAttemptData(data))
       .catch((error) => {
-        toastWrapper(error.message, 'error');
         setQuizAttemptData(null);
         setQuizAttempt(null);
         console.error('Error fetching attempt data:', error);
+        window.location.reload();
       })
       .finally(() => {
         setShowHistory(false);
