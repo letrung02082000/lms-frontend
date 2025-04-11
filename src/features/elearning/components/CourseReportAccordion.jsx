@@ -1,6 +1,6 @@
-import React from "react";
-import { Accordion, Table } from "react-bootstrap";
-import { formatTime } from "utils/commonUtils";
+import React from 'react';
+import { Accordion, Table } from 'react-bootstrap';
+import { formatTime } from 'utils/commonUtils';
 
 const CourseReportAccordion = ({ courseReport }) => {
   const courseEntries = Object.entries(courseReport?.courses);
@@ -22,6 +22,7 @@ const CourseReportAccordion = ({ courseReport }) => {
                         <>
                           <th>Điểm</th>
                           <th>Điểm cần đạt</th>
+                          <th>Số câu đúng</th>
                           <th>Số câu hỏi</th>
                           <th>Kết quả</th>
                         </>
@@ -47,11 +48,21 @@ const CourseReportAccordion = ({ courseReport }) => {
                         </td>
                         <td>{item.gradepass}</td>
                         {moduleType === 'quiz' ? (
-                          <td>
-                            {item.quizsumgrades != null
-                              ? item.quizsumgrades
-                              : 'N/A'}
-                          </td>
+                          <>
+                            <td>
+                              {item.finalgrade != null
+                                ? `${Math.round(
+                                    (item.finalgrade / item.grademax) *
+                                      item.quizsumgrades
+                                  )}`
+                                : 'Chưa có'}
+                            </td>
+                            <td>
+                              {item.quizsumgrades != null
+                                ? item.quizsumgrades
+                                : 'N/A'}
+                            </td>
+                          </>
                         ) : (
                           <>
                             <td>
@@ -71,9 +82,15 @@ const CourseReportAccordion = ({ courseReport }) => {
                           </>
                         )}
                         <td>
-                          {item.finalgrade != null ? item.finalgrade >= item.gradepass
-                            ? <span className="text-success fw-bold">Đạt</span>
-                            : <span className="text-danger">Chưa đạt</span>: <span className="text-warning">Chưa thực hiện</span>}
+                          {item.finalgrade != null ? (
+                            item.finalgrade >= item.gradepass ? (
+                              <span className='text-success fw-bold'>Đạt</span>
+                            ) : (
+                              <span className='text-danger'>Chưa đạt</span>
+                            )
+                          ) : (
+                            <span className='text-warning'>Chưa thực hiện</span>
+                          )}
                         </td>
                       </tr>
                     ))}

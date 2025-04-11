@@ -344,6 +344,7 @@ function AdminDrivingCoursePage() {
       drivingApi
         .createElearningUsers(selectedRow?._id)
         .then((res) => {
+          getCourseStudents(selectedRow);
           toastWrapper('Khởi tạo tài khoản Elearning thành công', 'success');
         })
         .catch((err) => {

@@ -21,26 +21,15 @@ function ElearningStudentMyPage() {
         .getUserByMoodleToken(moodleToken)
         .then((res) => {
           setStudent(res.data);
-
-          moodleApi
-            .getUserInfoById(res?.data?.elearningUserId)
-            .then((userInfo) => {
-              const forcePasswordChange = userInfo.preferences.find(
-                (p) => p.name === 'auth_forcepasswordchange'
-              )?.value;
-              localStorage.setItem('forcePasswordChange', forcePasswordChange);
-            })
-            .catch((error) => {
-              console.error('Lỗi khi lấy thông tin người dùng:', error);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
+          localStorage.setItem('center', JSON.stringify(res.data?.center));
         })
         .catch((error) => {
           console.error('Error fetching site info:', error);
           localStorage.removeItem('moodleToken');
           window.location.href = '/elearning/login';
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [moodleToken]);
