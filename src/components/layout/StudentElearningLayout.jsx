@@ -28,6 +28,13 @@ function StudentElearningLayout() {
           });
       }
     }
+
+    if (center?.primaryColor) {
+      document.documentElement.style.setProperty(
+        '--bs-primary',
+        center?.primaryColor
+      );
+    }
   }, [center]);
 
   return (
@@ -42,6 +49,9 @@ function StudentElearningLayout() {
       }
       handleLogout={() => {
         localStorage.removeItem('moodleToken');
+        localStorage.removeItem('moodleSiteInfo');
+        localStorage.removeItem('forcePasswordChange');
+        localStorage.removeItem('center');
         window.location.reload();
       }}
     />
