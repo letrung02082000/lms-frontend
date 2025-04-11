@@ -38,7 +38,7 @@ function ElearningStudentResultPage() {
         {courseReport ? (
           <CourseReportAccordion courseReport={courseReport} />
         ) : (
-          <p>Không có dữ liệu học tập.</p>
+          <p>Chưa có dữ liệu học tập.</p>
         )}
       </Container>
     </div>

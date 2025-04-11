@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import AdminLayout from './AdminLayout';
 import { STUDENT_ELEARNING_MENU } from 'constants/menu';
 import elearningApi from 'api/elearningApi';
+import { Button, ButtonGroup, Image } from 'react-bootstrap';
 
 function StudentElearningLayout() {
   const [center, setCenter] = React.useState(
@@ -31,23 +32,51 @@ function StudentElearningLayout() {
   }, [center]);
 
   return (
-    <AdminLayout
-      menu={STUDENT_ELEARNING_MENU}
-      title={
-        <img
-          src={center?.logo || '/logo.png'}
-          alt='Logo'
-          style={{ height: '15vh' }}
-        />
-      }
-      handleLogout={() => {
-        localStorage.removeItem('moodleToken');
-        localStorage.removeItem('moodleSiteInfo');
-        localStorage.removeItem('forcePasswordChange');
-        localStorage.removeItem('center');
-        window.location.reload();
-      }}
-    />
+    <>
+      <AdminLayout
+        menu={STUDENT_ELEARNING_MENU}
+        title={
+          <img
+            src={center?.logo}
+            alt='Logo'
+            style={{ height: '15vh' }}
+          />
+        }
+        handleLogout={() => {
+          localStorage.removeItem('moodleToken');
+          localStorage.removeItem('moodleSiteInfo');
+          localStorage.removeItem('forcePasswordChange');
+          localStorage.removeItem('center');
+          window.location.reload();
+        }}
+      />
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '60px',
+          right: '20px',
+          zIndex: 1000,
+        }}
+      >
+        <div className='d-flex flex-column align-items-center'>
+          <Button
+            variant='btn'
+            href={`tel:${center?.tel}`}
+            className='mb-3 p-0'
+          >
+            <Image src='/phone.png' alt='Phone' width={50} />
+          </Button>
+          <Button
+            variant='white'
+            className='p-0 m-0'
+            href={`https://zalo.me/${center?.zalo}`}
+            target='_blank'
+          >
+            <Image src='/zalo.png' alt='Phone' width={50} />
+          </Button>
+        </div>
+      </div>
+    </>
   );
 }
 
