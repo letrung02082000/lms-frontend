@@ -3,7 +3,16 @@ import AdminLayout from './AdminLayout';
 import { STUDENT_ELEARNING_MENU } from 'constants/menu';
 
 function StudentElearningLayout() {
-  const center = JSON.parse(localStorage.getItem('center') || '{}');
+  const [center, setCenter] = React.useState(
+    JSON.parse(localStorage.getItem('center') || '{}')
+  );
+
+  useEffect(() => {
+    if (!center?._id) {
+      const moodleToken = localStorage.getItem('moodleToken');
+      console.log('moodleToken', moodleToken);
+    }
+  }, [center]);
 
   return (
     <AdminLayout

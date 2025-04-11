@@ -2,7 +2,7 @@ import { PATH } from 'constants/path';
 import React, { useState } from 'react';
 import { FaBookReader } from 'react-icons/fa';
 import { IoMdEye } from 'react-icons/io';
-import { MdPlayArrow } from 'react-icons/md';
+import { MdLink, MdPlayArrow } from 'react-icons/md';
 const {
   Card,
   Row,
@@ -49,6 +49,17 @@ const CourseCard = ({ course, courseContent }) => {
                           >
                             <Col xs={10}>{mod.name}</Col>
                             <Col xs={2} className='text-end'>
+                            {mod.modname === 'url' && (
+                              <Button
+                                variant='outline-primary'
+                                size='sm'
+                                href={`${mod?.contents[0]?.fileurl}`}
+                                target='_blank'
+                                >
+                                  <MdLink className='me-1' />
+                                  Truy cập
+                                </Button>
+                            )}
                               {mod.modname === 'supervideo' && (
                                 <Button
                                   variant='outline-primary'

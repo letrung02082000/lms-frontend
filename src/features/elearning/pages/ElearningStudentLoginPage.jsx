@@ -30,22 +30,28 @@ function ElearningStudentLoginPage() {
         delete data.functions;
         localStorage.setItem('moodleSiteInfo', JSON.stringify(data)); // Lưu thông tin trang Moodle vào localStorage
         console.log('Thông tin trang Moodle:', data);
+        moodleApi
+          .getUserInfoById(data?.userid)
+          .then((userInfo) => {
+            console.log('Thông tin người dùng:', userInfo);
+            const forcePasswordChange = userInfo.preferences.find(
+              (p) => p.name === 'auth_forcepasswordchange'
+            )?.value;
+            localStorage.setItem('forcePasswordChange', forcePasswordChange);
+
+            if (forcePasswordChange === '1') {
+              navigate(PATH.ELEARNING.CHANGE_PASSWORD);
+            } else {
+              navigate(PATH.ELEARNING.STUDENT.ROOT);
+            }
+          })
+          .catch((error) => {
+            console.error('Lỗi khi lấy thông tin người dùng:', error);
+          });
       })
       .catch((error) => {
         console.error('Lỗi khi lấy thông tin trang Moodle:', error);
       });
-
-    elearningApi
-      .getUserByMoodleToken(token)
-      .then((res) => {
-        console.log('Thông tin người dùng:', res);
-        localStorage.setItem('center', JSON.stringify(res?.data?.center));
-      })
-      .catch((error) => {
-        console.error('Lỗi khi lấy thông tin người dùng:', error);
-      });
-
-    navigate(PATH.ELEARNING.STUDENT.ROOT); // Chuyển hướng đến trang Moodle
   }, []);
 
   const handleSubmit = useCallback(
