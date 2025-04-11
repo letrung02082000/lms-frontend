@@ -129,7 +129,7 @@ function ElearningStudentMyPage() {
                     <strong>Bế giảng:</strong>{' '}
                     {student?.course?.graduationDate
                       ? new Date(
-                          student?.course?.enrollmentDate
+                          student?.course?.graduationDate
                         ).toLocaleDateString('en-GB')
                       : 'Chưa cập nhật'}
                   </p>
