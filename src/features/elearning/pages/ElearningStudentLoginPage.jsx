@@ -42,7 +42,7 @@ function ElearningStudentLoginPage() {
             if (forcePasswordChange === '1') {
               navigate(PATH.ELEARNING.CHANGE_PASSWORD);
             } else {
-              navigate(PATH.ELEARNING.STUDENT.ROOT);
+              window.location.href = PATH.ELEARNING.STUDENT.ROOT;
             }
           })
           .catch((error) => {
