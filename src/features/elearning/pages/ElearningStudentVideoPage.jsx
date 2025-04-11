@@ -40,6 +40,10 @@ function ElearningStudentVideoPage() {
     console.log('Mapa updated:', mapa);
     if(!videoView?.id) return;
 
+    if(percent < videoView?.percent) {
+      percent = videoView?.percent;
+    }
+
     moodleApi
       .updateVideoView(videoView.id, current, duration, percent, mapa)
       .then((data) => {

@@ -39,6 +39,7 @@ import ElearningStudentVideoPage from 'features/elearning/pages/ElearningStudent
 import ElearningStudentTestDetailPage from 'features/elearning/pages/ElearningStudentTestDetailPage';
 import ElearningStudentArticlePage from 'features/elearning/pages/ElearningStudentArticlePage';
 import ElearningStudentBookPage from 'features/elearning/pages/ElearningStudentBookPage';
+import ForceChangePasswordPage from 'features/elearning/pages/ForceChangePasswordPage';
 
 const router = createBrowserRouter([
   // {
@@ -199,6 +200,10 @@ const router = createBrowserRouter([
   {
     path: PATH.ELEARNING.LOGIN,
     element: <ElearningStudentLoginPage />,
+  },
+  {
+    path: PATH.ELEARNING.CHANGE_PASSWORD,
+    element: <ForceChangePasswordPage />,
   },
   {
     element: <StudentElearningGuard />,

@@ -72,6 +72,11 @@ class ElearningApi {
     const url = `${API_PATH}/user/moodle`;
     return axiosClient.get(url, { params: { moodleToken } });
   }
+
+  changeUserPasswordByMoodleToken = async (moodleToken, newPassword) => {
+    const url = `${API_PATH}/user/change-password`;
+    return axiosClient.post(url, { moodleToken, newPassword });
+  }
 }
 
 export default new ElearningApi();

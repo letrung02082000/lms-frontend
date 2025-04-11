@@ -21,12 +21,14 @@ const CourseReportAccordion = ({ courseReport }) => {
                       {moduleType === 'quiz' ? (
                         <>
                           <th>Điểm</th>
+                          <th>Điểm cần đạt</th>
                           <th>Số câu hỏi</th>
                           <th>Kết quả</th>
                         </>
                       ) : (
                         <>
                           <th>Điểm</th>
+                          <th>Điểm cần đạt</th>
                           <th>Thời lượng đã xem</th>
                           <th>Thời lượng bài giảng</th>
                           <th>Kết quả</th>
@@ -43,6 +45,7 @@ const CourseReportAccordion = ({ courseReport }) => {
                             ? `${item.finalgrade} / ${item.grademax}`
                             : 'Chưa có'}
                         </td>
+                        <td>{item.gradepass}</td>
                         {moduleType === 'quiz' ? (
                           <td>
                             {item.quizsumgrades != null

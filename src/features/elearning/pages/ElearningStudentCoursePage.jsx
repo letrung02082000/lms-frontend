@@ -26,8 +26,9 @@ function ElearningStudentCoursePage() {
         setCourseContents(courseContents);
       } catch (error) {
         console.error('Error fetching courses:', error);
-        toastWrapper.error(
-          'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.'
+        toastWrapper(
+          'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.',
+          'error'
         );
       } finally {
         setLoading(false);
