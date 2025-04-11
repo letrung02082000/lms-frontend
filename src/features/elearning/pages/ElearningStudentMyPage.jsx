@@ -69,19 +69,19 @@ function ElearningStudentMyPage() {
           <Card className='mb-4 shadow-sm'>
             <Card.Body>
               <Row>
-                <Col md={2} className='text-center'>
+                <Col md={3} className='text-center'>
                   <Image
                     src={
                       student?.portraitUrl ||
                       'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
                     }
                     roundedCircle
-                    width={100}
-                    height={100}
+                    width='75%'
+                    height='auto'
                     alt='avatar'
                   />
                 </Col>
-                <Col md={5}>
+                <Col md={6}>
                   <h4>{student?.name || 'Chưa cập nhật'}</h4>
                   <p>
                     <strong>Mã học viên:</strong>{' '}
@@ -107,7 +107,7 @@ function ElearningStudentMyPage() {
                     {student?.address || 'Chưa cập nhật'}
                   </p>
                 </Col>
-                <Col md={5}>
+                <Col md={3}>
                   <h4>Khoá: {student?.course?.name || 'Chưa cập nhật'}</h4>
                   <p>
                     <strong>Mã khoá học:</strong>{' '}
