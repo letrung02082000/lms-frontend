@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { MdOutlineChevronRight } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
-import styles from './container.module.css'
 
 function AdminLayout({ children, title, navigation, root }) {
   const [visible, setVisible] = useState(true)
@@ -12,25 +11,25 @@ function AdminLayout({ children, title, navigation, root }) {
   }
 
   return (
-    <div className={styles.container}>
+    <div>
       {visible ? (
-        <div className={styles.leftNav}>
-          <h3 className={styles.pageTitle}>{title || 'Quản trị'}</h3>
-          <div className={styles.navItems}>
+        <div>
+          <h3>{title || 'Quản trị'}</h3>
+          <div>
             <div>
               {navigation?.map((child, index) => {
                 return (
-                  <div className={styles.navItem} key={index} onClick={() => navigateTo(child.path)}>
+                  <div key={index} onClick={() => navigateTo(child.path)}>
                     <p>{child.name}</p>
                   </div>
                 )
               })}
-              <div className={styles.navItem} onClick={() => setVisible(false)}>
+              <div onClick={() => setVisible(false)}>
                 <p>Ẩn</p>
               </div>
             </div>
 
-            <div className={styles.navItem}>
+            <div>
               <p>Đăng xuất</p>
             </div>
           </div>
@@ -40,12 +39,11 @@ function AdminLayout({ children, title, navigation, root }) {
           onClick={() => {
             setVisible(true)
           }}
-          className={styles.showButton}
         >
           <MdOutlineChevronRight size="25" />
         </button>
       )}
-      <div className={styles.mainBoard}>{children}</div>
+      <div>{children}</div>
     </div>
   )
 }

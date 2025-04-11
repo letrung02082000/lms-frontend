@@ -28,13 +28,6 @@ function StudentElearningLayout() {
           });
       }
     }
-
-    if (center?.primaryColor) {
-      document.documentElement.style.setProperty(
-        '--bs-primary',
-        center?.primaryColor
-      );
-    }
   }, [center]);
 
   return (

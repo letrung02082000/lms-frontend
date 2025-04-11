@@ -108,7 +108,7 @@ function ElearningStudentLoginPage() {
                   <Form.Label>Tên đăng nhập</Form.Label>
                   <Form.Control
                     type='text'
-                    placeholder='Nhập tên đăng nhập Moodle'
+                    placeholder='Nhập tên đăng nhập'
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required

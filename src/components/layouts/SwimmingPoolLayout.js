@@ -1,6 +1,5 @@
 import TitleBar from 'components/TitleBar'
 import { useNavigate } from 'react-router-dom'
-import styles from './swimmingPoolLayout.module.css'
 import { Button } from 'react-bootstrap'
 import { SWIMMING_POOL_URL } from 'constants/routes'
 

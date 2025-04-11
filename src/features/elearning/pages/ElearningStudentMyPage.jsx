@@ -192,6 +192,7 @@ function ElearningStudentMyPage() {
                         <td>
                           {item?.progress ? (
                             <ProgressBar
+                              variant='primary'
                               now={item.progress}
                               label={`${Math.round(item.progress)}%`}
                               style={{ height: '20px' }}

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import SearchBar from "components/SearchBar";
-import styles from "./registerPage.module.css";
 import styled from "styled-components";
 import { toastWrapper } from "utils";
 
@@ -258,7 +257,7 @@ export default function DrivingRegisterPage() {
   };
 
   return (
-    <Styles className={styles.drivingRegisterContainer}>
+    <Styles>
       <SearchBar
         placeholder={"Tra cứu trạng thái hồ sơ"}
         focusText={"Nhập số điện thoại và nhấn Enter"}
@@ -275,7 +274,7 @@ export default function DrivingRegisterPage() {
           return (
             <Card key={child?._id} className="my-3">
               <Card.Body>
-                <div className={styles.orderContainer}>
+                <div>
                   <p>Họ tên: {child?.name}</p>
                   <p>Tình trạng: {DRIVING_STATE_LABEL[child.processState]}</p>
                   {child?.processState === DRIVING_STATE.WAITING_CHANGE && <p>Cần cập nhật: {child?.invalidPortrait ? 'Ảnh chân dung (Chói loá/thiếu sáng/mờ/không đủ vai/đeo kính)' : (child?.invalidCard ? 'Căn cước (Chói loá/thiếu sáng/mất góc/mờ)' : '')}</p>}
@@ -319,7 +318,7 @@ export default function DrivingRegisterPage() {
           localStorage.removeItem('driving-info');
           window.location.reload();
         }}>Đăng ký hồ sơ mới</Button>
-      </div> : <form className={styles.drivingFormContainer}>
+      </div> : <form>
         <p className="my-3 text-danger">* bắt buộc</p>
 
         <Row className="mb-3">
@@ -500,13 +499,12 @@ export default function DrivingRegisterPage() {
         {isLoading ? (
           <>
             <p>Hệ thống đang xử lý, vui lòng chờ trong ít nhất 15 giây</p>
-            <p className={styles.formSubmitButton}>Đang đăng ký</p>
+            <p>Đang đăng ký</p>
           </>
         ) : (
           <button
             type="button"
             onClick={handleSubmitButton}
-            className={styles.formSubmitButton}
           >
             Đăng ký
           </button>

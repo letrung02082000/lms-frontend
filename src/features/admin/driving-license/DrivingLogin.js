@@ -1,16 +1,9 @@
 import React, { useState } from "react";
-import styles from "./drivingLogin.module.css";
-
 import { useNavigate, useLocation } from "react-router-dom";
-
-//icons
 import { IoMdClose } from "react-icons/io";
 import { BiUser, BiLockAlt } from "react-icons/bi";
-
-//redux
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../../store/userSlice";
-
 import AccountApi from "api/accountApi";
 
 const DrivingLogin = (props) => {

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import styles from "./drivingDate.module.css";
-
 import DrivingApi from "api/drivingApi";
 import { Button, FormControl } from "react-bootstrap";
 import { toastWrapper } from "utils";
