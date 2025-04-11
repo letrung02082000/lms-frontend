@@ -18,12 +18,19 @@ function ElearningStudentCoursePage() {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const [courses, courseContents] = await Promise.all([
-          moodleApi.getMyEnrolledCourses(),
-          moodleApi.getCoursesContents(),
-        ]);
+        const courses = await moodleApi.getMyEnrolledCourses('all');
         setCourses(courses);
-        setCourseContents(courseContents);
+
+        if (courses.length > 0) {
+          moodleApi
+            .getCoursesContents(courses.map((course) => course.id))
+            .then((courseContents) => {
+              setCourseContents(courseContents);
+            })
+            .catch((error) =>
+              console.log('Failed to fetch course content: ', error)
+            );
+        }
       } catch (error) {
         console.error('Error fetching courses:', error);
         toastWrapper(

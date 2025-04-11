@@ -1,16 +1,26 @@
 import elearningApi from 'api/elearningApi';
 import { GENDERS } from 'constants/driving-student.constant';
 import React, { useEffect } from 'react';
-import { Card, Col, Container, Image, Row, Table } from 'react-bootstrap';
+import {
+  Card,
+  Col,
+  Container,
+  Image,
+  ProgressBar,
+  Row,
+  Table,
+} from 'react-bootstrap';
 import moodleApi from 'services/moodleApi';
-import { groupByUserCourseModule } from 'utils/elearning.utils';
 import LoadingSpinner from '../components/LoadingSpinner';
+import 'react-circular-progressbar/dist/styles.css';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { PATH } from 'constants/path';
 
 function ElearningStudentMyPage() {
   const moodleToken = localStorage.getItem('moodleToken');
   const [student, setStudent] = React.useState(null);
-  const [courseReport, setCourseReport] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
+  const [courses, setCourses] = React.useState([]);
 
   useEffect(() => {
     if (!moodleToken) {
@@ -26,7 +36,7 @@ function ElearningStudentMyPage() {
         .catch((error) => {
           console.error('Error fetching site info:', error);
           localStorage.removeItem('moodleToken');
-          window.location.href = '/elearning/login';
+          window.location.href = PATH.ELEARNING.LOGIN;
         })
         .finally(() => {
           setLoading(false);
@@ -37,15 +47,12 @@ function ElearningStudentMyPage() {
   useEffect(() => {
     if (student) {
       moodleApi
-        .getUserCourseReport({
-          userIds: [student?.elearningUserId],
-        })
-        .then((data) => {
-          const reportData = groupByUserCourseModule(data);
-          setCourseReport(reportData[student?.elearningUserId]);
+        .getMyEnrolledCourses('all')
+        .then((courses) => {
+          setCourses(courses);
         })
         .catch((error) => {
-          console.error('Error fetching course report:', error);
+          console.error('Error fetching courses:', error);
         });
     }
   }, [student]);
@@ -131,33 +138,75 @@ function ElearningStudentMyPage() {
             </Card.Body>
           </Card>
 
-          <Card className='shadow-sm'>
-            <Card.Header>
-              <h5>Quá trình học tập</h5>
-            </Card.Header>
-            <Card.Body>
-              <Table striped bordered hover responsive>
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Môn học</th>
-                    <th>Tiến độ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.values(courseReport?.courses || {}).map(
-                    (item, index) => (
+          <Row>
+            <Col
+              md={3}
+              className='d-flex align-items-center justify-content-center'
+            >
+              <div style={{ width: 250, height: 250 }}>
+                <CircularProgressbar
+                  value={
+                    courses.length > 0
+                      ? courses.reduce((sum, c) => sum + (c.progress || 0), 0) /
+                        courses.length
+                      : 0
+                  }
+                  text={`${
+                    courses.length > 0
+                      ? Math.round(
+                          courses.reduce(
+                            (sum, c) => sum + (c.progress || 0),
+                            0
+                          ) / courses.length
+                        )
+                      : 0
+                  }%`}
+                  styles={buildStyles({
+                    textSize: '18px',
+                    pathColor: `var(--bs-primary)`,
+                    textColor: '#000',
+                    trailColor: '#d6d6d6',
+                  })}
+                />
+              </div>
+            </Col>
+
+            <Col md={9}>
+              <Card className='shadow-sm'>
+                <Card.Header>
+                  <h5>Quá trình học tập</h5>
+                </Card.Header>
+                <Table striped bordered hover responsive>
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Môn học</th>
+                      <th>Tiến độ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {courses.map((item, index) => (
                       <tr key={item.courseId}>
                         <td>{index + 1}</td>
-                        <td>{item.coursename}</td>
-                        <td>{item.progress}</td>
+                        <td>{item.fullname}</td>
+                        <td>
+                          {item?.progress ? (
+                            <ProgressBar
+                              now={item.progress}
+                              label={`${Math.round(item.progress)}%`}
+                              style={{ height: '20px' }}
+                            />
+                          ) : (
+                            <span>Chưa có dữ liệu</span>
+                          )}
+                        </td>
                       </tr>
-                    )
-                  )}
-                </tbody>
-              </Table>
-            </Card.Body>
-          </Card>
+                    ))}
+                  </tbody>
+                </Table>
+              </Card>
+            </Col>
+          </Row>
         </Container>
       ) : (
         <LoadingSpinner />
