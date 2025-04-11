@@ -1,9 +1,5 @@
 import React from 'react'
-import styles from './loginForm.module.css'
-
 import { useNavigate, useLocation } from 'react-router-dom'
-
-//icons
 import { IoMdClose } from 'react-icons/io'
 import { BiUser, BiLockAlt } from 'react-icons/bi'
 

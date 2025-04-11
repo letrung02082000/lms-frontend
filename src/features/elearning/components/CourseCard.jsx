@@ -30,7 +30,6 @@ const CourseCard = ({ course, courseContent }) => {
               onClick={() => setOpen(!open)}
               aria-controls={`lessons-${course.id}`}
               aria-expanded={open}
-              size='sm'
             >
               {open ? 'Ẩn các phần' : 'Hiện các phần'}
             </Button>

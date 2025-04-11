@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './imagePad.module.css'
 
 function ImagePad({ image, onClose }) {
   return (

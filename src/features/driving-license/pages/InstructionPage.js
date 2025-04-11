@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styles from "./instructionPage.module.css";
 import { DRIVING_LICENSE_NUMBER, ZALO_OA_NUMBER } from "constants/contact";
 import ZaloLink from "components/link/ZaloLink";
 import DrivingApi from "api/drivingApi";
@@ -17,16 +16,14 @@ export default function DrivingInstructionPage(props) {
   const drivingInfo = JSON.parse(localStorage.getItem('driving-info') || '{}');
 
   return (
-    <div className={styles.container}>
-      <div className={styles.topHeader}>
+    <div>
+      <div>
         <img
           src="/drivingbanner.jpg"
           alt="driving banner"
-          className={styles.drivingBanner}
         />
-        <div className={styles.introContainerTop}>
+        <div>
           <button
-            className={styles.contactButtonTop}
             onClick={() => {
               if (source) {
                 navigate(`/driving-registration?s=${source}`);
@@ -39,7 +36,6 @@ export default function DrivingInstructionPage(props) {
           </button>
 
           <a
-            className={styles.contactButtonTop}
             href={`https://zalo.me/${ZALO_OA_NUMBER}`}
             target="_blank"
             rel="noreferer noreferrer"
@@ -48,40 +44,40 @@ export default function DrivingInstructionPage(props) {
           </a>
         </div>
       </div>
-      <div className={styles.wrapper}>
-        <div className={styles.header}>
-          <h3 className={styles.sectionTitle}>Xem nhanh</h3>
-          <a className={styles.fastTitle} href="#address">
+      <div>
+        <div>
+          <h3>Xem nhanh</h3>
+          <a href="#address">
             Địa điểm
           </a>
-          <a className={styles.fastTitle} href="#fee">
+          <a href="#fee">
             Lệ phí thi
           </a>
-          <a className={styles.fastTitle} href="#date">
+          <a href="#date">
             Ngày thi
           </a>
-          <a className={styles.fastTitle} href="#online">
+          <a href="#online">
             Quy trình đăng ký online
           </a>
-          <a className={styles.fastTitle} href="#offline">
+          <a href="#offline">
             Quy trình đăng ký trực tiếp
           </a>
-          <a className={styles.fastTitle} href="#fee-instruction">
+          <a href="#fee-instruction">
             Hướng dẫn thanh toán lệ phí
           </a>
-          <a className={styles.fastTitle} href="#mocktest">
+          <a href="#mocktest">
             Tài liệu lý thuyết và thi thử thực hành
           </a>
-          <a className={styles.fastTitle} href="#faq">
+          <a href="#faq">
             Các câu hỏi thường gặp
           </a>
-          <a className={styles.fastTitle} href="#contact">
+          <a href="#contact">
             Liên hệ hỗ trợ
           </a>
         </div>
-        <div className={styles.body}>
+        <div>
           <div id="address">
-            <h3 className={styles.sectionTitle}>Địa điểm dự thi</h3>
+            <h3>Địa điểm dự thi</h3>
             <p>Thí sinh được chọn địa điểm thi khi điền link đăng ký.</p>
             <p className="my-2"><strong>Trường Đại học Thể dục Thể thao TP HCM</strong></p>
             <li>
@@ -108,7 +104,7 @@ export default function DrivingInstructionPage(props) {
             </p>
           </div>
           <div id="fee">
-            <h3 className={styles.sectionTitle}>Lệ phí thi</h3>
+            <h3>Lệ phí thi</h3>
             <p>
               <strong>Gói A:</strong> 650.000đ đối với sinh viên. Không phải sinh viên, lệ phí là 690.000đ.
             </p>
@@ -123,13 +119,13 @@ export default function DrivingInstructionPage(props) {
             </p>
           </div>
           <div id="date">
-            <h3 className={styles.sectionTitle}>Ngày thi</h3>
+            <h3>Ngày thi</h3>
             <p>
               Thí sinh chọn ngày dự thi căn cứ theo lịch thi mỗi tháng trên link đăng ký <a href='/driving-registration' target="_blank" rel="noopener noreferrer">tại đây.</a>
             </p>
           </div>
           <div id="online">
-            <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký online</h3>
+            <h3>Hướng dẫn đăng ký online</h3>
             <p>1. Hoàn thành mẫu đơn đăng ký online bao gồm:</p>
             <ul>
               <li>Họ tên đầy đủ, có dấu.</li>
@@ -204,7 +200,7 @@ export default function DrivingInstructionPage(props) {
             </ul>
           </div>
           <div id="offline">
-            <h3 className={styles.sectionTitle}>Hướng dẫn đăng ký trực tiếp</h3>
+            <h3>Hướng dẫn đăng ký trực tiếp</h3>
             <ul>
               <li>
                 Địa điểm: Tại văn phòng iSinhvien
@@ -230,7 +226,7 @@ export default function DrivingInstructionPage(props) {
             </ul>
           </div>
           <div id="mocktest">
-            <h3 className={styles.sectionTitle}>
+            <h3>
               {"Hướng dẫn ôn tập lý thuyết và thực hành"}
             </h3>
             <p>Học viên xem hướng dẫn ôn tập lý thuyết và thực hành <a rel="noreferrer noopener" target="_blank" href="https://www.langf.vn/cam-nang-lang-dai-hoc/thi-bang-lai-xe-lang-dai-hoc/#TAI_LIEU_ON_TAP_LY_THUYET_VA_THUC_HANH">tại đây.</a></p>
@@ -238,8 +234,8 @@ export default function DrivingInstructionPage(props) {
         </div>
 
         <div id="faq">
-          <h3 className={styles.sectionTitle}>Các câu hỏi thường gặp</h3>
-          <dl className={styles.faqContainer}>
+          <h3>Các câu hỏi thường gặp</h3>
+          <dl>
             <dt>Hỏi: Thời gian nhận bằng là bao lâu?</dt>
             <dd>
               Trả lời: 22 ngày làm việc kể từ ngày thi đậu, không bao gồm thứ Bảy,
@@ -268,7 +264,7 @@ export default function DrivingInstructionPage(props) {
             <dd>Trả lời: 21/25 câu hỏi và không được sai câu điểm liệt.</dd>
           </dl>
         </div>
-        <div className={styles.footer}>
+        <div>
           <p id="contact">
             Để được hỗ trợ thêm, vui lòng liên hệ Zalo OA:{" "}
             <ZaloLink tel={ZALO_OA_NUMBER}>

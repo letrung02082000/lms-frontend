@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import MainLayout from "../../layouts/MainLayout";
-
-import styles from "./signUpPage.module.css";
-
 import { useNavigate } from "react-router-dom";
-
 import { useDispatch } from "react-redux";
 import { updateUser, selectUser } from "../../store/userSlice";
 

@@ -6,7 +6,6 @@ import { RiDiscountPercentFill, RiDiscountPercentLine } from 'react-icons/ri'
 import { BsDot } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import styles from './mobileNavBar.module.css'
 import { PATH } from 'constants/path'
 
 export default function MobileNavBar() {
@@ -34,31 +33,31 @@ export default function MobileNavBar() {
               <Nav.Link className="m-0 p-1 position-relative" onClick={handleHomeClick} eventKey="/">
                 {activeKey === PATH.HOME ? (
                   <>
-                    <HiHome className={`mx-auto ${styles.navIcon}`} size="25" />
+                    <HiHome className={`mx-auto`} size="25" />
                     <BsDot className="dot" size="25" />
                   </>
                 ) : (
-                  <HiOutlineHome className={`mx-auto ${styles.navIcon}`} size="25" />
+                  <HiOutlineHome className={`mx-auto`} size="25" />
                 )}
               </Nav.Link>
               <Nav.Link className="m-0 p-1 position-relative" onClick={handleExploreClick} eventKey="/explore">
                 {activeKey === PATH.EXPLORE.ROOT ? (
                   <>
-                    <RiDiscountPercentFill className={`mx-auto ${styles.navIcon}`} size="25" />
+                    <RiDiscountPercentFill className={`mx-auto`} size="25" />
                     <BsDot className="dot" size="25" />
                   </>
                 ) : (
-                  <RiDiscountPercentLine className={`mx-auto ${styles.navIcon}`} size="25" />
+                  <RiDiscountPercentLine className={`mx-auto`} size="25" />
                 )}
               </Nav.Link>
               <Nav.Link className="m-0 p-1 position-relative" onClick={handleAccountClick} eventKey="/account">
                 {activeKey === PATH.ACCOUNT || activeKey === PATH.USER.PROFILE ? (
                   <>
-                    <MdAccountCircle className={`mx-auto ${styles.navIcon}`} size="25" />
+                    <MdAccountCircle className={`mx-auto`} size="25" />
                     <BsDot className="dot" size="25" />
                   </>
                 ) : (
-                  <MdOutlineAccountCircle className={`mx-auto ${styles.navIcon}`} size="25" />
+                  <MdOutlineAccountCircle className={`mx-auto`} size="25" />
                 )}
 
               </Nav.Link>

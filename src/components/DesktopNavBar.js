@@ -4,7 +4,6 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser, selectUser } from "../store/userSlice";
-import styles from "./desktopNavBar.module.css";
 import Logo from "./Logo";
 import Tool from "./Tool";
 import { PATH } from "constants/path";
@@ -62,9 +61,6 @@ function DesktopNavBar(props) {
           >
             <Nav.Link
               eventKey="/"
-              className={`${styles.navItem} ${
-                activeKey === "/" ? styles.selectedNav : styles.unSelectedNav
-              }`}
               onClick={handleHomeClick}
             >
               Trang chủ
@@ -72,11 +68,6 @@ function DesktopNavBar(props) {
 
             <Nav.Link
               eventKey="/explore"
-              className={`${styles.navItem} ${styles.navItemBadge} ${
-                activeKey === "/explore"
-                  ? styles.selectedNav
-                  : styles.unSelectedNav
-              } `}
               onClick={() => {
                 setActiveKey("/explore");
                 navigate("/explore");
@@ -85,7 +76,7 @@ function DesktopNavBar(props) {
               Ưu đãi
             </Nav.Link>
           </Nav>
-          <div className={`d-flex flex-row ${styles.dropDownMenu}`}>
+          <div>
             {user.isLoggedIn ? (
               <>
                 <button
@@ -103,20 +94,18 @@ function DesktopNavBar(props) {
                   />
                   <span>{user.data.email}</span>
                 </button>
-                <div className={styles.dropDown}>
+                <div>
                   <Tool title="Đăng xuất" handle={handleLogoutClick} />
                 </div>
               </>
             ) : (
               <>
                 <button
-                  className={styles.buttonContainer}
                   onClick={handleLoginClick}
                 >
                   Đăng nhập
                 </button>
                 <button
-                  className={styles.buttonContainer}
                   onClick={handleSignUpClick}
                 >
                   Đăng ký

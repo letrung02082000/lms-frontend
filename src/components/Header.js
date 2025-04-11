@@ -2,10 +2,7 @@ import React from 'react'
 import DesktopNavBar from './DesktopNavBar'
 import MobileNavBar from './MobileNavBar'
 import styled from 'styled-components'
-
-import './header.css'
 import useMediaQuery from 'hooks/useMediaQuery'
-
 import useScrollDirection from 'hooks/useScrollDirection'
 
 function Header() {

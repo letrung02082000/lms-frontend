@@ -1,11 +1,10 @@
-// $sidebar-bg-color: var(--primary);
-// $submenu-bg-color: var(--primary);
-// $sidebar-color: white;
-// $icon-bg-color: #2cb9ae;
-$icon-size: 2.5rem;
-$primary : #019f91;
+// $sidebar-bg-color: var(--bs-primary);
+// $submenu-bg-color: var(--bs-primary);
+// $sidebar-color: var(--bs-primary);
+// $icon-bg-color: var(--bs-primary);
+// $icon-size: 2.5rem;
+// $primary : #019f91;
 
 @import 'node_modules/bootstrap/scss/bootstrap.scss';
 @import '~react-pro-sidebar/dist/scss/styles.scss';
-@import './aggrid.scss';
-@import './bootstrap/buttons.scss';
+

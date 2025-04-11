@@ -42,6 +42,9 @@ function StudentElearningLayout() {
       }
       handleLogout={() => {
         localStorage.removeItem('moodleToken');
+        localStorage.removeItem('moodleSiteInfo');
+        localStorage.removeItem('forcePasswordChange');
+        localStorage.removeItem('center');
         window.location.reload();
       }}
     />

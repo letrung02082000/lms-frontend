@@ -1,7 +1,5 @@
 import React from 'react'
-import styles from './infoPage.module.css'
 import { DRIVING_LICENSE_NUMBER } from 'constants/contact'
-import ZaloLink from 'components/link/ZaloLink'
 
 import { convertPhoneNumber } from 'utils'
 import { useNavigate } from 'react-router-dom'
@@ -15,22 +13,22 @@ function DrivingTestPage() {
   }
 
   return (
-    <div className={styles.drivingContainer}>
+    <div>
       <div>
-        <img src="/drivingbanner.jpg" alt="driving banner" className={styles.drivingBanner} />
+        <img src="/drivingbanner.jpg" alt="driving banner"/>
       </div>
 
-      <div className={styles.bodyContainer}>
+      <div>
         <h3>Đăng ký đơn giản</h3>
         <div>
-          <img className={styles.numberIcon} src="/one.png" alt="img" />
+          <img src="/one.png" alt="img" />
         </div>
         <h5>Điền đơn đăng ký dự thi</h5>
         <div style={{ display: 'flex' }}>
-          <button className={styles.signupButton} onClick={() => navigateTo('/driving-instruction')}>
+          <button onClick={() => navigateTo('/driving-instruction')}>
             Hướng dẫn
           </button>
-          <button className={styles.signupButton} onClick={() => navigateTo('/driving-registration')}>
+          <button onClick={() => navigateTo('/driving-registration')}>
             Điền đơn
           </button>
         </div>
@@ -40,33 +38,28 @@ function DrivingTestPage() {
           </div>
         </div>
         <div>
-          <img className={styles.numberIcon} src="/two.png" alt="img" />
+          <img src="/two.png" alt="img" />
         </div>
         <h5>Đóng phí dự thi</h5>
         <p className='text-center'>Thanh toán online hoặc trực tiếp</p>
         <div>
-          <img className={styles.numberIcon} src="/three.png" alt="img" />
+          <img src="/three.png" alt="img" />
         </div>
         <h5>Chờ duyệt và xác nhận ngày thi</h5>
         <div>
-          <img className={styles.numberIcon} src="/four.png" alt="img" />
+          <img src="/four.png" alt="img" />
         </div>
         <h5>Đi thi</h5>
-        <div className={styles.signupContainer}>
+        <div>
           <button
-            className={styles.signupButton}
-            // href='https://forms.gle/JjoJf74w6oPEgYNq9'
-            // target='_blank'
-            // rel='noreferer noreferrer'
             onClick={() => navigateTo('/driving-registration')}
           >
             Đăng ký ngay
           </button>
         </div>
-        <p className={styles.helpText}>Liên hệ hỗ trợ</p>
-        <div className={styles.introContainer}>
+        <p>Liên hệ hỗ trợ</p>
+        <div>
           <a
-            className={styles.contactButton}
             href={`tel:${convertPhoneNumber(DRIVING_LICENSE_NUMBER, '+84')}`}
             target="_blank"
             rel="noreferer noreferrer"
@@ -74,7 +67,6 @@ function DrivingTestPage() {
             Gọi ngay
           </a>
           <a
-            className={styles.contactButton}
             href={`https://zalo.me/${DRIVING_LICENSE_NUMBER}`}
             target="_blank"
             rel="noreferer noreferrer"

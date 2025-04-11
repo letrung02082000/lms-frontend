@@ -1,20 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { PATH } from 'constants/path';
-import { AccountPage, DrivingInfoPage, DrivingInstructionPage, DrivingRegisterPage, LoginPage, NotFoundPage, DrivingTestPage, DrivingHealthPage } from 'features';
-import MainGuard from 'components/guard/MainGuard';
-import MainLayout from 'components/layout/MainLayout';
-import UserGuard from 'components/guard/UserGuard';
 import ServiceLayout from 'components/layout/ServiceLayout';
-import AdminLayout from 'components/layout/AdminLayout';
-import AdminGuard from 'components/guard/AdminGuard';
 import AdminDrivingCoursePage from 'features/admin/driving-license/pages/AdminDrivingCoursePage';
 import AdminDrivingPage from 'features/admin/driving-license/pages/AdminDrivingPage';
 import AdminDrivingProcessingPage from 'features/admin/driving-license/pages/AdminDrivingProcessingPage';
 import AdminDrivingGuard from 'components/guard/AdminDrivingGuard';
-import ShortLinkPage from 'features/short-link/pages/ShortLinkPage';
 import OtpPage from 'features/login/OtpPage';
 import AdminDrivingCenterPage from 'features/admin/driving-license/pages/AdminDrivingCenterPage';
-import CenterInstructionPage from 'features/driving-license/pages/CenterInstructionPage';
 import AdminDrivingLayout from 'components/layout/AdminDrivingLayout';
 import AdminDrivingStudentPage from 'features/admin/driving-license/pages/AdminDrivingStudentPage';
 import AdminElearningGuard from 'components/guard/AdminElearningGuard';
@@ -23,8 +15,6 @@ import AdminElearningPage from 'features/admin/elearning/pages/AdminElearningPag
 import AdminElearningStudentPage from 'features/admin/elearning/pages/AdminElearningStudentPage';
 import StudentElearningGuard from 'components/guard/StudentElearningGuard';
 import StudentElearningLayout from 'components/layout/StudentElearningLayout';
-import ElearningStudentPage from 'features/elearning/pages/ElearningStudentPage';
-import ElearningStudentCourseDetailPage from 'features/elearning/pages/ElearningStudentCourseDetailPage';
 import ElearningStudentResultPage from 'features/elearning/pages/ElearningStudentResultPage';
 import AdminDrivingTypePage from 'features/admin/driving-license/pages/AdminDrivingTypePage';
 import AdminDrivingTeacherPage from 'features/admin/driving-license/pages/AdminDrivingTeacherPage';
@@ -41,93 +31,9 @@ import ElearningStudentArticlePage from 'features/elearning/pages/ElearningStude
 import ElearningStudentBookPage from 'features/elearning/pages/ElearningStudentBookPage';
 import ForceChangePasswordPage from 'features/elearning/pages/ForceChangePasswordPage';
 import ElearningAttemptResultPage from 'features/elearning/pages/ElearningAttemptResultPage';
+import { DrivingTestPage, LoginPage, NotFoundPage } from 'features';
 
 const router = createBrowserRouter([
-  // {
-  //   path: PATH.HOME,
-  //   element: <MainGuard />,
-  //   errorElement: <NotFoundPage />,
-  //   children: [
-  //     {
-  //       element: <MainLayout />,
-  //       children: [
-  //         {
-  //           path: PATH.ACCOUNT,
-  //           element: <AccountPage />
-  //         },
-  //         {
-  //           path: PATH.USER.ROOT,
-  //           element: <UserGuard />,
-  //           errorElement: <NotFoundPage />,
-  //           children: [
-  //             {
-  //               path: PATH.USER.PROFILE,
-  //               element: <AccountPage />,
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       path: PATH.SHORT_LINK,
-  //       element: <ShortLinkPage />
-  //     },
-  //     {
-  //       path: PATH.DRIVING.HEALTH_CHECK,
-  //       element: <ServiceLayout pageTitle="Đăng ký thông tin" backTo={PATH.HOME}>
-  //         <DrivingHealthPage />
-  //       </ServiceLayout>
-  //     },
-  //     {
-  //       path: PATH.DRIVING.ROOT,
-  //       element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
-  //         <DrivingInfoPage />
-  //       </ServiceLayout>
-  //     },
-  //     {
-  //       path: PATH.DRIVING.HOC_LAI_XE,
-  //       element: <ServiceLayout pageTitle="Sát hạch lái xe" backTo={PATH.HOME}>
-  //         <DrivingRegisterPage />
-  //       </ServiceLayout>
-  //     },
-  //     {
-  //       path: PATH.DRIVING.INSTRUCTION,
-  //       element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
-  //         <DrivingInstructionPage />
-  //       </ServiceLayout>
-  //     },
-  //     {
-  //       path: PATH.DRIVING.REGISTRATION,
-  //       element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
-  //         <DrivingRegisterPage />
-  //       </ServiceLayout>
-  //     },
-  //     {
-  //       path: PATH.DRIVING.CENTER.INSTRUCTION,
-  //       element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
-  //         <CenterInstructionPage />
-  //       </ServiceLayout>
-  //     },
-  //     {
-  //       path: PATH.DRIVING.CENTER.REGISTRATION,
-  //       element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
-  //         <DrivingRegisterPage />
-  //       </ServiceLayout>
-  //     },
-  //     {
-  //       path: PATH.DRIVING.CENTER.HUONG_DAN,
-  //       element: <ServiceLayout pageTitle="Hướng dẫn dự thi" backTo={PATH.DRIVING.ROOT}>
-  //         <CenterInstructionPage />
-  //       </ServiceLayout>
-  //     },
-  //     {
-  //       path: PATH.DRIVING.CENTER.DANG_KY,
-  //       element: <ServiceLayout pageTitle="Đăng ký dự thi" backTo={PATH.DRIVING.ROOT}>
-  //         <DrivingRegisterPage />
-  //       </ServiceLayout>
-  //     },
-  //   ],
-  // },
   {
     element: <AdminDrivingGuard />,
     errorElement: <NotFoundPage />,

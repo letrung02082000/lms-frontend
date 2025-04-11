@@ -2,12 +2,10 @@ import React from "react";
 // import Footer from 'shared/components/Footer';
 import Header from "components/Header";
 
-import styles from "./mainLayout.module.css";
-
 const MainLayout = ({ children }) => {
   return (
     <div>
-      <div className={styles.hotlineButton}>
+      <div>
         <a target="_blank" href="tel:+84877876877" rel="noopener noreferrer">
           <img
             src="/hotlineicon.gif"
