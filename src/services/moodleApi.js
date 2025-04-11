@@ -634,7 +634,93 @@ const getUserCourseReport = async ({ userIds = [], courseId = null }) => {
         throw error;
     }
 };
-  
+
+const getUserInfoById = async (userId) => {
+    console.log(`Gọi API: core_user_get_users để lấy thông tin userId: ${userId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!userId || typeof userId !== 'number' || userId <= 0) {
+        throw new Error("userId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'core_user_get_users',
+                moodlewsrestformat: 'json',
+                'criteria[0][key]': 'id',
+                'criteria[0][value]': userId,
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi core_user_get_users.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API core_user_get_users');
+        }
+
+        const user = response.data.users?.[0];
+        if (!user) {
+            throw new Error(`Không tìm thấy người dùng với ID ${userId}`);
+        }
+
+        console.log(`Lấy thông tin thành công cho userId: ${userId}`);
+        return user;
+
+    } catch (error) {
+        console.error(`Lỗi khi gọi getUserInfoById với userId ${userId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
+const updateUserPassword = async (userId, password) => {
+    console.log(`Gọi API: core_user_update_users để cập nhật thông tin userId: ${userId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!userId || typeof userId !== 'number' || userId <= 0) {
+        throw new Error("userId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'core_user_update_users',
+                moodlewsrestformat: 'json',
+                'users[0][id]': userId,
+                'users[0][password]': password,
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi core_user_update_users.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API core_user_update_users');
+        }
+
+        console.log(`Cập nhật thông tin thành công cho userId: ${userId}`);
+        return response.data;
+
+    } catch (error) {
+        console.error(`Lỗi khi gọi updateUser với userId ${userId}:`, error.response?.data || error.message);
+        throw error;
+    }
+}
+
+
 
 const moodleApi = {
     getSiteInfo,
@@ -656,5 +742,7 @@ const moodleApi = {
     getQuizAttemptSummary,
     finishQuizAttempt,
     getUserCourseReport,
+    getUserInfoById,
+    updateUserPassword,
 };
 export default moodleApi;

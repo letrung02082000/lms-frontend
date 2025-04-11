@@ -26,12 +26,13 @@ const CourseCard = ({ course, courseContent }) => {
             <h5>{course.fullnamedisplay}</h5>
             <p>{course.summary}</p>
             <Button
+              variant='outline-primary'
               onClick={() => setOpen(!open)}
               aria-controls={`lessons-${course.id}`}
               aria-expanded={open}
               size='sm'
             >
-              {open ? 'Ẩn bài học' : 'Hiện bài học'}
+              {open ? 'Ẩn các phần' : 'Hiện các phần'}
             </Button>
 
             <Collapse in={open}>
@@ -64,6 +65,7 @@ const CourseCard = ({ course, courseContent }) => {
                               )}
                               {mod.modname === 'quiz' && (
                                 <Button
+                                  variant='outline-primary'
                                   size='sm'
                                   href={`${PATH.ELEARNING.STUDENT.TEST_DETAIL.replace(
                                     ':id',
@@ -71,7 +73,8 @@ const CourseCard = ({ course, courseContent }) => {
                                   )}?m=${mod?.id}&c=${course.id}`}
                                   target='_blank'
                                 >
-                                  Thực hiện
+                                  <IoMdEye className='me-1' />
+                                  Xem
                                 </Button>
                               )}
                               {mod.modname === 'resource' && (

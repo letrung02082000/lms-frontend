@@ -85,7 +85,8 @@ export const PATH = {
             ARTICLE: '/elearning/student/article/:id',
             BOOK: '/elearning/student/book/:id',
         },
-        LOGIN: '/elearning/login'
+        LOGIN: '/elearning/login',
+        CHANGE_PASSWORD: '/elearning/change-password',
     },
     UNIFORM: {
         ROOT: '/shop/666195bad4fed7a40f1016fe',

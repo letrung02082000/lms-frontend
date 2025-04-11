@@ -35,13 +35,15 @@ function ElearningStudentLoginPage() {
         console.error('Lỗi khi lấy thông tin trang Moodle:', error);
       });
 
-    elearningApi.getUserByMoodleToken(token).then((res) => {
-      console.log('Thông tin người dùng:', res);
-      localStorage.setItem('center', JSON.stringify(res?.data?.center));
-
-    }).catch((error) => {
-      console.error('Lỗi khi lấy thông tin người dùng:', error);
-    });
+    elearningApi
+      .getUserByMoodleToken(token)
+      .then((res) => {
+        console.log('Thông tin người dùng:', res);
+        localStorage.setItem('center', JSON.stringify(res?.data?.center));
+      })
+      .catch((error) => {
+        console.error('Lỗi khi lấy thông tin người dùng:', error);
+      });
 
     navigate(PATH.ELEARNING.STUDENT.ROOT); // Chuyển hướng đến trang Moodle
   }, []);
