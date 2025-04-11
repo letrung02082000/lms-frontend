@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import Spinner from 'react-bootstrap/Spinner';
-import QuizContainer from '../components/QuizContainer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import moodleApi from 'services/moodleApi';
-import { Badge } from 'react-bootstrap';
 import { PATH } from 'constants/path';
 
 function ElearningStudentTestPage() {
@@ -66,7 +62,8 @@ function ElearningStudentTestPage() {
       })
       .catch((err) => {
         console.log(err);
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   }, []);
@@ -94,7 +91,6 @@ function ElearningStudentTestPage() {
     if (quizzes.length > 0) {
       return (
         <div>
-          <h2 className='mb-3 mt-4'>Chọn bài kiểm tra</h2>
           <ListGroup>
             {quizzes.map((quiz) => (
               <ListGroup.Item
@@ -149,9 +145,8 @@ function ElearningStudentTestPage() {
     if (!isLoading && !error && quizzes.length === 0) {
       return (
         <Alert variant='info' className='mt-4'>
-          Không tìm thấy bài kiểm tra nào trong khóa học này (ID:{' '}
-          {courses}) mà bạn có quyền truy cập, hoặc đang chờ kiểm tra
-          bài làm dở.
+          Không tìm thấy bài kiểm tra nào trong khóa học này (ID: {courses}) mà
+          bạn có quyền truy cập, hoặc đang chờ kiểm tra bài làm dở.
           {isCheckingAttempts && <LoadingSpinner size='sm' />}
         </Alert>
       );
@@ -172,8 +167,11 @@ function ElearningStudentTestPage() {
   };
 
   return (
-    <div style={{ height: '100vh', overflowY: 'scroll' }}>
-      <Container>{renderContent()}</Container>
+    <div style={{ height: '100vh', overflowY: 'scroll', padding: '20px' }}>
+      <Container>
+        <h2 className='mb-4 h2'>Chọn bài kiểm tra</h2>
+        {renderContent()}
+      </Container>
     </div>
   );
 }
