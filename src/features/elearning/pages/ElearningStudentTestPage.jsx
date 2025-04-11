@@ -129,7 +129,7 @@ function ElearningStudentTestPage() {
                   )}
                 </div>
                 <Button
-                  variant='primary'
+                  variant='outline-primary'
                   size='sm'
                   href={`${PATH.ELEARNING.STUDENT.TEST_DETAIL.replace(
                     ':id',
