@@ -19,6 +19,7 @@ import { toastWrapper } from 'utils';
 import { usePromptWithUnload } from 'hooks/usePromptWithUnload';
 import Timer from '../components/Timer';
 import QuestionReviewModal from '../components/QuestionReviewModal';
+import { PATH } from 'constants/path';
 
 function ElearningStudentTestDetailPage() {
   const testId = useParams().id;
@@ -329,12 +330,23 @@ function ElearningStudentTestDetailPage() {
                                   </>
                                 )}
                               </Card.Text>
-                              {attempt.state === 'inprogress' && (
+                              {attempt.state === 'inprogress' ? (
                                 <Button
                                   variant='primary'
                                   onClick={() => continueQuizAttempt(attempt)}
                                 >
                                   Tiếp tục bài làm
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant='outline-primary'
+                                  target='_blank'
+                                  href={`${PATH.ELEARNING.STUDENT.ATTEMPT_RESULT.replace(
+                                    ':attemptId',
+                                    attempt.id
+                                  )}`}
+                                >
+                                  Xem lại bài làm
                                 </Button>
                               )}
                             </Card.Body>

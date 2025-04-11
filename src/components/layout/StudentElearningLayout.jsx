@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import AdminLayout from './AdminLayout';
 import { STUDENT_ELEARNING_MENU } from 'constants/menu';
+import elearningApi from 'api/elearningApi';
 
 function StudentElearningLayout() {
   const [center, setCenter] = React.useState(
@@ -11,6 +12,21 @@ function StudentElearningLayout() {
     if (!center?._id) {
       const moodleToken = localStorage.getItem('moodleToken');
       console.log('moodleToken', moodleToken);
+      if (!moodleToken) {
+        window.location.href = '/elearning/login';
+      } else {
+        elearningApi
+          .getUserByMoodleToken(moodleToken)
+          .then((res) => {
+            setCenter(res.data?.center);
+            localStorage.setItem('center', JSON.stringify(res.data?.center));
+          })
+          .catch((error) => {
+            console.error('Error fetching site info:', error);
+            localStorage.removeItem('moodleToken');
+            window.location.href = '/elearning/login';
+          });
+      }
     }
   }, [center]);
 

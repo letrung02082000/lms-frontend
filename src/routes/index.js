@@ -40,6 +40,7 @@ import ElearningStudentTestDetailPage from 'features/elearning/pages/ElearningSt
 import ElearningStudentArticlePage from 'features/elearning/pages/ElearningStudentArticlePage';
 import ElearningStudentBookPage from 'features/elearning/pages/ElearningStudentBookPage';
 import ForceChangePasswordPage from 'features/elearning/pages/ForceChangePasswordPage';
+import ElearningAttemptResultPage from 'features/elearning/pages/ElearningAttemptResultPage';
 
 const router = createBrowserRouter([
   // {
@@ -243,6 +244,10 @@ const router = createBrowserRouter([
           {
             path: PATH.ELEARNING.STUDENT.BOOK,
             element: <ElearningStudentBookPage />,
+          },
+          {
+            path: PATH.ELEARNING.STUDENT.ATTEMPT_RESULT,
+            element: <ElearningAttemptResultPage />,
           },
         ],
       },
