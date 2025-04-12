@@ -1,5 +1,5 @@
 // src/components/ElearningStudentLoginPage.jsx
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,18 +11,37 @@ import Alert from 'react-bootstrap/Alert';
 import moodleApi from 'services/moodleApi'; // Import moodleApi chứa hàm getToken
 import { useNavigate } from 'react-router-dom';
 import { PATH } from 'constants/path';
-import elearningApi from 'api/elearningApi';
+import drivingApi from 'api/drivingApi';
+import { Image } from 'react-bootstrap';
 
 function ElearningStudentLoginPage() {
-  // onLoginSuccess sẽ nhận token
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const hostname = window.location.hostname;
+  const subdomain = hostname.split('.')[0];
+  const [center, setCenter] = useState(null);
+
+  useEffect(() => {
+    if (subdomain) {
+      drivingApi
+        .queryDrivingCenters({
+          filter: { shortName: subdomain },
+          page: 1,
+        })
+        .then((response) => {
+          setCenter(response?.data?.[0] || null);
+          localStorage.setItem('center', JSON.stringify(response?.data?.[0]));
+        })
+        .catch((error) => {
+          console.error('Lỗi khi lấy thông tin trung tâm:', error);
+        });
+    }
+  }, [subdomain]);
 
   const onLoginSuccess = useCallback((token) => {
     localStorage.setItem('moodleToken', token);
-
     moodleApi
       .getSiteInfo(token)
       .then((data) => {
@@ -86,14 +105,25 @@ function ElearningStudentLoginPage() {
 
   const navigate = useNavigate();
 
-  // --- Phần JSX giữ nguyên như trước ---
   return (
     <Container className='mt-5'>
+      {center && (
+        <div className='text-center mb-4'>
+          <Image
+            src={center.logo}
+            alt='Logo'
+            className='mb-2'
+            width={110}
+            height={110}
+            style={{ objectFit: 'contain' }}
+          />
+          <h6>{center.name}</h6>
+        </div>
+      )}
       <Row className='justify-content-center'>
         <Col md={8} lg={6} xl={5}>
           <Card className='shadow-sm'>
             <Card.Body className='p-4'>
-              <h2 className='text-center mb-4'>Đăng nhập Học viên</h2>
               <Form onSubmit={handleSubmit}>
                 {error && (
                   <Alert
