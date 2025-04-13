@@ -2,13 +2,19 @@ import React, { useEffect } from 'react';
 import moodleApi from 'services/moodleApi';
 import { groupByUserCourseModule } from 'utils/elearning.utils';
 import CourseReportAccordion from '../components/CourseReportAccordion';
-import { Container } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
+import ErrorMessage from '../components/ErrorMessage';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function ElearningStudentResultPage() {
   const studentInfo = JSON.parse(localStorage.getItem('moodleSiteInfo'));
   const [courseReport, setCourseReport] = React.useState(null);
+  const [error, setError] = React.useState(null);
+  const [isLoading, setLoading] = React.useState(true);
 
   useEffect(() => {
+    setLoading(true);
+
     if (studentInfo?.userid) {
       moodleApi
         .getUserCourseReport({
@@ -21,9 +27,24 @@ function ElearningStudentResultPage() {
         })
         .catch((error) => {
           console.error('Error fetching course report:', error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error && !isLoading) {
+    return (
+      <div className='mt-4'>
+        <ErrorMessage message={error} />
+      </div>
+    );
+  }
 
   return (
     <div
