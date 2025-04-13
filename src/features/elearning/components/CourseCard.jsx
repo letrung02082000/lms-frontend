@@ -10,6 +10,7 @@ const {
   Button,
   Collapse,
   ListGroup,
+  Badge,
 } = require('react-bootstrap');
 
 const CourseCard = ({ course, courseContent }) => {
@@ -46,19 +47,42 @@ const CourseCard = ({ course, courseContent }) => {
                             className='align-items-center mb-2 g-2'
                             key={mod?.id}
                           >
-                            <Col xs={10}>{mod.name}</Col>
+                            <Col xs={10}>
+                              {mod.name}
+                              {mod?.completiondata?.isoverallcomplete && (
+                                <Badge
+                                  className='ms-2'
+                                  bg='success'
+                                  pill
+                                  style={{ fontSize: '0.8rem' }}
+                                >
+                                  <span className='me-1'>Đã hoàn thành</span>
+                                </Badge>
+                              )}
+                              {!mod?.completiondata?.isoverallcomplete && mod?.completiondata?.hascompletion &&
+                                mod?.completiondata?.details?.map((d) => (
+                                  <Badge
+                                    className='ms-2'
+                                    bg='secondary'
+                                    pill
+                                    style={{ fontSize: '0.8rem' }}
+                                  >
+                                    <span className='me-1'>{d?.rulevalue?.description}</span>
+                                  </Badge>
+                                ))}
+                            </Col>
                             <Col xs={2} className='text-end'>
-                            {mod.modname === 'url' && (
-                              <Button
-                                variant='outline-primary'
-                                size='sm'
-                                href={`${mod?.contents[0]?.fileurl}`}
-                                target='_blank'
+                              {mod.modname === 'url' && (
+                                <Button
+                                  variant='outline-primary'
+                                  size='sm'
+                                  href={`${mod?.contents[0]?.fileurl}`}
+                                  target='_blank'
                                 >
                                   <MdLink className='me-1' />
                                   Truy cập
                                 </Button>
-                            )}
+                              )}
                               {mod.modname === 'supervideo' && (
                                 <Button
                                   variant='outline-primary'
@@ -109,7 +133,9 @@ const CourseCard = ({ course, courseContent }) => {
                                   href={`${PATH.ELEARNING.STUDENT.BOOK.replace(
                                     ':id',
                                     mod?.instance
-                                  )}?m=${mod?.id}&url=${mod?.contents[0]?.fileurl}`}
+                                  )}?m=${mod?.id}&url=${
+                                    mod?.contents[0]?.fileurl
+                                  }`}
                                   target='_blank'
                                 >
                                   <FaBookReader className='me-1' />
