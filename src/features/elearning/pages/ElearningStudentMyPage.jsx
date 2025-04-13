@@ -66,6 +66,7 @@ function ElearningStudentMyPage() {
     >
       {!loading ? (
         <Container className='mt-4'>
+          <h2 className='mb-4 h2'>Thông tin cá nhân</h2>
           <Card className='mb-4 shadow-sm'>
             <Card.Body>
               <Row>
@@ -76,9 +77,10 @@ function ElearningStudentMyPage() {
                       'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
                     }
                     roundedCircle
-                    width='75%'
+                    width='50%'
                     height='auto'
                     alt='avatar'
+                    className='mb-3'
                   />
                 </Col>
                 <Col md={6}>
@@ -143,7 +145,7 @@ function ElearningStudentMyPage() {
               md={3}
               className='d-flex align-items-center justify-content-center'
             >
-              <div style={{ width: 250, height: 250 }}>
+              <div style={{ width: 250, height: 250 }} className='mb-3'>
                 <CircularProgressbar
                   value={
                     courses.length > 0

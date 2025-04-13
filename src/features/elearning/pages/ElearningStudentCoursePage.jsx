@@ -50,7 +50,7 @@ function ElearningStudentCoursePage() {
 
   return (
     <div style={{ height: '100vh', overflowY: 'scroll', padding: '20px' }}>
-      <Container className='my-4'>
+      <Container>
         <h2 className='mb-4 h2'>Danh sách môn học</h2>
         {courses.length > 0 ? (
           <Row className='g-4'>
