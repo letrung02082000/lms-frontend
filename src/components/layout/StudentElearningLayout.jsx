@@ -5,9 +5,17 @@ import elearningApi from 'api/elearningApi';
 import { Button, ButtonGroup, Image } from 'react-bootstrap';
 
 function StudentElearningLayout() {
-  const [center, setCenter] = React.useState(
-    JSON.parse(localStorage.getItem('center') || '{}')
-  );
+  const [center, setCenter] = React.useState(() => {
+    try {
+      const data = localStorage.getItem('center');
+      if (data && data !== 'undefined') {
+        return JSON.parse(data);
+      }
+    } catch (e) {
+      console.error('Lỗi khi parse localStorage center:', e.message);
+    }
+    return {};
+  });
 
   useEffect(() => {
     if (!center?._id) {
@@ -35,13 +43,7 @@ function StudentElearningLayout() {
     <>
       <AdminLayout
         menu={STUDENT_ELEARNING_MENU}
-        title={
-          <img
-            src={center?.logo}
-            alt='Logo'
-            style={{ height: '15vh' }}
-          />
-        }
+        title={<img src={center?.logo} alt='Logo' style={{ height: '15vh' }} />}
         handleLogout={() => {
           localStorage.removeItem('moodleToken');
           localStorage.removeItem('moodleSiteInfo');
