@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import moodleApi from 'services/moodleApi';
 import YoutubePlayer from '../components/YoutubePlayer';
 import VideoPlayer from '../components/VideoPlayer';
+import useSingleTab from 'hooks/useSingleTab';
 
 function ElearningStudentVideoPage() {
   const { id: videoId } = useParams();
@@ -12,6 +13,8 @@ function ElearningStudentVideoPage() {
   const [videoView, setVideoView] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useSingleTab('/elearning/student/video');
 
   useEffect(() => {
     if (!videoId) return;

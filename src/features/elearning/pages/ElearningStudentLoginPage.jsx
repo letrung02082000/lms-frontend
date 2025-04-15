@@ -24,7 +24,7 @@ function ElearningStudentLoginPage() {
   const [center, setCenter] = useState(null);
 
   useEffect(() => {
-    if (subdomain) {
+    if (subdomain && subdomain !== 'lms') {
       drivingApi
         .queryDrivingCenters({
           filter: { shortName: subdomain },
