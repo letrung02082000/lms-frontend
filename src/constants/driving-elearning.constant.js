@@ -13,7 +13,17 @@ const QUIZ_ATTEMPT_STATUS = {
     notattempted: 'Chưa làm bài',
 }
 
+const COURSE_MODULES = {
+    quiz: 'Bài kiểm tra',
+    supervideo: 'Video bài giảng',
+    url: 'Liên kết',
+    resource: 'Tài liệu',
+    page: 'Trang',
+    forum: 'Diễn đàn',
+}
+
 export {
     ELEARNING_ROLES,
     QUIZ_ATTEMPT_STATUS,
+    COURSE_MODULES,
 }
