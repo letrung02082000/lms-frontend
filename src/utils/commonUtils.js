@@ -81,6 +81,19 @@ const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
     return `${m} phút ${s} giây`;
-  };
+};
 
-export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId, parseQuestionHTML, formatTime }
+function countModulesByType(sections) {
+    const moduleCount = {};
+
+    sections?.forEach(section => {
+        section.modules?.forEach(module => {
+            const type = module.modname;
+            moduleCount[type] = (moduleCount[type] || 0) + 1;
+        });
+    });
+
+    return moduleCount;
+}
+
+export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId, parseQuestionHTML, formatTime, countModulesByType }

@@ -1,8 +1,10 @@
+import { COURSE_MODULES } from 'constants/driving-elearning.constant';
 import { PATH } from 'constants/path';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaBookReader } from 'react-icons/fa';
 import { IoMdEye } from 'react-icons/io';
 import { MdLink, MdPlayArrow } from 'react-icons/md';
+import { countModulesByType } from 'utils/commonUtils';
 const {
   Card,
   Row,
@@ -14,18 +16,43 @@ const {
 } = require('react-bootstrap');
 
 const CourseCard = ({ course, courseContent }) => {
-  console.log(course);
-  console.log(courseContent);
   const moodleToken = localStorage.getItem('moodleToken');
   const [open, setOpen] = useState(false);
+  const [moduleCount, setModuleCount] = useState({});
+
+  useEffect(() => {
+    const count = countModulesByType(courseContent);
+    console.log('Module count:', Object.entries(count));
+    setModuleCount(count);
+  }, [courseContent]);
 
   return (
     <Card className='mb-3 shadow-sm'>
       <Card.Body>
         <Row>
           <Col>
-            <h5>{course.fullnamedisplay}</h5>
-            <p>{course.summary}</p>
+            <Row>
+              <Col>
+                <h5>{course.fullnamedisplay}</h5>
+                <p>{course.summary}</p>
+              </Col>
+              <Col className='text-end'>
+                {Object.keys(moduleCount)?.map(
+                  (mod) => (
+                    <Badge
+                      key={mod}
+                      bg='primary'
+                      className='me-1'
+                      pill
+                      style={{ fontSize: '0.8rem' }}
+                    >
+                      <span className='me-1'>{moduleCount[mod]}</span>
+                      <span className='me-1'>{COURSE_MODULES[mod]}</span>
+                    </Badge>
+                  )
+                )}
+              </Col>
+            </Row>
             <Button
               variant='outline-primary'
               onClick={() => setOpen(!open)}
@@ -59,7 +86,8 @@ const CourseCard = ({ course, courseContent }) => {
                                   <span className='me-1'>Đã hoàn thành</span>
                                 </Badge>
                               )}
-                              {!mod?.completiondata?.isoverallcomplete && mod?.completiondata?.hascompletion &&
+                              {!mod?.completiondata?.isoverallcomplete &&
+                                mod?.completiondata?.hascompletion &&
                                 mod?.completiondata?.details?.map((d) => (
                                   <Badge
                                     className='ms-2'
@@ -67,7 +95,9 @@ const CourseCard = ({ course, courseContent }) => {
                                     pill
                                     style={{ fontSize: '0.8rem' }}
                                   >
-                                    <span className='me-1'>{d?.rulevalue?.description}</span>
+                                    <span className='me-1'>
+                                      {d?.rulevalue?.description}
+                                    </span>
                                   </Badge>
                                 ))}
                             </Col>
