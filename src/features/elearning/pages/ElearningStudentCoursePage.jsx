@@ -10,7 +10,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 function ElearningStudentCoursePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [courses, setCourses] = React.useState([]);
-  const [categories, setCategories] = React.useState([]);
   const [courseContents, setCourseContents] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
@@ -29,7 +28,10 @@ function ElearningStudentCoursePage() {
             })
             .catch((error) =>
               console.log('Failed to fetch course content: ', error)
-            );
+            )
+            .finally(() => {
+              setLoading(false);
+            });
         }
       } catch (error) {
         console.error('Error fetching courses:', error);
@@ -37,7 +39,6 @@ function ElearningStudentCoursePage() {
           'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.',
           'error'
         );
-      } finally {
         setLoading(false);
       }
     };

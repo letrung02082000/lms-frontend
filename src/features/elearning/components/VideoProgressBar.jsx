@@ -9,7 +9,7 @@ const VideoProgressMapa = ({ mapa }) => {
   let start = null;
 
   mapa.forEach((val, index) => {
-    if (val === 1 && start === null) {
+    if (val > 0 && start === null) {
       start = index;
     } else if ((val === 0 || index === mapa.length - 1) && start !== null) {
       const end = val === 0 ? index : index + 1;

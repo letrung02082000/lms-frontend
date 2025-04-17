@@ -21,6 +21,7 @@ function ElearningStudentMyPage() {
   const [student, setStudent] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [courses, setCourses] = React.useState([]);
+  const [courseReport, setCourseReport] = React.useState(null);
 
   useEffect(() => {
     if (!moodleToken) {
