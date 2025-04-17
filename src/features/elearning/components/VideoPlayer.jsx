@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import VideoProgressMapa from './VideoProgressBar';
+import { Button } from 'react-bootstrap';
 
 const VideoPlayer = ({
   url,
@@ -71,10 +72,10 @@ const VideoPlayer = ({
       const currentTime = Math.floor(player.currentTime());
       const duration = Math.floor(player.duration());
 
-      const viewedCount = mapaRef.current.filter((v) => v === 1).length;
+      const viewedCount = mapaRef.current.filter((v) => v > 0).length;
       const percent = Math.floor((viewedCount / mapaRef.current.length) * 100) || 0;
 
-      if(percent >= 100) {
+      if(currentTime >= duration) {
         player.pause();
       }
 
@@ -124,7 +125,7 @@ const VideoPlayer = ({
 
       const currentIndex = Math.floor(currentTime / intervalTime);
       mapaRef.current = [...mapaRef.current];
-      mapaRef.current[currentIndex] = 1;
+      mapaRef.current[currentIndex] = Date.now();
     };
 
     player.on('timeupdate', handleTimeUpdate);
@@ -151,18 +152,59 @@ const VideoPlayer = ({
         />
       </div>
       <div className='my-2'></div>
-      <VideoProgressMapa mapa={mapa} />
+      <VideoProgressMapa
+        mapa={mapa}
+        duration={Math.floor(playerRef.current?.duration() || 0)}
+        intervalTime={intervalTime}
+      />
       <div className='d-flex justify-content-between'>
         <p>Độ dài: {mapa.length * intervalTime} giây</p>
         <p>
           {Math.floor(
-            (mapa.filter((item) => item === 1).length / mapa.length || 0) * 100
+            (mapa.filter((v) => v > 0).length / mapa.length || 0) * 100
           )}
           %
         </p>
-        <p>
-          Đã xem: {mapa.filter((item) => item === 1).length * intervalTime} giây
-        </p>
+        <p>Đã xem: {mapa.filter((v) => v > 0).length * intervalTime} giây</p>
+      </div>
+      <div className='d-flex justify-content-center'>
+        {videoView?.percent == 100 && (
+          <Button
+            variant='outline-primary'
+            onClick={() => {
+              const player = playerRef.current;
+              if (player) {
+                lastValidTime.current = 0;
+                player.currentTime(0);
+                player.play();
+              }
+            }}
+          >
+            Phát lại
+          </Button>
+        )}
+        <Button
+          variant='outline-primary'
+          className='mx-2'
+          onClick={() => {
+            const player = playerRef.current;
+            if (player) {
+              lastValidTime.current = lastValidTime.current - intervalTime;
+
+              if (lastValidTime.current < 0) {
+                lastValidTime.current = 0;
+              }
+
+              player.currentTime(lastValidTime.current);
+
+              if (player.paused()) {
+                player.play();
+              }
+            }
+          }}
+        >
+          Tua lại {intervalTime} giây
+        </Button>
       </div>
     </div>
   );

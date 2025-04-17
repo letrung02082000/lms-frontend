@@ -78,9 +78,16 @@ const parseQuestionHTML = (htmlString) => {
 
 const formatTime = (seconds) => {
     if (!seconds || seconds === 0) return "0 giây";
+
     const m = Math.floor(seconds / 60);
+    const h = Math.floor(m / 60);
     const s = seconds % 60;
-    return `${m} phút ${s} giây`;
+
+    if (h > 0) return `${h} giờ ${m % 60} phút ${s} giây`;
+    if (m > 0) return `${m} phút ${s} giây`;
+    if (s > 0) return `${s} giây`;
+    
+    return "0 giây";
 };
 
 function countModulesByType(sections) {

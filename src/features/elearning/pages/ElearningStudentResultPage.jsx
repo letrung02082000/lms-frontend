@@ -1,21 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import moodleApi from 'services/moodleApi';
-import { groupByUserCourseModule } from 'utils/elearning.utils';
+import {
+  calculateTotalLearningTimeForDate,
+  groupByUserCourseModule,
+} from 'utils/elearning.utils';
 import CourseReportAccordion from '../components/CourseReportAccordion';
-import { Button, Container } from 'react-bootstrap';
+import { Button, Card, Col, Container, Row, Table } from 'react-bootstrap';
 import ErrorMessage from '../components/ErrorMessage';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { formatTime } from 'utils/commonUtils';
 
 function ElearningStudentResultPage() {
   const studentInfo = JSON.parse(localStorage.getItem('moodleSiteInfo'));
   const [courseReport, setCourseReport] = React.useState(null);
   const [error, setError] = React.useState(null);
   const [isLoading, setLoading] = React.useState(true);
+  const totalTime = useRef(0);
 
   useEffect(() => {
-    setLoading(true);
-
     if (studentInfo?.userid) {
+      setLoading(true);
       moodleApi
         .getUserCourseReport({
           userIds: [studentInfo?.userid],
@@ -55,12 +59,56 @@ function ElearningStudentResultPage() {
       }}
     >
       <Container>
-        <h2 className='mb-4'>Kết quả học tập của học viên</h2>
-        {courseReport ? (
-          <CourseReportAccordion courseReport={courseReport} />
-        ) : (
-          <p>Chưa có dữ liệu học tập.</p>
-        )}
+        <Row className='mt-4'>
+          <h2 className='mb-4'>Thời gian học hôm nay</h2>
+          <Col>
+            <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>Môn học</th>
+                  <th>Thời gian tích luỹ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(courseReport?.courses || {}).map((courseId) => {
+                  const course = courseReport?.courses[courseId];
+                  const todaySpentTime = calculateTotalLearningTimeForDate(
+                    course?.modules || {},
+                    Date.now(),
+                    5000
+                  );
+                  totalTime.current += todaySpentTime;
+                  if (todaySpentTime === 0) return null;
+
+                  return (
+                    <tr key={courseId}>
+                      <td>{course?.coursename}</td>
+                      <td>{formatTime(todaySpentTime / 1000)}</td>
+                    </tr>
+                  );
+                })}
+                <tr>
+                  <td className='text-end'>
+                    <strong>Tổng cộng</strong>
+                  </td>
+                  <td>
+                    <strong>{formatTime(totalTime.current / 1000)}</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
+        <Row className='mt-4'>
+          <h2 className='mb-4'>Kết quả học tập toàn khoá</h2>
+          <Col>
+            {courseReport ? (
+              <CourseReportAccordion courseReport={courseReport} />
+            ) : (
+              <p>Chưa có dữ liệu học tập.</p>
+            )}
+          </Col>
+        </Row>
       </Container>
     </div>
   );

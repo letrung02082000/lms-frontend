@@ -3,7 +3,7 @@ import { PATH } from 'constants/path';
 import React, { useEffect, useState } from 'react';
 import { FaBookReader } from 'react-icons/fa';
 import { IoMdEye } from 'react-icons/io';
-import { MdLink, MdPlayArrow } from 'react-icons/md';
+import { MdForum, MdLink, MdOutlineForum, MdPlayArrow } from 'react-icons/md';
 import { countModulesByType } from 'utils/commonUtils';
 const {
   Card,
@@ -22,7 +22,6 @@ const CourseCard = ({ course, courseContent }) => {
 
   useEffect(() => {
     const count = countModulesByType(courseContent);
-    console.log('Module count:', Object.entries(count));
     setModuleCount(count);
   }, [courseContent]);
 
@@ -37,20 +36,18 @@ const CourseCard = ({ course, courseContent }) => {
                 <p>{course.summary}</p>
               </Col>
               <Col className='text-end'>
-                {Object.keys(moduleCount)?.map(
-                  (mod) => (
-                    <Badge
-                      key={mod}
-                      bg='primary'
-                      className='me-1'
-                      pill
-                      style={{ fontSize: '0.8rem' }}
-                    >
-                      <span className='me-1'>{moduleCount[mod]}</span>
-                      <span className='me-1'>{COURSE_MODULES[mod]}</span>
-                    </Badge>
-                  )
-                )}
+                {Object.keys(moduleCount)?.map((mod) => (
+                  <Badge
+                    key={mod}
+                    bg='primary'
+                    className='me-1'
+                    pill
+                    style={{ fontSize: '0.8rem' }}
+                  >
+                    <span className='me-1'>{moduleCount[mod]}</span>
+                    <span className='me-1'>{COURSE_MODULES[mod]}</span>
+                  </Badge>
+                ))}
               </Col>
             </Row>
             <Button
@@ -102,6 +99,20 @@ const CourseCard = ({ course, courseContent }) => {
                                 ))}
                             </Col>
                             <Col xs={2} className='text-end'>
+                              {mod.modname === 'forum' && (
+                                <Button
+                                  variant='outline-primary'
+                                  size='sm'
+                                  href={`${PATH.ELEARNING.STUDENT.FORUM.replace(
+                                    ':id',
+                                    mod?.instance
+                                  )}?m=${mod?.id}`}
+                                  target='_blank'
+                                >
+                                  <MdOutlineForum className='me-1' />
+                                  Thảo luận
+                                </Button>
+                              )}
                               {mod.modname === 'url' && (
                                 <Button
                                   variant='outline-primary'

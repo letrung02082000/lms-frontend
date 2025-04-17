@@ -720,7 +720,139 @@ const updateUserPassword = async (userId, password) => {
     }
 }
 
+const getForumDiscussions = async (forumId) => {
+    console.log(`Gọi API: mod_forum_get_forum_discussions để lấy danh sách thảo luận cho forumId: ${forumId}`);
 
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!forumId || typeof forumId !== 'number' || forumId <= 0) {
+        throw new Error("forumId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'mod_forum_get_forum_discussions',
+                moodlewsrestformat: 'json',
+                forumid: forumId,
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi mod_forum_get_forum_discussions.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API mod_forum_get_forum_discussions');
+        }
+
+        const discussions = response.data.discussions;
+        if (!Array.isArray(discussions)) {
+            throw new Error(`Không lấy được danh sách thảo luận cho forumId ${forumId}`);
+        }
+
+        console.log(`Lấy danh sách thảo luận thành công cho forumId: ${forumId}`);
+        return discussions;
+
+    } catch (error) {
+        console.log(error)
+        console.error(`Lỗi khi gọi getForumDiscussions với forumId ${forumId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
+const getDiscussionPosts = async (discussionId) => {
+    console.log(`Gọi API: mod_forum_get_discussion_posts để lấy danh sách phản hồi cho discussionId: ${discussionId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!discussionId || typeof discussionId !== 'number' || discussionId <= 0) {
+        throw new Error("discussionId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'mod_forum_get_discussion_posts',
+                moodlewsrestformat: 'json',
+                discussionid: discussionId,
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi mod_forum_get_discussion_posts.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API mod_forum_get_discussion_posts');
+        }
+
+        const posts = response.data.posts;
+        if (!Array.isArray(posts)) {
+            throw new Error(`Không lấy được danh sách phản hồi cho discussionId ${discussionId}`);
+        }
+
+        console.log(`Lấy danh sách phản hồi thành công cho discussionId: ${discussionId}`);
+        return posts;
+
+    } catch (error) {
+        console.error(`Lỗi khi gọi getDiscussionPosts với discussionId ${discussionId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
+const getDiscussionPost = async (postId) => {
+    console.log(`Gọi API: mod_forum_get_discussion_post để lấy danh sách bài viết cho postId: ${postId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!postId || typeof postId !== 'number' || postId <= 0) {
+        throw new Error("postId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'mod_forum_get_discussion_post',
+                moodlewsrestformat: 'json',
+                postid: postId,
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi mod_forum_get_discussion_post.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API mod_forum_get_discussion_post');
+        }
+
+        const posts = response.data.posts;
+        if (!Array.isArray(posts)) {
+            throw new Error(`Không lấy được danh sách bài viết cho postId ${postId}`);
+        }
+
+        console.log(`Lấy danh sách bài viết thành công cho postId: ${postId}`);
+        return posts;
+
+    } catch (error) {
+        console.log(error)
+        console.error(`Lỗi khi gọi getDiscussionPosts với postId ${postId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
 
 const moodleApi = {
     getSiteInfo,
@@ -744,5 +876,8 @@ const moodleApi = {
     getUserCourseReport,
     getUserInfoById,
     updateUserPassword,
+    getForumDiscussions,
+    getDiscussionPosts,
+    getDiscussionPost
 };
 export default moodleApi;
