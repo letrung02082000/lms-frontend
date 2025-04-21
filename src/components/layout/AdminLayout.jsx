@@ -17,9 +17,9 @@ import {
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const AdminLayout = ({ menu, children, title, root, ...props }) => {
+const AdminLayout = ({ menu, children, title, root, isCollapsed, ...props }) => {
   const isMobile = useMediaQuery('(max-width: 600px)');
-  const [collapsed, setCollapsed] = useState(isMobile);
+  const [collapsed, setCollapsed] = useState(isCollapsed || isMobile);
   const handleLogout = () => {
     localStorage.removeItem('user-info');
     localStorage.removeItem('user-jwt-tk');

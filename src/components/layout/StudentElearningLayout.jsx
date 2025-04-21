@@ -3,6 +3,7 @@ import AdminLayout from './AdminLayout';
 import { STUDENT_ELEARNING_MENU } from 'constants/menu';
 import elearningApi from 'api/elearningApi';
 import { Button, ButtonGroup, Image } from 'react-bootstrap';
+import { PATH } from 'constants/path';
 
 function StudentElearningLayout() {
   const [center, setCenter] = React.useState(() => {
@@ -16,6 +17,7 @@ function StudentElearningLayout() {
     }
     return {};
   });
+  const [isCollapsed, setIsCollapsed] = React.useState(window.location.pathname?.includes('/elearning/student/book'));
 
   useEffect(() => {
     if (!center?._id) {
@@ -39,9 +41,17 @@ function StudentElearningLayout() {
     }
   }, [center]);
 
+  useEffect(() => {
+    console.log(window.location.pathname)
+    if (window.location.pathname?.includes('/elearning/student/book')) {
+      setIsCollapsed(true);
+    }
+  }, []);
+
   return (
     <>
       <AdminLayout
+        isCollapsed={isCollapsed}
         menu={STUDENT_ELEARNING_MENU}
         title={<img src={center?.logo} alt='Logo' style={{ height: '15vh' }} />}
         handleLogout={() => {

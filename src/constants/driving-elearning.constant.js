@@ -15,11 +15,12 @@ const QUIZ_ATTEMPT_STATUS = {
 
 const COURSE_MODULES = {
     quiz: 'Bài kiểm tra',
-    supervideo: 'Video bài giảng',
+    supervideo: 'Video',
     url: 'Liên kết',
     resource: 'Tài liệu',
     page: 'Trang',
     forum: 'Diễn đàn',
+    book: 'Bài giảng',
 }
 
 export {

@@ -854,6 +854,46 @@ const getDiscussionPost = async (postId) => {
     }
 };
 
+const viewBookChapter = async (bookId, chapterId = 0) => {
+    console.log(`Gọi API: mod_book_view_book với bookId: ${bookId}, chapterId: ${chapterId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!bookId || typeof bookId !== 'number' || bookId <= 0) {
+        throw new Error("bookId không hợp lệ.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'mod_book_view_book',
+                moodlewsrestformat: 'json',
+                bookid: bookId,
+                chapterid: chapterId,
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi mod_book_view_book.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API mod_book_view_book');
+        }
+
+        console.log(`Đã gọi API view thành công cho bookId: ${bookId}, chapterId: ${chapterId}`);
+        return response.data;
+
+    } catch (error) {
+        console.error(`Lỗi khi gọi viewBookChapter với bookId ${bookId}, chapterId ${chapterId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
 const moodleApi = {
     getSiteInfo,
     getQuizzesByCourses,
@@ -878,6 +918,7 @@ const moodleApi = {
     updateUserPassword,
     getForumDiscussions,
     getDiscussionPosts,
-    getDiscussionPost
+    getDiscussionPost,
+    viewBookChapter,
 };
 export default moodleApi;

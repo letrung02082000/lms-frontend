@@ -183,9 +183,28 @@ const CourseCard = ({ course, courseContent }) => {
                                   Đọc
                                 </Button>
                               )}
+                              {mod?.modname === 'book' &&
+                              mod?.contents?.length > 0 && (
+                                  <Button
+                                    className='mb-1'
+                                    variant='outline-primary'
+                                    size='sm'
+                                    href={`${PATH.ELEARNING.STUDENT.BOOK.replace(
+                                      ':id',
+                                      mod?.instance
+                                    )}?m=${mod?.id}&i=${mod.instance}&urls=${mod?.contents
+                                      ?.map((content) => content?.fileurl)
+                                      ?.filter(Boolean)
+                                      ?.join(',')}`}
+                                    target='_blank'
+                                  >
+                                    <FaBookReader className='me-1' />
+                                    Học
+                                  </Button>
+                              )}
                             </Col>
                           </Row>
-                          {mod.modname === 'book' && (
+                          {/* {mod.modname === 'book' && (
                             <>
                               {mod.contents?.map((content) => {
                                 return (
@@ -215,7 +234,7 @@ const CourseCard = ({ course, courseContent }) => {
                                 );
                               })}
                             </>
-                          )}
+                          )} */}
                         </>
                       ))}
                       {lesson?.summary && <p>{lesson.summary}</p>}
