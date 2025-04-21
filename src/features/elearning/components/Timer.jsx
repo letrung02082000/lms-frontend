@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 
-const Timer = ({ timestart, timelimit, onTimeUp }) => {
+const Timer = ({ timestart, timelimit, onTimeUp, text }) => {
   const [remainingTime, setRemainingTime] = useState(
-    timelimit * 60 - Math.floor((Date.now() - timestart) / 1000)
+    timelimit * 60 - Math.floor((Date.now() - timestart + 0.9*60*1000) / 1000)
   );
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const Timer = ({ timestart, timelimit, onTimeUp }) => {
 
   return (
     <Alert variant={remainingTime <= 60 ? 'danger' : 'primary'}>
-      ⏳ Thời gian còn lại: <strong>{formatTime(remainingTime)}</strong>
+      {text || '⏳ Thời gian còn lại: '} <strong>{formatTime(remainingTime)}</strong>
     </Alert>
   );
 };
