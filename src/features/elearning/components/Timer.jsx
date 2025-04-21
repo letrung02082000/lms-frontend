@@ -3,7 +3,7 @@ import { Alert } from 'react-bootstrap';
 
 const Timer = ({ timestart, timelimit, onTimeUp, text }) => {
   const [remainingTime, setRemainingTime] = useState(
-    timelimit * 60 - Math.floor((Date.now() - timestart + 0.9*60*1000) / 1000)
+    timelimit * 60 - Math.floor((Date.now() - timestart) / 1000)
   );
 
   useEffect(() => {

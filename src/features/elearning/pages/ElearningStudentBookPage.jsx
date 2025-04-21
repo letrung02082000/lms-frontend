@@ -75,7 +75,6 @@ const ElearningStudentBookPage = () => {
         setCompletedChapters((prev) => {
           if (!prev.includes(currentChapterId)) {
             const updated = [...prev, currentChapterId];
-            // Kiểm tra hoàn thành toàn bộ
             if (updated.length === fileUrls.length) {
               toastWrapper('Bạn đã hoàn thành tất cả các chương.', 'success');
             } else {

@@ -89,7 +89,7 @@ const CourseReportAccordion = ({ courseReport }) => {
                               <span className='text-danger'>Chưa đạt</span>
                             )
                           ) : (
-                            <span className='text-warning'>Chưa thực hiện</span>
+                            <span className='text-warning'>Chưa hoàn thành</span>
                           )}
                         </td>
                       </tr>
