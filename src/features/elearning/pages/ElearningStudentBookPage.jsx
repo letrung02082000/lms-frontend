@@ -5,6 +5,7 @@ import Timer from '../components/Timer';
 import { toastWrapper } from 'utils';
 import { usePromptWithUnload } from 'hooks/usePromptWithUnload';
 import moodleApi from 'services/moodleApi';
+import styled from 'styled-components';
 
 const ElearningStudentBookPage = () => {
   const [htmlContent, setHtmlContent] = useState('');
@@ -91,7 +92,7 @@ const ElearningStudentBookPage = () => {
   };
 
   return (
-    <>
+    <Styles>
       <div
         style={{
           height: '100vh',
@@ -156,8 +157,16 @@ const ElearningStudentBookPage = () => {
           </Button>
         </ButtonGroup>
       </div>
-    </>
+    </Styles>
   );
 };
 
 export default ElearningStudentBookPage;
+
+const Styles = styled.div`
+  .video-js {
+    width: 100%;
+    height: revert;
+    background-color: transparent;
+  }
+`

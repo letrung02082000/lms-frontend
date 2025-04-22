@@ -13,6 +13,7 @@ import { formatTime } from 'utils/commonUtils';
 function ElearningStudentResultPage() {
   const studentInfo = JSON.parse(localStorage.getItem('moodleSiteInfo'));
   const [courseReport, setCourseReport] = React.useState(null);
+  const [courses, setCourses] = React.useState([]);
   const [error, setError] = React.useState(null);
   const [isLoading, setLoading] = React.useState(true);
   const totalTime = useRef(0);
@@ -26,7 +27,6 @@ function ElearningStudentResultPage() {
         })
         .then((data) => {
           const reportData = groupByUserCourseModule(data);
-          console.log(reportData);
           setCourseReport(reportData[studentInfo?.userid]);
         })
         .catch((error) => {
@@ -37,6 +37,35 @@ function ElearningStudentResultPage() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    if (studentInfo?.userid) {
+      moodleApi
+        .getMyEnrolledCourses('all')
+        .then((courses) => {
+          setCourses(courses);
+        })
+        .catch((error) => {
+          console.error('Error fetching courses:', error);
+        });
+    }
+  }, [studentInfo?.userid]);
+
+  useEffect(() => {
+    if (studentInfo?.userid && courses.length > 0) {
+      moodleApi
+        .getCoursesCompletionStatus(
+          courses?.map((course) => course.id),
+          studentInfo?.userid
+        )
+        .then((data) => {
+          console.log('Courses completion status:', data);
+        })
+        .catch((error) => {
+          console.error('Error fetching course completion status:', error);
+        });
+    }
+  }, [courses?.length]);
 
   if (isLoading) {
     return <LoadingSpinner />;

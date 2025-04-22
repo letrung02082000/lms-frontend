@@ -30,7 +30,7 @@ const CourseReportAccordion = ({ courseReport }) => {
                         <>
                           <th>Điểm</th>
                           <th>Điểm cần đạt</th>
-                          <th>Thời lượng đã xem</th>
+                          <th>Thời gian tích luỹ</th>
                           <th>Thời lượng bài giảng</th>
                           <th>Kết quả</th>
                         </>

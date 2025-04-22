@@ -23,22 +23,24 @@ function groupByUserCourseModule(data) {
             };
         }
 
-        if (!grouped[userId].courses[courseId].modules[module]) {
-            grouped[userId].courses[courseId].modules[module] = [];
-        }
+        if (module === 'supervideo' || module === 'quiz') {
+            if (!grouped[userId].courses[courseId].modules[module]) {
+                grouped[userId].courses[courseId].modules[module] = [];
+            }
 
-        grouped[userId].courses[courseId].modules[module].push({
-            itemname: item.itemname,
-            svname: item.svname,
-            finalgrade: item.finalgrade,
-            gradepass: item.gradepass,
-            grademin: item.grademin,
-            grademax: item.grademax,
-            duration: item.duration,
-            quizsumgrades: item.quizsumgrades,
-            quiztimelimit: item.quiztimelimit,
-            mapa: item.mapa,
-        });
+            grouped[userId].courses[courseId].modules[module].push({
+                itemname: item.itemname,
+                svname: item.svname,
+                finalgrade: item.finalgrade,
+                gradepass: item.gradepass,
+                grademin: item.grademin,
+                grademax: item.grademax,
+                duration: item.duration,
+                quizsumgrades: item.quizsumgrades,
+                quiztimelimit: item.quiztimelimit,
+                mapa: item.mapa,
+            });
+        }
     });
 
     return grouped;

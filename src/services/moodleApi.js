@@ -894,6 +894,56 @@ const viewBookChapter = async (bookId, chapterId = 0) => {
     }
 };
 
+const getCoursesCompletionStatus = async (courseIds = [], userId) => {
+    console.log(`Gọi API: core_completion_get_activities_completion_status cho các khóa học: [${courseIds.join(', ')}], userId: ${userId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!Array.isArray(courseIds) || courseIds.length === 0) {
+        throw new Error("Danh sách courseId không hợp lệ.");
+    }
+
+    if (!userId || typeof userId !== 'number' || userId <= 0) {
+        throw new Error("userId không hợp lệ.");
+    }
+
+    const result = {};
+
+    try {
+        for (const courseId of courseIds) {
+            const response = await apiClient.post('', null, {
+                params: {
+                    wstoken: currentToken,
+                    wsfunction: 'core_completion_get_activities_completion_status',
+                    moodlewsrestformat: 'json',
+                    courseid: courseId,
+                    userid: userId,
+                },
+            });
+
+            if (response.data && response.data.exception) {
+                if (response.data.errorcode === 'invalidtoken') {
+                    console.error(`Token không hợp lệ khi gọi core_completion_get_activities_completion_status.`);
+                }
+                throw new Error(response.data.message || 'Lỗi khi gọi API core_completion_get_activities_completion_status');
+            }
+
+            result[courseId] = response.data.statuses || [];
+        }
+
+        console.log("Lấy completion status thành công cho các khóa học:", courseIds);
+        return result; // { [courseId]: [activities] }
+
+    } catch (error) {
+        console.error(`Lỗi khi gọi getBooksCompletionStatusForCourses:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
 const moodleApi = {
     getSiteInfo,
     getQuizzesByCourses,
@@ -920,5 +970,6 @@ const moodleApi = {
     getDiscussionPosts,
     getDiscussionPost,
     viewBookChapter,
+    getCoursesCompletionStatus,
 };
 export default moodleApi;
