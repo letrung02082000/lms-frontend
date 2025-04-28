@@ -15,6 +15,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import 'react-circular-progressbar/dist/styles.css';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { PATH } from 'constants/path';
+import drivingApi from 'api/drivingApi';
 
 function ElearningStudentMyPage() {
   const moodleToken = localStorage.getItem('moodleToken');
@@ -55,6 +56,11 @@ function ElearningStudentMyPage() {
         .catch((error) => {
           console.error('Error fetching courses:', error);
         });
+
+      drivingApi.getPortraitImage(student?._id).then((data) => {
+        const url = URL.createObjectURL(data);
+        setStudent((prev) => ({ ...prev, portraitUrl: url }));
+      }).catch(console.error);
     }
   }, [student]);
 
@@ -78,8 +84,9 @@ function ElearningStudentMyPage() {
                       'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
                     }
                     roundedCircle
-                    width='50%'
-                    height='auto'
+                    width='150'
+                    height='150'
+                    style={{ objectFit: 'cover' }}
                     alt='avatar'
                     className='mb-3'
                   />
