@@ -347,6 +347,11 @@ class DrivingApi {
     const url = `${API_PATH}/course/elearning`;
     return axiosClient.post(url, { courseId });
   }
+
+  getPortraitImage = async (id) => {
+    const url = `${API_PATH}/image/portrait/${id}`;
+    return axiosClient.get(url, { responseType: 'blob' });
+  }
 }
 
 export default new DrivingApi();
