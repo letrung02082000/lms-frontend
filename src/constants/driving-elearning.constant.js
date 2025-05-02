@@ -15,7 +15,7 @@ const QUIZ_ATTEMPT_STATUS = {
 
 const COURSE_MODULES = {
     quiz: 'Bài kiểm tra',
-    supervideo: 'Video',
+    supervideo: 'Video bài giảng',
     url: 'Liên kết',
     resource: 'Tài liệu',
     page: 'Trang',
