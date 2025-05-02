@@ -153,7 +153,7 @@ const ElearningStudentBookPage = () => {
             variant='primary'
             onClick={() => setCurrentIndex((prev) => prev + 1)}
           >
-            Tiếp theo
+            Kế tiếp
           </Button>
         </ButtonGroup>
       </div>

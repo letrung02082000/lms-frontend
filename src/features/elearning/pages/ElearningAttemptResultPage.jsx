@@ -34,7 +34,9 @@ const ElearningAttemptResultPage = () => {
       <Container className='my-4'>
         <Card>
           <Card.Body>
-            <Card.Title>Đang tải dữ liệu...</Card.Title>
+            <Card.Title>
+              <p className='text-center'>Đang tải dữ liệu...</p>
+            </Card.Title>
             <LoadingSpinner />
           </Card.Body>
         </Card>

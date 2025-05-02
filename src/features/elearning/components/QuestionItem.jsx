@@ -12,6 +12,7 @@ const QuestionItem = ({
 
   const handleChange = (index) => {
     if (disabled) return;
+    console.log('changed', index);
 
     setSelectedIndex(index);
 

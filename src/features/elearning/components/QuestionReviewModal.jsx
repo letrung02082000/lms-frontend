@@ -27,7 +27,7 @@ const QuestionReviewModal = ({ show, onHide, summary, onFinish }) => {
       </Modal.Body>
       <Modal.Footer>
         <div className='d-flex justify-content-center w-100'>
-          <Button variant='primary' onClick={onFinish}>
+          <Button variant='primary' onClick={onFinish} size='lg'>
             Kết thúc bài làm
           </Button>
         </div>

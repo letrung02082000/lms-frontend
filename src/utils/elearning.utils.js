@@ -122,6 +122,63 @@ function calculateTotalLearningTimeForDate(
     });
 
     return totalTime;
-}  
+}
 
-export { groupByUserCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime };
+const groupActivityReport = (sections) => {
+    const modulesMap = {};
+
+    sections.forEach(section => {
+        section.modules.forEach(module => {
+            modulesMap[module.id] = module;
+        });
+    });
+
+    return modulesMap;
+};
+
+const groupGradeReport = (data) => {
+    const grouped = {};
+
+    data.forEach(item => {
+        const userId = item.userid;
+        const courseId = item.courseid;
+        let moduleid = item.cmid;
+
+        if (!grouped[userId]) {
+            grouped[userId] = {
+                username: item.username,
+                name: `${item.firstname} ${item.lastname}`,
+                email: item.email,
+                courses: {}
+            };
+        }
+
+        if (!grouped[userId].courses[courseId]) {
+            grouped[userId].courses[courseId] = {
+                courseid: courseId,
+                coursename: item.coursename,
+                modules: {}
+            };
+        }
+
+        grouped[userId].courses[courseId].modules[moduleid] = {
+            cmid: item.cmid,
+            cminstance: item.cminstance,
+            itemname: item.itemname,
+            svname: item.svname,
+            finalgrade: item.finalgrade,
+            gradepass: item.gradepass,
+            grademin: item.grademin,
+            grademax: item.grademax,
+            duration: item.duration,
+            quizsumgrades: item.quizsumgrades,
+            quiztimelimit: item.quiztimelimit,
+            mapa: item.mapa,
+            modname: item.itemmodule,
+        };
+    });
+
+    return grouped;
+}
+
+export { groupByUserCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupGradeReport, groupActivityReport };

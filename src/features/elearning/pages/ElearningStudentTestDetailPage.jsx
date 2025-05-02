@@ -29,11 +29,14 @@ function ElearningStudentTestDetailPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [quizAttemptData, setQuizAttemptData] = useState(null);
   const [answers, setAnswers] = useState({});
+  const [slotAnswers, setSlotAnswers] = useState(null);
+  const [slot, setSlot] = useState(null);
   const [showHistory, setShowHistory] = useState(true);
   const [quizzes, setQuizzes] = useState([]);
   const [quiz, setQuiz] = useState(null);
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingAttemptSummary, setLoadingAttemptSummary] = useState(true);
   const [attemptSummary, setAttemptSummary] = useState(null);
   const [showQuestionReviewModal, setShowQuestionReviewModal] = useState(false);
   const [preventFinish, setPreventFinish] = useState(false);
@@ -101,10 +104,13 @@ function ElearningStudentTestDetailPage() {
 
   const getQuizAttemptSummary = async (attemptId) => {
     try {
+      setLoadingAttemptSummary(true);
       const data = await moodleApi.getQuizAttemptSummary(attemptId);
       setAttemptSummary(data);
     } catch (error) {
       console.error('Error fetching attempt summary:', error);
+    } finally {
+      setLoadingAttemptSummary(false);
     }
   };
 
@@ -139,7 +145,7 @@ function ElearningStudentTestDetailPage() {
       handleGetAttemptData(quizAttempt?.id, currentPage);
     }
   }, [quizAttempt?.id, currentPage]);
-
+  console.log('slotAnswers', slotAnswers);
   const debouncedSaveAnswer = useMemo(() => {
     return debounce(async (slotAnswers, slot) => {
       const data = Object.entries(slotAnswers).map(([key, value]) => ({
@@ -148,6 +154,7 @@ function ElearningStudentTestDetailPage() {
       }));
 
       try {
+        setPreventFinish(true);
         await moodleApi.saveAttemptData(quizAttempt?.id, data);
         setAttemptSummary((prev) => {
           const updated = { ...prev };
@@ -164,30 +171,26 @@ function ElearningStudentTestDetailPage() {
         });
       } catch (err) {
         console.error('Error saving answer:', err);
+        toastWrapper('Có lỗi xảy ra khi lưu câu trả lời!', 'error');
+      } finally {
+        setPreventFinish(false);
       }
-    }, 1000);
+    }, 0);
   }, [quizAttempt?.id]);
 
   const handleAnswerChange = (slot, payload) => {
-    setPreventFinish(true);
+    setSlot(slot);
     setAnswers((prev) => {
       const updated = { ...prev };
-
-      // Cập nhật lại câu trả lời mới vào answers
       payload.forEach(({ name, value }) => {
         updated[name] = value;
       });
-
-      // Lọc ra tất cả các câu trả lời liên quan đến cùng slot
       const slotAnswers = Object.fromEntries(
         Object.entries(updated).filter(([key]) => key.includes(`:${slot}_`))
       );
-
-      // Gọi API lưu trễ với các câu trả lời của cùng slot
-      debouncedSaveAnswer(slotAnswers, slot);
+      setSlotAnswers(slotAnswers);
       return updated;
     });
-    setPreventFinish(false);
   };
 
   useEffect(() => {
@@ -223,6 +226,7 @@ function ElearningStudentTestDetailPage() {
         });
     } catch (error) {
       console.error('Error finishing quiz:', error);
+      toastWrapper('Có lỗi xảy ra khi nộp bài!', 'error');
     } finally {
       setShowQuestionReviewModal(false);
       setPreventFinish(false);
@@ -381,8 +385,8 @@ function ElearningStudentTestDetailPage() {
                         </Card.Body>
                       </Card>
                     ))}
-                    <div className='d-flex justify-content-between mt-4'>
-                      <Button
+                    <div className='d-flex justify-content-end mt-4'>
+                      {/* <Button
                         variant='secondary'
                         onClick={() => setCurrentPage(currentPage - 1)}
                         disabled={currentPage === 0}
@@ -394,30 +398,52 @@ function ElearningStudentTestDetailPage() {
                         onClick={() => setCurrentPage(currentPage + 1)}
                       >
                         Trang tiếp
+                      </Button> */}
+                      <Button
+                        variant='primary'
+                        disabled={preventFinish || !slotAnswers}
+                        onClick={() => {
+                          debouncedSaveAnswer(slotAnswers, slot);
+                          setSlotAnswers(null);
+                          setCurrentPage(currentPage + 1);
+                        }}
+                      >
+                        {preventFinish
+                          ? 'Đang lưu câu trả lời'
+                          : 'Lưu câu trả lời và tiếp tục'}
                       </Button>
                     </div>
                   </Col>
                   <Col md={3}>
                     {quiz.timelimit > 0 && (
-                      <Timer
-                        timestart={quizAttempt?.timestart * 1000 - 5000}
-                        timelimit={quiz?.timelimit / 60}
-                        onTimeUp={() => {
-                          handleFinishQuiz(true);
-                        }}
-                      />
+                      <div className='mb-4'>
+                        <Timer
+                          timestart={quizAttempt?.timestart * 1000 - 5000}
+                          timelimit={quiz?.timelimit / 60}
+                          onTimeUp={() => {
+                            handleFinishQuiz(true);
+                          }}
+                        />
+                      </div>
                     )}
-                    <div className='d-flex flex-column align-items-center mt-4'>
+                    <div className='d-flex flex-column align-items-center'>
                       <Button
-                        variant='success'
                         size='lg'
                         className='mb-5'
                         onClick={() => {
                           getQuizAttemptSummary(quizAttempt?.id);
                           setShowQuestionReviewModal(true);
                         }}
+                        disabled={preventFinish || loadingAttemptSummary}
                       >
-                        Nộp bài
+                        {showQuestionReviewModal ? (
+                          <>
+                            <Spinner animation='border' size='sm' />
+                            <span className='ms-2'>Đang nộp bài</span>
+                          </>
+                        ) : (
+                          'Nộp bài'
+                        )}
                       </Button>
                     </div>
                     <QuestionNavigator
@@ -433,8 +459,9 @@ function ElearningStudentTestDetailPage() {
         )}
       </Container>
       <QuestionReviewModal
-        key={Date.now()}
-        show={showQuestionReviewModal && !preventFinish}
+        show={
+          showQuestionReviewModal && !preventFinish && !loadingAttemptSummary
+        }
         onHide={() => setShowQuestionReviewModal(false)}
         summary={attemptSummary}
         onFinish={handleFinishQuiz}

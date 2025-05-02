@@ -22,7 +22,6 @@ function ElearningStudentMyPage() {
   const [student, setStudent] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [courses, setCourses] = React.useState([]);
-  const [courseReport, setCourseReport] = React.useState(null);
 
   useEffect(() => {
     if (!moodleToken) {
@@ -62,7 +61,7 @@ function ElearningStudentMyPage() {
         setStudent((prev) => ({ ...prev, portraitUrl: url }));
       }).catch(console.error);
     }
-  }, [student]);
+  }, [student?._id]);
 
   return (
     <div

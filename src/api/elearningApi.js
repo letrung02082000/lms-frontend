@@ -43,6 +43,21 @@ class ElearningApi {
     return axiosClient.get(url, { params: { courseId } });
   }
 
+  getCoursesContents = async (courseIds = null) => {
+    const allContents = {};
+    
+    for (const id of courseIds) {
+      try {
+        const courseContentRes = await this.getCourseContent(id);
+        allContents[id] = courseContentRes?.data;
+      } catch (error) {
+        allContents[id] = { error: `Lỗi: ${error.message}` };
+      }
+    }
+
+    return allContents;
+  };
+
   getCohortUsers = async (cohortId) => {
     const url = `${API_PATH}/cohort/user`;
     return axiosClient.get(url, { params: { cohortId } });
@@ -81,6 +96,30 @@ class ElearningApi {
   getModuleTime = async (moduleId) => {
     const url = `${API_PATH}/module/setting`;
     return axiosClient.get(url, { params: { moduleId } });
+  }
+
+  getUserCourseGrade = async (userIds) => {
+    const url = `${API_PATH}/course/grade`;
+    return axiosClient.get(url, { params: { userIds } });
+  }
+
+  getElearningActivityReport = async (lessonIds, userIds) => {
+    const url = `${API_PATH}/activity/report`;
+    return axiosClient.get(url, { params: { lessonIds, userIds } });
+  }
+
+  getElearningSetting = async (moodleCourseId, drivingType) => {
+    const url = `${API_PATH}/setting`;
+    return axiosClient.get(url, { params: { moodleCourseId, ...(drivingType && { drivingType }) } });
+  }
+
+  getCoursesByCenter = async (center, page, limit) => {
+    const url = `${API_PATH}/center/course`;
+    return axiosClient.get(url, {
+      params: {
+        center
+      }
+    });
   }
 }
 
