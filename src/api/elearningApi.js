@@ -121,6 +121,11 @@ class ElearningApi {
       }
     });
   }
+
+  getLastUserQuizAttempt = async (userId, quizId) => {
+    const url = `${API_PATH}/quiz/attempt`;
+    return axiosClient.get(url, { params: { userId, quizId } });
+  }
 }
 
 export default new ElearningApi();

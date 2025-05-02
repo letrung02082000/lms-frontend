@@ -9,7 +9,7 @@ const LoadingSpinner = ({ size = 'md' }) => {
       {' '}
       {/* Căn giữa và thêm margin */}
       <Spinner animation='border' role='status' size={size}>
-        <span className='visually-hidden'>Loading...</span>
+        <span className='visually-hidden'>Đang tải dữ liệu...</span>
       </Spinner>
     </div>
   );

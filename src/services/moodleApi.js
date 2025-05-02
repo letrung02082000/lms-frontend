@@ -412,7 +412,6 @@ const getCoursesContents = async (courseIds = null) => {
         }
     }
 
-    console.log('Hoàn tất lấy nội dung cho các khóa học.', allContents);
     return allContents; // Trả về object chứa nội dung của các khóa học đã lấy thành công
 };
 

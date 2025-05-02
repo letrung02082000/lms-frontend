@@ -3,8 +3,7 @@ import moodleApi from 'services/moodleApi';
 import {
   calculateTotalLearningTimeForDate,
   groupActivityReport,
-  groupByUserCourseModule,
-  groupGradeReport,
+  groupUserGradeByCourseModule,
 } from 'utils/elearning.utils';
 import { Table } from 'react-bootstrap';
 import ErrorMessage from '../components/ErrorMessage';
@@ -32,12 +31,20 @@ function ElearningStudentResultPage() {
   const [elearningCourses, setElearningCourses] = useState({});
   const [elearningCoursesContents, setElearningCoursesContents] = useState({});
   const [error, setError] = useState(null);
-  const [isLoading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [student, setStudent] = useState(null);
   const [userCourseGrade, setUserCourseGrade] = useState(null);
   const [activityReport, setActivityReport] = useState(null);
-  const [activityReportLoading, setActivityReportLoading] = useState(false);
+  const [activityReportLoading, setActivityReportLoading] = useState(true);
   const [lessonIds, setLessonIds] = useState([]);
+  const [quizAttempts, setQuizAttempts] = useState({});
+  const [bookTime, setBookTime] = useState({});
+  const [elearningSettings, setElearningSettings] = useState({});
+  const [elearningSettingLoading, setElearningSettingLoading] = useState(true);
+  const [bookTimeLoading, setBookTimeLoading] = useState(true);
+  const [quizAttemptsLoading, setQuizAttemptsLoading] = useState(true);
+  const [elearningCoursesLoading, setElearningCoursesLoading] = useState(true);
+
   useEffect(() => {
     if (!moodleToken) {
       window.location.href = '/elearning/login';
@@ -60,28 +67,6 @@ function ElearningStudentResultPage() {
     }
   }, [moodleToken]);
 
-  // Tải dữ liệu học tập của người dùng
-  useEffect(() => {
-    if (!student?.userid) return;
-
-    setLoading(true);
-    moodleApi
-      .getUserCourseReport({
-        userIds: [student.elearningUserId],
-      })
-      .then((data) => {
-        const reportData = groupByUserCourseModule(data);
-        setCourseReport(reportData[student.elearningUserId]);
-      })
-      .catch((err) => {
-        console.error('Error fetching course report:', err);
-        setError('Không thể tải báo cáo học tập.');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [student?.elearningUserId]);
-
   useEffect(() => {
     if (student) {
       setActivityReportLoading(true);
@@ -97,7 +82,9 @@ function ElearningStudentResultPage() {
           ]);
 
           setUserCourseGrade(
-            groupGradeReport(userCourseGradeRes?.data)[student?.elearningUserId]
+            groupUserGradeByCourseModule(userCourseGradeRes?.data)[
+              student?.elearningUserId
+            ]
           );
           setActivityReport(
             activityReportRes?.data?.[student?.elearningUserId]
@@ -116,7 +103,7 @@ function ElearningStudentResultPage() {
 
   useEffect(() => {
     if (center?._id) {
-      setLoading(true);
+      setElearningCoursesLoading(true);
       elearningApi
         .getCoursesByCenter(center?._id)
         .then(async (res) => {
@@ -142,14 +129,146 @@ function ElearningStudentResultPage() {
           console.error(err);
         })
         .finally(() => {
-          setLoading(false);
+          setElearningCoursesLoading(false);
         });
     }
   }, [center?._id]);
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  const quizIds = useMemo(() => {
+    if (!userCourseGrade?.courses) return [];
+    return Object.values(userCourseGrade?.courses).reduce((acc, grade) => {
+      if (grade?.modules) {
+        Object.keys(grade?.modules).forEach((cmid) => {
+          const module = grade.modules[cmid];
+          if (module?.modname === 'quiz' && module?.quiztimelimit === 0) {
+            acc.push(module?.cminstance);
+          }
+        });
+      }
+      return acc;
+    }, []);
+  }, [userCourseGrade?.courses]);
+
+  const bookIds = useMemo(() => {
+    if (!activityReport) return [];
+    return Object.values(activityReport).reduce((acc, activities) => {
+      activities.forEach((activity) => {
+        if (activity.modname === 'book') {
+          acc.push(activity.cmid);
+        }
+      });
+      return acc;
+    }, []);
+  }, [activityReport]);
+
+  useEffect(() => {
+    const fetchQuizAttempts = async (quizIds) => {
+      setQuizAttemptsLoading(true);
+      try {
+        const responses = await Promise.all(
+          quizIds.map((quizId) =>
+            elearningApi
+              .getLastUserQuizAttempt(student?.elearningUserId, quizId)
+              .then((res) => ({ quizId, data: res?.data || {} }))
+              .catch((error) => {
+                console.error(`Error fetching quiz ${quizId}:`, error);
+                return { quizId, data: {} }; // fallback empty data
+              })
+          )
+        );
+
+        const quizAttempts = {};
+        responses.forEach(({ quizId, data }) => {
+          quizAttempts[quizId] = data;
+        });
+
+        setQuizAttempts(quizAttempts);
+      } finally {
+        setQuizAttemptsLoading(false);
+      }
+    };
+
+    if (quizIds.length > 0) fetchQuizAttempts(quizIds);
+  }, [quizIds, student?.elearningUserId]);
+
+  useEffect(() => {
+    const fetchBookTime = async (bookIds) => {
+      setBookTimeLoading(true);
+      try {
+        const responses = await Promise.all(
+          bookIds.map((bookId) =>
+            elearningApi
+              .getModuleTime(bookId)
+              .then((res) => {
+                const totalTime =
+                  res?.data?.reduce((acc, item) => {
+                    if (item?.readingTime) acc += item.readingTime;
+                    return acc;
+                  }, 0) || 0;
+                return { bookId, totalTime };
+              })
+              .catch((error) => {
+                console.error(`Error fetching book time for ${bookId}:`, error);
+                return { bookId, totalTime: 0 }; // fallback
+              })
+          )
+        );
+
+        const bookTime = {};
+        responses.forEach(({ bookId, totalTime }) => {
+          bookTime[bookId] = totalTime;
+        });
+
+        setBookTime(bookTime);
+      } finally {
+        setBookTimeLoading(false);
+      }
+    };
+
+    if (bookIds.length > 0) fetchBookTime(bookIds);
+  }, [bookIds]);
+
+  useEffect(() => {
+    const fetchElearningSetting = async () => {
+      try {
+        setElearningSettingLoading(true);
+        const courseIds = Object.keys(elearningCourses);
+
+        const responses = await Promise.all(
+          courseIds.map((cid) =>
+            elearningApi
+              .getElearningSetting(cid, student?.course?.drivingType)
+              .then((res) => ({
+                cid,
+                setting: res?.data?.[0] || null,
+              }))
+              .catch((error) => {
+                console.error(
+                  `Error fetching setting for course ${cid}:`,
+                  error
+                );
+                return { cid, setting: null };
+              })
+          )
+        );
+
+        const settings = {};
+        responses.forEach(({ cid, setting }) => {
+          if (setting) {
+            settings[cid] = setting;
+          }
+        });
+
+        setElearningSettings(settings);
+      } finally {
+        setElearningSettingLoading(false);
+      }
+    };
+
+    if (Object.keys(elearningCourses).length > 0) {
+      fetchElearningSetting();
+    }
+  }, [elearningCourses]);
 
   if (error) {
     return (
@@ -159,16 +278,17 @@ function ElearningStudentResultPage() {
     );
   }
 
-  // Tính tổng thời gian học trong ngày hôm nay
   const today = Date.now();
-  const threshold = 5000;
-  const courseEntries = Object.entries(courseReport?.courses || {});
+  const threshold = 5;
+  const courseEntries = Object.entries(userCourseGrade?.courses || {});
   const timePerCourse = courseEntries.map(([courseId, course]) => {
-    const timeSpent = calculateTotalLearningTimeForDate(
-      course.modules || {},
-      today,
-      threshold
-    );
+    const timeSpent = calculateTotalLearningTimeForDate({
+      data: course.modules || {},
+      targetDate: today,
+      intervalTime: threshold,
+      elearningSetting: elearningSettings?.[courseId],
+      quizAttempts: quizAttempts,
+    });
     return {
       courseId,
       coursename: course.coursename,
@@ -181,49 +301,58 @@ function ElearningStudentResultPage() {
   return (
     <div style={{ overflowY: 'scroll', height: '100vh', padding: '20px' }}>
       <div className='mt-4'>
-        <h2 className='mb-4'>Thời gian học hôm nay</h2>
-        <div>
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                <th>Môn học</th>
-                <th>Thời gian tích luỹ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {timePerCourse
-                .filter((item) => item.timeSpent > 0)
-                .map(({ courseId, coursename, timeSpent }) => (
-                  <tr key={courseId}>
-                    <td>{coursename}</td>
-                    <td>{formatTime(timeSpent / 1000)}</td>
-                  </tr>
-                ))}
-              <tr>
-                <td className='text-end'>
-                  <strong>Tổng cộng</strong>
-                </td>
-                <td>
-                  <strong>{formatTime(totalTodayTime / 1000)}</strong>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </div>
-      </div>
-
-      <div className='mt-4'>
-        <h2>Kết quả học tập</h2>
-        {activityReportLoading ? (
+        {loading ||
+          elearningCoursesLoading ||
+        activityReportLoading ||
+        bookTimeLoading ||
+        quizAttemptsLoading ||
+        elearningSettingLoading ? (
           <LoadingSpinner />
         ) : (
-          <DetailActivityReport
-            elearningUser={student}
-            elearningGrades={userCourseGrade?.courses}
-            activityReport={activityReport}
-            elearningCourses={elearningCourses}
-            elearningCoursesContents={elearningCoursesContents}
-          />
+          <>
+            <div className='mt-4'>
+              <h2 className='mb-4'>Thời gian học hôm nay</h2>
+              <div>
+                <Table striped bordered hover responsive>
+                  <thead>
+                    <tr>
+                      <th>Môn học</th>
+                      <th>Thời gian tích luỹ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {timePerCourse
+                      .filter((item) => item.timeSpent > 0)
+                      .map(({ courseId, coursename, timeSpent }) => (
+                        <tr key={courseId}>
+                          <td>{coursename}</td>
+                          <td>{formatTime(timeSpent)}</td>
+                        </tr>
+                      ))}
+                    <tr>
+                      <td className='text-end'>
+                        <strong>Tổng cộng</strong>
+                      </td>
+                      <td>
+                        <strong>{formatTime(totalTodayTime)}</strong>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
+            </div>
+            <h2>Báo cáo kết quả toàn khoá học</h2>
+            <DetailActivityReport
+              elearningUser={student}
+              elearningGrades={userCourseGrade?.courses}
+              activityReport={activityReport}
+              elearningCourses={elearningCourses}
+              elearningCoursesContents={elearningCoursesContents}
+              quizAttempts={quizAttempts}
+              bookTime={bookTime}
+              elearningSettings={elearningSettings}
+            />
+          </>
         )}
       </div>
     </div>

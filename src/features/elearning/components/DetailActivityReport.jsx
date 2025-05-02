@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, Table, Container } from 'react-bootstrap';
-import elearningApi from 'api/elearningApi';
 import { COURSE_MODULES } from 'constants/driving-elearning.constant';
 import { formatTime } from 'utils/commonUtils';
 
@@ -10,105 +9,13 @@ function DetailActivityReport({
   elearningCoursesContents,
   elearningGrades,
   elearningUser,
+  elearningSettings,
+  quizAttempts = null,
+  bookTime,
 }) {
-  console.log(elearningCoursesContents)
-  const [quizAttempts, setQuizAttempts] = useState([]);
-  const [bookTime, setBookTime] = useState([]);
-  const [elearningSettings, setElearningSettings] = useState({});
-  const [totalTimes, setTotalTimes] = useState({});
-
-  const quizIds = useMemo(() => {
-    if (!elearningGrades) return [];
-    return Object.values(elearningGrades).reduce((acc, grade) => {
-      if (grade?.modules) {
-        Object.keys(grade?.modules).forEach((cmid) => {
-          const module = grade.modules[cmid];
-          if (module?.modname === 'quiz' && module?.quiztimelimit === 0) {
-            acc.push(module?.cminstance);
-          }
-        });
-      }
-      return acc;
-    }, []);
-  }, [elearningGrades]);
-
-  const bookIds = useMemo(() => {
-    if (!activityReport) return [];
-    return Object.values(activityReport).reduce((acc, activities) => {
-      activities.forEach((activity) => {
-        if (activity.modname === 'book') {
-          acc.push(activity.cmid);
-        }
-      });
-      return acc;
-    }, []);
-  }, [activityReport]);
-
-  useEffect(() => {
-    const fetchQuizAttempts = async (quizIds) => {
-      let quizAttempts = {};
-      for (let quizId of quizIds) {
-        try {
-          const res = await elearningApi.getLastUserQuizAttempt(
-            elearningUser?.elearningUserId,
-            quizId
-          );
-          quizAttempts[quizId] = res?.data || {};
-        } catch (error) {
-          console.error('Error fetching quiz attempts:', error);
-        }
-      }
-      setQuizAttempts(quizAttempts);
-    };
-
-    if (quizIds.length > 0) fetchQuizAttempts(quizIds);
-  }, [quizIds]);
-
-  useEffect(() => {
-    const fetchBookTime = async (bookIds) => {
-      let bookTime = {};
-      for (let bookId of bookIds) {
-        try {
-          const res = await elearningApi.getModuleTime(bookId);
-          bookTime[bookId] =
-            res?.data?.reduce((acc, item) => {
-              if (item?.readingTime) acc += item.readingTime;
-              return acc;
-            }, 0) || 0;
-        } catch (error) {
-          console.error('Error fetching book time: ', error);
-        }
-      }
-      setBookTime(bookTime);
-    };
-
-    if (bookIds.length > 0) fetchBookTime(bookIds);
-  }, [bookIds]);
-
-  useEffect(() => {
-    const fetchElearningSetting = async () => {
-      let settings = {};
-      for (let cid of Object.keys(elearningCourses)) {
-        try {
-          const res = await elearningApi.getElearningSetting(
-            cid,
-            elearningUser?.course?.drivingType
-          );
-          if (res?.data?.[0]) {
-            settings[cid] = res.data[0];
-          }
-        } catch (error) {
-          console.error('Error fetching elearning setting:', error);
-        }
-      }
-      setElearningSettings(settings);
-    };
-
-    fetchElearningSetting();
-  }, []);
-
-  useEffect(() => {
-    if (!activityReport || !elearningGrades || !elearningCoursesContents) return;
+  const totalTimes = useMemo(() => {
+    if (!activityReport || !elearningGrades || !elearningCoursesContents || !quizAttempts)
+      return 0;
 
     const totals = {};
     Object.keys(activityReport).forEach((key) => {
@@ -150,27 +57,60 @@ function DetailActivityReport({
       totals[key] = totalTime;
     });
 
-    setTotalTimes(totals);
-  }, [activityReport, elearningGrades, elearningCoursesContents, quizAttempts, bookTime, elearningSettings]);
+    return totals;
+  }, [
+    activityReport,
+    elearningGrades,
+    elearningCoursesContents,
+    quizAttempts,
+    bookTime,
+    elearningSettings,
+  ]);
+  console.log(elearningUser)
+
   return (
     <div className='mt-4'>
       <Card className='mb-3'>
+        <Card.Header className='d-flex justify-content-between align-items-center'>
+          <h5>Kết quả tổng hợp</h5>
+          <span className='text-muted'>
+            {elearningUser?.name} - {elearningUser?.course?.name}
+          </span>
+        </Card.Header>
+
         <Card.Body>
           <Table striped bordered hover size='sm'>
             <thead>
               <tr>
-                <th>Tên học viên</th>
-                <th>Thời gian tích luỹ</th>
+                <th>Môn học</th>
+                <th>Tổng thời gian đã tích luỹ</th>
+                <th>Thời gian yêu cầu tổi thiểu</th>
+                <th>Kết quả</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>{elearningUser?.name}</td>
-                <td>{formatTime(Object.values(totalTimes).reduce(
-                  (acc, time) => acc + time,
-                  0
-                ))}</td>
-              </tr>
+              {elearningCourses &&
+                Object.keys(elearningCourses).map((key) => {
+                  console.log(elearningSettings)
+                  const course = elearningCourses?.[key];
+                  const totalTime = totalTimes?.[key] || 0;
+                  const requiredTime = elearningSettings?.[key]?.minTimeInHour*60*60 || 0;
+
+                  return (
+                    <tr key={key}>
+                      <td>{course?.fullname}</td>
+                      <td>{formatTime(totalTime)}</td>
+                      <td>{formatTime(requiredTime)}</td>
+                      <td>
+                        {totalTime >= requiredTime ? (
+                          <span className='text-success'>Đã đủ giờ</span>
+                        ) : (
+                          <span className='text-danger'>Chưa đủ giờ</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </Table>
         </Card.Body>
@@ -218,7 +158,8 @@ function DetailActivityReport({
                             timeSpent =
                               quizAttempts?.[grade?.cminstance]
                                 ?.questionsAnswered *
-                              elearningSettings?.[key]?.timePerQuestionInMinute *
+                              elearningSettings?.[key]
+                                ?.timePerQuestionInMinute *
                               60;
                           }
                         } else if (
@@ -227,7 +168,6 @@ function DetailActivityReport({
                         ) {
                           timeSpent = bookTime?.[activity?.cmid] * 60 || 0;
                         }
-
                         return (
                           <tr key={activity.cmid}>
                             <td>{courseContent?.name}</td>
@@ -237,9 +177,11 @@ function DetailActivityReport({
                                 <span>{grade?.finalgrade || 0}/100</span>
                               ) : activity.modname === 'quiz' ? (
                                 <span>{grade?.finalgrade || 0}/10</span>
-                              ) : (
-                                <span>{activity?.grade || 0}</span>
-                              )}
+                              ) : activity.modname === 'book' ? (
+                                <span>
+                                  {activity?.isoverallcomplete ? 10 : 0}/10
+                                </span>
+                              ) : null}
                             </td>
                             <td>
                               {activity.isoverallcomplete ? (

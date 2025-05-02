@@ -195,7 +195,7 @@ function ElearningStudentMyPage() {
                   </thead>
                   <tbody>
                     {courses.map((item, index) => (
-                      <tr key={item.courseId}>
+                      <tr key={item?.id}>
                         <td>{index + 1}</td>
                         <td>{item.fullname}</td>
                         <td>
