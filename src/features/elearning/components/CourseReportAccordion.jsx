@@ -1,3 +1,4 @@
+import { COURSE_MODULES } from 'constants/driving-elearning.constant';
 import React from 'react';
 import { Accordion, Table } from 'react-bootstrap';
 import { formatTime } from 'utils/commonUtils';
@@ -13,7 +14,7 @@ const CourseReportAccordion = ({ courseReport }) => {
           <Accordion.Body>
             {Object.entries(course.modules).map(([moduleType, items]) => (
               <div key={moduleType} className='mb-4'>
-                <h5>{moduleType === 'quiz' ? 'Bài kiểm tra' : 'Bài giảng'}</h5>
+                <h5>{COURSE_MODULES[moduleType]}</h5>
                 <Table striped bordered hover>
                   <thead>
                     <tr>

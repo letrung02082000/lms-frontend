@@ -73,7 +73,7 @@ function ElearningStudentVideoPage() {
 
         {videoInstance && (
           <div className='w-75 mx-auto'>
-            <h3 className='mb-4'>Bài giảng video: {videoInstance.name}</h3>
+            <h3 className='mb-4'>Video bài giảng: {videoInstance.name}</h3>
             {videoInstance?.origem === 'youtube' && (
               <YoutubePlayer
                 url={videoInstance.videourl}
