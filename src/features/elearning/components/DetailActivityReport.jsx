@@ -132,6 +132,7 @@ function DetailActivityReport({
                         <th>Tên hoạt động, bài học</th>
                         <th>Loại hoạt động</th>
                         <th>Điểm</th>
+                        <th>Điểm để qua</th>
                         <th>Tình trạng</th>
                         <th>Thời gian tích luỹ</th>
                       </tr>
@@ -181,6 +182,15 @@ function DetailActivityReport({
                                 <span>
                                   {activity?.isoverallcomplete ? 10 : 0}/10
                                 </span>
+                              ) : null}
+                            </td>
+                            <td>
+                              {activity.modname === 'supervideo' ? (
+                                <span>{grade?.gradepass || 0}</span>
+                              ) : activity.modname === 'quiz' ? (
+                                <span>{grade?.gradepass || 0}</span>
+                              ) : activity.modname === 'book' ? (
+                                <span>10</span>
                               ) : null}
                             </td>
                             <td>

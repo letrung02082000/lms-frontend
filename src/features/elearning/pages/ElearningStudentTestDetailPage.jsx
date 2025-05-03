@@ -40,6 +40,7 @@ function ElearningStudentTestDetailPage() {
   const [attemptSummary, setAttemptSummary] = useState(null);
   const [showQuestionReviewModal, setShowQuestionReviewModal] = useState(false);
   const [preventFinish, setPreventFinish] = useState(false);
+  const [startingAttempt, setStartingAttempt] = useState(false);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -117,12 +118,16 @@ function ElearningStudentTestDetailPage() {
   const startNewAttempt = () => {
     if (!testId) return;
 
+    setStartingAttempt(true);
     moodleApi
       .startQuizAttempt(testId)
       .then((attemptData) => {
         setQuizAttempt(attemptData.attempt);
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => {
+        setStartingAttempt(false);
+      });
   };
 
   const handleGetAttemptData = (attemptId, page) => {
@@ -268,6 +273,7 @@ function ElearningStudentTestDetailPage() {
                     <Button
                       variant='primary'
                       onClick={startNewAttempt}
+                      disabled={startingAttempt}
                       size='lg'
                     >
                       Bắt đầu làm bài
@@ -405,7 +411,10 @@ function ElearningStudentTestDetailPage() {
                         onClick={() => {
                           debouncedSaveAnswer(slotAnswers, slot);
                           setSlotAnswers(null);
-                          setCurrentPage(currentPage + 1);
+                          
+                          if(currentPage < attemptSummary.questions.length - 1) {
+                            setCurrentPage(prev => prev + 1);
+                          }
                         }}
                       >
                         {preventFinish
@@ -439,7 +448,7 @@ function ElearningStudentTestDetailPage() {
                         {showQuestionReviewModal ? (
                           <>
                             <Spinner animation='border' size='sm' />
-                            <span className='ms-2'>Đang nộp bài</span>
+                            <span className='ms-2'>Chuẩn bị nộp bài</span>
                           </>
                         ) : (
                           'Nộp bài'

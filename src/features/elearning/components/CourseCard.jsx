@@ -3,7 +3,7 @@ import { PATH } from 'constants/path';
 import React, { useEffect, useState } from 'react';
 import { FaBookReader } from 'react-icons/fa';
 import { IoMdEye } from 'react-icons/io';
-import { MdForum, MdLink, MdOutlineForum, MdPlayArrow } from 'react-icons/md';
+import { MdForum, MdLink, MdOutlineForum, MdPlayArrow, MdQuiz } from 'react-icons/md';
 import { countModulesByType } from 'utils/commonUtils';
 const {
   Card,
@@ -148,8 +148,8 @@ const CourseCard = ({ course, courseContent }) => {
                                   )}?m=${mod?.id}&c=${course.id}`}
                                   target='_blank'
                                 >
-                                  <IoMdEye className='me-1' />
-                                  Xem
+                                  <MdQuiz className='me-1' />
+                                  Thực hiện
                                 </Button>
                               )}
                               {mod.modname === 'resource' && (

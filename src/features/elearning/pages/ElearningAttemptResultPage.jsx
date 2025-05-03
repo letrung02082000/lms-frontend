@@ -14,34 +14,27 @@ const formatDateTime = (timestamp) => {
 const ElearningAttemptResultPage = () => {
   const attemptId = useParams().attemptId;
   const [data, setData] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
   const { grade, attempt, questions } = data;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await moodleApi.getAttemptReview(attemptId);
         console.log('Attempt data:', response);
         setData(response);
       } catch (error) {
         console.error('Error fetching attempt result:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, [attemptId]);
 
   if (!data?.attempt) {
-    return (
-      <Container className='my-4'>
-        <Card>
-          <Card.Body>
-            <Card.Title>
-              <p className='text-center'>Đang tải dữ liệu...</p>
-            </Card.Title>
-            <LoadingSpinner />
-          </Card.Body>
-        </Card>
-      </Container>
-    );
+    return loading ? <LoadingSpinner /> : <div>Không có dữ liệu</div>;
   }
 
   return (

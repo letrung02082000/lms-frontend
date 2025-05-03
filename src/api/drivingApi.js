@@ -352,6 +352,11 @@ class DrivingApi {
     const url = `${API_PATH}/image/portrait/${id}`;
     return axiosClient.get(url, { responseType: 'blob' });
   }
+
+  updateDrivingByMoodleToken = async (token, data) => {
+    const url = `${API_PATH}/moodle?moodleToken=${token}`;
+    return axiosClient.patch(url, data);
+  }
 }
 
 export default new DrivingApi();

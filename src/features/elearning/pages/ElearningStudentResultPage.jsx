@@ -69,10 +69,10 @@ function ElearningStudentResultPage() {
 
   useEffect(() => {
     if (student) {
-      setActivityReportLoading(true);
       setActivityReport(null);
-
+      
       const fetchData = async () => {
+        setActivityReportLoading(true);
         try {
           const [userCourseGradeRes, activityReportRes] = await Promise.all([
             elearningApi.getUserCourseGrade([student?.elearningUserId]),
@@ -302,12 +302,28 @@ function ElearningStudentResultPage() {
     <div style={{ overflowY: 'scroll', height: '100vh', padding: '20px' }}>
       <div className='mt-4'>
         {loading ||
-          elearningCoursesLoading ||
+        elearningCoursesLoading ||
         activityReportLoading ||
         bookTimeLoading ||
         quizAttemptsLoading ||
         elearningSettingLoading ? (
-          <LoadingSpinner />
+          <LoadingSpinner
+            message={
+              loading
+                ? 'Đang lấy thông tin học viên...'
+                : elearningCoursesLoading
+                ? 'Đang tải thông tin khoá học...'
+                : elearningSettingLoading
+                ? 'Đang tải cài đặt khoá học...'
+                : bookTimeLoading
+                ? 'Đang tải báo cáo thời gian học...'
+                : quizAttemptsLoading
+                ? 'Đang lấy kết quả kiểm tra...'
+                : activityReportLoading
+                ? 'Đang tải báo cáo hoạt động...'
+                : null
+            }
+          />
         ) : (
           <>
             <div className='mt-4'>

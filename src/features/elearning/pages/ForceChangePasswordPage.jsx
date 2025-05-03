@@ -17,9 +17,7 @@ function ForceChangePasswordPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const userId =
-    JSON.parse(localStorage.getItem('moodleSiteInfo') || '{}')?.userid || null;
-  console.log('userId', userId);
+  const userId = JSON.parse(localStorage.getItem('moodleSiteInfo') || '{}')?.userid || null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

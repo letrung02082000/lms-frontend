@@ -1,14 +1,18 @@
 import elearningApi from 'api/elearningApi';
 import { GENDERS } from 'constants/driving-student.constant';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
+  Alert,
+  Button,
   Card,
   Col,
   Container,
   Image,
+  Modal,
   ProgressBar,
   Row,
   Table,
+  Form
 } from 'react-bootstrap';
 import moodleApi from 'services/moodleApi';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -16,12 +20,36 @@ import 'react-circular-progressbar/dist/styles.css';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { PATH } from 'constants/path';
 import drivingApi from 'api/drivingApi';
+import { MdEdit } from 'react-icons/md';
+import FileUploader from 'components/form/FileUploader';
+import { AVATAR_UPLOAD_URL, FILE_UPLOAD_URL } from 'constants/endpoints';
+import { toastWrapper } from 'utils';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import drivingStudentSchema from 'validations/driving-student.validation';
+import InputField from 'components/form/InputField';
 
 function ElearningStudentMyPage() {
   const moodleToken = localStorage.getItem('moodleToken');
+  const userName = JSON.parse(localStorage.getItem('moodleSiteInfo') || '{}')?.username || null;
   const [student, setStudent] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [courses, setCourses] = React.useState([]);
+  const [showUpdateInfoModal, setShowUpdateInfoModal] = React.useState(false);
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [newPassword, setNewPassword] = React.useState('');
+  const [portraitData, setPortraitData] = React.useState(null);
+  const [portraitUploading, setPortraitUploading] = React.useState(false);
+  const [fileUploading, setFileUploading] = React.useState(false);
+  const studentEditableFields = useMemo(
+    () => student?.course?.studentEditableFields || [],
+    [student?.course?.studentEditableFields]
+  );
+  const { handleSubmit, setValue, control, clearErrors, reset, setError } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    resolver: yupResolver(drivingStudentSchema),
+  });
 
   useEffect(() => {
     if (!moodleToken) {
@@ -56,12 +84,89 @@ function ElearningStudentMyPage() {
           console.error('Error fetching courses:', error);
         });
 
-      drivingApi.getPortraitImage(student?._id).then((data) => {
-        const url = URL.createObjectURL(data);
-        setStudent((prev) => ({ ...prev, portraitUrl: url }));
-      }).catch(console.error);
+      if (student?.elearningAvatarUrl) {
+        drivingApi
+          .getPortraitImage(student?._id)
+          .then((data) => {
+            const url = URL.createObjectURL(data);
+            setStudent((prev) => ({ ...prev, portraitUrl: url }));
+          })
+          .catch(console.error);
+      }
     }
   }, [student?._id]);
+
+  const handleUpdateInfo = (data) => {
+    drivingApi
+      .updateDrivingByMoodleToken(moodleToken, data)
+      .then((res) => {
+        console.log(res);
+        toastWrapper('Cập nhật thông tin thành công!', 'success');
+        setStudent((prev) => ({ ...prev, ...data }));
+      })
+      .catch((error) => {
+        console.error('Error updating student info:', error);
+        toastWrapper(
+          error?.response?.data?.message || 'Cập nhật thông tin thất bại!',
+          'error'
+        );
+      });
+  };
+
+  const handleUpdatePassword = async () => {
+    await handleSubmit(async (data) => {
+      const { oldPassword, newPassword } = data;
+      let isValid = true;
+
+      if(!oldPassword) {
+        setError('oldPassword', {
+          type: 'manual',
+          message: 'Vui lòng nhập mật khẩu cũ',
+        })
+        isValid = false;
+      }
+      
+      if (!newPassword || newPassword?.length < 8) {
+        setError('newPassword', {
+          type: 'manual',
+          message: 'Mật khẩu phải có ít nhất 8 ký tự',
+        });
+        isValid = false;
+      }
+
+      if (newPassword !== confirmPassword) {
+        setError('confirmPassword', {
+          type: 'manual',
+          message: 'Mật khẩu không khớp',
+        });
+        isValid = false;
+      }
+
+      if (!isValid) return;
+      let newMoodleToken = null;
+
+      try {
+        newMoodleToken = await moodleApi.getToken(userName, oldPassword);
+        toastWrapper('Cập nhật mật khẩu thành công!', 'success');
+      } catch (error) {
+        toastWrapper('Mật khẩu cũ không chính xác!', 'error');
+      }
+
+      if(newMoodleToken) {
+        localStorage.setItem('moodleToken', newMoodleToken);
+        try {
+          await elearningApi.changeUserPasswordByMoodleToken(newMoodleToken, newPassword, oldPassword);
+          toastWrapper('Cập nhật mật khẩu thành công!', 'success');
+          reset();
+          setConfirmPassword('');
+          setNewPassword('');
+        } catch (error) {
+          console.error('Error updating password:', error);
+          toastWrapper('Cập nhật mật khẩu thất bại!', 'error');
+        }
+      }
+    })();
+  };
 
   return (
     <div
@@ -71,7 +176,7 @@ function ElearningStudentMyPage() {
       }}
     >
       {!loading ? (
-        <Container className='mt-4'>
+        <Container className='my-4'>
           <h2 className='mb-4 h2'>Thông tin cá nhân</h2>
           <Card className='mb-4 shadow-sm'>
             <Card.Body>
@@ -79,6 +184,7 @@ function ElearningStudentMyPage() {
                 <Col md={3} className='text-center'>
                   <Image
                     src={
+                      student?.elearningAvatarUrl ||
                       student?.portraitUrl ||
                       'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
                     }
@@ -89,9 +195,19 @@ function ElearningStudentMyPage() {
                     alt='avatar'
                     className='mb-3'
                   />
+                  <div>
+                    <Button
+                      variant='outline-secondary'
+                      className='rounded-pill'
+                      onClick={() => setShowUpdateInfoModal(true)}
+                    >
+                      <MdEdit className='me-2' />
+                      Cập nhật
+                    </Button>
+                  </div>
                 </Col>
                 <Col md={6}>
-                  <h4>{student?.name || 'Chưa cập nhật'}</h4>
+                  <h4>{student?.name || 'Chưa cập nhật'} </h4>
                   <p>
                     <strong>Mã học viên:</strong>{' '}
                     {student?.registrationCode || 'Chưa cập nhật'}
@@ -221,6 +337,249 @@ function ElearningStudentMyPage() {
       ) : (
         <LoadingSpinner />
       )}
+      <Modal
+        show={showUpdateInfoModal}
+        onHide={() => setShowUpdateInfoModal(false)}
+        size='lg'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Cập nhật thông tin</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div style={{ maxHeight: '70vh', overflowY: 'scroll' }}>
+            <Card className='mb-4 shadow-sm'>
+              <Card.Body>
+                <Row>
+                  <Col md={3} className='text-center'>
+                    <Image
+                      src={
+                        student?.elearningAvatarUrl ||
+                        student?.portraitUrl ||
+                        'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
+                      }
+                      roundedCircle
+                      width='150'
+                      height='150'
+                      style={{ objectFit: 'cover' }}
+                      alt='avatar'
+                      className='mb-3'
+                    />
+                    <Row className='mb-3'>
+                      <Col>
+                        {new Date(student?.nextUpdateAvatarTime) >
+                        new Date() ? (
+                          <Alert
+                            variant='warning'
+                            className='mt-2'
+                            show={
+                              new Date(student?.nextUpdateAvatarTime) >
+                              new Date()
+                            }
+                          >
+                            Bạn đã cập nhật ảnh gần đây. Bạn có thể cập nhật lại
+                            sau{' '}
+                            {new Date(
+                              student?.nextUpdateAvatarTime
+                            ).toLocaleString('vi-VN')}
+                          </Alert>
+                        ) : (
+                          <FileUploader
+                            disabled={portraitUploading}
+                            text='Tải lên ảnh chân dung'
+                            className='d-flex align-items-center justify-content-center'
+                            fileName={portraitData?.originalName}
+                            onResponse={(res) =>
+                              handleUpdateInfo({
+                                elearningAvatarUrl: res?.data?.url,
+                              })
+                            }
+                            url={AVATAR_UPLOAD_URL}
+                            name='file'
+                            uploading={portraitUploading}
+                            setUploading={setPortraitUploading}
+                            accept={{
+                              'image/png': ['.png'],
+                              'image/jpeg': ['.jpg', '.jpeg'],
+                            }}
+                          />
+                        )}
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col md={9}>
+                    <h5>Thông tin cá nhân</h5>
+                    <Row className='mb-3'>
+                      <Col>
+                        <InputField
+                          label='Họ và tên'
+                          name='name'
+                          placeholder='Nhập họ và tên'
+                          control={control}
+                          defaultValue={student?.name}
+                          disabled={!studentEditableFields?.includes('name')}
+                          noClear={true}
+                        />
+                      </Col>
+                    </Row>
+                    <Row className='mb-3'>
+                      <Col>
+                        <InputField
+                          label='Số CCCD/CMND'
+                          name='cardNumber'
+                          placeholder='Nhập số CCCD/CMND'
+                          control={control}
+                          defaultValue={student?.cardNumber}
+                          disabled={
+                            !studentEditableFields?.includes('cardNumber')
+                          }
+                          noClear={true}
+                        />
+                      </Col>
+                    </Row>
+                    <Row className='mb-3'>
+                      <Col>
+                        <InputField
+                          label='Ngày sinh'
+                          name='dob'
+                          placeholder='Nhập ngày sinh'
+                          type='date'
+                          control={control}
+                          defaultValue={student?.dob}
+                          disabled={!studentEditableFields?.includes('dob')}
+                          noClear={true}
+                        />
+                      </Col>
+                    </Row>
+                    <Row className='mb-3'>
+                      <Col>
+                        <InputField
+                          label='Giới tính'
+                          name='gender'
+                          control={control}
+                          defaultValue={student?.gender}
+                          disabled={!studentEditableFields?.includes('gender')}
+                          noClear={true}
+                          as='select'
+                        >
+                          <option value=''>Chọn giới tính</option>
+                          {Object.entries(GENDERS).map(([key, value]) => (
+                            <option key={key} value={key}>
+                              {value}
+                            </option>
+                          ))}
+                        </InputField>
+                      </Col>
+                    </Row>
+                    <Row className='mb-3'>
+                      <Col>
+                        <InputField
+                          label='Số điện thoại'
+                          name='tel'
+                          placeholder='Nhập số điện thoại'
+                          control={control}
+                          defaultValue={student?.tel}
+                          disabled={!studentEditableFields?.includes('tel')}
+                          noClear={true}
+                        />
+                      </Col>
+                    </Row>
+                    <Row className='mb-3'>
+                      <Col>
+                        <InputField
+                          label='Địa chỉ'
+                          name='address'
+                          placeholder='Nhập địa chỉ'
+                          control={control}
+                          defaultValue={student?.address}
+                          disabled={!studentEditableFields?.includes('address')}
+                          noClear={true}
+                        />
+                      </Col>
+                    </Row>
+                    <h5>Đổi mật khẩu</h5>
+                    <Row className='mb-3'>
+                      <Col>
+                        <InputField
+                          label='Mật khẩu cũ'
+                          name='oldPassword'
+                          placeholder='Nhập mật khẩu cũ'
+                          type='password'
+                          control={control}
+                        />
+                      </Col>
+                    </Row>
+
+                    <Row className='mb-3'>
+                      <Col>
+                        <InputField
+                          label='Mật khẩu mới'
+                          name='newPassword'
+                          placeholder='Nhập mật khẩu mới'
+                          type='password'
+                          control={control}
+                          value={newPassword}
+                          onChange={(e) => {
+                            setNewPassword(e.target.value);
+                            setValue('newPassword', e.target.value);
+
+                            if (e.target.value.length >= 8) {
+                              clearErrors('newPassword');
+                            }
+
+                            if (e.target.value.length < 8) {
+                              setError('newPassword', {
+                                type: 'manual',
+                                message: 'Mật khẩu phải có ít nhất 8 ký tự',
+                              });
+                            }
+                          }}
+                        />
+                      </Col>
+                    </Row>
+
+                    <Row className='mb-3'>
+                      <Col>
+                        <InputField
+                          label='Xác nhận mật khẩu mới'
+                          name='confirmPassword'
+                          placeholder='Nhập lại mật khẩu mới'
+                          type='password'
+                          control={control}
+                          value={confirmPassword}
+                          onChange={(e) => {
+                            setConfirmPassword(e.target.value);
+                            setValue('confirmPassword', e.target.value);
+
+                            if (e.target.value === newPassword) {
+                              clearErrors('confirmPassword');
+                            } else {
+                              setError('confirmPassword', {
+                                type: 'manual',
+                                message: 'Mật khẩu không khớp',
+                              });
+                            }
+                          }}
+                        />
+                      </Col>
+                    </Row>
+
+                    <Row className='mb-3'>
+                      <Col>
+                        <Button
+                          variant='primary'
+                          onClick={handleUpdatePassword}
+                        >
+                          Cập nhật mật khẩu
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
