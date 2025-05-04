@@ -28,6 +28,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import drivingStudentSchema from 'validations/driving-student.validation';
 import InputField from 'components/form/InputField';
+import { getVietnamDate } from 'utils/commonUtils';
 
 function ElearningStudentMyPage() {
   const moodleToken = localStorage.getItem('moodleToken');
@@ -96,21 +97,23 @@ function ElearningStudentMyPage() {
     }
   }, [student?._id]);
 
-  const handleUpdateInfo = (data) => {
-    drivingApi
-      .updateDrivingByMoodleToken(moodleToken, data)
-      .then((res) => {
-        console.log(res);
+  const handleUpdateInfo = async () => {
+    await handleSubmit(async (data) => {
+      const { cardNumber, name, dob, gender, tel, address } = data;
+      try {
+        await drivingApi.updateDrivingByMoodleToken(moodleToken, {
+          cardNumber,
+          name,
+          dob,
+          gender,
+          tel,
+          address,
+        });
         toastWrapper('Cập nhật thông tin thành công!', 'success');
-        setStudent((prev) => ({ ...prev, ...data }));
-      })
-      .catch((error) => {
-        console.error('Error updating student info:', error);
-        toastWrapper(
-          error?.response?.data?.message || 'Cập nhật thông tin thất bại!',
-          'error'
-        );
-      });
+      } catch (error) {
+        toastWrapper('Cập nhật thông tin thất bại!', 'error');
+      }
+    })();
   };
 
   const handleUpdatePassword = async () => {
@@ -222,7 +225,8 @@ function ElearningStudentMyPage() {
                   </p>
                   <p>
                     <strong>Ngày sinh:</strong>{' '}
-                    {student?.dob || 'Chưa cập nhật'}
+                    {new Date(student?.dob).toLocaleDateString('en-GB') ||
+                      'Chưa cập nhật'}
                   </p>
                   <p>
                     <strong>SĐT:</strong> {student?.tel || 'Chưa cập nhật'}
@@ -444,7 +448,7 @@ function ElearningStudentMyPage() {
                           placeholder='Nhập ngày sinh'
                           type='date'
                           control={control}
-                          defaultValue={student?.dob}
+                          defaultValue={getVietnamDate(student?.dob)}
                           disabled={!studentEditableFields?.includes('dob')}
                           noClear={true}
                         />
@@ -496,7 +500,15 @@ function ElearningStudentMyPage() {
                         />
                       </Col>
                     </Row>
+
+                    <Row className='mb-3'>
+                      <Col onClick={handleUpdateInfo}>
+                        <Button>Cập nhật thông tin</Button>
+                      </Col>
+                    </Row>
+
                     <h5>Đổi mật khẩu</h5>
+
                     <Row className='mb-3'>
                       <Col>
                         <InputField
