@@ -14,6 +14,7 @@ const ElearningStudentBookPage = () => {
   const [currentChapterId, setCurrentChapterId] = useState(null);
   const [timestart, setTimestart] = useState(Date.now());
   const [completedChapters, setCompletedChapters] = useState([]);
+  const autoPageTurning = true; // Set to true to enable auto page turning
 
   const moodleToken = localStorage.getItem('moodleToken');
   const fileUrls = useMemo(() => {
@@ -79,7 +80,14 @@ const ElearningStudentBookPage = () => {
             if (updated.length === fileUrls.length) {
               toastWrapper('Bạn đã hoàn thành tất cả các chương.', 'success');
             } else {
-              toastWrapper('Bạn đã hoàn thành chương này. Vui lòng chuyển sang chương tiếp theo.', 'success');
+              if (autoPageTurning) {
+                toastWrapper('Bạn đã hoàn thành chương này. Đang chuyển sang chương kế tiếp.', 'success');
+                setTimeout(() => {
+                  setCurrentIndex((prev) => prev + 1);
+                }, 2000); // Auto page turning after 2 seconds
+              } else {
+                toastWrapper('Bạn đã hoàn thành chương này.', 'success');
+              }
             }
             return updated;
           }
@@ -88,6 +96,7 @@ const ElearningStudentBookPage = () => {
       }
     } catch (error) {
       console.error('Error viewing book chapter:', error);
+      toastWrapper('Có lỗi xảy ra khi lưu trạng thái chương.', 'error');
     }
   };
 
@@ -119,7 +128,7 @@ const ElearningStudentBookPage = () => {
               key={currentChapterId}
               timestart={timestart}
               timelimit={moduleTimeData[currentChapterId]}
-              text={'Thời gian chờ còn lại: '}
+              text={'Thời gian xem còn lại: '}
               onTimeUp={handleTimeUp}
             />
           )}
@@ -153,7 +162,7 @@ const ElearningStudentBookPage = () => {
             variant='primary'
             onClick={() => setCurrentIndex((prev) => prev + 1)}
           >
-            Tiếp theo
+            Kế tiếp
           </Button>
         </ButtonGroup>
       </div>

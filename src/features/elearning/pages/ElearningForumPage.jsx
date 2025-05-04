@@ -31,7 +31,7 @@ function ElearningForumPage() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
+  console.log(discussions);
   const [showModal, setShowModal] = useState(false);
   const [newSubject, setNewSubject] = useState('');
   const [newMessage, setNewMessage] = useState('');
@@ -40,7 +40,6 @@ function ElearningForumPage() {
   const [replies, setReplies] = useState([]);
   const [replyMessage, setReplyMessage] = useState('');
 
-  const handleShow = () => setShowModal(true);
   const handleClose = () => {
     setShowModal(false);
     setNewSubject('');
@@ -68,19 +67,30 @@ function ElearningForumPage() {
     }
   };
 
-  const handleAddReply = () => {
-    if (replyMessage.trim()) {
-      const newReply = {
-        id: Date.now(),
-        userfullname: 'Bạn',
-        userpictureurl: '', // avatar mặc định
-        message: replyMessage,
-        created: Date.now() / 1000,
-      };
-      setReplies([...replies, newReply]);
+  const handleAddReply = async () => {
+    if (!replyMessage.trim()) return;
+  
+    try {
+      const postId = selectedDiscussion?.id; // ID của bài post gốc
+      const subject = 'Re: ' + selectedDiscussion.subject;
+      const message = replyMessage;
+  
+      await moodleApi.addDiscussionReply({
+        postId: postId,
+        subject: subject,
+        message: message,
+      });
+  
+      // Làm mới danh sách phản hồi sau khi gửi thành công
+      const data = await moodleApi.getDiscussionPosts(selectedDiscussion.discussion);
+      setReplies(data);
+  
       setReplyMessage('');
+    } catch (error) {
+      console.error('Lỗi khi gửi phản hồi:', error);
+      alert('Không thể gửi phản hồi. Vui lòng thử lại.');
     }
-  };
+  };  
 
   useEffect(() => {
     const fetchData = async () => {

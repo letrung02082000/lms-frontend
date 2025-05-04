@@ -20,7 +20,7 @@ const COURSE_MODULES = {
     resource: 'Tài liệu',
     page: 'Trang',
     forum: 'Diễn đàn',
-    book: 'Bài giảng',
+    book: 'Nội dung bài giảng',
 }
 
 export {

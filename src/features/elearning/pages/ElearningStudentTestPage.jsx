@@ -7,6 +7,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import moodleApi from 'services/moodleApi';
 import { PATH } from 'constants/path';
+import { MdQuiz } from 'react-icons/md';
 
 function ElearningStudentTestPage() {
   const [quizzes, setQuizzes] = useState([]);
@@ -32,7 +33,8 @@ function ElearningStudentTestPage() {
 
       if (response && response.quizzes) {
         fetchedQuizzes = response.quizzes;
-        setQuizzes(fetchedQuizzes);
+        console.log('Fetched quizzes:', fetchedQuizzes);
+        setQuizzes(fetchedQuizzes.filter((quiz) => quiz.timelimit > 0));
       } else if (response && (response.errorcode || response.exception)) {
         throw new Error(
           response.message ||
@@ -133,6 +135,7 @@ function ElearningStudentTestPage() {
                   )}?c=${quiz.course}&m=${quiz.coursemodule}`}
                   target='_blank'
                 >
+                  <MdQuiz className='me-1' />
                   Thực hiện
                 </Button>
               </ListGroup.Item>

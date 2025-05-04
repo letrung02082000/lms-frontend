@@ -58,7 +58,6 @@ const parseQuestionHTML = (htmlString) => {
     // Lấy danh sách đáp án
     const answerElements = doc.querySelectorAll('.answer .d-flex');
     const allInputElements = doc.querySelectorAll('input[type="radio"]');
-    console.log(answerElements);
 
     const answers = Array.from(answerElements).map((el, idx) => {
         const input = allInputElements[idx];

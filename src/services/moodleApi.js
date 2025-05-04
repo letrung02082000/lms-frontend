@@ -126,7 +126,6 @@ export const getAttemptData = async (attemptId, page = 0) => {
 export const processAttempt = async (attemptId, data = [], finishAttempt = false) => {
     const action = finishAttempt ? 'Nộp bài' : 'Lưu tạm';
     console.log(`Gọi API: mod_quiz_process_attempt (${action}) với attemptId: ${attemptId}`);
-    console.log('Dữ liệu gửi:', data);
     if (!attemptId) throw new Error('attemptId là bắt buộc.');
     if (!Array.isArray(data)) throw new Error('data phải là một mảng.');
 
@@ -413,7 +412,6 @@ const getCoursesContents = async (courseIds = null) => {
         }
     }
 
-    console.log('Hoàn tất lấy nội dung cho các khóa học.', allContents);
     return allContents; // Trả về object chứa nội dung của các khóa học đã lấy thành công
 };
 
@@ -944,6 +942,51 @@ const getCoursesCompletionStatus = async (courseIds = [], userId) => {
     }
 };
 
+const addDiscussionReply = async ({ postId, subject, message }) => {
+    console.log(`Gọi API: mod_forum_add_discussion_post với postId: ${postId}`);
+
+    const currentToken = localStorage.getItem('moodleToken');
+    if (!currentToken) {
+        console.error("Lỗi: Không tìm thấy token trong localStorage.");
+        throw new Error("Người dùng chưa đăng nhập hoặc token không tồn tại.");
+    }
+
+    if (!postId || typeof postId !== 'number' || postId <= 0) {
+        throw new Error("postId không hợp lệ.");
+    }
+
+    if (!subject || !message) {
+        throw new Error("Chủ đề (subject) và nội dung (message) là bắt buộc.");
+    }
+
+    try {
+        const response = await apiClient.post('', null, {
+            params: {
+                wstoken: currentToken,
+                wsfunction: 'mod_forum_add_discussion_post',
+                moodlewsrestformat: 'json',
+                postid: postId,
+                subject: subject,
+                message: message,
+            },
+        });
+
+        if (response.data && response.data.exception) {
+            if (response.data.errorcode === 'invalidtoken') {
+                console.error(`Token không hợp lệ khi gọi mod_forum_add_discussion_post.`);
+            }
+            throw new Error(response.data.message || 'Lỗi khi gọi API mod_forum_add_discussion_post');
+        }
+
+        console.log(`Đã gọi API thành công: Đăng bài trong forum với postId: ${postId}`);
+        return response.data;
+
+    } catch (error) {
+        console.error(`Lỗi khi gọi addDiscussionReply với postId ${postId}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
 const moodleApi = {
     getSiteInfo,
     getQuizzesByCourses,
@@ -971,5 +1014,6 @@ const moodleApi = {
     getDiscussionPost,
     viewBookChapter,
     getCoursesCompletionStatus,
+    addDiscussionReply,
 };
 export default moodleApi;

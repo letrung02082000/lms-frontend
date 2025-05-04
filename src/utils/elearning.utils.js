@@ -1,50 +1,50 @@
-function groupByUserCourseModule(data) {
-    const grouped = {};
+// function groupUserGradeByCourseModule(data) {
+//     const grouped = {};
 
-    data.forEach(item => {
-        const userId = item.userid;
-        const courseId = item.courseid;
-        const module = item.itemmodule;
+//     data.forEach(item => {
+//         const userId = item.userid;
+//         const courseId = item.courseid;
+//         const module = item.itemmodule;
 
-        if (!grouped[userId]) {
-            grouped[userId] = {
-                username: item.username,
-                name: `${item.firstname} ${item.lastname}`,
-                email: item.email,
-                courses: {}
-            };
-        }
+//         if (!grouped[userId]) {
+//             grouped[userId] = {
+//                 username: item.username,
+//                 name: `${item.firstname} ${item.lastname}`,
+//                 email: item.email,
+//                 courses: {}
+//             };
+//         }
 
-        if (!grouped[userId].courses[courseId]) {
-            grouped[userId].courses[courseId] = {
-                courseid: courseId,
-                coursename: item.coursename,
-                modules: {}
-            };
-        }
+//         if (!grouped[userId].courses[courseId]) {
+//             grouped[userId].courses[courseId] = {
+//                 courseid: courseId,
+//                 coursename: item.coursename,
+//                 modules: {}
+//             };
+//         }
 
-        if (module === 'supervideo' || module === 'quiz') {
-            if (!grouped[userId].courses[courseId].modules[module]) {
-                grouped[userId].courses[courseId].modules[module] = [];
-            }
+//         if (module === 'supervideo' || module === 'quiz') {
+//             if (!grouped[userId].courses[courseId].modules[module]) {
+//                 grouped[userId].courses[courseId].modules[module] = [];
+//             }
 
-            grouped[userId].courses[courseId].modules[module].push({
-                itemname: item.itemname,
-                svname: item.svname,
-                finalgrade: item.finalgrade,
-                gradepass: item.gradepass,
-                grademin: item.grademin,
-                grademax: item.grademax,
-                duration: item.duration,
-                quizsumgrades: item.quizsumgrades,
-                quiztimelimit: item.quiztimelimit,
-                mapa: item.mapa,
-            });
-        }
-    });
+//             grouped[userId].courses[courseId].modules[module].push({
+//                 itemname: item.itemname,
+//                 svname: item.svname,
+//                 finalgrade: item.finalgrade,
+//                 gradepass: item.gradepass,
+//                 grademin: item.grademin,
+//                 grademax: item.grademax,
+//                 duration: item.duration,
+//                 quizsumgrades: item.quizsumgrades,
+//                 quiztimelimit: item.quiztimelimit,
+//                 mapa: item.mapa,
+//             });
+//         }
+//     });
 
-    return grouped;
-}
+//     return grouped;
+// }
 
 function getWatchTimeByDay(timestamps, intervalTime = 5000, targetDate = null) {
     const watchByDay = {};
@@ -98,30 +98,92 @@ function calculateSupervideoLearningTime(mapa, targetDate, intervalTime) {
 }
 
 // Tính thời gian học cho các bài quiz (tương tự như phần trước)
-function calculateQuizLearningTime(quiz, targetDate) {
+function calculateQuizLearningTime(quiz, targetDate, elearningSetting, quizAttempts) {
     if (quiz.quiztimelimit && quiz.finalgrade >= quiz.gradepass && isValidDate(quiz.lastmodified * 1000, targetDate)) {
         return quiz.quiztimelimit;
+    } else if (quiz.quiztimelimit === 0 && isValidDate(quiz.lastmodified * 1000, targetDate)) {
+        const timeSpent =
+        (quizAttempts?.[quiz?.cminstance]?.questionsAnswered || 0) *
+        (elearningSetting?.timePerQuestionInMinute || 0) *
+        60;
+        return timeSpent;
     }
     return 0;
 }
 
 // Hàm tính tổng thời gian học cho một ngày (targetDate) từ supervideo và quiz
 function calculateTotalLearningTimeForDate(
-    data, targetDate, intervalTime // intervalTime tính bằng giây hoặc phút
+    { data, targetDate, intervalTime, elearningSetting, quizAttempts } // intervalTime tính bằng giây hoặc phút
 ) {
     let totalTime = 0;
 
-    // Tính thời gian từ supervideo
-    data?.supervideo?.forEach((video) => {
-        totalTime += calculateSupervideoLearningTime(video.mapa, targetDate, intervalTime);
-    });
-
-    // Tính thời gian từ quiz
-    data?.quiz?.forEach((quiz) => {
-        totalTime += calculateQuizLearningTime(quiz, targetDate);
-    });
+    Object.values(data).forEach((module) => {
+        if (module.modname === 'supervideo') {
+            totalTime += calculateSupervideoLearningTime(module.mapa, targetDate, intervalTime);
+        } else if (module.modname === 'quiz') {
+            totalTime += calculateQuizLearningTime(module, targetDate, elearningSetting, quizAttempts);
+        }
+    })
 
     return totalTime;
-}  
+}
 
-export { groupByUserCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime };
+const groupActivityReport = (sections) => {
+    const modulesMap = {};
+
+    sections.forEach(section => {
+        section.modules.forEach(module => {
+            modulesMap[module.id] = module;
+        });
+    });
+
+    return modulesMap;
+};
+
+const groupUserGradeByCourseModule = (data) => {
+    const grouped = {};
+
+    data.forEach(item => {
+        const userId = item.userid;
+        const courseId = item.courseid;
+        let moduleid = item.cmid;
+
+        if (!grouped[userId]) {
+            grouped[userId] = {
+                username: item.username,
+                name: `${item.firstname} ${item.lastname}`,
+                email: item.email,
+                courses: {}
+            };
+        }
+
+        if (!grouped[userId].courses[courseId]) {
+            grouped[userId].courses[courseId] = {
+                courseid: courseId,
+                coursename: item.coursename,
+                modules: {}
+            };
+        }
+
+        grouped[userId].courses[courseId].modules[moduleid] = {
+            cmid: item.cmid,
+            cminstance: item.cminstance,
+            itemname: item.itemname,
+            svname: item.svname,
+            finalgrade: item.finalgrade,
+            gradepass: item.gradepass,
+            grademin: item.grademin,
+            grademax: item.grademax,
+            duration: item.duration,
+            quizsumgrades: item.quizsumgrades,
+            quiztimelimit: item.quiztimelimit,
+            mapa: item.mapa,
+            modname: item.itemmodule,
+            lastmodified: item?.lastmodified,
+        };
+    });
+
+    return grouped;
+}
+
+export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupActivityReport };

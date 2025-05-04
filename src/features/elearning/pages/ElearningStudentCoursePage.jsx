@@ -53,7 +53,7 @@ function ElearningStudentCoursePage() {
     <div style={{ height: '100vh', overflowY: 'scroll', padding: '20px' }}>
       <Container>
         <h2 className='mb-4 h2'>Danh sách môn học</h2>
-        {courses.length > 0 ? (
+        {courses.length > 0 && !loading ? (
           <Row className='g-4'>
             {courses?.map((course) => (
               <Col key={course.id} xs={12}>
