@@ -86,25 +86,25 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    element: <AdminElearningGuard />,
-    errorElement: <NotFoundPage />,
-    children: [
-      {
-        element: <AdminElearningLayout />,
-        children: [
-          {
-            path: PATH.ELEARNING.ADMIN.ROOT,
-            element: <AdminElearningPage />,
-          },
-          {
-            path: PATH.ELEARNING.ADMIN.STUDENT,
-            element: <AdminElearningStudentPage />,
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   element: <AdminElearningGuard />,
+  //   errorElement: <NotFoundPage />,
+  //   children: [
+  //     {
+  //       element: <AdminElearningLayout />,
+  //       children: [
+  //         {
+  //           path: PATH.ELEARNING.ADMIN.ROOT,
+  //           element: <AdminElearningPage />,
+  //         },
+  //         {
+  //           path: PATH.ELEARNING.ADMIN.STUDENT,
+  //           element: <AdminElearningStudentPage />,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     path: PATH.ELEARNING.LOGIN,
     element: <ElearningStudentLoginPage />,
