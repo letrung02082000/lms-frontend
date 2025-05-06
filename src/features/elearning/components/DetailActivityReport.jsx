@@ -40,7 +40,7 @@ function DetailActivityReport({
             timeSpent = grade?.quiztimelimit;
           } else if (grade?.quiztimelimit === 0) {
             timeSpent =
-              (quizAttempts?.[grade?.cminstance]?.questionsAnswered || 0) *
+              (quizAttempts?.[grade?.cminstance]?.totalQuestionsAnswered || 0) *
               (elearningSettings?.[key]?.timePerQuestionInMinute || 0) *
               60;
           }
@@ -66,7 +66,6 @@ function DetailActivityReport({
     bookTime,
     elearningSettings,
   ]);
-  console.log(elearningUser)
 
   return (
     <div className='mt-4'>
@@ -91,7 +90,6 @@ function DetailActivityReport({
             <tbody>
               {elearningCourses &&
                 Object.keys(elearningCourses).map((key) => {
-                  console.log(elearningSettings)
                   const course = elearningCourses?.[key];
                   const totalTime = totalTimes?.[key] || 0;
                   const requiredTime = elearningSettings?.[key]?.minTimeInHour*60*60 || 0;
@@ -119,6 +117,8 @@ function DetailActivityReport({
         Object.keys(activityReport).map((key) => {
           const activities = activityReport?.[key];
 
+          if(!elearningCourses?.[key]) return null;
+
           return (
             <React.Fragment key={key}>
               <Card className='mb-3'>
@@ -133,7 +133,7 @@ function DetailActivityReport({
                         <th>Loại hoạt động</th>
                         <th>Điểm</th>
                         <th>Điểm để qua</th>
-                        <th>Tình trạng</th>
+                        <th>Trạng thái</th>
                         <th>Thời gian tích luỹ</th>
                       </tr>
                     </thead>
@@ -158,7 +158,7 @@ function DetailActivityReport({
                           } else if (grade?.quiztimelimit === 0) {
                             timeSpent =
                               quizAttempts?.[grade?.cminstance]
-                                ?.questionsAnswered *
+                                ?.totalQuestionsAnswered *
                               elearningSettings?.[key]
                                 ?.timePerQuestionInMinute *
                               60;

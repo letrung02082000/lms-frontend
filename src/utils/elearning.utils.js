@@ -101,11 +101,17 @@ function calculateSupervideoLearningTime(mapa, targetDate, intervalTime) {
 function calculateQuizLearningTime(quiz, targetDate, elearningSetting, quizAttempts) {
     if (quiz.quiztimelimit && quiz.finalgrade >= quiz.gradepass && isValidDate(quiz.lastmodified * 1000, targetDate)) {
         return quiz.quiztimelimit;
-    } else if (quiz.quiztimelimit === 0 && isValidDate(quiz.lastmodified * 1000, targetDate)) {
+    } else if (quiz.quiztimelimit === 0) {
+        // Nếu quiz không có thời gian giới hạn, tính thời gian dựa trên số câu hỏi đã trả lời
         const timeSpent =
-        (quizAttempts?.[quiz?.cminstance]?.questionsAnswered || 0) *
-        (elearningSetting?.timePerQuestionInMinute || 0) *
-        60;
+            quizAttempts?.[quiz?.cminstance]?.attempts?.map(attempt => {
+                const questionsAnswered = attempt?.questionsAnswered || 0;
+                const timePerQuestion = elearningSetting?.timePerQuestionInMinute || 0; // Thời gian cho mỗi câu hỏi (tính bằng phút)
+                if(isValidDate(attempt?.timeFinish * 1000, targetDate)) {
+                    return questionsAnswered * timePerQuestion * 60; // Chuyển đổi sang giây
+                }
+                return 0; // Nếu không hợp lệ, trả về 0
+            }).reduce((acc, time) => acc + time, 0) || 0; // Tổng thời gian cho tất cả các câu hỏi đã trả lời
         return timeSpent;
     }
     return 0;
@@ -128,7 +134,7 @@ function calculateTotalLearningTimeForDate(
     return totalTime;
 }
 
-const groupActivityReport = (sections) => {
+const groupCourseContent = (sections) => {
     const modulesMap = {};
 
     sections.forEach(section => {
@@ -186,4 +192,4 @@ const groupUserGradeByCourseModule = (data) => {
     return grouped;
 }
 
-export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupActivityReport };
+export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupCourseContent };

@@ -5,6 +5,8 @@ import moodleApi from 'services/moodleApi';
 import YoutubePlayer from '../components/YoutubePlayer';
 import VideoPlayer from '../components/VideoPlayer';
 import useSingleTab from 'hooks/useSingleTab';
+import { toastWrapper } from 'utils';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function ElearningStudentVideoPage() {
   const { id: videoId } = useParams();
@@ -32,18 +34,20 @@ function ElearningStudentVideoPage() {
         setLoading(false);
       });
 
-    moodleApi.getVideoView(moduleId).then((data) => {
-      setVideoView(data?.at(-1));
-    }).catch((error) => {
-      console.error('Error fetching video view:', error);
-    });
+    moodleApi
+      .getVideoView(moduleId)
+      .then((data) => {
+        setVideoView(data?.at(-1));
+      })
+      .catch((error) => {
+        console.error('Error fetching video view:', error);
+      });
   }, [videoId]);
 
   const onMapaUpdate = (mapa, current, duration, percent) => {
-    console.log('Mapa updated:', mapa);
-    if(!videoView?.id) return;
+    if (!videoView?.id) return;
 
-    if(percent < videoView?.percent) {
+    if (percent < videoView?.percent) {
       percent = videoView?.percent;
     }
 
@@ -54,24 +58,23 @@ function ElearningStudentVideoPage() {
       })
       .catch((error) => {
         console.error('Error updating video view:', error);
+        toastWrapper(
+          'Cập nhật thời gian xem không thành công. Vui lòng tải lại trình duyệt.',
+          'error',
+        );
       });
   };
 
-  console.log(videoView);
+  if ((loading || !videoInstance || !videoView) && !error) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div style={{ height: '100vh', overflowY: 'scroll' }}>
       <Container className='mt-4'>
-        {loading && (
-          <div className='text-center my-5'>
-            <Spinner animation='border' />
-            <p>Đang tải video...</p>
-          </div>
-        )}
-
         {error && <Alert variant='danger'>{error}</Alert>}
 
-        {videoInstance && (
+        {videoInstance && videoInstance?.videourl && videoView && (
           <div className='w-75 mx-auto'>
             <h3 className='mb-4'>Video bài giảng: {videoInstance.name}</h3>
             {videoInstance?.origem === 'youtube' && (
