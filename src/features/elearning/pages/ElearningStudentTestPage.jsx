@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from 'react';
 import Container from 'react-bootstrap/Container';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
@@ -8,13 +14,21 @@ import ErrorMessage from '../components/ErrorMessage';
 import moodleApi from 'services/moodleApi';
 import { PATH } from 'constants/path';
 import { MdQuiz } from 'react-icons/md';
+import TimeExceedWarning from '../components/TimeExceedWarning';
+import { useSelector } from 'react-redux';
+import { selectElearningData } from 'store/elearning.slice';
 
 function ElearningStudentTestPage() {
   const [quizzes, setQuizzes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckingAttempts, setIsCheckingAttempts] = useState(false);
   const [error, setError] = useState(null);
-  const [courses, setCourses] = useState([]);
+  const elearningData = useSelector(selectElearningData);
+  const { elearningCourses, isLimitExceeded, timeLimitPerDay, totalTodayTime } =
+    elearningData;
+  const courses = useMemo(() => {
+    return Object.values(elearningCourses).filter((course) => course?.visible);
+  }, [elearningCourses]);
 
   const loadInitialData = useCallback(async (courseIds) => {
     if (!courseIds.length) {
@@ -33,7 +47,6 @@ function ElearningStudentTestPage() {
 
       if (response && response.quizzes) {
         fetchedQuizzes = response.quizzes;
-        console.log('Fetched quizzes:', fetchedQuizzes);
         setQuizzes(fetchedQuizzes.filter((quiz) => quiz.timelimit > 0));
       } else if (response && (response.errorcode || response.exception)) {
         throw new Error(
@@ -55,20 +68,14 @@ function ElearningStudentTestPage() {
     loadInitialData(courses?.map((course) => course.id));
   }, [courses]);
 
-  useEffect(() => {
-    setIsLoading(true);
-    moodleApi
-      .getMyEnrolledCourses()
-      .then((data) => {
-        setCourses(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
+  if (isLimitExceeded) {
+    return (
+      <TimeExceedWarning
+        timeLimitPerDay={timeLimitPerDay}
+        totalTodayTime={totalTodayTime}
+      />
+    );
+  }
 
   const renderContent = () => {
     if (isLoading) {

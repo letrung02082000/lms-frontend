@@ -1,25 +1,29 @@
-import elearningApi from 'api/elearningApi';
 import React, { useEffect, useMemo } from 'react';
-import { Button, Card, Col, Container, Navbar, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import moodleApi from 'services/moodleApi';
 import CourseCard from '../components/CourseCard';
 import { toastWrapper } from 'utils';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { useSelector } from 'react-redux';
+import { selectElearningData } from 'store/elearning.slice';
+import TimeExceedWarning from '../components/TimeExceedWarning';
 
 function ElearningStudentCoursePage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [courses, setCourses] = React.useState([]);
   const [courseContents, setCourseContents] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-
+  const [loading, setLoading] = React.useState(false);
+  const elearningData = useSelector(selectElearningData);
+  const { elearningCourses, isLimitExceeded, timeLimitPerDay, totalTodayTime } =
+    elearningData;
+  const courses = useMemo(() => {
+    return Object.values(elearningCourses).filter((course) => course?.visible);
+  }, [elearningCourses]);
+    
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const courses = await moodleApi.getMyEnrolledCourses('all');
-        setCourses(courses);
-
         if (courses.length > 0) {
           moodleApi
             .getCoursesContents(courses.map((course) => course.id))
@@ -48,6 +52,15 @@ function ElearningStudentCoursePage() {
   const handleSelectCourse = (course) => {
     setSearchParams({ courseId: course.id });
   };
+
+  if (isLimitExceeded) {
+    return (
+      <TimeExceedWarning
+        timeLimitPerDay={timeLimitPerDay}
+        totalTodayTime={totalTodayTime}
+      />
+    );
+  }
 
   return (
     <div style={{ height: '100vh', overflowY: 'scroll', padding: '20px' }}>

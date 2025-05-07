@@ -7,6 +7,9 @@ import VideoPlayer from '../components/VideoPlayer';
 import useSingleTab from 'hooks/useSingleTab';
 import { toastWrapper } from 'utils';
 import LoadingSpinner from '../components/LoadingSpinner';
+import TimeExceedWarning from '../components/TimeExceedWarning';
+import { useSelector } from 'react-redux';
+import { selectElearningData } from 'store/elearning.slice';
 
 function ElearningStudentVideoPage() {
   const { id: videoId } = useParams();
@@ -15,6 +18,8 @@ function ElearningStudentVideoPage() {
   const [videoView, setVideoView] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const elearningData = useSelector(selectElearningData);
+  const { isLimitExceeded, timeLimitPerDay, totalTodayTime } = elearningData;
 
   useSingleTab('/elearning/student/video');
 
@@ -60,10 +65,19 @@ function ElearningStudentVideoPage() {
         console.error('Error updating video view:', error);
         toastWrapper(
           'Cập nhật thời gian xem không thành công. Vui lòng tải lại trình duyệt.',
-          'error',
+          'error'
         );
       });
   };
+
+   if (isLimitExceeded) {
+     return (
+       <TimeExceedWarning
+         timeLimitPerDay={timeLimitPerDay}
+         totalTodayTime={totalTodayTime}
+       />
+     );
+   }
 
   if ((loading || !videoInstance || !videoView) && !error) {
     return <LoadingSpinner />;

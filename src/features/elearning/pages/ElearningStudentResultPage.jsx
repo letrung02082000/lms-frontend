@@ -18,7 +18,6 @@ import { selectElearningData, updateElearningData } from 'store/elearning.slice'
 function ElearningStudentResultPage() {
   const dispatch = useDispatch();
   const elearningData = useSelector(selectElearningData);
-  console.log(elearningData)
   const {
     elearningCourses,
     elearningCoursesContents,
@@ -118,10 +117,6 @@ function ElearningStudentResultPage() {
       loadUserElearningData(lessonIds);
     }
   }, [elearningUser]);
-
-
-
-
 
   const today = Date.now();
   const threshold = 5;
