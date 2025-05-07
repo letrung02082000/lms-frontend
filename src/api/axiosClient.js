@@ -1,6 +1,5 @@
 import axios from 'axios'
 const currentPath = window.location.hostname;
-console.log(`currentPath: ${currentPath}`);
 const baseURL = process.env.REACT_APP_ENV === 'production' ? (currentPath?.split('.')?.includes('lms2') ? process.env.REACT_APP_API_2_URL : process.env.REACT_APP_API_URL) : 'http://localhost:5050';
 const token = localStorage.getItem("user-jwt-tk");
 

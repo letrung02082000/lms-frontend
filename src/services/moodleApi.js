@@ -1,6 +1,5 @@
 import axios from 'axios';
 const currentPath = window.location.hostname;
-console.log(`currentPath: ${currentPath}`);
 const MOODLE_URL = currentPath?.split('.')?.includes('lms2') ? 'https://moodle2.uniapp.vn' : 'https://moodle.uniapp.vn';
 const MOODLE_TOKEN = localStorage.getItem('moodleToken');
 const MOODLE_SERVICE_SHORTNAME = 'react_app';

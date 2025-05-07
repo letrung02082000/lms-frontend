@@ -2,141 +2,38 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import moodleApi from 'services/moodleApi';
 import {
   calculateTotalLearningTimeForDate,
-  groupActivityReport,
+  groupCourseContent,
   groupUserGradeByCourseModule,
 } from 'utils/elearning.utils';
 import { Table } from 'react-bootstrap';
-import ErrorMessage from '../components/ErrorMessage';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { formatTime } from 'utils/commonUtils';
 import DetailActivityReport from '../components/DetailActivityReport';
 import elearningApi from 'api/elearningApi';
 import { PATH } from 'constants/path';
 import { toastWrapper } from 'utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectElearningData, updateElearningData } from 'store/elearning.slice';
 
 function ElearningStudentResultPage() {
-  const moodleToken = localStorage.getItem('moodleToken');
-  const [center] = React.useState(() => {
-    try {
-      const data = localStorage.getItem('center');
-      if (data && data !== 'undefined') {
-        return JSON.parse(data);
-      }
-    } catch (e) {
-      console.error('Lỗi khi parse localStorage center:', e.message);
-    }
-    return {};
-  });
-  const [courseReport, setCourseReport] = useState(null);
-  const [elearningCourses, setElearningCourses] = useState({});
-  const [elearningCoursesContents, setElearningCoursesContents] = useState({});
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const elearningData = useSelector(selectElearningData);
+  const {
+    elearningCourses,
+    elearningCoursesContents,
+    elearningUser,
+    elearningSettings,
+    bookTime,
+    elearningGrades,
+    quizAttempts,
+    activityReport,
+  } = elearningData;
   const [loading, setLoading] = useState(true);
-  const [student, setStudent] = useState(null);
-  const [userCourseGrade, setUserCourseGrade] = useState(null);
-  const [activityReport, setActivityReport] = useState(null);
-  const [activityReportLoading, setActivityReportLoading] = useState(true);
-  const [lessonIds, setLessonIds] = useState([]);
-  const [quizAttempts, setQuizAttempts] = useState({});
-  const [bookTime, setBookTime] = useState({});
-  const [elearningSettings, setElearningSettings] = useState({});
-  const [elearningSettingLoading, setElearningSettingLoading] = useState(true);
-  const [bookTimeLoading, setBookTimeLoading] = useState(true);
   const [quizAttemptsLoading, setQuizAttemptsLoading] = useState(true);
-  const [elearningCoursesLoading, setElearningCoursesLoading] = useState(true);
-
-  useEffect(() => {
-    if (!moodleToken) {
-      window.location.href = '/elearning/login';
-    } else {
-      setLoading(true);
-      elearningApi
-        .getUserByMoodleToken(moodleToken)
-        .then((res) => {
-          setStudent(res.data);
-          setLessonIds(res.data?.elearningLessons);
-        })
-        .catch((error) => {
-          console.error('Error fetching site info:', error);
-          localStorage.removeItem('moodleToken');
-          window.location.href = PATH.ELEARNING.LOGIN;
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [moodleToken]);
-
-  useEffect(() => {
-    if (student) {
-      setActivityReport(null);
-      
-      const fetchData = async () => {
-        setActivityReportLoading(true);
-        try {
-          const [userCourseGradeRes, activityReportRes] = await Promise.all([
-            elearningApi.getUserCourseGrade([student?.elearningUserId]),
-            elearningApi.getElearningActivityReport(lessonIds, [
-              student?.elearningUserId,
-            ]),
-          ]);
-
-          setUserCourseGrade(
-            groupUserGradeByCourseModule(userCourseGradeRes?.data)[
-              student?.elearningUserId
-            ]
-          );
-          setActivityReport(
-            activityReportRes?.data?.[student?.elearningUserId]
-          );
-        } catch (err) {
-          console.error('Error fetching activity report:', err);
-          toastWrapper('Có lỗi xảy ra', 'error');
-        } finally {
-          setActivityReportLoading(false);
-        }
-      };
-
-      fetchData();
-    }
-  }, [student]);
-
-  useEffect(() => {
-    if (center?._id) {
-      setElearningCoursesLoading(true);
-      elearningApi
-        .getCoursesByCenter(center?._id)
-        .then(async (res) => {
-          const elearningCourses = {};
-          res?.data?.courses?.map((item) => {
-            elearningCourses[item.id] = item;
-          });
-          setElearningCourses(elearningCourses);
-
-          const elearningCoursesContents =
-            await elearningApi.getCoursesContents(
-              res?.data?.courses?.map((item) => item.id)
-            );
-          const elearningCoursesContentsMap = {};
-          res?.data?.courses?.map((item) => {
-            elearningCoursesContentsMap[item.id] = groupActivityReport(
-              elearningCoursesContents?.[item.id]
-            );
-          });
-          setElearningCoursesContents(elearningCoursesContentsMap);
-        })
-        .catch((err) => {
-          console.error(err);
-        })
-        .finally(() => {
-          setElearningCoursesLoading(false);
-        });
-    }
-  }, [center?._id]);
 
   const quizIds = useMemo(() => {
-    if (!userCourseGrade?.courses) return [];
-    return Object.values(userCourseGrade?.courses).reduce((acc, grade) => {
+    if (!elearningGrades) return [];
+    return Object.values(elearningGrades).reduce((acc, grade) => {
       if (grade?.modules) {
         Object.keys(grade?.modules).forEach((cmid) => {
           const module = grade.modules[cmid];
@@ -147,32 +44,20 @@ function ElearningStudentResultPage() {
       }
       return acc;
     }, []);
-  }, [userCourseGrade?.courses]);
-
-  const bookIds = useMemo(() => {
-    if (!activityReport) return [];
-    return Object.values(activityReport).reduce((acc, activities) => {
-      activities.forEach((activity) => {
-        if (activity.modname === 'book') {
-          acc.push(activity.cmid);
-        }
-      });
-      return acc;
-    }, []);
-  }, [activityReport]);
+  }, [elearningGrades]);
 
   useEffect(() => {
     const fetchQuizAttempts = async (quizIds) => {
-      setQuizAttemptsLoading(true);
       try {
+        setQuizAttemptsLoading(true);
         const responses = await Promise.all(
           quizIds.map((quizId) =>
             elearningApi
-              .getLastUserQuizAttempt(student?.elearningUserId, quizId)
+              .getUserQuizAttempts(elearningUser?.elearningUserId, quizId)
               .then((res) => ({ quizId, data: res?.data || {} }))
               .catch((error) => {
                 console.error(`Error fetching quiz ${quizId}:`, error);
-                return { quizId, data: {} }; // fallback empty data
+                return { quizId, data: {} };
               })
           )
         );
@@ -182,112 +67,67 @@ function ElearningStudentResultPage() {
           quizAttempts[quizId] = data;
         });
 
-        setQuizAttempts(quizAttempts);
+        dispatch(
+          updateElearningData({
+            quizAttempts,
+          })
+        );
+      } catch (error) {
+        console.error('Error fetching quiz attempts:', error);
+        toastWrapper.error('Có lỗi xảy ra khi tải dữ liệu bài kiểm tra của bạn!');
       } finally {
         setQuizAttemptsLoading(false);
       }
     };
 
-    if (quizIds.length > 0) fetchQuizAttempts(quizIds);
-  }, [quizIds, student?.elearningUserId]);
+    if (quizIds.length > 0 && elearningUser?.elearningUserId)
+      fetchQuizAttempts(quizIds);
+  }, [quizIds?.length, elearningUser?.elearningUserId]);
 
   useEffect(() => {
-    const fetchBookTime = async (bookIds) => {
-      setBookTimeLoading(true);
+    const loadUserElearningData = async (lessonIds) => {
       try {
-        const responses = await Promise.all(
-          bookIds.map((bookId) =>
-            elearningApi
-              .getModuleTime(bookId)
-              .then((res) => {
-                const totalTime =
-                  res?.data?.reduce((acc, item) => {
-                    if (item?.readingTime) acc += item.readingTime;
-                    return acc;
-                  }, 0) || 0;
-                return { bookId, totalTime };
-              })
-              .catch((error) => {
-                console.error(`Error fetching book time for ${bookId}:`, error);
-                return { bookId, totalTime: 0 }; // fallback
-              })
-          )
+        setLoading(true);
+        const [userCourseGradeRes, activityReportRes] = await Promise.all([
+          elearningApi.getUserCourseGrade([elearningUser?.elearningUserId]),
+          elearningApi.getElearningActivityReport(lessonIds, [
+            elearningUser?.elearningUserId,
+          ]),
+        ]);
+        const elearningGrades = groupUserGradeByCourseModule(
+          userCourseGradeRes?.data
+        )[elearningUser?.elearningUserId]?.courses;
+        const activityReport = activityReportRes?.data?.[elearningUser?.elearningUserId];
+        dispatch(
+          updateElearningData({
+            elearningGrades,
+            activityReport,
+          })
         );
-
-        const bookTime = {};
-        responses.forEach(({ bookId, totalTime }) => {
-          bookTime[bookId] = totalTime;
-        });
-
-        setBookTime(bookTime);
+      } catch (error) {
+        console.error('Error fetching user elearning data:', error);
+        toastWrapper.error('Có lỗi xảy ra khi tải dữ liệu học tập của bạn!');
       } finally {
-        setBookTimeLoading(false);
+        setLoading(false);
       }
     };
 
-    if (bookIds.length > 0) fetchBookTime(bookIds);
-  }, [bookIds]);
-
-  useEffect(() => {
-    const fetchElearningSetting = async () => {
-      try {
-        setElearningSettingLoading(true);
-        const courseIds = Object.keys(elearningCourses);
-
-        const responses = await Promise.all(
-          courseIds.map((cid) =>
-            elearningApi
-              .getElearningSetting(cid, student?.course?.drivingType)
-              .then((res) => ({
-                cid,
-                setting: res?.data?.[0] || null,
-              }))
-              .catch((error) => {
-                console.error(
-                  `Error fetching setting for course ${cid}:`,
-                  error
-                );
-                return { cid, setting: null };
-              })
-          )
-        );
-
-        const settings = {};
-        responses.forEach(({ cid, setting }) => {
-          if (setting) {
-            settings[cid] = setting;
-          }
-        });
-
-        setElearningSettings(settings);
-      } finally {
-        setElearningSettingLoading(false);
-      }
-    };
-
-    if (Object.keys(elearningCourses).length > 0) {
-      fetchElearningSetting();
+    if (elearningUser) {
+      const lessonIds = elearningUser?.elearningLessons;
+      loadUserElearningData(lessonIds);
     }
-  }, [elearningCourses]);
-
-  if (error) {
-    return (
-      <div className='mt-4'>
-        <ErrorMessage message={error} />
-      </div>
-    );
-  }
+  }, [elearningUser]);
 
   const today = Date.now();
   const threshold = 5;
-  const courseEntries = Object.entries(userCourseGrade?.courses || {});
+  const courseEntries = Object.entries(elearningGrades || {});
   const timePerCourse = courseEntries.map(([courseId, course]) => {
     const timeSpent = calculateTotalLearningTimeForDate({
       data: course.modules || {},
       targetDate: today,
       intervalTime: threshold,
       elearningSetting: elearningSettings?.[courseId],
-      quizAttempts: quizAttempts,
+      quizAttempts: quizAttempts || {},
     });
     return {
       courseId,
@@ -302,28 +142,13 @@ function ElearningStudentResultPage() {
     <div style={{ overflowY: 'scroll', height: '100vh', padding: '20px' }}>
       <div className='mt-4'>
         {loading ||
-        elearningCoursesLoading ||
-        activityReportLoading ||
-        bookTimeLoading ||
         quizAttemptsLoading ||
-        elearningSettingLoading ? (
-          <LoadingSpinner
-            message={
-              loading
-                ? 'Đang lấy thông tin học viên...'
-                : elearningCoursesLoading
-                ? 'Đang tải thông tin khoá học...'
-                : elearningSettingLoading
-                ? 'Đang tải cài đặt khoá học...'
-                : bookTimeLoading
-                ? 'Đang tải báo cáo thời gian học...'
-                : quizAttemptsLoading
-                ? 'Đang lấy kết quả kiểm tra...'
-                : activityReportLoading
-                ? 'Đang tải báo cáo hoạt động...'
-                : null
-            }
-          />
+        !elearningUser ||
+        !elearningCourses ||
+        !elearningCoursesContents ||
+        !elearningSettings ||
+        !bookTime ? (
+          <LoadingSpinner />
         ) : (
           <>
             <div className='mt-4'>
@@ -359,8 +184,8 @@ function ElearningStudentResultPage() {
             </div>
             <h2>Báo cáo kết quả toàn khoá học</h2>
             <DetailActivityReport
-              elearningUser={student}
-              elearningGrades={userCourseGrade?.courses}
+              elearningUser={elearningUser}
+              elearningGrades={elearningGrades}
               activityReport={activityReport}
               elearningCourses={elearningCourses}
               elearningCoursesContents={elearningCoursesContents}

@@ -20,6 +20,9 @@ import { usePromptWithUnload } from 'hooks/usePromptWithUnload';
 import Timer from '../components/Timer';
 import QuestionReviewModal from '../components/QuestionReviewModal';
 import { PATH } from 'constants/path';
+import { useSelector } from 'react-redux';
+import { selectElearningData } from 'store/elearning.slice';
+import TimeExceedWarning from '../components/TimeExceedWarning';
 
 function ElearningStudentTestDetailPage() {
   const testId = useParams().id;
@@ -41,6 +44,9 @@ function ElearningStudentTestDetailPage() {
   const [showQuestionReviewModal, setShowQuestionReviewModal] = useState(false);
   const [preventFinish, setPreventFinish] = useState(false);
   const [startingAttempt, setStartingAttempt] = useState(false);
+  const elearningData = useSelector(selectElearningData);
+  const { isLimitExceeded, timeLimitPerDay, totalTodayTime } =
+    elearningData;
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -238,6 +244,15 @@ function ElearningStudentTestDetailPage() {
     }
   };
 
+  if (isLimitExceeded) {
+    return (
+      <TimeExceedWarning
+        timeLimitPerDay={timeLimitPerDay}
+        totalTodayTime={totalTodayTime}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -411,9 +426,12 @@ function ElearningStudentTestDetailPage() {
                         onClick={() => {
                           debouncedSaveAnswer(slotAnswers, slot);
                           setSlotAnswers(null);
-                          
-                          if(currentPage < attemptSummary.questions.length - 1) {
-                            setCurrentPage(prev => prev + 1);
+
+                          if (
+                            currentPage <
+                            attemptSummary.questions.length - 1
+                          ) {
+                            setCurrentPage((prev) => prev + 1);
                           }
                         }}
                       >

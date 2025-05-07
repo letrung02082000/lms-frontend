@@ -6,6 +6,9 @@ import { toastWrapper } from 'utils';
 import { usePromptWithUnload } from 'hooks/usePromptWithUnload';
 import moodleApi from 'services/moodleApi';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { selectElearningData } from 'store/elearning.slice';
+import TimeExceedWarning from '../components/TimeExceedWarning';
 
 const ElearningStudentBookPage = () => {
   const [htmlContent, setHtmlContent] = useState('');
@@ -15,18 +18,24 @@ const ElearningStudentBookPage = () => {
   const [timestart, setTimestart] = useState(Date.now());
   const [completedChapters, setCompletedChapters] = useState([]);
   const autoPageTurning = true; // Set to true to enable auto page turning
-
   const moodleToken = localStorage.getItem('moodleToken');
   const fileUrls = useMemo(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const urls = urlParams.get('urls')?.split(',') || [];
     return urls.map((url) => url.split('?')[0] + `?token=${moodleToken}`);
   }, [moodleToken]);
+  const elearningData = useSelector(selectElearningData);
+  const { isLimitExceeded, timeLimitPerDay, totalTodayTime } = elearningData;
 
   const moduleId = Number(new URLSearchParams(window.location.search).get('m'));
-  const instanceId = Number(new URLSearchParams(window.location.search).get('i'));
+  const instanceId = Number(
+    new URLSearchParams(window.location.search).get('i')
+  );
 
-  usePromptWithUnload('Bạn có chắc muốn rời đi? Dữ liệu chưa được lưu.', currentChapterId !== null);
+  usePromptWithUnload(
+    'Bạn có chắc muốn rời đi? Dữ liệu chưa được lưu.',
+    currentChapterId !== null
+  );
 
   useEffect(() => {
     const loadContent = async () => {
@@ -81,7 +90,10 @@ const ElearningStudentBookPage = () => {
               toastWrapper('Bạn đã hoàn thành tất cả các chương.', 'success');
             } else {
               if (autoPageTurning) {
-                toastWrapper('Bạn đã hoàn thành chương này. Đang chuyển sang chương kế tiếp.', 'success');
+                toastWrapper(
+                  'Bạn đã hoàn thành chương này. Đang chuyển sang chương kế tiếp.',
+                  'success'
+                );
                 setTimeout(() => {
                   setCurrentIndex((prev) => prev + 1);
                 }, 2000); // Auto page turning after 2 seconds
@@ -99,6 +111,15 @@ const ElearningStudentBookPage = () => {
       toastWrapper('Có lỗi xảy ra khi lưu trạng thái chương.', 'error');
     }
   };
+
+  if (isLimitExceeded) {
+    return (
+      <TimeExceedWarning
+        timeLimitPerDay={timeLimitPerDay}
+        totalTodayTime={totalTodayTime}
+      />
+    );
+  }
 
   return (
     <Styles>
@@ -133,9 +154,7 @@ const ElearningStudentBookPage = () => {
             />
           )}
         {completedChapters?.includes(currentChapterId) && (
-          <Alert variant='success'>
-            Bạn đã hoàn thành chương này
-          </Alert>
+          <Alert variant='success'>Bạn đã hoàn thành chương này</Alert>
         )}
       </div>
       <div
@@ -178,4 +197,4 @@ const Styles = styled.div`
     height: revert;
     background-color: transparent;
   }
-`
+`;

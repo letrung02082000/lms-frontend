@@ -38,7 +38,6 @@ class ElearningApi {
   }
 
   getCourseContent = async (courseId) => {
-    console.log('courseId: ', courseId);
     const url = `${API_PATH}/course/content`;
     return axiosClient.get(url, { params: { courseId } });
   }
@@ -122,9 +121,14 @@ class ElearningApi {
     });
   }
 
-  getLastUserQuizAttempt = async (userId, quizId) => {
-    const url = `${API_PATH}/quiz/attempt`;
+  getUserQuizAttempts = async (userId, quizId) => {
+    const url = `${API_PATH}/quiz/attempts`;
     return axiosClient.get(url, { params: { userId, quizId } });
+  }
+
+  getUserQuizAttempt = async (attemptId) => {
+    const url = `${API_PATH}/quiz/attempt`;
+    return axiosClient.get(url, { params: { attemptId } });
   }
 }
 

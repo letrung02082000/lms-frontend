@@ -12,13 +12,11 @@ import {
   ProgressBar,
   Row,
   Table,
-  Form
+  Form,
 } from 'react-bootstrap';
 import moodleApi from 'services/moodleApi';
-import LoadingSpinner from '../components/LoadingSpinner';
 import 'react-circular-progressbar/dist/styles.css';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { PATH } from 'constants/path';
 import drivingApi from 'api/drivingApi';
 import { MdEdit } from 'react-icons/md';
 import FileUploader from 'components/form/FileUploader';
@@ -29,68 +27,53 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import drivingStudentSchema from 'validations/driving-student.validation';
 import InputField from 'components/form/InputField';
 import { getVietnamDate } from 'utils/commonUtils';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectElearningCourses,
+  selectElearningUser,
+  updateElearningData,
+} from 'store/elearning.slice';
 
 function ElearningStudentMyPage() {
   const moodleToken = localStorage.getItem('moodleToken');
-  const userName = JSON.parse(localStorage.getItem('moodleSiteInfo') || '{}')?.username || null;
-  const [student, setStudent] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
-  const [courses, setCourses] = React.useState([]);
+  const dispatch = useDispatch();
+  const userName =
+    JSON.parse(localStorage.getItem('moodleSiteInfo') || '{}')?.username ||
+    null;
+  const student = useSelector(selectElearningUser);
+  const elearningCourses = useSelector(selectElearningCourses);
+  const courses = useMemo(() => {
+    if (!elearningCourses) return [];
+    return Object.values(elearningCourses);
+  }, []);
   const [showUpdateInfoModal, setShowUpdateInfoModal] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
   const [portraitData, setPortraitData] = React.useState(null);
   const [portraitUploading, setPortraitUploading] = React.useState(false);
-  const [fileUploading, setFileUploading] = React.useState(false);
   const studentEditableFields = useMemo(
     () => student?.course?.studentEditableFields || [],
     [student?.course?.studentEditableFields]
   );
-  const { handleSubmit, setValue, control, clearErrors, reset, setError } = useForm({
-    mode: 'onChange',
-    reValidateMode: 'onChange',
-    resolver: yupResolver(drivingStudentSchema),
-  });
-
-  useEffect(() => {
-    if (!moodleToken) {
-      window.location.href = '/elearning/login';
-    } else {
-      setLoading(true);
-      elearningApi
-        .getUserByMoodleToken(moodleToken)
-        .then((res) => {
-          setStudent(res.data);
-          localStorage.setItem('center', JSON.stringify(res.data?.center));
-        })
-        .catch((error) => {
-          console.error('Error fetching site info:', error);
-          localStorage.removeItem('moodleToken');
-          window.location.href = PATH.ELEARNING.LOGIN;
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [moodleToken]);
+  const { handleSubmit, setValue, control, clearErrors, reset, setError } =
+    useForm({
+      mode: 'onChange',
+      reValidateMode: 'onChange',
+      resolver: yupResolver(drivingStudentSchema),
+    });
 
   useEffect(() => {
     if (student) {
-      moodleApi
-        .getMyEnrolledCourses('all')
-        .then((courses) => {
-          setCourses(courses);
-        })
-        .catch((error) => {
-          console.error('Error fetching courses:', error);
-        });
-
       if (student?.elearningAvatarUrl) {
         drivingApi
           .getPortraitImage(student?._id)
           .then((data) => {
             const url = URL.createObjectURL(data);
-            setStudent((prev) => ({ ...prev, portraitUrl: url }));
+            dispatch(
+              updateElearningData({
+                elearningUser: { ...student, portraitUrl: url },
+              })
+            );
           })
           .catch(console.error);
       }
@@ -121,14 +104,14 @@ function ElearningStudentMyPage() {
       const { oldPassword, newPassword } = data;
       let isValid = true;
 
-      if(!oldPassword) {
+      if (!oldPassword) {
         setError('oldPassword', {
           type: 'manual',
           message: 'Vui lòng nhập mật khẩu cũ',
-        })
+        });
         isValid = false;
       }
-      
+
       if (!newPassword || newPassword?.length < 8) {
         setError('newPassword', {
           type: 'manual',
@@ -155,10 +138,14 @@ function ElearningStudentMyPage() {
         toastWrapper('Mật khẩu cũ không chính xác!', 'error');
       }
 
-      if(newMoodleToken) {
+      if (newMoodleToken) {
         localStorage.setItem('moodleToken', newMoodleToken);
         try {
-          await elearningApi.changeUserPasswordByMoodleToken(newMoodleToken, newPassword, oldPassword);
+          await elearningApi.changeUserPasswordByMoodleToken(
+            newMoodleToken,
+            newPassword,
+            oldPassword
+          );
           toastWrapper('Cập nhật mật khẩu thành công!', 'success');
           reset();
           setConfirmPassword('');
@@ -178,169 +165,163 @@ function ElearningStudentMyPage() {
         overflowY: 'scroll',
       }}
     >
-      {!loading ? (
-        <Container className='my-4'>
-          <h2 className='mb-4 h2'>Thông tin cá nhân</h2>
-          <Card className='mb-4 shadow-sm'>
-            <Card.Body>
-              <Row>
-                <Col md={3} className='text-center'>
-                  <Image
-                    src={
-                      student?.elearningAvatarUrl ||
-                      student?.portraitUrl ||
-                      'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
-                    }
-                    roundedCircle
-                    width='150'
-                    height='150'
-                    style={{ objectFit: 'cover' }}
-                    alt='avatar'
-                    className='mb-3'
-                  />
-                  <div>
-                    <Button
-                      variant='outline-secondary'
-                      className='rounded-pill'
-                      onClick={() => setShowUpdateInfoModal(true)}
-                    >
-                      <MdEdit className='me-2' />
-                      Cập nhật
-                    </Button>
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <h4>{student?.name || 'Chưa cập nhật'} </h4>
-                  <p>
-                    <strong>Mã học viên:</strong>{' '}
-                    {student?.registrationCode || 'Chưa cập nhật'}
-                  </p>
-                  <p>
-                    <strong>Số CMND/CCCD:</strong>{' '}
-                    {student?.cardNumber || 'Chưa cập nhật'}
-                  </p>
-                  <p>
-                    <strong>Giới tính:</strong>{' '}
-                    {GENDERS[student?.gender] || 'Chưa cập nhật'}
-                  </p>
-                  <p>
-                    <strong>Ngày sinh:</strong>{' '}
-                    {new Date(student?.dob).toLocaleDateString('en-GB') ||
-                      'Chưa cập nhật'}
-                  </p>
-                  <p>
-                    <strong>SĐT:</strong> {student?.tel || 'Chưa cập nhật'}
-                  </p>
-                  <p>
-                    <strong>Địa chỉ:</strong>{' '}
-                    {student?.address || 'Chưa cập nhật'}
-                  </p>
-                </Col>
-                <Col md={3}>
-                  <h4>Khoá: {student?.course?.name || 'Chưa cập nhật'}</h4>
-                  <p>
-                    <strong>Mã khoá học:</strong>{' '}
-                    {student?.course?.code || 'Chưa cập nhật'}
-                  </p>
-                  <p>
-                    <strong>Hạng:</strong>{' '}
-                    {student?.drivingType?.label || 'Chưa cập nhật'}
-                  </p>
-                  <p>
-                    <strong>Khai giảng:</strong>{' '}
-                    {student?.course?.enrollmentDate
-                      ? new Date(
-                          student?.course?.enrollmentDate
-                        ).toLocaleDateString('en-GB')
-                      : 'Chưa cập nhật'}
-                  </p>
-                  <p>
-                    <strong>Bế giảng:</strong>{' '}
-                    {student?.course?.graduationDate
-                      ? new Date(
-                          student?.course?.graduationDate
-                        ).toLocaleDateString('en-GB')
-                      : 'Chưa cập nhật'}
-                  </p>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-
-          <Row>
-            <Col
-              md={3}
-              className='d-flex align-items-center justify-content-center'
-            >
-              <div style={{ width: 250, height: 250 }} className='mb-3'>
-                <CircularProgressbar
-                  value={
-                    courses.length > 0
-                      ? courses.reduce((sum, c) => sum + (c.progress || 0), 0) /
-                        courses.length
-                      : 0
+      <Container className='my-4'>
+        <h2 className='mb-4 h2'>Thông tin cá nhân</h2>
+        <Card className='mb-4 shadow-sm'>
+          <Card.Body>
+            <Row>
+              <Col md={3} className='text-center'>
+                <Image
+                  src={
+                    student?.elearningAvatarUrl ||
+                    student?.portraitUrl ||
+                    'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg'
                   }
-                  text={`${
-                    courses.length > 0
-                      ? Math.round(
-                          courses.reduce(
-                            (sum, c) => sum + (c.progress || 0),
-                            0
-                          ) / courses.length
-                        )
-                      : 0
-                  }%`}
-                  styles={buildStyles({
-                    textSize: '18px',
-                    pathColor: `var(--bs-primary)`,
-                    textColor: '#000',
-                    trailColor: '#d6d6d6',
-                  })}
+                  roundedCircle
+                  width='150'
+                  height='150'
+                  style={{ objectFit: 'cover' }}
+                  alt='avatar'
+                  className='mb-3'
                 />
-              </div>
-            </Col>
+                <div>
+                  <Button
+                    variant='outline-secondary'
+                    className='rounded-pill'
+                    onClick={() => setShowUpdateInfoModal(true)}
+                  >
+                    <MdEdit className='me-2' />
+                    Cập nhật
+                  </Button>
+                </div>
+              </Col>
+              <Col md={6}>
+                <h4>{student?.name || 'Chưa cập nhật'} </h4>
+                <p>
+                  <strong>Mã học viên:</strong>{' '}
+                  {student?.registrationCode || 'Chưa cập nhật'}
+                </p>
+                <p>
+                  <strong>Số CMND/CCCD:</strong>{' '}
+                  {student?.cardNumber || 'Chưa cập nhật'}
+                </p>
+                <p>
+                  <strong>Giới tính:</strong>{' '}
+                  {GENDERS[student?.gender] || 'Chưa cập nhật'}
+                </p>
+                <p>
+                  <strong>Ngày sinh:</strong>{' '}
+                  {new Date(student?.dob).toLocaleDateString('en-GB') ||
+                    'Chưa cập nhật'}
+                </p>
+                <p>
+                  <strong>SĐT:</strong> {student?.tel || 'Chưa cập nhật'}
+                </p>
+                <p>
+                  <strong>Địa chỉ:</strong>{' '}
+                  {student?.address || 'Chưa cập nhật'}
+                </p>
+              </Col>
+              <Col md={3}>
+                <h4>Khoá: {student?.course?.name || 'Chưa cập nhật'}</h4>
+                <p>
+                  <strong>Mã khoá học:</strong>{' '}
+                  {student?.course?.code || 'Chưa cập nhật'}
+                </p>
+                <p>
+                  <strong>Hạng:</strong>{' '}
+                  {student?.drivingType?.label || 'Chưa cập nhật'}
+                </p>
+                <p>
+                  <strong>Khai giảng:</strong>{' '}
+                  {student?.course?.enrollmentDate
+                    ? new Date(
+                        student?.course?.enrollmentDate
+                      ).toLocaleDateString('en-GB')
+                    : 'Chưa cập nhật'}
+                </p>
+                <p>
+                  <strong>Bế giảng:</strong>{' '}
+                  {student?.course?.graduationDate
+                    ? new Date(
+                        student?.course?.graduationDate
+                      ).toLocaleDateString('en-GB')
+                    : 'Chưa cập nhật'}
+                </p>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
 
-            <Col md={9}>
-              <Card className='shadow-sm'>
-                <Card.Header>
-                  <h5>Quá trình học tập</h5>
-                </Card.Header>
-                <Table striped bordered hover responsive>
-                  <thead>
-                    <tr>
-                      <th>STT</th>
-                      <th>Môn học</th>
-                      <th>Tiến độ</th>
+        <Row>
+          <Col
+            md={3}
+            className='d-flex align-items-center justify-content-center'
+          >
+            <div style={{ width: 250, height: 250 }} className='mb-3'>
+              <CircularProgressbar
+                value={
+                  courses.length > 0
+                    ? courses.reduce((sum, c) => sum + (c.progress || 0), 0) /
+                      courses.length
+                    : 0
+                }
+                text={`${
+                  courses.length > 0
+                    ? Math.round(
+                        courses.reduce((sum, c) => sum + (c.progress || 0), 0) /
+                          courses.length
+                      )
+                    : 0
+                }%`}
+                styles={buildStyles({
+                  textSize: '18px',
+                  pathColor: `var(--bs-primary)`,
+                  textColor: '#000',
+                  trailColor: '#d6d6d6',
+                })}
+              />
+            </div>
+          </Col>
+
+          <Col md={9}>
+            <Card className='shadow-sm'>
+              <Card.Header>
+                <h5>Quá trình học tập</h5>
+              </Card.Header>
+              <Table striped bordered hover responsive>
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Môn học</th>
+                    <th>Tiến độ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {courses.map((item, index) => (
+                    <tr key={item?.id}>
+                      <td>{index + 1}</td>
+                      <td>{item.fullname}</td>
+                      <td>
+                        {item?.progress ? (
+                          <ProgressBar
+                            variant='primary'
+                            now={item.progress}
+                            label={`${Math.round(item.progress)}%`}
+                            style={{ height: '20px' }}
+                          />
+                        ) : (
+                          <span>Chưa có dữ liệu</span>
+                        )}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {courses.map((item, index) => (
-                      <tr key={item?.id}>
-                        <td>{index + 1}</td>
-                        <td>{item.fullname}</td>
-                        <td>
-                          {item?.progress ? (
-                            <ProgressBar
-                              variant='primary'
-                              now={item.progress}
-                              label={`${Math.round(item.progress)}%`}
-                              style={{ height: '20px' }}
-                            />
-                          ) : (
-                            <span>Chưa có dữ liệu</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      ) : (
-        <LoadingSpinner />
-      )}
+                  ))}
+                </tbody>
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
       <Modal
         show={showUpdateInfoModal}
         onHide={() => setShowUpdateInfoModal(false)}
