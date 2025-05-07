@@ -33,7 +33,10 @@ const CourseCard = ({ course, courseContent }) => {
             <Row>
               <Col>
                 <h5>{course.fullnamedisplay}</h5>
-                <p>{course.summary}</p>
+                <div
+                  className='text-muted'
+                  dangerouslySetInnerHTML={{ __html: course.summary }}
+                ></div>
               </Col>
               <Col className='text-end'>
                 {Object.keys(moduleCount)?.map((mod) => (
@@ -56,7 +59,7 @@ const CourseCard = ({ course, courseContent }) => {
               aria-controls={`lessons-${course.id}`}
               aria-expanded={open}
             >
-              {open ? 'Ẩn các phần' : 'Hiện các phần'}
+              {open ? 'Ẩn nội dung' : 'Xem nội dung'}
             </Button>
 
             <Collapse in={open}>
@@ -184,7 +187,7 @@ const CourseCard = ({ course, courseContent }) => {
                                 </Button>
                               )}
                               {mod?.modname === 'book' &&
-                              mod?.contents?.length > 0 && (
+                                mod?.contents?.length > 0 && (
                                   <Button
                                     className='mb-1'
                                     variant='outline-primary'
@@ -192,7 +195,9 @@ const CourseCard = ({ course, courseContent }) => {
                                     href={`${PATH.ELEARNING.STUDENT.BOOK.replace(
                                       ':id',
                                       mod?.instance
-                                    )}?m=${mod?.id}&i=${mod.instance}&urls=${mod?.contents
+                                    )}?m=${mod?.id}&i=${
+                                      mod.instance
+                                    }&urls=${mod?.contents
                                       ?.map((content) => content?.fileurl)
                                       ?.filter(Boolean)
                                       ?.join(',')}`}
@@ -201,7 +206,7 @@ const CourseCard = ({ course, courseContent }) => {
                                     <FaBookReader className='me-1' />
                                     Học
                                   </Button>
-                              )}
+                                )}
                             </Col>
                           </Row>
                           {/* {mod.modname === 'book' && (
