@@ -12,7 +12,7 @@ function replaceImageSrcWithMoodleUrl(htmlString, baseUrlWithToken) {
     const images = container.querySelectorAll('img');
 
     images.forEach(img => {
-        const filename = img.getAttribute('src'); // e.g. image.png
+        const filename = img.getAttribute('src')?.split('?')[0] || img.getAttribute('src');
         const newSrc = `${origin}${basePath}${filename}?token=${token}`;
         img.setAttribute('src', newSrc);
     });
