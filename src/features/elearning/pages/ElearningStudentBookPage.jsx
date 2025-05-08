@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { selectElearningData } from 'store/elearning.slice';
 import TimeExceedWarning from '../components/TimeExceedWarning';
+import { appendTokenToImages, replaceImageSrcWithMoodleUrl } from 'utils/elearning.utils';
 
 const ElearningStudentBookPage = () => {
   const [htmlContent, setHtmlContent] = useState('');
@@ -49,7 +50,8 @@ const ElearningStudentBookPage = () => {
       try {
         const response = await fetch(fileUrl);
         const text = await response.text();
-        setHtmlContent(text);
+        const textWithImages = replaceImageSrcWithMoodleUrl(text, fileUrl);
+        setHtmlContent(textWithImages);
       } catch (error) {
         console.error('Error fetching HTML content:', error);
       }
