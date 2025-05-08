@@ -7,7 +7,12 @@ const LoadingSpinner = ({ size = 'md', message }) => {
   return (
     <div className='d-flex flex-column align-items-center justify-content-center my-3'>
       <div>
-        <Spinner animation='border' role='status' size={size}></Spinner>
+        <Spinner
+          animation='border'
+          role='status'
+          size={size}
+          variant='primary'
+        ></Spinner>
       </div>
       <div>{message || 'Đang tải dữ liệu...'}</div>
     </div>

@@ -21,21 +21,19 @@ function ElearningStudentCoursePage() {
   }, [elearningCourses]);
     
   useEffect(() => {
-    setLoading(true);
     const fetchData = async () => {
       try {
         if (courses.length > 0) {
-          moodleApi
-            .getCoursesContents(courses.map((course) => course.id))
-            .then((courseContents) => {
-              setCourseContents(courseContents);
-            })
-            .catch((error) =>
-              console.error('Failed to fetch course content: ', error)
-            )
-            .finally(() => {
-              setLoading(false);
-            });
+          const courseIds = courses.map((course) => course.id);
+          const promises = courseIds.map((id) =>
+            moodleApi.getCourseContents(id)
+          );
+          const results = await Promise.all(promises);
+          const courseContents = results.reduce((acc, content, index) => {
+            acc[courseIds[index]] = content;
+            return acc;
+          }, {});
+          setCourseContents(courseContents);
         }
       } catch (error) {
         console.error('Error fetching courses:', error);
@@ -43,7 +41,6 @@ function ElearningStudentCoursePage() {
           'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.',
           'error'
         );
-        setLoading(false);
       }
     };
     fetchData();
@@ -71,6 +68,7 @@ function ElearningStudentCoursePage() {
             {courses?.map((course) => (
               <Col key={course.id} xs={12}>
                 <CourseCard
+                  key={course.id}
                   course={course}
                   courseContent={courseContents[course.id]}
                   onClick={handleSelectCourse}

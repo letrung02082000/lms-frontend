@@ -23,6 +23,12 @@ import { PATH } from 'constants/path';
 import { useSelector } from 'react-redux';
 import { selectElearningData } from 'store/elearning.slice';
 import TimeExceedWarning from '../components/TimeExceedWarning';
+import LoadingSpinner from '../components/LoadingSpinner';
+import {
+  MdChecklist,
+  MdOutlineTimelapse,
+  MdSubject,
+} from 'react-icons/md';
 
 function ElearningStudentTestDetailPage() {
   const testId = useParams().id;
@@ -45,9 +51,7 @@ function ElearningStudentTestDetailPage() {
   const [preventFinish, setPreventFinish] = useState(false);
   const [startingAttempt, setStartingAttempt] = useState(false);
   const elearningData = useSelector(selectElearningData);
-  const { isLimitExceeded, timeLimitPerDay, totalTodayTime } =
-    elearningData;
-
+  const { isLimitExceeded, timeLimitPerDay, totalTodayTime } = elearningData;
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const cId = parseInt(searchParams.get('c'));
@@ -263,25 +267,33 @@ function ElearningStudentTestDetailPage() {
     >
       <Container fluid className='py-4'>
         {loading ? (
-          <div className='text-center py-5'>
-            <Spinner animation='border' variant='primary' />
-            <div className='mt-2'>Đang tải dữ liệu...</div>
-          </div>
+          <LoadingSpinner />
         ) : (
           <>
             {quiz && (
               <>
                 <div className='mb-4'>
                   <h2>{quiz.name}</h2>
-                  <p>{quiz.intro}</p>
-                  <p>Môn học: {course?.displayname || ''}</p>
+                  {/* <div
+                    dangerouslySetInnerHTML={{
+                      __html: quiz.intro,
+                    }}
+                  ></div> */}
                   <p>
+                    <MdSubject className='me-2' />
+                    Môn học: {course?.displayname || ''}
+                  </p>
+                  <p>
+                    <MdOutlineTimelapse className='me-2' />
                     Thời gian làm bài:{' '}
                     {quiz.timelimit != 0
                       ? `${Math.floor(quiz.timelimit / 60)} phút`
                       : 'Không giới hạn'}
                   </p>
-                  <p>Số câu hỏi: {quiz?.sumgrades || ''}</p>
+                  <p>
+                    <MdChecklist className='me-2' />
+                    Số câu hỏi: {quiz?.sumgrades || ''}
+                  </p>
                 </div>
                 <div className='mb-4'>
                   {userAttempts.length === 0 && !quizAttempt?.id && (

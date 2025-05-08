@@ -147,23 +147,19 @@ const ElearningStudentBookPage = () => {
         style={{
           position: 'fixed',
           top: 10,
+          right: 10,
           zIndex: 1000,
-          alignItems: 'center',
-          justifyContent: 'center',
-          display: 'flex',
-          width: '100%',
         }}
       >
-        {!completedChapters?.includes(currentChapterId) &&
-          moduleTimeData[currentChapterId] && (
-            <Timer
-              key={currentChapterId}
-              timestart={timestart}
-              timelimit={moduleTimeData[currentChapterId]}
-              text={'Thời gian xem còn lại: '}
-              onTimeUp={handleTimeUp}
-            />
-          )}
+        {!completedChapters?.includes(currentChapterId) && (
+          <Timer
+            key={currentChapterId}
+            timestart={timestart}
+            timelimit={moduleTimeData[currentChapterId] || 0.1}
+            text={'Vui lòng đọc chương này trong '}
+            onTimeUp={handleTimeUp}
+          />
+        )}
         {completedChapters?.includes(currentChapterId) && (
           <Alert variant='success'>Bạn đã hoàn thành chương này</Alert>
         )}

@@ -3,7 +3,7 @@ import { PATH } from 'constants/path';
 import React, { useEffect, useState } from 'react';
 import { FaBookReader } from 'react-icons/fa';
 import { IoMdEye } from 'react-icons/io';
-import { MdForum, MdLink, MdOutlineForum, MdPlayArrow, MdQuiz } from 'react-icons/md';
+import { MdCheckCircle, MdCheckCircleOutline, MdForum, MdLink, MdList, MdOutlineForum, MdPlayArrow, MdQuiz } from 'react-icons/md';
 import { countModulesByType } from 'utils/commonUtils';
 const {
   Card,
@@ -13,6 +13,7 @@ const {
   Collapse,
   ListGroup,
   Badge,
+  Spinner,
 } = require('react-bootstrap');
 
 const CourseCard = ({ course, courseContent }) => {
@@ -29,6 +30,15 @@ const CourseCard = ({ course, courseContent }) => {
     <Card className='mb-3 shadow-sm'>
       <Card.Body>
         <Row>
+          <Col xs={2} className='text-center'>
+            {course?.courseimage && (
+              <img
+                src={course.courseimage}
+                alt={course?.fullname}
+                width='100%'
+              />
+            )}
+          </Col>
           <Col>
             <Row>
               <Col>
@@ -54,11 +64,23 @@ const CourseCard = ({ course, courseContent }) => {
               </Col>
             </Row>
             <Button
+              disabled={!courseContent?.length}
               variant='outline-primary'
               onClick={() => setOpen(!open)}
               aria-controls={`lessons-${course.id}`}
               aria-expanded={open}
             >
+              {courseContent?.length ? (
+                <MdList className='me-1' />
+              ) : (
+                <Spinner
+                  animation='border'
+                  size='sm'
+                  role='status'
+                  aria-hidden='true'
+                  className='me-1'
+                />
+              )}
               {open ? 'Ẩn nội dung' : 'Xem nội dung'}
             </Button>
 
@@ -75,28 +97,41 @@ const CourseCard = ({ course, courseContent }) => {
                             key={mod?.id}
                           >
                             <Col xs={10}>
-                              {mod.name}
-                              {mod?.completiondata?.isoverallcomplete && (
-                                <Badge
-                                  className='ms-2'
-                                  bg='success'
-                                  pill
-                                  style={{ fontSize: '0.8rem' }}
-                                >
-                                  <span className='me-1'>Đã hoàn thành</span>
-                                </Badge>
-                              )}
-                              {!mod?.completiondata?.isoverallcomplete &&
-                                mod?.completiondata?.hascompletion &&
-                                <Badge
-                                  className='ms-2'
-                                  bg='secondary'
-                                  pill
-                                  style={{ fontSize: '0.8rem' }}
-                                >
-                                  <span className='me-1'>Chưa hoàn thành</span>
-                                </Badge>
-                              }
+                              <div className='d-flex align-items-center'>
+                                {mod?.completiondata?.isoverallcomplete &&
+                                  mod?.completiondata?.hascompletion && (
+                                    <MdCheckCircle
+                                      style={{
+                                        color: 'var(--bs-success)',
+                                      }}
+                                      className='me-2'
+                                      size={20}
+                                    />
+                                  )}
+                                {!mod?.completiondata?.isoverallcomplete &&
+                                  mod?.completiondata?.hascompletion && (
+                                    <MdCheckCircleOutline
+                                      style={{
+                                        color: 'var(--bs-secondary)',
+                                      }}
+                                      className='me-2'
+                                      size={20}
+                                    />
+                                  )}
+                                {mod.name}
+                              </div>
+                              {/* {!mod?.completiondata?.isoverallcomplete &&
+                                mod?.completiondata?.hascompletion && (
+                                  <Badge
+                                    bg='secondary'
+                                    pill
+                                    style={{ fontSize: '0.8rem' }}
+                                  >
+                                    <span className='me-1'>
+                                      Chưa hoàn thành
+                                    </span>
+                                  </Badge>
+                                )} */}
                             </Col>
                             <Col xs={2} className='text-end'>
                               {mod.modname === 'forum' && (
@@ -195,7 +230,9 @@ const CourseCard = ({ course, courseContent }) => {
                                     )}?m=${mod?.id}&i=${
                                       mod.instance
                                     }&urls=${mod?.contents
-                                      ?.filter(c => c?.filename === 'index.html')
+                                      ?.filter(
+                                        (c) => c?.filename === 'index.html'
+                                      )
                                       ?.map((content) => content?.fileurl)
                                       ?.join(',')}`}
                                     target='_blank'
