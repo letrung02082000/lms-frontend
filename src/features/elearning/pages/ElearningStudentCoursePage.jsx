@@ -31,7 +31,7 @@ function ElearningStudentCoursePage() {
               setCourseContents(courseContents);
             })
             .catch((error) =>
-              console.log('Failed to fetch course content: ', error)
+              console.error('Failed to fetch course content: ', error)
             )
             .finally(() => {
               setLoading(false);

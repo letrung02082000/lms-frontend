@@ -198,8 +198,8 @@ const CourseCard = ({ course, courseContent }) => {
                                     )}?m=${mod?.id}&i=${
                                       mod.instance
                                     }&urls=${mod?.contents
+                                      ?.filter(c => c?.filename === 'index.html')
                                       ?.map((content) => content?.fileurl)
-                                      ?.filter(Boolean)
                                       ?.join(',')}`}
                                     target='_blank'
                                   >

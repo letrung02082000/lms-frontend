@@ -1,51 +1,25 @@
-// function groupUserGradeByCourseModule(data) {
-//     const grouped = {};
+function replaceImageSrcWithMoodleUrl(htmlString, baseUrlWithToken) {
+    const container = document.createElement('div');
+    container.innerHTML = htmlString;
 
-//     data.forEach(item => {
-//         const userId = item.userid;
-//         const courseId = item.courseid;
-//         const module = item.itemmodule;
+    const url = new URL(baseUrlWithToken);
+    const token = url.searchParams.get('token');
 
-//         if (!grouped[userId]) {
-//             grouped[userId] = {
-//                 username: item.username,
-//                 name: `${item.firstname} ${item.lastname}`,
-//                 email: item.email,
-//                 courses: {}
-//             };
-//         }
+    // Xóa index.html ở cuối URL gốc
+    const basePath = url.pathname.replace(/index\.html$/, '');
+    const origin = url.origin;
 
-//         if (!grouped[userId].courses[courseId]) {
-//             grouped[userId].courses[courseId] = {
-//                 courseid: courseId,
-//                 coursename: item.coursename,
-//                 modules: {}
-//             };
-//         }
+    const images = container.querySelectorAll('img');
 
-//         if (module === 'supervideo' || module === 'quiz') {
-//             if (!grouped[userId].courses[courseId].modules[module]) {
-//                 grouped[userId].courses[courseId].modules[module] = [];
-//             }
+    images.forEach(img => {
+        const filename = img.getAttribute('src'); // e.g. image.png
+        const newSrc = `${origin}${basePath}${filename}?token=${token}`;
+        img.setAttribute('src', newSrc);
+    });
 
-//             grouped[userId].courses[courseId].modules[module].push({
-//                 itemname: item.itemname,
-//                 svname: item.svname,
-//                 finalgrade: item.finalgrade,
-//                 gradepass: item.gradepass,
-//                 grademin: item.grademin,
-//                 grademax: item.grademax,
-//                 duration: item.duration,
-//                 quizsumgrades: item.quizsumgrades,
-//                 quiztimelimit: item.quiztimelimit,
-//                 mapa: item.mapa,
-//             });
-//         }
-//     });
-
-//     return grouped;
-// }
-
+    return container.innerHTML;
+}
+  
 function getWatchTimeByDay(timestamps, intervalTime = 5000, targetDate = null) {
     const watchByDay = {};
 
@@ -192,4 +166,4 @@ const groupUserGradeByCourseModule = (data) => {
     return grouped;
 }
 
-export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupCourseContent };
+export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupCourseContent, replaceImageSrcWithMoodleUrl };
