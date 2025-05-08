@@ -86,20 +86,17 @@ const CourseCard = ({ course, courseContent }) => {
                                   <span className='me-1'>Đã hoàn thành</span>
                                 </Badge>
                               )}
-                              {/* {!mod?.completiondata?.isoverallcomplete &&
+                              {!mod?.completiondata?.isoverallcomplete &&
                                 mod?.completiondata?.hascompletion &&
-                                mod?.completiondata?.details?.map((d) => (
-                                  <Badge
-                                    className='ms-2'
-                                    bg='secondary'
-                                    pill
-                                    style={{ fontSize: '0.8rem' }}
-                                  >
-                                    <span className='me-1'>
-                                      {d?.rulevalue?.description}
-                                    </span>
-                                  </Badge>
-                                ))} */}
+                                <Badge
+                                  className='ms-2'
+                                  bg='secondary'
+                                  pill
+                                  style={{ fontSize: '0.8rem' }}
+                                >
+                                  <span className='me-1'>Chưa hoàn thành</span>
+                                </Badge>
+                              }
                             </Col>
                             <Col xs={2} className='text-end'>
                               {mod.modname === 'forum' && (

@@ -15,6 +15,7 @@ function replaceImageSrcWithMoodleUrl(htmlString, baseUrlWithToken) {
         const filename = img.getAttribute('src')?.split('?')[0] || img.getAttribute('src');
         const newSrc = `${origin}${basePath}${filename}?token=${token}`;
         img.setAttribute('src', newSrc);
+        img.setAttribute('width', '100%');
     });
 
     return container.innerHTML;

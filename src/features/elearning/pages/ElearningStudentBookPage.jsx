@@ -9,10 +9,12 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { selectElearningData } from 'store/elearning.slice';
 import TimeExceedWarning from '../components/TimeExceedWarning';
-import { appendTokenToImages, replaceImageSrcWithMoodleUrl } from 'utils/elearning.utils';
+import { replaceImageSrcWithMoodleUrl } from 'utils/elearning.utils';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const ElearningStudentBookPage = () => {
   const [htmlContent, setHtmlContent] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [moduleTimeData, setModuleTimeData] = useState({});
   const [currentChapterId, setCurrentChapterId] = useState(null);
@@ -40,6 +42,7 @@ const ElearningStudentBookPage = () => {
 
   useEffect(() => {
     const loadContent = async () => {
+      setIsLoading(true);
       const fileUrl = fileUrls[currentIndex];
       if (!fileUrl) return;
 
@@ -54,6 +57,8 @@ const ElearningStudentBookPage = () => {
         setHtmlContent(textWithImages);
       } catch (error) {
         console.error('Error fetching HTML content:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -123,13 +128,17 @@ const ElearningStudentBookPage = () => {
     );
   }
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <Styles>
       <div
         style={{
           height: '100vh',
           overflowY: 'scroll',
-          padding: '50px',
+          padding: '5%',
           backgroundColor: '#fff',
         }}
         dangerouslySetInnerHTML={{ __html: htmlContent }}
