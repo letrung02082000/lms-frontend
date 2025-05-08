@@ -9,10 +9,12 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { selectElearningData } from 'store/elearning.slice';
 import TimeExceedWarning from '../components/TimeExceedWarning';
-import { appendTokenToImages, replaceImageSrcWithMoodleUrl } from 'utils/elearning.utils';
+import { replaceImageSrcWithMoodleUrl } from 'utils/elearning.utils';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const ElearningStudentBookPage = () => {
   const [htmlContent, setHtmlContent] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [moduleTimeData, setModuleTimeData] = useState({});
   const [currentChapterId, setCurrentChapterId] = useState(null);
@@ -40,6 +42,7 @@ const ElearningStudentBookPage = () => {
 
   useEffect(() => {
     const loadContent = async () => {
+      setIsLoading(true);
       const fileUrl = fileUrls[currentIndex];
       if (!fileUrl) return;
 
@@ -54,6 +57,8 @@ const ElearningStudentBookPage = () => {
         setHtmlContent(textWithImages);
       } catch (error) {
         console.error('Error fetching HTML content:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -123,13 +128,17 @@ const ElearningStudentBookPage = () => {
     );
   }
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <Styles>
       <div
         style={{
           height: '100vh',
           overflowY: 'scroll',
-          padding: '50px',
+          padding: '5%',
           backgroundColor: '#fff',
         }}
         dangerouslySetInnerHTML={{ __html: htmlContent }}
@@ -138,23 +147,19 @@ const ElearningStudentBookPage = () => {
         style={{
           position: 'fixed',
           top: 10,
+          right: 10,
           zIndex: 1000,
-          alignItems: 'center',
-          justifyContent: 'center',
-          display: 'flex',
-          width: '100%',
         }}
       >
-        {!completedChapters?.includes(currentChapterId) &&
-          moduleTimeData[currentChapterId] && (
-            <Timer
-              key={currentChapterId}
-              timestart={timestart}
-              timelimit={moduleTimeData[currentChapterId]}
-              text={'Thời gian xem còn lại: '}
-              onTimeUp={handleTimeUp}
-            />
-          )}
+        {!completedChapters?.includes(currentChapterId) && (
+          <Timer
+            key={currentChapterId}
+            timestart={timestart}
+            timelimit={moduleTimeData[currentChapterId] || 0.1}
+            text={'Vui lòng đọc chương này trong '}
+            onTimeUp={handleTimeUp}
+          />
+        )}
         {completedChapters?.includes(currentChapterId) && (
           <Alert variant='success'>Bạn đã hoàn thành chương này</Alert>
         )}

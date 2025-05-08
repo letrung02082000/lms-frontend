@@ -318,9 +318,8 @@ function StudentElearningLayout() {
       <div
         style={{
           position: 'fixed',
-          bottom: '50%',
+          bottom: '50px',
           right: '10px',
-          transform: 'translateY(50%)',
           zIndex: 1000,
         }}
       >

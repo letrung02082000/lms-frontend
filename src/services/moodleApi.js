@@ -216,7 +216,6 @@ export const getUserAttempts = async (quizId, status = 'unfinished', includePrev
             console.error('Lỗi khi lấy user attempts:', response.data);
             throw new Error(response.data.message || response.data.errorcode);
         }
-        console.log('Kết quả getUserAttempts:', response.data);
         return response.data;
     } catch (error) {
         console.error('Lỗi khi gọi getUserAttempts:', error.response?.data || error.message);

@@ -5,6 +5,7 @@ const Timer = ({ timestart, timelimit, onTimeUp, text }) => {
   const [remainingTime, setRemainingTime] = useState(
     timelimit * 60 - Math.floor((Date.now() - timestart) / 1000)
   );
+  console.log('remainingTime', remainingTime);
 
   useEffect(() => {
     const interval = setInterval(() => {
