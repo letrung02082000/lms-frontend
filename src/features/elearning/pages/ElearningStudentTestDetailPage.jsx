@@ -26,6 +26,7 @@ import TimeExceedWarning from '../components/TimeExceedWarning';
 import LoadingSpinner from '../components/LoadingSpinner';
 import {
   MdChecklist,
+  MdOutlineQuiz,
   MdOutlineTimelapse,
   MdSubject,
 } from 'react-icons/md';
@@ -79,10 +80,10 @@ function ElearningStudentTestDetailPage() {
         }
 
         setUserAttempts(attemptsRes.attempts);
-        const foundQuiz = quizzesRes?.quizzes?.find((q) => q.id == testId);
+        const foundQuiz = quizzesRes?.find((q) => q.id == testId);
         if (foundQuiz) {
           setQuiz(foundQuiz);
-          setQuizzes(quizzesRes.quizzes);
+          setQuizzes(quizzesRes);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -291,8 +292,12 @@ function ElearningStudentTestDetailPage() {
                       : 'Không giới hạn'}
                   </p>
                   <p>
-                    <MdChecklist className='me-2' />
+                    <MdOutlineQuiz className='me-2' />
                     Số câu hỏi: {quiz?.sumgrades || ''}
+                  </p>
+                  <p>
+                    <MdChecklist className='me-2' />
+                    Điểm đạt: {quiz.gradepass}/ {quiz.grade}
                   </p>
                 </div>
                 <div className='mb-4'>

@@ -53,7 +53,7 @@ const getQuizzesByCourses = async (courseIds = []) => {
         const response = await apiClient.post('', null, {
             params: {
                 ...apiClient.defaults.params,
-                wsfunction: 'mod_quiz_get_quizzes_by_courses',
+                wsfunction: 'local_quizinfo_get_quizzes_by_courses',
                 ...courseParams,
             },
         });
