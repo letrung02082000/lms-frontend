@@ -43,17 +43,10 @@ function ElearningStudentTestPage() {
     let fetchedQuizzes = [];
 
     try {
-      const response = await moodleApi.getQuizzesByCourses(courseIds);
+      const fetchedQuizzes = await moodleApi.getQuizzesByCourses(courseIds);
 
-      if (response && response.quizzes) {
-        fetchedQuizzes = response.quizzes;
+      if (fetchedQuizzes) {
         setQuizzes(fetchedQuizzes.filter((quiz) => quiz.timelimit > 0));
-      } else if (response && (response.errorcode || response.exception)) {
-        throw new Error(
-          response.message ||
-            response.errorcode ||
-            'Lỗi API khi lấy danh sách quiz.'
-        );
       } else {
         throw new Error('Không thể lấy danh sách quiz. Phản hồi không hợp lệ.');
       }
@@ -110,22 +103,26 @@ function ElearningStudentTestPage() {
                 <div className='ms-2 me-auto'>
                   <div className='fw-bold'>{quiz.name}</div>
                   <small className='d-block text-muted'>
-                    {quiz.sumgrades} câu hỏi
+                    Số câu hỏi: {quiz?.sumgrades || ''}
+                  </small>
+                  <small className='d-block text-muted'>
+                    Điểm đạt: {quiz?.gradepass}/ {quiz.grade}
                   </small>
                   {quiz.timeopen > 0 && (
                     <small className='d-block text-muted'>
-                      Mở lúc: {new Date(quiz.timeopen * 1000).toLocaleString()}
+                      Mở lúc: {new Date(quiz?.timeopen * 1000).toLocaleString()}
                     </small>
                   )}
                   {quiz.timeclose > 0 && (
                     <small className='d-block text-muted'>
                       Đóng lúc:{' '}
-                      {new Date(quiz.timeclose * 1000).toLocaleString()}
+                      {new Date(quiz?.timeclose * 1000).toLocaleString()}
                     </small>
                   )}
-                  {quiz.timelimit > 0 ? (
+                  {quiz?.timelimit > 0 ? (
                     <small className='d-block text-muted'>
-                      Thời gian làm bài: {Math.floor(quiz.timelimit / 60)} phút
+                      Thời gian làm bài:{' '}
+                      <strong>{Math.floor(quiz.timelimit / 60)} phút</strong>
                     </small>
                   ) : (
                     <small className='d-block text-muted'>
