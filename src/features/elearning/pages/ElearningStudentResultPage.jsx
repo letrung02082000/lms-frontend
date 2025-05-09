@@ -74,7 +74,7 @@ function ElearningStudentResultPage() {
         );
       } catch (error) {
         console.error('Error fetching quiz attempts:', error);
-        toastWrapper.error('Có lỗi xảy ra khi tải dữ liệu bài kiểm tra của bạn!');
+        toastWrapper('Có lỗi xảy ra khi tải dữ liệu bài kiểm tra của bạn!', 'error');
       } finally {
         setQuizAttemptsLoading(false);
       }
@@ -106,7 +106,7 @@ function ElearningStudentResultPage() {
         );
       } catch (error) {
         console.error('Error fetching user elearning data:', error);
-        toastWrapper.error('Có lỗi xảy ra khi tải dữ liệu học tập của bạn!');
+        toastWrapper('Có lỗi xảy ra khi tải dữ liệu học tập của bạn!', 'error');
       } finally {
         setLoading(false);
       }
