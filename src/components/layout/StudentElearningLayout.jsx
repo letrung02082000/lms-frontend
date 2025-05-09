@@ -17,6 +17,7 @@ function StudentElearningLayout() {
   const dispatch = useDispatch();
   const student = useSelector(selectElearningUser);
   const elearningData = useSelector(selectElearningData);
+  console.log(elearningData)
   const { activityReport, elearningGrades, elearningSettings, quizAttempts, isLimitExceeded } = elearningData;
   const today = Date.now();
   const threshold = 5;
