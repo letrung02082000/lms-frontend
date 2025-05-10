@@ -17,7 +17,6 @@ function StudentElearningLayout() {
   const dispatch = useDispatch();
   const student = useSelector(selectElearningUser);
   const elearningData = useSelector(selectElearningData);
-  console.log(elearningData)
   const { activityReport, elearningGrades, elearningSettings, quizAttempts, isLimitExceeded, elearningUser } = elearningData;
   const today = Date.now();
   const threshold = 5;
@@ -294,6 +293,21 @@ function StudentElearningLayout() {
         menu={STUDENT_ELEARNING_MENU}
         title={<img src={elearningUser?.center?.logo} alt='Logo' style={{ height: '15vh' }} />}
         handleLogout={() => {
+          dispatch(
+            updateElearningData({
+              activityReport: null,
+              elearningCourses: null,
+              elearningCoursesContents: null,
+              elearningGrades: null,
+              elearningUser: null,
+              elearningSettings: null,
+              bookTime: null,
+              quizAttempts: null,
+              isLimitExceeded: false,
+              timeLimitPerDay: null,
+              totalTodayTime: null,
+            })
+          );
           localStorage.removeItem('moodleToken');
           localStorage.removeItem('moodleSiteInfo');
           localStorage.removeItem('forcePasswordChange');

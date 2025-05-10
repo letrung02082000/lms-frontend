@@ -138,6 +138,14 @@ function ElearningStudentResultPage() {
 
   const totalTodayTime = timePerCourse.reduce((sum, c) => sum + c.timeSpent, 0);
 
+  if(!elearningGrades && elearningGrades !== null) {
+    return (<div className='mt-4'>
+      <p className='text-center'>
+        Không có dữ liệu học tập. Vui lòng quay lại sau!
+      </p>
+    </div>)
+  }
+
   return (
     <div style={{ overflowY: 'scroll', height: '100vh', padding: '20px' }}>
       <div className='mt-4'>
