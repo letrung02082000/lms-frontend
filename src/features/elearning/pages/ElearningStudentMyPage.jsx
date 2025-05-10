@@ -211,8 +211,9 @@ function ElearningStudentMyPage() {
                 </p>
                 <p>
                   <strong>Ngày sinh:</strong>{' '}
-                  {new Date(student?.dob).toLocaleDateString('en-GB') ||
-                    'Chưa cập nhật'}
+                  {student?.dob
+                    ? new Date(student?.dob).toLocaleDateString('en-GB')
+                    : 'Chưa cập nhật'}
                 </p>
                 <p>
                   <strong>SĐT:</strong> {student?.tel || 'Chưa cập nhật'}
