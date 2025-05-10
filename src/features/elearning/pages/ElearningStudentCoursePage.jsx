@@ -12,11 +12,12 @@ import TimeExceedWarning from '../components/TimeExceedWarning';
 function ElearningStudentCoursePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [courseContents, setCourseContents] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
   const elearningData = useSelector(selectElearningData);
   const { elearningCourses, isLimitExceeded, timeLimitPerDay, totalTodayTime, elearningUser } =
     elearningData;
   const courses = useMemo(() => {
+    if (!elearningCourses) return [];
+
     return Object?.values(elearningCourses)?.filter((course) => course?.visible);
   }, [elearningCourses]);
     
@@ -44,7 +45,7 @@ function ElearningStudentCoursePage() {
       }
     };
     fetchData();
-  }, []);
+  }, [courses?.length]);
 
   const handleSelectCourse = (course) => {
     setSearchParams({ courseId: course.id });
@@ -59,11 +60,42 @@ function ElearningStudentCoursePage() {
     );
   }
 
+  if(!elearningUser) {
+    return (
+      <div style={{ height: '100vh', overflowY: 'scroll', padding: '20px' }}>
+        <Container>
+          <h2 className='mb-4 h2'>Danh sách môn học</h2>
+          <div className='text-center mt-5'>
+            <LoadingSpinner />
+          </div>
+        </Container>
+      </div>
+    );
+  }
+
+  if (elearningUser && !elearningUser?.elearningLessons) {
+    return (
+      <div style={{ height: '100vh', overflowY: 'scroll', padding: '20px' }}>
+        <Container>
+          <h2 className='mb-4 h2'>Danh sách môn học</h2>
+          <div className='text-center mt-5'>
+            <h4>Không có môn học nào</h4>
+          </div>
+        </Container>
+      </div>
+    );
+  }
+
   return (
     <div style={{ height: '100vh', overflowY: 'scroll', padding: '20px' }}>
       <Container>
         <h2 className='mb-4 h2'>Danh sách môn học</h2>
-        {courses.length > 0 && !loading ? (
+        {courses.length === 0 && elearningUser?.elearningLessons?.length > 0 ? (
+          <div className='text-center mt-5'>
+            <LoadingSpinner />
+          </div>
+        ) : null}
+        {courses.length > 0 && (
           <Row className='g-4'>
             {courses?.map((course) =>
               elearningUser?.elearningLessons?.includes(course.id) ? (
@@ -78,16 +110,6 @@ function ElearningStudentCoursePage() {
               ) : null
             )}
           </Row>
-        ) : (
-          <>
-            {loading ? (
-              <LoadingSpinner />
-            ) : (
-              <div className='text-center mt-5'>
-                <h4>Không có môn học nào</h4>
-              </div>
-            )}
-          </>
         )}
       </Container>
     </div>
