@@ -84,7 +84,7 @@ function StudentElearningLayout() {
   const bookIds = useMemo(() => {
     if (!activityReport) return [];
     return Object.values(activityReport).reduce((acc, activities) => {
-      activities.forEach((activity) => {
+      activities?.forEach((activity) => {
         if (activity.modname === 'book') {
           acc.push(activity.cmid);
         }
@@ -97,7 +97,7 @@ function StudentElearningLayout() {
     if (!elearningGrades) return [];
     return Object.values(elearningGrades).reduce((acc, grade) => {
       if (grade?.modules) {
-        Object.keys(grade?.modules).forEach((cmid) => {
+        Object.keys(grade?.modules)?.forEach((cmid) => {
           const module = grade.modules[cmid];
           if (module?.modname === 'quiz' && module?.quiztimelimit === 0) {
             acc.push(module?.cminstance);
@@ -124,7 +124,7 @@ function StudentElearningLayout() {
         );
 
         const quizAttempts = {};
-        responses.forEach(({ quizId, data }) => {
+        responses?.forEach(({ quizId, data }) => {
           quizAttempts[quizId] = data;
         });
 
@@ -165,7 +165,7 @@ function StudentElearningLayout() {
         );
 
         const bookTime = {};
-        responses.forEach(({ bookId, totalTime }) => {
+        responses?.forEach(({ bookId, totalTime }) => {
           bookTime[bookId] = totalTime;
         });
         dispatch(
@@ -266,7 +266,7 @@ function StudentElearningLayout() {
         );
 
         const settings = {};
-        responses.forEach(({ cid, setting }) => {
+        responses?.forEach(({ cid, setting }) => {
           if (setting) {
             settings[cid] = setting;
           }
