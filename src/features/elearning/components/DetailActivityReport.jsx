@@ -177,9 +177,9 @@ function DetailActivityReport({
                             <td>{COURSE_MODULES[activity?.modname]}</td>
                             <td>
                               {activity.modname === 'supervideo' ? (
-                                <span>{grade?.finalgrade || 0}/100</span>
+                                <span>{grade?.finalgrade || 0}/{grade?.grademax}</span>
                               ) : activity.modname === 'quiz' ? (
-                                <span>{grade?.finalgrade || 0}/10</span>
+                                <span>{grade?.finalgrade || 0}/{grade?.grademax}</span>
                               ) : activity.modname === 'book' ? (
                                 <span>
                                   {activity?.isoverallcomplete ? 10 : 0}/10
