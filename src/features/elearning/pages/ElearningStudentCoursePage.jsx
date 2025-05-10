@@ -14,7 +14,7 @@ function ElearningStudentCoursePage() {
   const [courseContents, setCourseContents] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const elearningData = useSelector(selectElearningData);
-  const { elearningCourses, isLimitExceeded, timeLimitPerDay, totalTodayTime } =
+  const { elearningCourses, isLimitExceeded, timeLimitPerDay, totalTodayTime, elearningUser } =
     elearningData;
   const courses = useMemo(() => {
     return Object.values(elearningCourses).filter((course) => course?.visible);
@@ -65,16 +65,18 @@ function ElearningStudentCoursePage() {
         <h2 className='mb-4 h2'>Danh sách môn học</h2>
         {courses.length > 0 && !loading ? (
           <Row className='g-4'>
-            {courses?.map((course) => (
-              <Col key={course.id} xs={12}>
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  courseContent={courseContents[course.id]}
-                  onClick={handleSelectCourse}
-                />
-              </Col>
-            ))}
+            {courses?.map((course) =>
+              elearningUser?.elearningLessons?.includes(course.id) ? (
+                <Col key={course.id} xs={12}>
+                  <CourseCard
+                    key={course.id}
+                    course={course}
+                    courseContent={courseContents[course.id]}
+                    onClick={handleSelectCourse}
+                  />
+                </Col>
+              ) : null
+            )}
           </Row>
         ) : (
           <>

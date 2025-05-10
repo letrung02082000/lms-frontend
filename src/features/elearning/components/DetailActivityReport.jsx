@@ -94,6 +94,8 @@ function DetailActivityReport({
                   const totalTime = totalTimes?.[key] || 0;
                   const requiredTime = elearningSettings?.[key]?.minTimeInHour*60*60 || 0;
 
+                  if(elearningUser?.elearningLessons?.includes(course.id) === false) return null;
+
                   return (
                     <tr key={key}>
                       <td>{course?.fullname}</td>

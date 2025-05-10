@@ -1,3 +1,11 @@
+function appendTokenToUrl(url, token) {
+    const urlObj = new URL(url);
+    const params = new URLSearchParams(urlObj.search);
+    params.set('token', token);
+    urlObj.search = params.toString();
+    return urlObj.toString();
+}
+
 function replaceImageSrcWithMoodleUrl(htmlString, baseUrlWithToken) {
     const container = document.createElement('div');
     container.innerHTML = htmlString;
@@ -20,7 +28,7 @@ function replaceImageSrcWithMoodleUrl(htmlString, baseUrlWithToken) {
 
     return container.innerHTML;
 }
-  
+
 function getWatchTimeByDay(timestamps, intervalTime = 5000, targetDate = null) {
     const watchByDay = {};
 
@@ -82,7 +90,7 @@ function calculateQuizLearningTime(quiz, targetDate, elearningSetting, quizAttem
             quizAttempts?.[quiz?.cminstance]?.attempts?.map(attempt => {
                 const questionsAnswered = attempt?.questionsAnswered || 0;
                 const timePerQuestion = elearningSetting?.timePerQuestionInMinute || 0; // Thời gian cho mỗi câu hỏi (tính bằng phút)
-                if(isValidDate(attempt?.timeFinish * 1000, targetDate)) {
+                if (isValidDate(attempt?.timeFinish * 1000, targetDate)) {
                     return questionsAnswered * timePerQuestion * 60; // Chuyển đổi sang giây
                 }
                 return 0; // Nếu không hợp lệ, trả về 0
@@ -167,4 +175,4 @@ const groupUserGradeByCourseModule = (data) => {
     return grouped;
 }
 
-export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupCourseContent, replaceImageSrcWithMoodleUrl };
+export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupCourseContent, replaceImageSrcWithMoodleUrl, appendTokenToUrl, isValidDate };

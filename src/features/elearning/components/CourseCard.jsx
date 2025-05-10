@@ -1,10 +1,12 @@
 import { COURSE_MODULES } from 'constants/driving-elearning.constant';
 import { PATH } from 'constants/path';
+import useMediaQuery from 'hooks/useMediaQuery';
 import React, { useEffect, useState } from 'react';
 import { FaBookReader } from 'react-icons/fa';
 import { IoMdEye } from 'react-icons/io';
 import { MdCheckCircle, MdCheckCircleOutline, MdForum, MdLink, MdList, MdOutlineForum, MdPlayArrow, MdQuiz } from 'react-icons/md';
 import { countModulesByType } from 'utils/commonUtils';
+import { appendTokenToUrl } from 'utils/elearning.utils';
 const {
   Card,
   Row,
@@ -20,6 +22,7 @@ const CourseCard = ({ course, courseContent }) => {
   const moodleToken = localStorage.getItem('moodleToken');
   const [open, setOpen] = useState(false);
   const [moduleCount, setModuleCount] = useState({});
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
     const count = countModulesByType(courseContent);
@@ -30,15 +33,21 @@ const CourseCard = ({ course, courseContent }) => {
     <Card className='mb-3 shadow-sm'>
       <Card.Body>
         <Row>
-          <Col xs={2} className='text-center'>
-            {course?.courseimage && (
-              <img
-                src={course.courseimage}
-                alt={course?.fullname}
-                width='100%'
-              />
-            )}
-          </Col>
+          {!isMobile && (
+            <Col xs={2} className='text-center'>
+              {course?.courseimage && (
+                <img
+                  src={
+                    course.courseimage.includes('pluginfile.php')
+                      ? appendTokenToUrl(course.courseimage, moodleToken)
+                      : course.courseimage
+                  }
+                  alt={course?.fullname}
+                  width='100%'
+                />
+              )}
+            </Col>
+          )}
           <Col>
             <Row>
               <Col>

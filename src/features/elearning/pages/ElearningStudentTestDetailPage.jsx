@@ -297,7 +297,7 @@ function ElearningStudentTestDetailPage() {
                   </p>
                   <p>
                     <MdChecklist className='me-2' />
-                    Điểm đạt: {quiz.gradepass}/ {quiz.grade}
+                    Điểm đạt: {quiz.gradepass}/{quiz.grade}
                   </p>
                 </div>
                 <div className='mb-4'>

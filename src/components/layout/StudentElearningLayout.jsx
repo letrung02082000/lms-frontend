@@ -18,7 +18,7 @@ function StudentElearningLayout() {
   const student = useSelector(selectElearningUser);
   const elearningData = useSelector(selectElearningData);
   console.log(elearningData)
-  const { activityReport, elearningGrades, elearningSettings, quizAttempts, isLimitExceeded } = elearningData;
+  const { activityReport, elearningGrades, elearningSettings, quizAttempts, isLimitExceeded, elearningUser } = elearningData;
   const today = Date.now();
   const threshold = 5;
   const courseEntries = Object.entries(elearningGrades || {});
@@ -50,18 +50,7 @@ function StudentElearningLayout() {
       })
     );
   }, [totalTodayTime, timeLimitPerDay]);
-
-  const [center, setCenter] = React.useState(() => {
-    try {
-      const data = localStorage.getItem('center');
-      if (data && data !== 'undefined') {
-        return JSON.parse(data);
-      }
-    } catch (e) {
-      console.error('Lỗi khi parse localStorage center:', e.message);
-    }
-    return {};
-  });
+  
   const [isCollapsed, setIsCollapsed] = React.useState(
     window.location.pathname?.includes('/elearning/student/book')
   );
@@ -74,10 +63,6 @@ function StudentElearningLayout() {
       elearningApi
         .getUserByMoodleToken(moodleToken)
         .then((res) => {
-          if (!center) {
-            setCenter(res.data?.center);
-            localStorage.setItem('center', JSON.stringify(res.data?.center));
-          }
           dispatch(
             updateElearningData({
               elearningUser: res.data,
@@ -307,12 +292,11 @@ function StudentElearningLayout() {
       <AdminLayout
         isCollapsed={isCollapsed}
         menu={STUDENT_ELEARNING_MENU}
-        title={<img src={center?.logo} alt='Logo' style={{ height: '15vh' }} />}
+        title={<img src={elearningUser?.center?.logo} alt='Logo' style={{ height: '15vh' }} />}
         handleLogout={() => {
           localStorage.removeItem('moodleToken');
           localStorage.removeItem('moodleSiteInfo');
           localStorage.removeItem('forcePasswordChange');
-          localStorage.removeItem('center');
           window.location.reload();
         }}
       />
@@ -327,7 +311,7 @@ function StudentElearningLayout() {
         <div className='d-flex flex-column align-items-center'>
           <Button
             variant='btn'
-            href={`tel:${center?.tel}`}
+            href={`tel:${elearningUser?.center?.tel}`}
             className='mb-3 p-0'
           >
             <Image src='/phone.png' alt='Phone' width={50} />
@@ -335,7 +319,7 @@ function StudentElearningLayout() {
           <Button
             variant='white'
             className='p-0 m-0'
-            href={`https://zalo.me/${center?.zalo}`}
+            href={`https://zalo.me/${elearningUser?.center?.zalo}`}
             target='_blank'
           >
             <Image src='/zalo.png' alt='Phone' width={50} />
