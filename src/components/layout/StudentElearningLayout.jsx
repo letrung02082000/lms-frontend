@@ -215,6 +215,17 @@ function StudentElearningLayout() {
         elearningCourses[item.id] = item;
       });
       const elearningCoursesContents = {};
+
+      if (!elearningCoursesContentsRes) {
+        dispatch(
+          updateElearningData({
+            elearningCourses,
+            elearningCoursesContents: {},
+          })
+        );
+        return;
+      }
+
       lessonIds?.map((lessonId) => {
         elearningCoursesContents[lessonId] = groupCourseContent(
           elearningCoursesContentsRes?.[lessonId] || []
