@@ -117,7 +117,7 @@ function calculateTotalLearningTimeForDate(
     return totalTime;
 }
 
-const groupCourseContent = (sections) => {
+const groupCourseContent = (sections = []) => {
     const modulesMap = {};
 
     sections?.forEach(section => {
