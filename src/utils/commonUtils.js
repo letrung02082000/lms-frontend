@@ -92,6 +92,10 @@ const formatTime = (seconds) => {
 function countModulesByType(sections) {
     const moduleCount = {};
 
+    if (!Array.isArray(sections) || sections.length === 0) {
+        return moduleCount;
+    }
+
     sections?.forEach(section => {
         section.modules?.forEach(module => {
             const type = module.modname;

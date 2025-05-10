@@ -44,8 +44,8 @@ function ElearningStudentMyPage() {
   const elearningCourses = useSelector(selectElearningCourses);
   const courses = useMemo(() => {
     if (!elearningCourses) return [];
-    return Object.values(elearningCourses)?.filter((course) => student?.elearningLessons?.includes(course.id));
-  }, []);
+    return Object?.values(elearningCourses)?.filter((course) => student?.elearningLessons?.includes(course.id));
+  }, [elearningCourses, student?.elearningLessons]);
   const [showUpdateInfoModal, setShowUpdateInfoModal] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
