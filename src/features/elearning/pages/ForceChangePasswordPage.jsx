@@ -47,7 +47,6 @@ function ForceChangePasswordPage() {
         token,
         newPassword
       );
-      console.log('Đổi mật khẩu thành công:', response);
       localStorage.setItem('forcePasswordChange', '0');
       setSuccess('Đổi mật khẩu thành công! Bạn sẽ được chuyển hướng...');
       setTimeout(() => {
