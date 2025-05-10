@@ -12,6 +12,7 @@ import {
   groupUserGradeByCourseModule,
 } from 'utils/elearning.utils';
 import moodleApi from 'services/moodleApi';
+import { toastWrapper } from 'utils';
 
 function StudentElearningLayout() {
   const dispatch = useDispatch();
@@ -83,7 +84,7 @@ function StudentElearningLayout() {
 
   const bookIds = useMemo(() => {
     if (!activityReport) return [];
-    return Object.values(activityReport).reduce((acc, activities) => {
+    return Object?.values(activityReport).reduce((acc, activities) => {
       activities?.forEach((activity) => {
         if (activity.modname === 'book') {
           acc.push(activity.cmid);
@@ -95,7 +96,7 @@ function StudentElearningLayout() {
 
   const quizIds = useMemo(() => {
     if (!elearningGrades) return [];
-    return Object.values(elearningGrades).reduce((acc, grade) => {
+    return Object?.values(elearningGrades).reduce((acc, grade) => {
       if (grade?.modules) {
         Object.keys(grade?.modules)?.forEach((cmid) => {
           const module = grade.modules[cmid];
@@ -135,6 +136,10 @@ function StudentElearningLayout() {
         );
       } catch (error) {
         console.error('Error fetching quiz attempts:', error);
+        toastWrapper(
+          'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.',
+          'error'
+        );
       }
     };
 
@@ -175,6 +180,10 @@ function StudentElearningLayout() {
         );
       } catch (error) {
         console.error('Error fetching book time:', error);
+        toastWrapper(
+          'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.',
+          'error'
+        );
       }
     };
 
@@ -182,61 +191,75 @@ function StudentElearningLayout() {
   }, [bookIds?.length]);
 
   const loadUserElearningData = async (lessonIds) => {
-    const [
-      userCourseGradeRes,
-      activityReportRes,
-    ] = await Promise.all([
-      elearningApi.getUserCourseGrade([student?.elearningUserId]),
-      elearningApi.getElearningActivityReport(lessonIds, [
-        student?.elearningUserId,
-      ]),
-    ]);
-    const elearningGrades = groupUserGradeByCourseModule(
-      userCourseGradeRes?.data
-    )[student?.elearningUserId]?.courses;
-    const activityReport = activityReportRes?.data?.[student?.elearningUserId];
-    dispatch(
-      updateElearningData({
-        elearningGrades,
-        activityReport,
-      })
-    );
+    try {
+      const [userCourseGradeRes, activityReportRes] = await Promise.all([
+        elearningApi.getUserCourseGrade([student?.elearningUserId]),
+        elearningApi.getElearningActivityReport(lessonIds, [
+          student?.elearningUserId,
+        ]),
+      ]);
+      const elearningGrades = groupUserGradeByCourseModule(
+        userCourseGradeRes?.data
+      )[student?.elearningUserId]?.courses;
+      const activityReport =
+        activityReportRes?.data?.[student?.elearningUserId];
+      dispatch(
+        updateElearningData({
+          elearningGrades,
+          activityReport,
+        })
+      );
+    } catch (error) {
+      console.error('Error fetching elearning data:', error);
+      toastWrapper(
+        'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.',
+        'error'
+      );
+    }
   };
 
   useEffect(() => {
     const loadElearningCoursesData = async (lessonIds) => {
-      const [elearningCoursesRes, elearningCoursesContentsRes] =
-        await Promise.all([
-          moodleApi.getMyEnrolledCourses('all'),
-          elearningApi.getCoursesContents(lessonIds),
-        ]);
-      const elearningCourses = {};
-      elearningCoursesRes?.map((item) => {
-        elearningCourses[item.id] = item;
-      });
-      const elearningCoursesContents = {};
+      try {
+        const [elearningCoursesRes, elearningCoursesContentsRes] =
+          await Promise.all([
+            moodleApi.getMyEnrolledCourses('all'),
+            elearningApi.getCoursesContents(lessonIds),
+          ]);
+        const elearningCourses = {};
+        elearningCoursesRes?.map((item) => {
+          elearningCourses[item.id] = item;
+        });
+        const elearningCoursesContents = {};
 
-      if (!elearningCoursesContentsRes) {
+        if (!elearningCoursesContentsRes) {
+          dispatch(
+            updateElearningData({
+              elearningCourses,
+              elearningCoursesContents: {},
+            })
+          );
+          return;
+        }
+
+        lessonIds?.map((lessonId) => {
+          elearningCoursesContents[lessonId] = groupCourseContent(
+            elearningCoursesContentsRes?.[lessonId] || []
+          );
+        });
         dispatch(
           updateElearningData({
             elearningCourses,
-            elearningCoursesContents: {},
+            elearningCoursesContents,
           })
         );
-        return;
-      }
-
-      lessonIds?.map((lessonId) => {
-        elearningCoursesContents[lessonId] = groupCourseContent(
-          elearningCoursesContentsRes?.[lessonId] || []
+      } catch (error) {
+        console.error('Error fetching elearning courses data:', error);
+        toastWrapper(
+          'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.',
+          'error'
         );
-      });
-      dispatch(
-        updateElearningData({
-          elearningCourses,
-          elearningCoursesContents,
-        })
-      );
+      }
     };
 
     if (student) {
@@ -289,6 +312,10 @@ function StudentElearningLayout() {
         );
       } catch (error) {
         console.error('Error fetching elearning settings:', error);
+        toastWrapper(
+          'Có lỗi xảy ra trong quá trình tải dữ liệu. Vui lòng thử lại sau.',
+          'error'
+        );
       }
     };
 

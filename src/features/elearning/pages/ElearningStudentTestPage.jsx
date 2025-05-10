@@ -27,7 +27,7 @@ function ElearningStudentTestPage() {
   const { elearningCourses, isLimitExceeded, timeLimitPerDay, totalTodayTime } =
     elearningData;
   const courses = useMemo(() => {
-    return Object.values(elearningCourses).filter((course) => course?.visible);
+    return Object?.values(elearningCourses).filter((course) => course?.visible);
   }, [elearningCourses]);
 
   const loadInitialData = useCallback(async (courseIds) => {

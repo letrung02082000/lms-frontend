@@ -33,7 +33,7 @@ function ElearningStudentResultPage() {
 
   const quizIds = useMemo(() => {
     if (!elearningGrades) return [];
-    return Object.values(elearningGrades).reduce((acc, grade) => {
+    return Object?.values(elearningGrades).reduce((acc, grade) => {
       if (grade?.modules) {
         Object.keys(grade?.modules).forEach((cmid) => {
           const module = grade.modules[cmid];

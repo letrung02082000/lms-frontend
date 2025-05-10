@@ -146,7 +146,7 @@ const QuizContainer = ({
   );
 
   const formatAnswersForSubmit = useCallback(() => {
-    return Object.values(userAnswers).flat();
+    return Object?.values(userAnswers).flat();
   }, [userAnswers]);
 
   const handleSaveAttempt = useCallback(async () => {

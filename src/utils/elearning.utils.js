@@ -106,7 +106,7 @@ function calculateTotalLearningTimeForDate(
 ) {
     let totalTime = 0;
 
-    Object.values(data).forEach((module) => {
+    Object?.values(data).forEach((module) => {
         if (module.modname === 'supervideo') {
             totalTime += calculateSupervideoLearningTime(module.mapa, targetDate, intervalTime);
         } else if (module.modname === 'quiz') {
@@ -120,7 +120,11 @@ function calculateTotalLearningTimeForDate(
 const groupCourseContent = (sections = []) => {
     const modulesMap = {};
 
-    sections?.forEach(section => {
+    if (!Array.isArray(sections) || sections.length === 0) {
+        return modulesMap;
+    }
+
+    sections.forEach(section => {
         section?.modules?.forEach(module => {
             modulesMap[module.id] = module;
         });
