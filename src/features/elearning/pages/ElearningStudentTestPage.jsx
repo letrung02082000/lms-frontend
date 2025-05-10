@@ -40,7 +40,6 @@ function ElearningStudentTestPage() {
     setIsLoading(true);
     setError(null);
     setQuizzes([]);
-    let fetchedQuizzes = [];
 
     try {
       const fetchedQuizzes = await moodleApi.getQuizzesByCourses(courseIds);
@@ -106,7 +105,7 @@ function ElearningStudentTestPage() {
                     Số câu hỏi: {quiz?.sumgrades || ''}
                   </small>
                   <small className='d-block text-muted'>
-                    Điểm đạt: {quiz?.gradepass}/ {quiz.grade}
+                    Điểm đạt: {quiz?.gradepass}/{quiz.grade}
                   </small>
                   {quiz.timeopen > 0 && (
                     <small className='d-block text-muted'>

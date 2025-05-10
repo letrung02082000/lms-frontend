@@ -44,7 +44,7 @@ function ElearningStudentMyPage() {
   const elearningCourses = useSelector(selectElearningCourses);
   const courses = useMemo(() => {
     if (!elearningCourses) return [];
-    return Object.values(elearningCourses);
+    return Object.values(elearningCourses)?.filter((course) => student?.elearningLessons?.includes(course.id));
   }, []);
   const [showUpdateInfoModal, setShowUpdateInfoModal] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState('');

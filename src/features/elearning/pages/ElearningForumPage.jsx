@@ -69,28 +69,30 @@ function ElearningForumPage() {
 
   const handleAddReply = async () => {
     if (!replyMessage.trim()) return;
-  
+
     try {
       const postId = selectedDiscussion?.id; // ID của bài post gốc
       const subject = 'Re: ' + selectedDiscussion.subject;
       const message = replyMessage;
-  
+
       await moodleApi.addDiscussionReply({
         postId: postId,
         subject: subject,
         message: message,
       });
-  
+
       // Làm mới danh sách phản hồi sau khi gửi thành công
-      const data = await moodleApi.getDiscussionPosts(selectedDiscussion.discussion);
+      const data = await moodleApi.getDiscussionPosts(
+        selectedDiscussion.discussion
+      );
       setReplies(data);
-  
+
       setReplyMessage('');
     } catch (error) {
       console.error('Lỗi khi gửi phản hồi:', error);
       alert('Không thể gửi phản hồi. Vui lòng thử lại.');
     }
-  };  
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -133,84 +135,8 @@ function ElearningForumPage() {
     <div style={{ height: '100vh', overflowY: 'scroll', padding: '20px' }}>
       <Container>
         <Row>
-          <Col lg={selectedDiscussion ? 8 : 12}>
-            <h2 className='mb-4 h2'>Danh sách chủ đề</h2>
-            {loading ? (
-              <div className='text-center'>
-                <Spinner animation='border' />
-              </div>
-            ) : discussions.length === 0 ? (
-              <p>Không có chủ đề thảo luận nào.</p>
-            ) : (
-              paginatedDiscussions.map((discussion) => (
-                <Card className='mb-3 shadow-sm' key={discussion.id}>
-                  <Card.Body>
-                    <Row>
-                      <Col xs={2} md={1}>
-                        <img
-                          src={discussion.userpictureurl}
-                          alt={discussion.userfullname}
-                          className='img-fluid rounded-circle'
-                          style={{ width: '50px' }}
-                        />
-                      </Col>
-                      <Col xs={10} md={11}>
-                        <h5>{discussion.subject}</h5>
-                        <div
-                          className='text-muted mb-2'
-                          style={{ fontSize: '0.9rem' }}
-                        >
-                          {discussion.userfullname} -{' '}
-                          {formatDate(discussion.created)}
-                        </div>
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: discussion.message,
-                          }}
-                        />
-                        <div className='mt-2 d-flex justify-content-between'>
-                          <span
-                            className='text-secondary'
-                            style={{ fontSize: '0.85rem' }}
-                          >
-                            🗨️ {discussion.numreplies} phản hồi
-                          </span>
-                          <Button
-                            variant='outline-primary'
-                            size='sm'
-                            onClick={() => handleOpenReplies(discussion)}
-                          >
-                            Xem trao đổi
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Card.Body>
-                </Card>
-              ))
-            )}
-
-            {totalPages > 1 && (
-              <Pagination className='justify-content-center mt-4'>
-                {[...Array(totalPages)].map((_, index) => (
-                  <Pagination.Item
-                    key={index + 1}
-                    active={currentPage === index + 1}
-                    onClick={() => setCurrentPage(index + 1)}
-                  >
-                    {index + 1}
-                  </Pagination.Item>
-                ))}
-              </Pagination>
-            )}
-          </Col>
-
           {selectedDiscussion && (
-            <Col
-              lg={4}
-              className='border pt-3'
-              style={{ height: '91vh' }}
-            >
+            <Col lg={8} className='border pt-3' style={{ height: '91vh' }}>
               <div className='mb-3'>
                 <strong>{selectedDiscussion.subject}</strong>
                 <div
@@ -270,6 +196,77 @@ function ElearningForumPage() {
               </InputGroup>
             </Col>
           )}
+          <Col lg={selectedDiscussion ? 4 : 12}>
+            <h2 className='mb-4 h2'>Danh sách chủ đề</h2>
+            {loading ? (
+              <div className='text-center'>
+                <Spinner animation='border' />
+              </div>
+            ) : discussions.length === 0 ? (
+              <p>Không có chủ đề thảo luận nào.</p>
+            ) : (
+              paginatedDiscussions.map((discussion) => (
+                <Card className='mb-3 shadow-sm' key={discussion.id}>
+                  <Card.Body>
+                    <Row>
+                      <Col xs={2} md={1}>
+                        <img
+                          src={discussion.userpictureurl}
+                          alt={discussion.userfullname}
+                          className='img-fluid rounded-circle'
+                          style={{ width: '50px' }}
+                        />
+                      </Col>
+                      <Col xs={10} md={11}>
+                        <h5>{discussion.subject}</h5>
+                        <div
+                          className='text-muted mb-2'
+                          style={{ fontSize: '0.9rem' }}
+                        >
+                          {discussion.userfullname} -{' '}
+                          {formatDate(discussion.created)}
+                        </div>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: discussion.message,
+                          }}
+                        />
+                        <div className='mt-2 d-flex justify-content-between'>
+                          <span
+                            className='text-secondary'
+                            style={{ fontSize: '0.85rem' }}
+                          >
+                            {discussion.numreplies} phản hồi
+                          </span>
+                          <Button
+                            variant='outline-primary'
+                            size='sm'
+                            onClick={() => selectedDiscussion ? setSelectedDiscussion(null) : handleOpenReplies(discussion)}
+                          >
+                            {selectedDiscussion ? 'Đóng' : 'Xem phản hồi'}
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              ))
+            )}
+
+            {totalPages > 1 && (
+              <Pagination className='justify-content-center mt-4'>
+                {[...Array(totalPages)].map((_, index) => (
+                  <Pagination.Item
+                    key={index + 1}
+                    active={currentPage === index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+                ))}
+              </Pagination>
+            )}
+          </Col>
         </Row>
 
         <Modal show={showModal} onHide={handleClose}>
