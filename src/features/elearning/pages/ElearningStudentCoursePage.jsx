@@ -17,7 +17,7 @@ function ElearningStudentCoursePage() {
   const { elearningCourses, isLimitExceeded, timeLimitPerDay, totalTodayTime, elearningUser } =
     elearningData;
   const courses = useMemo(() => {
-    return Object.values(elearningCourses).filter((course) => course?.visible);
+    return Object?.values(elearningCourses)?.filter((course) => course?.visible);
   }, [elearningCourses]);
     
   useEffect(() => {
