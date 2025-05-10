@@ -151,7 +151,7 @@ const ElearningStudentBookPage = () => {
           zIndex: 1000,
         }}
       >
-        {!completedChapters?.includes(currentChapterId) && (
+        {!completedChapters?.includes(currentChapterId) && moduleTimeData[currentChapterId] && (
           <Timer
             key={currentChapterId}
             timestart={timestart}
