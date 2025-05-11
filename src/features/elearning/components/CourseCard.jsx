@@ -107,7 +107,8 @@ const CourseCard = ({ course, courseContent }) => {
                           >
                             <Col xs={10}>
                               <div className='d-flex align-items-center'>
-                                {mod?.completiondata?.isoverallcomplete &&
+                                <span>
+                                  {mod?.completiondata?.isoverallcomplete &&
                                   mod?.completiondata?.hascompletion && (
                                     <MdCheckCircle
                                       style={{
@@ -127,20 +128,11 @@ const CourseCard = ({ course, courseContent }) => {
                                       size={20}
                                     />
                                   )}
-                                {mod.name}
+                                </span>
+                                <span className='text-truncate'>
+                                  {mod?.name}
+                                </span>
                               </div>
-                              {/* {!mod?.completiondata?.isoverallcomplete &&
-                                mod?.completiondata?.hascompletion && (
-                                  <Badge
-                                    bg='secondary'
-                                    pill
-                                    style={{ fontSize: '0.8rem' }}
-                                  >
-                                    <span className='me-1'>
-                                      Chưa hoàn thành
-                                    </span>
-                                  </Badge>
-                                )} */}
                             </Col>
                             <Col xs={2} className='text-end'>
                               {mod.modname === 'forum' && (
