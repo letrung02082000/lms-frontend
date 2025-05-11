@@ -84,12 +84,15 @@ function StudentElearningLayout() {
 
   const bookIds = useMemo(() => {
     if (!activityReport) return [];
-    return Object?.values(activityReport)?.reduce((acc, activities) => {
-      activities?.forEach((activity) => {
-        if (activity?.modname === 'book') {
-          acc.push(activity?.cmid);
-        }
-      });
+
+    return Object.values(activityReport).reduce((acc, activities) => {
+      if (Array.isArray(activities)) {
+        activities.forEach((activity) => {
+          if (activity?.modname === 'book') {
+            acc.push(activity?.cmid);
+          }
+        });
+      }
       return acc;
     }, []);
   }, [activityReport]);
