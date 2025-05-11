@@ -89,14 +89,14 @@ function ElearningStudentVideoPage() {
         {error && <Alert variant='danger'>{error}</Alert>}
 
         {videoInstance && videoInstance?.videourl && videoView && (
-          <div className='w-75 mx-auto'>
+          <div className='w-100 p-2 mx-auto'>
             <h3 className='mb-4'>Bài giảng: {videoInstance.name}</h3>
             {videoInstance?.origem === 'youtube' && (
               <YoutubePlayer
                 url={videoInstance.videourl}
                 videoView={videoView}
                 onMapaUpdate={onMapaUpdate}
-                intervalTime={5}
+                intervalTime={15}
               />
             )}
             {videoInstance?.origem === 'link' && (
@@ -104,7 +104,7 @@ function ElearningStudentVideoPage() {
                 url={videoInstance.videourl}
                 videoView={videoView}
                 onMapaUpdate={onMapaUpdate}
-                intervalTime={5}
+                intervalTime={15}
               />
             )}
           </div>

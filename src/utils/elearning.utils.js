@@ -29,7 +29,7 @@ function replaceImageSrcWithMoodleUrl(htmlString, baseUrlWithToken) {
     return container.innerHTML;
 }
 
-function getWatchTimeByDay(timestamps, intervalTime = 5000, targetDate = null) {
+function getWatchTimeByDay(timestamps, intervalTime = 15000, targetDate = null) {
     const watchByDay = {};
 
     timestamps.forEach(ts => {

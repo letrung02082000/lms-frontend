@@ -119,7 +119,7 @@ function ElearningStudentResultPage() {
   }, [elearningUser]);
 
   const today = Date.now();
-  const threshold = 5;
+  const threshold = 15;
   const courseEntries = Object.entries(elearningGrades || {});
   const timePerCourse = courseEntries.map(([courseId, course]) => {
     const timeSpent = calculateTotalLearningTimeForDate({
