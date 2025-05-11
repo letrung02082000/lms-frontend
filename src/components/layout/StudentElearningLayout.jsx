@@ -20,7 +20,7 @@ function StudentElearningLayout() {
   const elearningData = useSelector(selectElearningData);
   const { activityReport, elearningGrades, elearningSettings, quizAttempts, isLimitExceeded, elearningUser } = elearningData;
   const today = Date.now();
-  const threshold = 5;
+  const threshold = 15;
   const courseEntries = Object.entries(elearningGrades || {});
   const timePerCourse = courseEntries.map(([courseId, course]) => {
     const timeSpent = calculateTotalLearningTimeForDate({
@@ -84,10 +84,10 @@ function StudentElearningLayout() {
 
   const bookIds = useMemo(() => {
     if (!activityReport) return [];
-    return Object?.values(activityReport).reduce((acc, activities) => {
+    return Object?.values(activityReport)?.reduce((acc, activities) => {
       activities?.forEach((activity) => {
-        if (activity.modname === 'book') {
-          acc.push(activity.cmid);
+        if (activity?.modname === 'book') {
+          acc.push(activity?.cmid);
         }
       });
       return acc;

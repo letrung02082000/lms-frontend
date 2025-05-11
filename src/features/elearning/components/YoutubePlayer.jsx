@@ -9,7 +9,7 @@ const VideoPlayer = ({
   url,
   videoView,
   onMapaUpdate,
-  intervalTime = 5,
+  intervalTime = 15,
 }) => {
   const [mapa, setMapa] = useState(videoView?.mapa || []);
   const youtubeId = getYoutubeId(url);

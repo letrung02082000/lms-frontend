@@ -3,12 +3,13 @@ import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import VideoProgressMapa from './VideoProgressBar';
 import { Button } from 'react-bootstrap';
+import { formatTime } from 'utils/commonUtils';
 
 const VideoPlayer = ({
   url,
   videoView,
   onMapaUpdate,
-  intervalTime = 5,
+  intervalTime = 15,
 }) => {
   const [mapa, setMapa] = useState(videoView?.mapa || []);
   const videoRef = useRef(null);
@@ -158,7 +159,7 @@ const VideoPlayer = ({
         intervalTime={intervalTime}
       />
       <div className='d-flex justify-content-between'>
-        <p>Độ dài: {mapa.length * intervalTime} giây</p>
+        <p>Độ dài: {formatTime(mapa.length * intervalTime)}</p>
         <p>
           {Math.floor(
             (mapa.filter((v) => v > 0).length / mapa.length || 0) * 100
