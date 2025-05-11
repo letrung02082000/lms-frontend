@@ -10,6 +10,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import TimeExceedWarning from '../components/TimeExceedWarning';
 import { useSelector } from 'react-redux';
 import { selectElearningData } from 'store/elearning.slice';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 function ElearningStudentVideoPage() {
   const { id: videoId } = useParams();
@@ -20,6 +21,7 @@ function ElearningStudentVideoPage() {
   const [error, setError] = useState(null);
   const elearningData = useSelector(selectElearningData);
   const { isLimitExceeded, timeLimitPerDay, totalTodayTime } = elearningData;
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   useSingleTab('/elearning/student/video');
 
@@ -89,7 +91,7 @@ function ElearningStudentVideoPage() {
         {error && <Alert variant='danger'>{error}</Alert>}
 
         {videoInstance && videoInstance?.videourl && videoView && (
-          <div className='w-100 p-2 mx-auto'>
+          <div className='p-2 mx-auto' style={{width: isMobile ? '100%' : '75%'}}>
             <h3 className='mb-4'>Bài giảng: {videoInstance.name}</h3>
             {videoInstance?.origem === 'youtube' && (
               <YoutubePlayer
