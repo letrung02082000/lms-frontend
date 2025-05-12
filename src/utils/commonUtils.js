@@ -46,7 +46,6 @@ const getVietnamDate = (date) => new Date(date).toLocaleString('sv-SE', {
 const parseQuestionHTML = (htmlString) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
-
     // Lấy ID câu hỏi (từ thẻ div id="question-XXX")
     const questionWrapper = doc.querySelector('[id^="question-"]');
     const questionId = questionWrapper?.id?.split('-')[1] || null;
