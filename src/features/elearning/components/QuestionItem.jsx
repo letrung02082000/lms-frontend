@@ -57,6 +57,17 @@ const QuestionItem = ({
             );
           })}
         </Form>
+        {question.feedback && (
+          <>
+            <div className='mt-2'>
+              <strong>Giải thích:</strong>
+            </div>
+            <div
+              className='mt-2'
+              dangerouslySetInnerHTML={{ __html: question.feedback }}
+            />
+          </>
+        )}
       </Card.Body>
     </Card>
   );

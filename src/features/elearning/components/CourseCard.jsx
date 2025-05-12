@@ -33,8 +33,7 @@ const CourseCard = ({ course, courseContent }) => {
     <Card className='mb-3 shadow-sm'>
       <Card.Body>
         <Row>
-          {!isMobile && (
-            <Col xs={2} className='text-center'>
+          <Col xs={isMobile ? 0 : 2} className='text-center'>
               {course?.courseimage && (
                 <img
                   src={
@@ -47,8 +46,7 @@ const CourseCard = ({ course, courseContent }) => {
                 />
               )}
             </Col>
-          )}
-          <Col>
+          <Col xs={isMobile ? 12 : 10}>
             <Row>
               <Col>
                 <h5>{course.fullnamedisplay}</h5>

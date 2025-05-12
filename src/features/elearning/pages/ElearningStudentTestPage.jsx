@@ -102,7 +102,7 @@ function ElearningStudentTestPage() {
                 <div className='ms-2 me-auto'>
                   <div className='fw-bold'>{quiz.name}</div>
                   <small className='d-block text-muted'>
-                    Số câu hỏi: {quiz?.sumgrades || ''}
+                    Số câu hỏi: {quiz?.questioncount || ''}
                   </small>
                   <small className='d-block text-muted'>
                     Điểm đạt: {quiz?.gradepass}/{quiz.grade}

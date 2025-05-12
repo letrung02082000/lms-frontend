@@ -35,57 +35,57 @@ import { DrivingTestPage, LoginPage, NotFoundPage } from 'features';
 import ElearningForumPage from 'features/elearning/pages/ElearningForumPage';
 
 const router = createBrowserRouter([
-  {
-    element: <AdminDrivingGuard />,
-    errorElement: <NotFoundPage />,
-    children: [
-      {
-        element: <AdminDrivingLayout />,
-        children: [
-          {
-            path: PATH.DRIVING.ADMIN.ROOT,
-            element: <AdminDrivingPage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.COURSE,
-            element: <AdminDrivingCoursePage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.ELEARNING,
-            element: <AdminDrivingElearningPage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.DATE,
-            element: <AdminDrivingDatePage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.CENTER,
-            element: <AdminDrivingCenterPage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.PROCESSING,
-            element: <AdminDrivingProcessingPage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.STUDENT,
-            element: <AdminDrivingStudentPage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.TYPE,
-            element: <AdminDrivingTypePage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.TEACHER,
-            element: <AdminDrivingTeacherPage />,
-          },
-          {
-            path: PATH.DRIVING.ADMIN.VEHICLE,
-            element: <AdminDrivingVehiclePage />,
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   element: <AdminDrivingGuard />,
+  //   errorElement: <NotFoundPage />,
+  //   children: [
+  //     {
+  //       element: <AdminDrivingLayout />,
+  //       children: [
+  //         {
+  //           path: PATH.DRIVING.ADMIN.ROOT,
+  //           element: <AdminDrivingPage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.COURSE,
+  //           element: <AdminDrivingCoursePage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.ELEARNING,
+  //           element: <AdminDrivingElearningPage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.DATE,
+  //           element: <AdminDrivingDatePage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.CENTER,
+  //           element: <AdminDrivingCenterPage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.PROCESSING,
+  //           element: <AdminDrivingProcessingPage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.STUDENT,
+  //           element: <AdminDrivingStudentPage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.TYPE,
+  //           element: <AdminDrivingTypePage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.TEACHER,
+  //           element: <AdminDrivingTeacherPage />,
+  //         },
+  //         {
+  //           path: PATH.DRIVING.ADMIN.VEHICLE,
+  //           element: <AdminDrivingVehiclePage />,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
   // {
   //   element: <AdminElearningGuard />,
   //   errorElement: <NotFoundPage />,

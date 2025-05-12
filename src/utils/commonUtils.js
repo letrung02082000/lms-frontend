@@ -67,11 +67,15 @@ const parseQuestionHTML = (htmlString) => {
         return { label, value, checked };
     });
 
+    const feedbackElement = doc.querySelector('.generalfeedback');
+    const feedback = feedbackElement?.innerHTML?.trim() || '';
+
     // Trả về đối tượng tương thích React component
     return {
         id: questionId,
         text: questionText,
         answers: answers,
+        feedback: feedback,
     };
 };
 
