@@ -30,7 +30,9 @@ const AdminLayout = ({ menu, children, title, root, isCollapsed, ...props }) => 
   return (
     <Styles className='d-flex flex-row'>
       {isMobile && collapsed ? (
-        <div style={{ position: 'fixed', top: 15, right: '20px', zIndex: 1000 }}>
+        <div
+          style={{ position: 'fixed', top: 15, right: '20px', zIndex: 1000 }}
+        >
           <Button
             onClick={() => {
               setCollapsed(!collapsed);
@@ -118,7 +120,9 @@ const AdminLayout = ({ menu, children, title, root, isCollapsed, ...props }) => 
           </SidebarFooter>
         </ProSidebar>
       )}
-      <div className='content'>{children || <Outlet />}</div>
+      <div className='content' style={{ overflowX: 'hidden' }}>
+        {children || <Outlet />}
+      </div>
     </Styles>
   );
 };

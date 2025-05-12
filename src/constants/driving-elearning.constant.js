@@ -7,24 +7,31 @@ const ELEARNING_ROLES = {
 
 const QUIZ_ATTEMPT_STATUS = {
     inprogress: 'Đang làm bài',
-    finished: 'Đã hoàn thành',
+    finished: 'Đã thực hiện',
     overdue: 'Quá hạn',
     suspended: 'Tạm dừng',
     notattempted: 'Chưa làm bài',
 }
 
+const QUIZ_GRADE_STATUS = {
+    gradedwrong: 'Trả lời sai',
+    gradedright: 'Trả lời đúng',
+    gaveup: 'Không trả lời',
+}
+
 const COURSE_MODULES = {
     quiz: 'Bài kiểm tra',
-    supervideo: 'Video bài giảng',
+    supervideo: 'Bài giảng',
     url: 'Liên kết',
     resource: 'Tài liệu',
     page: 'Trang',
     forum: 'Diễn đàn',
-    book: 'Nội dung bài giảng',
+    book: 'Nội dung',
 }
 
 export {
     ELEARNING_ROLES,
     QUIZ_ATTEMPT_STATUS,
     COURSE_MODULES,
+    QUIZ_GRADE_STATUS
 }

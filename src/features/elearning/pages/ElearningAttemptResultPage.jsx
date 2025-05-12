@@ -1,29 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Card, Container, Row, Col, Badge, Accordion } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import moodleApi from 'services/moodleApi';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { formatTime } from 'utils/commonUtils';
+import { formatTime, parseQuestionHTML } from 'utils/commonUtils';
+import QuestionItem from '../components/QuestionItem';
+import { QUIZ_GRADE_STATUS } from 'constants/driving-elearning.constant';
 
 const formatDateTime = (timestamp) => {
   if (!timestamp) return '';
   const date = new Date(timestamp * 1000);
-  return date.toLocaleString();
+  return date.toLocaleString('en-GB');
 };
 
 const ElearningAttemptResultPage = () => {
   const attemptId = useParams().attemptId;
+  const courseId = new URLSearchParams(window.location.search).get('c');
   const [data, setData] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const { grade, attempt, questions } = data;
+  const [quizzes, setQuizzes] = React.useState([]);
+  const quiz = useMemo(() => {
+    if (!quizzes.length) return null;
+    const quizId = attempt?.quiz;
+    return quizzes.find((quiz) => quiz.id === quizId);
+  }, [quizzes, attempt]);
+  console.log('quiz', quiz);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await moodleApi.getAttemptReview(attemptId);
-        console.log('Attempt data:', response);
-        setData(response);
+        const [attemptRes, quizzesRes] = await Promise.all([
+          moodleApi.getAttemptReview(attemptId),
+          moodleApi.getQuizzesByCourses([courseId]),
+        ]);
+        setData(attemptRes);
+        setQuizzes(quizzesRes);
       } catch (error) {
         console.error('Error fetching attempt result:', error);
       } finally {
@@ -46,11 +59,16 @@ const ElearningAttemptResultPage = () => {
               <Card.Body>
                 <Card.Title>Kết quả bài kiểm tra</Card.Title>
                 <Row className='mb-2'>
+                  {quiz?.timelimit > 0 && (
+                    <Col>
+                      <strong>Kết quả:</strong>{' '}
+                      <Badge bg={grade >= quiz?.gradepass ? 'success' : 'danger'}>
+                        {grade >= quiz?.gradepass ? 'Đạt' : 'Không đạt'}
+                      </Badge>
+                    </Col>
+                  )}
                   <Col>
-                    <strong>Điểm:</strong> <Badge bg='success'>{grade}</Badge>
-                  </Col>
-                  <Col>
-                    <strong>Đúng:</strong>{' '}
+                    <strong>Số câu đúng:</strong>{' '}
                     {attempt.sumgrades + '/' + questions.length}
                   </Col>
                   <Col>
@@ -72,9 +90,29 @@ const ElearningAttemptResultPage = () => {
             <Accordion defaultActiveKey='0' className='mt-4'>
               {questions.map((q, index) => (
                 <Accordion.Item eventKey={String(index)} key={q.slot}>
-                  <Accordion.Header>Câu hỏi {q.number}</Accordion.Header>
+                  <Accordion.Header>
+                    Câu hỏi {q.number}
+                    <Badge
+                      bg={
+                        q?.state === 'gradedright'
+                          ? 'success'
+                          : q?.state === 'gradedwrong'
+                          ? 'danger'
+                          : q?.state === 'gaveup'
+                          ? 'warning'
+                          : ''
+                      }
+                      className='ms-2'
+                    >
+                      {QUIZ_GRADE_STATUS[q?.state]}
+                    </Badge>
+                  </Accordion.Header>
                   <Accordion.Body>
-                    <div dangerouslySetInnerHTML={{ __html: q.html }} />
+                    <QuestionItem
+                      question={parseQuestionHTML(q.html)}
+                      key={index}
+                      disabled={true}
+                    />
                   </Accordion.Body>
                 </Accordion.Item>
               ))}

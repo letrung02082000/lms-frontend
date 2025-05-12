@@ -12,6 +12,7 @@ const initialState = {
   isLimitExceeded: false,
   timeLimitPerDay: null,
   totalTodayTime: null,
+  quizzes: [],
 }
 
 export const elearningSlice = createSlice({
@@ -36,4 +37,7 @@ export const selectBookTime = state => state.elearning.bookTime
 export const selectQuizAttempts = state => state.elearning.quizAttempts
 export const selectIsLimitExceeded = state => state.elearning.isLimitExceeded
 export const selectElearningData = state => state.elearning
+export const selectTimeLimitPerDay = state => state.elearning.timeLimitPerDay
+export const selectTotalTodayTime = state => state.elearning.totalTodayTime
+export const selectQuizzes = state => state.elearning?.quizzes || []
 export default elearningSlice.reducer

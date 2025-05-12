@@ -11,6 +11,7 @@ import {
   Container,
   Accordion,
   Spinner,
+  Badge,
 } from 'react-bootstrap';
 import QuestionItem from '../components/QuestionItem';
 import { parseQuestionHTML } from 'utils/commonUtils';
@@ -20,8 +21,8 @@ import { usePromptWithUnload } from 'hooks/usePromptWithUnload';
 import Timer from '../components/Timer';
 import QuestionReviewModal from '../components/QuestionReviewModal';
 import { PATH } from 'constants/path';
-import { useSelector } from 'react-redux';
-import { selectElearningData } from 'store/elearning.slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectElearningData, updateElearningData } from 'store/elearning.slice';
 import TimeExceedWarning from '../components/TimeExceedWarning';
 import LoadingSpinner from '../components/LoadingSpinner';
 import {
@@ -53,11 +54,14 @@ function ElearningStudentTestDetailPage() {
   const [startingAttempt, setStartingAttempt] = useState(false);
   const elearningData = useSelector(selectElearningData);
   const { isLimitExceeded, timeLimitPerDay, totalTodayTime } = elearningData;
+
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const cId = parseInt(searchParams.get('c'));
     setCourseId(cId);
   }, []);
+  console.log('userAttempts', userAttempts);
+  console.log('quiz', quiz);
 
   usePromptWithUnload(
     'Bạn có chắc muốn rời đi? Dữ liệu chưa được lưu.',
@@ -161,7 +165,6 @@ function ElearningStudentTestDetailPage() {
       handleGetAttemptData(quizAttempt?.id, currentPage);
     }
   }, [quizAttempt?.id, currentPage]);
-  console.log('slotAnswers', slotAnswers);
   const debouncedSaveAnswer = useMemo(() => {
     return debounce(async (slotAnswers, slot) => {
       const data = Object.entries(slotAnswers).map(([key, value]) => ({
@@ -293,11 +296,11 @@ function ElearningStudentTestDetailPage() {
                   </p>
                   <p>
                     <MdOutlineQuiz className='me-2' />
-                    Số câu hỏi: {quiz?.sumgrades || ''}
+                    Số câu hỏi: {quiz?.questioncount || ''}
                   </p>
                   <p>
                     <MdChecklist className='me-2' />
-                    Điểm cần đạt: {quiz.gradepass}/{quiz.grade}
+                    Điểm cần đạt: {quiz.gradepass}/{quiz.sumgrades}
                   </p>
                 </div>
                 <div className='mb-4'>
@@ -368,7 +371,21 @@ function ElearningStudentTestDetailPage() {
                                         attempt.timefinish * 1000
                                       ).toLocaleString('en-GB')}
                                     </div>
-                                    <div>Số câu đúng: {attempt.sumgrades}</div>
+                                    {/* <div>
+                                      Điểm: {attempt.sumgrades}/
+                                      {quiz?.sumgrades}
+                                    </div> */}
+                                    {quiz?.timelimit > 0 && (
+                                      <div>
+                                        <strong>Kết quả:</strong>{' '}
+                                        {attempt?.sumgrades >=
+                                        quiz?.gradepass ? (
+                                          <Badge bg='success'>Đạt</Badge>
+                                        ) : (
+                                          <Badge bg='danger'>Không đạt</Badge>
+                                        )}
+                                      </div>
+                                    )}
                                   </>
                                 )}
                               </Card.Text>
@@ -386,7 +403,7 @@ function ElearningStudentTestDetailPage() {
                                   href={`${PATH.ELEARNING.STUDENT.ATTEMPT_RESULT.replace(
                                     ':attemptId',
                                     attempt.id
-                                  )}`}
+                                  )}?c=${courseId}`}
                                 >
                                   Xem lại bài làm
                                 </Button>
@@ -424,19 +441,6 @@ function ElearningStudentTestDetailPage() {
                       </Card>
                     ))}
                     <div className='d-flex justify-content-end mt-4'>
-                      {/* <Button
-                        variant='secondary'
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        disabled={currentPage === 0}
-                      >
-                        Trang trước
-                      </Button>
-                      <Button
-                        variant='primary'
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                      >
-                        Trang tiếp
-                      </Button> */}
                       <Button
                         variant='primary'
                         disabled={preventFinish || !slotAnswers}
