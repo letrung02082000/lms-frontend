@@ -14,8 +14,8 @@ function DetailActivityReport({
   bookTime,
 }) {
   const totalTimes = useMemo(() => {
-    if (!activityReport || !elearningGrades || !elearningCoursesContents || !quizAttempts)
-      return 0;
+    if (!activityReport || !elearningGrades || !elearningCoursesContents)
+      return {};
 
     const totals = {};
     Object.keys(activityReport).forEach((key) => {
