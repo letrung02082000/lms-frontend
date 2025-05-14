@@ -8,13 +8,8 @@ const QuestionItem = ({
   onAnswerChange,
   disabled = false,
 }) => {
-  const [selectedIndex, setSelectedIndex] = useState(null);
-
   const handleChange = (index) => {
     if (disabled) return;
-    console.log('changed', index);
-
-    setSelectedIndex(index);
 
     const payload = [
       {

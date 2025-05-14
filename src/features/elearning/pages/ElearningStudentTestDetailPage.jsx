@@ -60,8 +60,6 @@ function ElearningStudentTestDetailPage() {
     const cId = parseInt(searchParams.get('c'));
     setCourseId(cId);
   }, []);
-  console.log('userAttempts', userAttempts);
-  console.log('quiz', quiz);
 
   usePromptWithUnload(
     'Bạn có chắc muốn rời đi? Dữ liệu chưa được lưu.',

@@ -33,6 +33,7 @@ import {
   selectElearningUser,
   updateElearningData,
 } from 'store/elearning.slice';
+import dayjs from 'dayjs';
 
 function ElearningStudentMyPage() {
   const moodleToken = localStorage.getItem('moodleToken');
@@ -212,7 +213,9 @@ function ElearningStudentMyPage() {
                 <p>
                   <strong>Ngày sinh:</strong>{' '}
                   {student?.dob
-                    ? new Date(student?.dob).toLocaleDateString('en-GB')
+                    ? student?.dob?.length === 8
+                      ? dayjs(student?.dob, 'YYYYMMDD').format('DD/MM/YYYY')
+                      : new Date(student?.dob).toLocaleDateString('en-GB')
                     : 'Chưa cập nhật'}
                 </p>
                 <p>

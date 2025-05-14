@@ -25,7 +25,6 @@ const ElearningAttemptResultPage = () => {
     const quizId = attempt?.quiz;
     return quizzes.find((quiz) => quiz.id === quizId);
   }, [quizzes, attempt]);
-  console.log('quiz', quiz);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,12 +56,14 @@ const ElearningAttemptResultPage = () => {
           <Col>
             <Card>
               <Card.Body>
-                <Card.Title>Kết quả bài kiểm tra</Card.Title>
+                <Card.Title>{quiz?.name}</Card.Title>
                 <Row className='mb-2'>
                   {quiz?.timelimit > 0 && (
                     <Col>
                       <strong>Kết quả:</strong>{' '}
-                      <Badge bg={grade >= quiz?.gradepass ? 'success' : 'danger'}>
+                      <Badge
+                        bg={grade >= quiz?.gradepass ? 'success' : 'danger'}
+                      >
                         {grade >= quiz?.gradepass ? 'Đạt' : 'Không đạt'}
                       </Badge>
                     </Col>
@@ -88,34 +89,43 @@ const ElearningAttemptResultPage = () => {
             </Card>
 
             <Accordion defaultActiveKey='0' className='mt-4'>
-              {questions.map((q, index) => (
-                <Accordion.Item eventKey={String(index)} key={q.slot}>
-                  <Accordion.Header>
-                    Câu hỏi {q.number}
-                    <Badge
-                      bg={
-                        q?.state === 'gradedright'
-                          ? 'success'
-                          : q?.state === 'gradedwrong'
-                          ? 'danger'
-                          : q?.state === 'gaveup'
-                          ? 'warning'
-                          : ''
-                      }
-                      className='ms-2'
-                    >
-                      {QUIZ_GRADE_STATUS[q?.state]}
-                    </Badge>
-                  </Accordion.Header>
-                  <Accordion.Body>
-                    <QuestionItem
-                      question={parseQuestionHTML(q.html)}
-                      key={index}
-                      disabled={true}
-                    />
-                  </Accordion.Body>
-                </Accordion.Item>
-              ))}
+              {questions.map((q, index) => {
+                return (
+                  <Accordion.Item eventKey={String(index)} key={q.slot}>
+                    <Accordion.Header>
+                      <div>
+                        Câu hỏi {q.number}{' '}
+                        {quiz?.sumgrades - quiz?.gradepass < q?.maxmark && (
+                          <span className='text-danger fw-bold'>
+                            (Câu điểm liệt)
+                          </span>
+                        )}
+                      </div>
+                      <Badge
+                        bg={
+                          q?.state === 'gradedright'
+                            ? 'success'
+                            : q?.state === 'gradedwrong'
+                            ? 'danger'
+                            : q?.state === 'gaveup'
+                            ? 'warning'
+                            : ''
+                        }
+                        className='ms-2'
+                      >
+                        {QUIZ_GRADE_STATUS[q?.state]}
+                      </Badge>
+                    </Accordion.Header>
+                    <Accordion.Body>
+                      <QuestionItem
+                        question={parseQuestionHTML(q.html)}
+                        key={index}
+                        disabled={true}
+                      />
+                    </Accordion.Body>
+                  </Accordion.Item>
+                );
+              })}
             </Accordion>
           </Col>
         </Row>
