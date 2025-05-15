@@ -19,7 +19,7 @@ function DetailActivityReport({
 
     const totals = {};
     Object.keys(activityReport).forEach((key) => {
-      const activities = activityReport?.[key];
+      const activities = Array.isArray(activityReport?.[key]) ? activityReport?.[key] : [];
       let totalTime = 0;
 
       activities.forEach((activity) => {
