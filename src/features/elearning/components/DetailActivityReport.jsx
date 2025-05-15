@@ -154,7 +154,7 @@ function DetailActivityReport({
                         } else if (grade && activity.modname === 'quiz') {
                           if (
                             grade?.quiztimelimit > 0 &&
-                            grade?.finalgrade > grade?.gradepass
+                            grade?.finalgrade >= grade?.gradepass
                           ) {
                             timeSpent = grade?.quiztimelimit;
                           } else if (grade?.quiztimelimit === 0) {
