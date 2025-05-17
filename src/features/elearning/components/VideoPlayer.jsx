@@ -149,7 +149,8 @@ const VideoPlayer = ({
         <video
           ref={videoRef}
           className='video-js vjs-big-play-centered'
-          playsInline
+          playsinline
+          webkit-playsinline
         />
       </div>
       <div className='my-2'></div>
