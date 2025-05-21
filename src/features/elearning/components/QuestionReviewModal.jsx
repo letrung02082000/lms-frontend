@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import QuestionItem from './QuestionItem';
-import { parseQuestionHTML } from 'utils/commonUtils';
+import { parseQuestionHTML } from 'utils/elearning.utils';
 
 const QuestionReviewModal = ({ show, onHide, summary, onFinish }) => {
   return (

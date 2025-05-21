@@ -43,41 +43,6 @@ const getVietnamDate = (date) => new Date(date).toLocaleString('sv-SE', {
     timeZone: 'Asia/Ho_Chi_Minh'
 }).replaceAll('/', '-').split(' ')[0]; // YYYY-MM-DD format
 
-const parseQuestionHTML = (htmlString) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
-    // Lấy ID câu hỏi (từ thẻ div id="question-XXX")
-    const questionWrapper = doc.querySelector('[id^="question-"]');
-    const questionId = questionWrapper?.id?.split('-')[1] || null;
-
-    // Lấy nội dung câu hỏi
-    const questionTextElement = doc.querySelector('.qtext');
-    const questionText = questionTextElement?.innerHTML?.trim() || '';
-
-    // Lấy danh sách đáp án
-    const answerElements = doc.querySelectorAll('.answer .d-flex');
-    const allInputElements = doc.querySelectorAll('input[type="radio"]');
-
-    const answers = Array.from(answerElements).map((el, idx) => {
-        const input = allInputElements[idx];
-        const label = el.innerText.trim();
-        const value = input?.value || '';
-        const checked = input?.checked || false;
-        return { label, value, checked };
-    });
-
-    const feedbackElement = doc.querySelector('.generalfeedback');
-    const feedback = feedbackElement?.innerHTML?.trim() || '';
-
-    // Trả về đối tượng tương thích React component
-    return {
-        id: questionId,
-        text: questionText,
-        answers: answers,
-        feedback: feedback,
-    };
-};
-
 const formatTime = (seconds) => {
     if (!seconds || seconds === 0) return "0 giây";
 
@@ -109,4 +74,4 @@ function countModulesByType(sections) {
     return moduleCount;
 }
 
-export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId, parseQuestionHTML, formatTime, countModulesByType }
+export { convertToDateTime, formatCurrency, copyText, formatPhoneNumber, profileMsg, blobToBase64, getVietnamDate, getYoutubeId, formatTime, countModulesByType }

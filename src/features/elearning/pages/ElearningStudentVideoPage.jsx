@@ -11,6 +11,7 @@ import TimeExceedWarning from '../components/TimeExceedWarning';
 import { useSelector } from 'react-redux';
 import { selectElearningData } from 'store/elearning.slice';
 import useMediaQuery from 'hooks/useMediaQuery';
+import BackButton from 'components/BackButton';
 
 function ElearningStudentVideoPage() {
   const { id: videoId } = useParams();
@@ -89,7 +90,7 @@ function ElearningStudentVideoPage() {
     <div style={{ height: '100vh', overflowY: 'scroll' }}>
       <Container className='mt-4'>
         {error && <Alert variant='danger'>{error}</Alert>}
-
+        <BackButton />
         {videoInstance && videoInstance?.videourl && videoView && (
           <div className='p-2 mx-auto' style={{width: isMobile ? '100%' : '75%'}}>
             <h3 className='mb-4'>Bài giảng: {videoInstance.name}</h3>

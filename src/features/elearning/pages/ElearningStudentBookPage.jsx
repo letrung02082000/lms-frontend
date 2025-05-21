@@ -1,6 +1,6 @@
 import elearningApi from 'api/elearningApi';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, Button, ButtonGroup } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Container } from 'react-bootstrap';
 import Timer from '../components/Timer';
 import { toastWrapper } from 'utils';
 import { usePromptWithUnload } from 'hooks/usePromptWithUnload';
@@ -11,6 +11,7 @@ import { selectElearningData } from 'store/elearning.slice';
 import TimeExceedWarning from '../components/TimeExceedWarning';
 import { replaceImageSrcWithMoodleUrl } from 'utils/elearning.utils';
 import LoadingSpinner from '../components/LoadingSpinner';
+import BackButton from 'components/BackButton';
 
 const ElearningStudentBookPage = () => {
   const [htmlContent, setHtmlContent] = useState('');
@@ -134,64 +135,76 @@ const ElearningStudentBookPage = () => {
 
   return (
     <Styles>
-      <div
-        style={{
-          height: '100vh',
-          overflowY: 'scroll',
-          padding: '5%',
-          backgroundColor: '#fff',
-        }}
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
-      />
-      <div
-        style={{
-          position: 'fixed',
-          top: 10,
-          right: 10,
-          zIndex: 1000,
-        }}
-      >
-        {!completedChapters?.includes(currentChapterId) && moduleTimeData[currentChapterId] && (
-          <Timer
-            key={currentChapterId}
-            timestart={timestart}
-            timelimit={moduleTimeData[currentChapterId] || 0.1}
-            text={'Vui lòng đọc chương này trong '}
-            onTimeUp={handleTimeUp}
-          />
-        )}
-        {completedChapters?.includes(currentChapterId) && (
-          <Alert variant='success'>Bạn đã hoàn thành chương này</Alert>
-        )}
-      </div>
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          zIndex: 1000,
-          alignItems: 'center',
-          justifyContent: 'center',
-          display: 'flex',
-          width: '100%',
-        }}
-      >
-        <ButtonGroup className='mb-2' style={{ gap: '10px' }}>
-          <Button
-            disabled={currentIndex === 0}
-            variant='primary'
-            onClick={() => setCurrentIndex((prev) => prev - 1)}
-          >
-            Trở về
-          </Button>
-          <Button
-            disabled={currentIndex === fileUrls.length - 1}
-            variant='primary'
-            onClick={() => setCurrentIndex((prev) => prev + 1)}
-          >
-            Kế tiếp
-          </Button>
-        </ButtonGroup>
-      </div>
+      <Container className='my-4'>
+        <BackButton />
+        <div
+          style={{
+            height: '78vh',
+            overflowY: 'scroll',
+            padding: '5%',
+            backgroundColor: '#fff',
+          }}
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        />
+        <div
+          style={{
+            position: 'fixed',
+            top: 10,
+            right: 10,
+            zIndex: 1000,
+          }}
+        >
+          {!completedChapters?.includes(currentChapterId) ? (
+            moduleTimeData[currentChapterId] ? (
+              <Timer
+                key={currentChapterId}
+                timestart={timestart}
+                timelimit={moduleTimeData[currentChapterId]}
+                text={'Vui lòng đọc chương này trong '}
+                onTimeUp={handleTimeUp}
+              />
+            ) : (
+              <Timer
+                key={currentChapterId}
+                timestart={timestart}
+                timelimit={0.1}
+                text={'Vui lòng đọc chương này trong '}
+                onTimeUp={handleTimeUp}
+              />
+            )
+          ) : (
+            <Alert variant='success'>Bạn đã hoàn thành chương này</Alert>
+          )}
+        </div>
+        <div
+          style={{
+            position: 'fixed',
+            bottom: 0,
+            zIndex: 1000,
+            alignItems: 'center',
+            justifyContent: 'center',
+            display: 'flex',
+            width: '100%',
+          }}
+        >
+          <ButtonGroup className='mb-2' style={{ gap: '10px' }}>
+            <Button
+              disabled={currentIndex === 0}
+              variant='primary'
+              onClick={() => setCurrentIndex((prev) => prev - 1)}
+            >
+              Trở về
+            </Button>
+            <Button
+              disabled={currentIndex === fileUrls.length - 1}
+              variant='primary'
+              onClick={() => setCurrentIndex((prev) => prev + 1)}
+            >
+              Kế tiếp
+            </Button>
+          </ButtonGroup>
+        </div>
+      </Container>
     </Styles>
   );
 };

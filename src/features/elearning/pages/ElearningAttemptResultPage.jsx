@@ -3,9 +3,11 @@ import { Card, Container, Row, Col, Badge, Accordion } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import moodleApi from 'services/moodleApi';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { formatTime, parseQuestionHTML } from 'utils/commonUtils';
+import { formatTime } from 'utils/commonUtils';
 import QuestionItem from '../components/QuestionItem';
 import { QUIZ_GRADE_STATUS } from 'constants/driving-elearning.constant';
+import BackButton from 'components/BackButton';
+import { parseQuestionHTML } from 'utils/elearning.utils';
 
 const formatDateTime = (timestamp) => {
   if (!timestamp) return '';
@@ -52,6 +54,7 @@ const ElearningAttemptResultPage = () => {
   return (
     <div style={{ height: '100vh', overflowY: 'scroll' }}>
       <Container className='my-4'>
+        <BackButton/>
         <Row className='mb-4'>
           <Col>
             <Card>
