@@ -13,6 +13,7 @@ import {
   InputGroup,
 } from 'react-bootstrap';
 import moodleApi from 'services/moodleApi';
+import BackButton from 'components/BackButton';
 
 function formatDate(timestamp) {
   const date = new Date(timestamp * 1000);
@@ -134,6 +135,7 @@ function ElearningForumPage() {
   return (
     <div style={{ height: '100vh', overflowY: 'scroll', padding: '20px' }}>
       <Container>
+        <BackButton />
         <Row>
           {selectedDiscussion && (
             <Col lg={8} className='border pt-3' style={{ height: '91vh' }}>

@@ -231,4 +231,43 @@ const groupUserGradeByCourseModule = (data) => {
     return grouped;
 }
 
-export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupCourseContent, replaceImageSrcWithMoodleUrl, appendTokenToUrl, isValidDate, replacePluginfileUrlsWithToken };
+const parseQuestionHTML = (htmlString) => {
+    console.log(htmlString)
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    // Lấy ID câu hỏi (từ thẻ div id="question-XXX")
+    const questionWrapper = doc.querySelector('[id^="question-"]');
+    const questionId = questionWrapper?.id?.split('-')[1] || null;
+
+    // Lấy nội dung câu hỏi
+    const questionTextElement = doc.querySelector('.qtext');
+    const questionText = questionTextElement?.innerHTML?.trim() || '';
+
+    // Lấy danh sách đáp án
+    const answerElements = doc.querySelectorAll('.answer .d-flex');
+    const allInputElements = doc.querySelectorAll('input[type="radio"]');
+
+    const answers = Array.from(answerElements).map((el, idx) => {
+        const input = allInputElements[idx];
+        const label = el.innerText.trim();
+        const value = input?.value || '';
+        const checked = input?.checked || false;
+        return { label, value, checked };
+    });
+
+    const feedbackElement = doc.querySelector('.generalfeedback');
+    const feedback = feedbackElement?.innerHTML?.trim() || '';
+    const rightAnswerElement = doc.querySelector('.rightanswer');
+    const rightAnswer = rightAnswerElement?.innerHTML?.trim() || '';
+
+    // Trả về đối tượng tương thích React component
+    return {
+        id: questionId,
+        text: questionText,
+        answers: answers,
+        feedback: feedback,
+        rightAnswer: rightAnswer,
+    };
+};
+
+export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupCourseContent, replaceImageSrcWithMoodleUrl, appendTokenToUrl, isValidDate, replacePluginfileUrlsWithToken, parseQuestionHTML };

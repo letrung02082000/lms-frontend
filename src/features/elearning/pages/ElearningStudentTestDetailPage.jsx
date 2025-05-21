@@ -1,6 +1,6 @@
 import { QUIZ_ATTEMPT_STATUS } from 'constants/driving-elearning.constant';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import moodleApi, { getUserAttempts } from 'services/moodleApi';
 import {
@@ -14,7 +14,6 @@ import {
   Badge,
 } from 'react-bootstrap';
 import QuestionItem from '../components/QuestionItem';
-import { parseQuestionHTML } from 'utils/commonUtils';
 import QuestionNavigator from '../components/QuestionNavigator';
 import { toastWrapper } from 'utils';
 import { usePromptWithUnload } from 'hooks/usePromptWithUnload';
@@ -31,9 +30,12 @@ import {
   MdOutlineTimelapse,
   MdSubject,
 } from 'react-icons/md';
+import BackButton from 'components/BackButton';
+import { parseQuestionHTML } from 'utils/elearning.utils';
 
 function ElearningStudentTestDetailPage() {
   const testId = useParams().id;
+  const navigate = useNavigate();
   const [courseId, setCourseId] = useState(null);
   const [userAttempts, setUserAttempts] = useState([]);
   const [quizAttempt, setQuizAttempt] = useState(null);
@@ -272,6 +274,7 @@ function ElearningStudentTestDetailPage() {
           <LoadingSpinner />
         ) : (
           <>
+            <BackButton />
             {quiz && (
               <>
                 <div className='mb-4'>
@@ -397,11 +400,14 @@ function ElearningStudentTestDetailPage() {
                               ) : (
                                 <Button
                                   variant='outline-primary'
-                                  target='_blank'
-                                  href={`${PATH.ELEARNING.STUDENT.ATTEMPT_RESULT.replace(
-                                    ':attemptId',
-                                    attempt.id
-                                  )}?c=${courseId}`}
+                                  onClick={() =>
+                                    navigate(
+                                      `${PATH.ELEARNING.STUDENT.ATTEMPT_RESULT.replace(
+                                        ':attemptId',
+                                        attempt.id
+                                      )}?c=${courseId}`
+                                    )
+                                  }
                                 >
                                   Xem lại bài làm
                                 </Button>

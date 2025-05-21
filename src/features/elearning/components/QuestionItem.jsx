@@ -57,7 +57,7 @@ const QuestionItem = ({
             );
           })}
         </Form>
-        {question.feedback && (
+        {question?.feedback && (
           <>
             <div className='mt-2'>
               <strong>Giải thích:</strong>
@@ -67,6 +67,12 @@ const QuestionItem = ({
               dangerouslySetInnerHTML={{ __html: question.feedback }}
             />
           </>
+        )}
+        {question?.rightAnswer && (
+          <div className='mt-2'>
+            <strong>Đáp án:</strong>
+            <div className='mt-2' dangerouslySetInnerHTML={{ __html: question.rightAnswer }} />
+          </div>
         )}
       </Card.Body>
     </Card>

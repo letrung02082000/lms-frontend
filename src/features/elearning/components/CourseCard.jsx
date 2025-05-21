@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { FaBookReader } from 'react-icons/fa';
 import { IoMdEye } from 'react-icons/io';
 import { MdCheckCircle, MdCheckCircleOutline, MdForum, MdLink, MdList, MdOutlineForum, MdPlayArrow, MdQuiz } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 import { countModulesByType } from 'utils/commonUtils';
 import { appendTokenToUrl } from 'utils/elearning.utils';
 const {
@@ -20,6 +21,7 @@ const {
 
 const CourseCard = ({ course, courseContent }) => {
   const moodleToken = localStorage.getItem('moodleToken');
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [moduleCount, setModuleCount] = useState({});
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -34,18 +36,18 @@ const CourseCard = ({ course, courseContent }) => {
       <Card.Body>
         <Row>
           <Col xs={isMobile ? 0 : 2} className='text-center'>
-              {course?.courseimage && (
-                <img
-                  src={
-                    course.courseimage.includes('pluginfile.php')
-                      ? appendTokenToUrl(course.courseimage, moodleToken)
-                      : course.courseimage
-                  }
-                  alt={course?.fullname}
-                  width='100%'
-                />
-              )}
-            </Col>
+            {course?.courseimage && (
+              <img
+                src={
+                  course.courseimage.includes('pluginfile.php')
+                    ? appendTokenToUrl(course.courseimage, moodleToken)
+                    : course.courseimage
+                }
+                alt={course?.fullname}
+                width='100%'
+              />
+            )}
+          </Col>
           <Col xs={isMobile ? 12 : 10}>
             <Row>
               <Col>
@@ -107,25 +109,25 @@ const CourseCard = ({ course, courseContent }) => {
                               <div className='d-flex align-items-center'>
                                 <span>
                                   {mod?.completiondata?.isoverallcomplete &&
-                                  mod?.completiondata?.hascompletion && (
-                                    <MdCheckCircle
-                                      style={{
-                                        color: 'var(--bs-success)',
-                                      }}
-                                      className='me-2'
-                                      size={20}
-                                    />
-                                  )}
-                                {!mod?.completiondata?.isoverallcomplete &&
-                                  mod?.completiondata?.hascompletion && (
-                                    <MdCheckCircleOutline
-                                      style={{
-                                        color: 'var(--bs-secondary)',
-                                      }}
-                                      className='me-2'
-                                      size={20}
-                                    />
-                                  )}
+                                    mod?.completiondata?.hascompletion && (
+                                      <MdCheckCircle
+                                        style={{
+                                          color: 'var(--bs-success)',
+                                        }}
+                                        className='me-2'
+                                        size={20}
+                                      />
+                                    )}
+                                  {!mod?.completiondata?.isoverallcomplete &&
+                                    mod?.completiondata?.hascompletion && (
+                                      <MdCheckCircleOutline
+                                        style={{
+                                          color: 'var(--bs-secondary)',
+                                        }}
+                                        className='me-2'
+                                        size={20}
+                                      />
+                                    )}
                                 </span>
                                 <span className='text-truncate'>
                                   {mod?.name}
@@ -137,11 +139,14 @@ const CourseCard = ({ course, courseContent }) => {
                                 <Button
                                   variant='outline-primary'
                                   size='sm'
-                                  href={`${PATH.ELEARNING.STUDENT.FORUM.replace(
-                                    ':id',
-                                    mod?.instance
-                                  )}?m=${mod?.id}`}
-                                  target='_blank'
+                                  onClick={() =>
+                                    navigate(
+                                      `${PATH.ELEARNING.STUDENT.FORUM.replace(
+                                        ':id',
+                                        mod?.instance
+                                      )}?m=${mod?.id}`
+                                    )
+                                  }
                                 >
                                   <MdOutlineForum className='me-1' />
                                   Thảo luận
@@ -151,8 +156,9 @@ const CourseCard = ({ course, courseContent }) => {
                                 <Button
                                   variant='outline-primary'
                                   size='sm'
-                                  href={`${mod?.contents[0]?.fileurl}`}
-                                  target='_blank'
+                                  onClick={() =>
+                                    navigate(`${mod?.contents[0]?.fileurl}`)
+                                  }
                                 >
                                   <MdLink className='me-1' />
                                   Truy cập
@@ -162,11 +168,14 @@ const CourseCard = ({ course, courseContent }) => {
                                 <Button
                                   variant='outline-primary'
                                   size='sm'
-                                  href={`${PATH.ELEARNING.STUDENT.VIDEO.replace(
-                                    ':id',
-                                    mod?.instance
-                                  )}?m=${mod?.id}`}
-                                  target='_blank'
+                                  onClick={() =>
+                                    navigate(
+                                      `${PATH.ELEARNING.STUDENT.VIDEO.replace(
+                                        ':id',
+                                        mod?.instance
+                                      )}?m=${mod?.id}`
+                                    )
+                                  }
                                 >
                                   <MdPlayArrow className='me-1' />
                                   Phát
@@ -176,11 +185,14 @@ const CourseCard = ({ course, courseContent }) => {
                                 <Button
                                   variant='outline-primary'
                                   size='sm'
-                                  href={`${PATH.ELEARNING.STUDENT.TEST_DETAIL.replace(
-                                    ':id',
-                                    mod?.instance
-                                  )}?m=${mod?.id}&c=${course.id}`}
-                                  target='_blank'
+                                  onClick={() =>
+                                    navigate(
+                                      `${PATH.ELEARNING.STUDENT.TEST_DETAIL.replace(
+                                        ':id',
+                                        mod?.instance
+                                      )}?m=${mod?.id}&c=${course.id}`
+                                    )
+                                  }
                                 >
                                   <MdQuiz className='me-1' />
                                   Thực hiện
@@ -190,10 +202,13 @@ const CourseCard = ({ course, courseContent }) => {
                                 <Button
                                   variant='outline-primary'
                                   size='sm'
-                                  href={`${
-                                    mod?.contents[0]?.fileurl?.split('?')[0]
-                                  }?token=${moodleToken}`}
-                                  target='_blank'
+                                  onClick={() =>
+                                    navigate(
+                                      `${
+                                        mod?.contents[0]?.fileurl?.split('?')[0]
+                                      }?token=${moodleToken}`
+                                    )
+                                  }
                                 >
                                   <IoMdEye className='me-1' />
                                   Xem
@@ -205,13 +220,16 @@ const CourseCard = ({ course, courseContent }) => {
                                   className='mb-1'
                                   variant='outline-primary'
                                   size='sm'
-                                  href={`${PATH.ELEARNING.STUDENT.BOOK.replace(
-                                    ':id',
-                                    mod?.instance
-                                  )}?m=${mod?.id}&url=${
-                                    mod?.contents[0]?.fileurl
-                                  }`}
-                                  target='_blank'
+                                  onClick={() =>
+                                    navigate(
+                                      `${PATH.ELEARNING.STUDENT.BOOK.replace(
+                                        ':id',
+                                        mod?.instance
+                                      )}?m=${mod?.id}&url=${
+                                        mod?.contents[0]?.fileurl
+                                      }`
+                                    )
+                                  }
                                 >
                                   <FaBookReader className='me-1' />
                                   Đọc
@@ -223,23 +241,24 @@ const CourseCard = ({ course, courseContent }) => {
                                     className='mb-1'
                                     variant='outline-primary'
                                     size='sm'
-                                    href={`${PATH.ELEARNING.STUDENT.BOOK.replace(
-                                      ':id',
-                                      mod?.instance
-                                    )}?m=${mod?.id}&i=${
-                                      mod.instance
-                                    }&urls=${mod?.contents
-                                      ?.filter(
-                                        (c) => c?.filename === 'index.html'
-                                      )
-                                      ?.map((content) => content?.fileurl)
-                                      ?.join(',')}`}
-                                    target='_blank'
-                                  >
-                                    <FaBookReader className='me-1' />
-                                    Học
-                                  </Button>
-                                )}
+                                    onClick={() =>
+                                      navigate(
+                                        `${PATH.ELEARNING.STUDENT.BOOK.replace(
+                                          ':id',
+                                          mod?.instance
+                                        )}?m=${mod?.id}&i=${mod.instance}&urls=${mod?.contents
+                                          ?.filter(
+                                            (c) => c?.filename === 'index.html'
+                                          )
+                                          ?.map((content) => content?.fileurl)
+                                      ?.join(',')}`
+                                    )
+                                  }
+                                >
+                                  <FaBookReader className='me-1' />
+                                  Học
+                                </Button>
+                              )}
                             </Col>
                           </Row>
                           {/* {mod.modname === 'book' && (

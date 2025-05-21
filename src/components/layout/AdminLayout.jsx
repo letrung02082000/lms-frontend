@@ -2,6 +2,7 @@ import useMediaQuery from 'hooks/useMediaQuery';
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { AiFillEyeInvisible } from 'react-icons/ai';
+import { BiSolidArrowToLeft } from 'react-icons/bi';
 import { IoMdExit } from 'react-icons/io';
 import { MdMenu } from 'react-icons/md';
 
@@ -100,7 +101,7 @@ const AdminLayout = ({ menu, children, title, root, isCollapsed, ...props }) => 
               })}
               <MenuItem
                 className='mb-3'
-                icon={<AiFillEyeInvisible />}
+                icon={<BiSolidArrowToLeft />}
                 onClick={() => {
                   setCollapsed(!collapsed);
                 }}
