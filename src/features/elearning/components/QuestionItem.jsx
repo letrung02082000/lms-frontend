@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Form } from 'react-bootstrap';
+import { replacePluginfileUrlsWithToken } from 'utils/elearning.utils';
 
 const QuestionItem = ({
   question,
@@ -8,6 +9,7 @@ const QuestionItem = ({
   onAnswerChange,
   disabled = false,
 }) => {
+  const moodleToken = localStorage.getItem('moodleToken');
   const handleChange = (index) => {
     if (disabled) return;
 
@@ -28,11 +30,14 @@ const QuestionItem = ({
 
     onAnswerChange(slot, payload);
   };
+  
+  const questionText = replacePluginfileUrlsWithToken(question.text, moodleToken);
+  console.log(questionText);
 
   return (
     <Card className='mb-3'>
       <Card.Body>
-        <Card.Title dangerouslySetInnerHTML={{ __html: question.text }} />
+        <Card.Title dangerouslySetInnerHTML={{ __html: questionText }} />
         <Form>
           {question.answers.map((ans, index) => {
             const id = `q${question.id}:${slot}_answer_${index}`;
