@@ -29,6 +29,58 @@ function replaceImageSrcWithMoodleUrl(htmlString, baseUrlWithToken) {
     return container.innerHTML;
 }
 
+function replacePluginfileUrlsWithToken(content, token) {
+  let container;
+
+  // Nếu là chuỗi HTML → chuyển thành DOM node
+  if (typeof content === 'string') {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, 'text/html');
+    container = doc.body;
+  } else if (content instanceof Element) {
+    container = content;
+  } else {
+    console.error('Invalid content: must be HTML string or DOM element');
+    return;
+  }
+
+  const images = container.querySelectorAll('img[src*="pluginfile.php/"]');
+
+  images.forEach(img => {
+    const originalSrc = img.getAttribute('src');
+
+    try {
+      const url = new URL(originalSrc);
+      const moodleDomain = `${url.protocol}//${url.host}`;
+      const pluginfileIndex = url.pathname.indexOf('/pluginfile.php/');
+      
+      if (pluginfileIndex !== -1) {
+        const filePath = url.pathname.substring(pluginfileIndex + '/pluginfile.php'.length);
+        const newSrc = `${moodleDomain}/webservice/pluginfile.php?file=${filePath}&token=${token}`;
+        img.setAttribute('src', newSrc);
+      }
+
+      // Xử lý width và style
+      const originalWidth = img.getAttribute('width') || img.width || img.naturalWidth;
+
+      img.setAttribute('width', '100%');
+      if (originalWidth) {
+        img.setAttribute('style', `max-width: ${originalWidth}px; height: auto;`);
+      } else {
+        img.setAttribute('style', `height: auto;`);
+      }
+
+    } catch (e) {
+      console.warn('Invalid image URL:', originalSrc);
+    }
+  });
+
+  // Nếu đầu vào là chuỗi → trả lại chuỗi HTML đã sửa
+  if (typeof content === 'string') {
+    return container.innerHTML;
+  }
+}
+
 function getWatchTimeByDay(timestamps, intervalTime = 15000, targetDate = null) {
     const watchByDay = {};
 
@@ -179,4 +231,4 @@ const groupUserGradeByCourseModule = (data) => {
     return grouped;
 }
 
-export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupCourseContent, replaceImageSrcWithMoodleUrl, appendTokenToUrl, isValidDate };
+export { groupUserGradeByCourseModule, getWatchTimeByDay, calculateTotalLearningTimeForDate, calculateSupervideoLearningTime, calculateQuizLearningTime, groupCourseContent, replaceImageSrcWithMoodleUrl, appendTokenToUrl, isValidDate, replacePluginfileUrlsWithToken };
