@@ -67,6 +67,22 @@ const ElearningStudentBookPage = () => {
   }, [currentIndex, fileUrls]);
 
   useEffect(() => {
+    const viewBookChapter = async (instanceId, currentChapterId) => {
+      if (instanceId) {
+        try {
+          await moodleApi.viewBookChapter(instanceId, currentChapterId);
+        } catch (error) {
+          console.error('Error viewing book chapter:', error);
+        }
+      }
+    };
+
+    if (currentChapterId) {
+      viewBookChapter(instanceId, currentChapterId);
+    }
+  }, [currentChapterId, instanceId]);
+
+  useEffect(() => {
     const getModuleTimeData = async () => {
       try {
         const res = await elearningApi.getModuleTime(moduleId);
