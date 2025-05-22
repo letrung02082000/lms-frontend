@@ -17,8 +17,10 @@ import { MdQuiz } from 'react-icons/md';
 import TimeExceedWarning from '../components/TimeExceedWarning';
 import { useSelector } from 'react-redux';
 import { selectElearningData } from 'store/elearning.slice';
+import { useNavigate } from 'react-router-dom';
 
 function ElearningStudentTestPage() {
+  const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckingAttempts, setIsCheckingAttempts] = useState(false);
@@ -132,11 +134,14 @@ function ElearningStudentTestPage() {
                 <Button
                   variant='outline-primary'
                   size='sm'
-                  href={`${PATH.ELEARNING.STUDENT.TEST_DETAIL.replace(
-                    ':id',
-                    quiz.id
-                  )}?c=${quiz.course}&m=${quiz.coursemodule}`}
-                  target='_blank'
+                  onClick={() => {
+                    navigate(
+                      `${PATH.ELEARNING.STUDENT.TEST_DETAIL.replace(
+                        ':id',
+                        quiz.id
+                      )}?c=${quiz.course}&m=${quiz.coursemodule}`
+                    );
+                  }}
                 >
                   <MdQuiz className='me-1' />
                   Thực hiện

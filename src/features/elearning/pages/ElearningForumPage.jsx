@@ -138,7 +138,7 @@ function ElearningForumPage() {
         <BackButton />
         <Row>
           {selectedDiscussion && (
-            <Col lg={8} className='border pt-3' style={{ height: '91vh' }}>
+            <Col lg={8} className='border pt-3' style={{ height: '81vh' }}>
               <div className='mb-3'>
                 <strong>{selectedDiscussion.subject}</strong>
                 <div

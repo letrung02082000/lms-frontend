@@ -88,35 +88,45 @@ const ElearningStudentBookPage = () => {
   const handleTimeUp = async () => {
     if (!currentChapterId) return;
 
-    try {
-      if (instanceId) {
-        await moodleApi.viewBookChapter(instanceId, currentChapterId);
-        setCompletedChapters((prev) => {
-          if (!prev.includes(currentChapterId)) {
-            const updated = [...prev, currentChapterId];
-            if (updated.length === fileUrls.length) {
-              toastWrapper('Bạn đã hoàn thành tất cả các chương.', 'success');
-            } else {
-              if (autoPageTurning) {
-                toastWrapper(
-                  'Bạn đã hoàn thành chương này. Đang chuyển sang chương kế tiếp.',
-                  'success'
-                );
-                setTimeout(() => {
-                  setCurrentIndex((prev) => prev + 1);
-                }, 2000); // Auto page turning after 2 seconds
+    const maxRetries = 10;
+    let attempt = 0;
+    let success = false;
+
+    while (attempt < maxRetries && !success) {
+      try {
+        if (instanceId) {
+          await moodleApi.viewBookChapter(instanceId, currentChapterId);
+          success = true;
+          setCompletedChapters((prev) => {
+            if (!prev.includes(currentChapterId)) {
+              const updated = [...prev, currentChapterId];
+              if (updated.length === fileUrls.length) {
+                toastWrapper('Bạn đã hoàn thành tất cả các chương.', 'success');
               } else {
-                toastWrapper('Bạn đã hoàn thành chương này.', 'success');
+                if (autoPageTurning) {
+                  toastWrapper(
+                    'Bạn đã hoàn thành chương này. Đang chuyển sang chương kế tiếp.',
+                    'success'
+                  );
+                  setTimeout(() => {
+                    setCurrentIndex((prev) => prev + 1);
+                  }, 2000); // Auto page turning after 2 seconds
+                } else {
+                  toastWrapper('Bạn đã hoàn thành chương này.', 'success');
+                }
               }
+              return updated;
             }
-            return updated;
-          }
-          return prev;
-        });
+            return prev;
+          });
+        }
+      } catch (error) {
+        attempt += 1;
+        if (attempt >= maxRetries) {
+          console.error('Error viewing book chapter:', error);
+          toastWrapper('Có lỗi xảy ra khi lưu trạng thái chương.', 'error');
+        }
       }
-    } catch (error) {
-      console.error('Error viewing book chapter:', error);
-      toastWrapper('Có lỗi xảy ra khi lưu trạng thái chương.', 'error');
     }
   };
 
