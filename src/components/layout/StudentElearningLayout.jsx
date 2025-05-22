@@ -234,12 +234,14 @@ function StudentElearningLayout() {
           elearningCourses[item.id] = item;
         });
         const elearningCoursesContents = {};
+        const courseContents = {};
 
         if (!elearningCoursesContentsRes) {
           dispatch(
             updateElearningData({
               elearningCourses,
               elearningCoursesContents: {},
+              courseContents: {},
             })
           );
           return;
@@ -249,11 +251,14 @@ function StudentElearningLayout() {
           elearningCoursesContents[lessonId] = groupCourseContent(
             elearningCoursesContentsRes?.[lessonId] || []
           );
+          courseContents[lessonId] = elearningCoursesContentsRes?.[lessonId];
         });
+
         dispatch(
           updateElearningData({
             elearningCourses,
             elearningCoursesContents,
+            courseContents,
           })
         );
       } catch (error) {
