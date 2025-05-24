@@ -40,8 +40,8 @@ const App = () => {
             // onLogout();
           } else {
             // Mặc định là xóa token và reload lại trang
-            localStorage.clear();
-            window.location.reload();
+            // localStorage.clear();
+            // window.location.reload();
           }
         }
       }, 1000);
